@@ -1,4 +1,5 @@
 import ed from './logo-giao-duc-an-nhien.jpg';
+import './HomePage.css';
 export default function HomePage() {
     return (
         <div className="home-page">

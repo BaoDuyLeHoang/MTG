@@ -1,22 +1,9 @@
-import pl from '../components/logo-giao-duc-an-nhien.jpg';
-import '../components/FeedbackManagement.css';
+import Sidebar from '../components/Sidebar/sideBar';
+import '../admin/FeedbackManagement.css';
 export default function FeedbackManagement() {
     return (
         <div className="feedback-management">
-            <aside className="sidebar">
-                <img src={pl} className='logo' />
-                <nav>
-                    <ul>
-                        <li><a href="#">Trang chủ</a></li>
-                        <li><a href="#">Đơn hàng</a></li>
-                        <li><a href="#">Lịch sử đơn hàng</a></li>
-                        <li><a href="#">Công việc hằng ngày</a></li>
-                        <li><a href="#">Thông tin cá nhân</a></li>
-                        <li><a href="#">Thông tin mộ</a></li>
-                        <li><a href="#">Đăng xuất</a></li>
-                    </ul>
-                </nav>
-            </aside>
+            <Sidebar />
             <aside className='feedback-list'>
                 <h1>Danh sách các feedback</h1>
                 <div className='date-fillers'>

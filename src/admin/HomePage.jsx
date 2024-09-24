@@ -1,19 +1,11 @@
-import ed from './logo-giao-duc-an-nhien.jpg';
+
 import './HomePage.css';
+
 export default function HomePage() {
     return (
         <div className="home-page">
             <aside className="sidebar">
-                <img src={ed} className='logo' />
-                <ul>
-                    <li><a href="#">Trang chủ</a></li>
-                    <li><a href="#">Đơn hàng</a></li>
-                    <li><a href="#">Lịch sử đơn hàng</a></li>
-                    <li><a href="#">Công việc hằng ngày</a></li>
-                    <li><a href="#">Thông tin cá nhân</a></li>
-                    <li><a href="#">Thông tin mộ</a></li>
-                    <li><a href="#">Đăng xuất</a></li>
-                </ul>
+                <Sidebar />
             </aside>
             <div className='dashboard'>
                 <div className='stats'>

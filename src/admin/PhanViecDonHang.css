@@ -1,0 +1,76 @@
+.contribute-bill {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+.logo {
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.contribute-work-list {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.date-fill {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.date-fill label {
+    display: flex;
+    flex-direction: column;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table th {
+    background-color: #f2f2f2;
+}
+
+.pagination {
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+}
+
+.pagination span {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}

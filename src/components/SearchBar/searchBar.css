@@ -1,0 +1,20 @@
+.search-bar {
+    margin-left: auto; /* Pushes the search bar to the right */
+}
+
+.search-bar input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px; /* Adjust width as needed */
+    transition: border-color 0.3s;
+}
+
+.search-bar input:focus {
+    border-color: #007bff; /* Change border color on focus */
+    outline: none;
+}
+
+.search-icon {
+    margin-left: 8px;
+}

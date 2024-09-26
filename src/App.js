@@ -1,11 +1,9 @@
 import './App.css';
-import FeedbackManagement from './admin/FeedbackManagement';
-import Dashboard from './admin/dashBoard/dashboard';
-
+import StaffManagement from './admin/StaffManager/StaffManagement';
 function App() {
   return (
     <div className="App">
-      <Dashboard />
+      <StaffManagement/>
     </div>
   );
 }

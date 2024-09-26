@@ -1,0 +1,40 @@
+.task-description {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.task-description-list {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.task-desc-fillers {
+    border: 1px solid black;
+    text-align: left;
+}
+
+.huyen {
+    text-align: left;
+    border: 1px solid black;
+}

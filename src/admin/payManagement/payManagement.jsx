@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar/sideBar';
+import DateFilter from '../../components/DateFilter/dateFilter';
 import './payManagement.css';
 
 const PayManagement = () => {
   const [payments, setPayments] = useState([]);
-
+  const handleDateFilterChange = (startDate, endDate) => {
+    console.log('Start Date:', startDate);
+    console.log('End Date:', endDate);
+};
   useEffect(() => {
     // Fetch payment data from your API
     // This is just example data
@@ -39,6 +43,7 @@ const PayManagement = () => {
         <Sidebar />
         <div className="pay-management-content">
         <h1>QUẢN LÝ THANH TOÁN</h1>
+        <DateFilter onFilterChange={handleDateFilterChange} className="date-filter" />
       <table className="pay-management-table">
         <thead>
           <tr>

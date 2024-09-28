@@ -37,7 +37,7 @@ const PhanViecDonHang = () => {
                                     <td><b>K37 - 63</b></td>
                                     <td>2</td>
                                     <td><div style={{ color: 'red' }}>Đang xử lý</div></td>
-                                    <td><button>Chi tiết</button></td>
+                                    <td><button id="detail-button">Chi tiết</button></td>
                                 </tr>
                             ))
                         }

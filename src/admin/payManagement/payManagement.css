@@ -68,4 +68,14 @@
   width: 100%;
   flex: 1;
 }
+.date-filter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 10px;
+  margin-bottom: 20px;
+  gap: 150px;
+}
+
+
 

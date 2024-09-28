@@ -43,7 +43,13 @@ const PayManagement = () => {
         <Sidebar />
         <div className="pay-management-content">
         <h1>QUẢN LÝ THANH TOÁN</h1>
-        <DateFilter onFilterChange={handleDateFilterChange} className="date-filter" />
+        <div className="date-filter">
+          <DateFilter onFilterChange={handleDateFilterChange} className="date-filter" />
+          <div className="filter-button-container">
+            <button className="filter-button">Xuất</button>
+          </div>
+        </div>
+        
       <table className="pay-management-table">
         <thead>
           <tr>

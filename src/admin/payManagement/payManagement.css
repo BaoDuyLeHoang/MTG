@@ -73,9 +73,14 @@
   align-items: center;
   justify-content: flex-start;
   margin-left: 10px;
-  margin-bottom: 20px;
-  gap: 150px;
+  margin-bottom: 10px;
+  gap: initial;
 }
-
-
+.filter-button-container{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
 

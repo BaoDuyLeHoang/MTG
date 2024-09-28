@@ -23,7 +23,7 @@
     color: #333;
 }
 
-.op h1 {
+.header h1 {
     text-align: center;
 }
 
@@ -35,14 +35,85 @@
 
 .task-fillers {
     border: 1px solid black;
-    text-align: left;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
 }
 
-button {
+.task-fillers-item1,
+.task-fillers-item2 {
+    width: 48%; /* Adjust as needed */
+}
+
+.task-fillers p {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.task-fillers p b {
+    margin-bottom: 5px;
+}
+
+.task-fillers input[type="text"],
+.task-fillers textarea,
+.task-fillers select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.task-fillers textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.task-fillers select {
+    height: 30px; /* Adjust as needed */
+}
+
+#create-task-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    text-align: right;
+    font-size: 16px;
+    float: right;
+}
+
+#create-task-btn:hover {
+    background-color: #45a049;
 }
 
 h3 {
     text-align: left;
 }
+.task-fillers-item {
+    display: flex;
+    flex-direction: column;
+}
+.task-fillers-item1 {
+    display: flex;
+    flex-direction: column;
+    
+}
+.task-fillers-item2 {
+    display: flex;
+    flex-direction: column;
+    
+}
+.date-filter {
+    flex: 1 ;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 40px;
+
+  }
+  .date-filter label  {
+    font-weight: bold;
+  }

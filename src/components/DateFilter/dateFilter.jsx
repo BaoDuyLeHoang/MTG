@@ -21,7 +21,7 @@ const DateFilter = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="date-filter" style={{ display: 'flex', gap: '20px' }}>
+    <div className="date-filter" >
       <div className="date-picker">
         <label>Từ ngày: </label>
         <DatePicker

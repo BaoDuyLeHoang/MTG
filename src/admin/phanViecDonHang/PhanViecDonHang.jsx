@@ -1,41 +1,43 @@
 import Sidebar from "../../components/Sidebar/sideBar"
 import '../phanViecDonHang/PhanViecDonHang.css';
+import DateFilter from '../../components/DateFilter/dateFilter';
+
 const PhanViecDonHang = () => {
+    const handleDateFilterChange = (startDate, endDate) => {
+        console.log('Start Date:', startDate);
+        console.log('End Date:', endDate);
+    };
     return (
         <div className="contribute-bill">
             <Sidebar />
             <aside className="contribute-work-list">
-                <div className="date-fill">
-                    <h1>Đơn hàng</h1>
-                    <label>
-                        Từ ngày <input type="date" />
-                    </label>
-                    <label>Đến ngày <input type="date" /></label>
-                </div>
+            <h1>DANH SÁCH ĐƠN HÀNG</h1>
+                <DateFilter onFilterChange={handleDateFilterChange} className="date-filter" />
+                
                 <table>
                     <thead>
                         <tr>
-                            <th><u>Dịch vụ</u></th>
-                            <th><u>Loại</u></th>
-                            <th><u>Ngày đặt</u></th>
-                            <th><u>Thời hạn</u></th>
-                            <th><u>Vị trí</u></th>
-                            <th><u>Số lượng</u></th>
-                            <th><u>Trạng thái</u></th>
+                            <th>Dịch vụ</th>
+                            <th>Loại</th>
+                            <th>Ngày đặt</th>
+                            <th>Thời hạn</th>
+                            <th>Vị trí</th>
+                            <th>Số lượng</th>
+                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             Array.from({ length: 11 }).map((_, index) => (
                                 <tr key={index}>
-                                    <td><u>Thay hoa ở mộ</u></td>
-                                    <td><u>Hoa cúc</u></td>
-                                    <td><u>18/9/2024</u></td>
-                                    <td><u>25/9/2024</u></td>
-                                    <td><u><b>K37 - 63</b></u></td>
-                                    <td><u>2</u></td>
-                                    <td><u style={{ color: 'red' }}><div style={{ color: 'red' }}>Đang xử lý</div></u></td>
-                                    <td><button><u>Chi tiết</u></button></td>
+                                    <td>Thay hoa ở mộ</td>
+                                    <td>Hoa cúc</td>
+                                    <td>18/9/2024</td>
+                                    <td>25/9/2024</td>
+                                    <td><b>K37 - 63</b></td>
+                                    <td>2</td>
+                                    <td><div style={{ color: 'red' }}>Đang xử lý</div></td>
+                                    <td><button>Chi tiết</button></td>
                                 </tr>
                             ))
                         }

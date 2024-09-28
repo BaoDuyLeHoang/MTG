@@ -51,6 +51,7 @@
 }
 button {
     border-radius: 5px;
+    width: 80px;
     background-color: rgb(194, 185, 101); /* Change button color to RGB */
     
 }

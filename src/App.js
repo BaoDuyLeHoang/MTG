@@ -10,9 +10,10 @@ import TaskList from './admin/taskList/TaskList';
 import AccountManagement from './admin/accountManagement/accountManagement';
 import TaskDescription from './admin/taskDescription/TaskDescription';
 import GraveDetail from './admin/graveDetail/GraveDetail';
+import OrderDetail from './admin/orderDetail/OrderDetai';
 function App() {
   return (
-    <Router> 
+    <Router>
       <Routes> {/* Use Routes instead of Switch */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/danhsachaccount" element={<AccountManagement />} />
@@ -24,6 +25,7 @@ function App() {
         <Route path="/danhsachphannhoikhachhang" element={<FeedbackManagement />} />
         <Route path="/chitietcongviec" element={<TaskDescription />} />
         <Route path="/chitietmo" element={<GraveDetail />} />
+        <Route path="/chitietdonhang" element={<OrderDetail />} />
       </Routes>
     </Router>
   );

@@ -13,7 +13,7 @@ const Sidebar = () => {
             </div>
             <div className='user-info'>
                 <div className='user-avatar'>
-                    <img  alt="Avatar" />
+                    <img alt="Avatar" />
                 </div>
                 <div className='user-details'>
                     <p>Nguyen Cong Ty</p>
@@ -30,6 +30,7 @@ const Sidebar = () => {
                     <li><Link to="/danhsachmo"><FontAwesomeIcon icon={faMonument} /> Danh sách mộ</Link></li>
                     <li><Link to="/danhsachthanhtoan"><FontAwesomeIcon icon={faMoneyBillWave} /> Thanh toán</Link></li>
                     <li><Link to="/danhsachphannhoikhachhang"><FontAwesomeIcon icon={faComments} /> Phản hồi khách hàng</Link></li>
+                    <li><Link to="/chitietdonhang"><FontAwesomeIcon icon={faShoppingCart} />Chi tiết đơn hàng</Link></li>
                 </ul>
             </nav>
         </aside>

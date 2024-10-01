@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Calendar } from 'lucide-react';
 import './TaskList.css'; // We'll define the CSS below
 import Sidebar from '../../components/Sidebar/sideBar'; // Import Sidebar
-
+import { Link } from 'react-router-dom';
 const TaskList = () => {
   const [startDate, setStartDate] = useState('21/09/2024');
   const [endDate, setEndDate] = useState('21/09/2024');
@@ -35,7 +34,7 @@ const TaskList = () => {
     
         
         <div className="date-filter-container">
-          <div className="date-inputs">
+          <div className="date-inputs-1">
             <div className="date-input-group">
               <span>Từ ngày:</span>
               <div className="input-with-icon">
@@ -85,7 +84,9 @@ const TaskList = () => {
                 <td>{task.staff}</td>
                 <td className="status">{task.status}</td>
                 <td>
-                  <button className="detail-btn">Chi tiết</button>
+                    <Link to="/chitietcongviec">
+                        <button className="detail-btn">Chi tiết</button>
+                    </Link>
                 </td>
               </tr>
             ))}

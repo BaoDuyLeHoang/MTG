@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faShoppingCart, faHistory, faTasks, faUser, faMonument, faSignOutAlt, faMoneyBillWave, faComments } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../assets/logo/logo-giao-duc-an-nhien.png';
 import './sideBar.css';
+import { Link } from 'react-router-dom'; // Add this import
 
 const Sidebar = () => {
     return (
@@ -21,13 +22,14 @@ const Sidebar = () => {
             </div>
             <nav className="sidebar-nav">
                 <ul>
-                    <li><a href="/"><FontAwesomeIcon icon={faHome} /> Trang chủ</a></li>
-                    <li><a href="/danhsachdonhang"><FontAwesomeIcon icon={faShoppingCart} /> Đơn hàng</a></li>
-                    <li><a href="/danhSachCongViec"><FontAwesomeIcon icon={faTasks} /> Công việc</a></li>
-                    <li><a href="/danhsachnhanvien"><FontAwesomeIcon icon={faUser} /> Nhân viên</a></li>
-                    <li><a href="/danhsachmo"><FontAwesomeIcon icon={faMonument} /> Danh sách mộ</a></li>
-                    <li><a href="/danhsachthanhtoan"><FontAwesomeIcon icon={faMoneyBillWave} /> Thanh toán</a></li>
-                    <li><a href="/danhsachphannhoikhachhang"><FontAwesomeIcon icon={faComments} /> Phản hồi khách hàng</a></li>
+                    <li><Link to="/"><FontAwesomeIcon icon={faHome} /> Trang chủ</Link></li>
+                    <li><Link to="/danhsachaccount"><FontAwesomeIcon icon={faUser} /> Quản lý tài khoản</Link></li>
+                    <li><Link to="/danhsachdonhang"><FontAwesomeIcon icon={faShoppingCart} /> Đơn hàng</Link></li>
+                    <li><Link to="/danhSachCongViec"><FontAwesomeIcon icon={faTasks} /> Công việc</Link></li>
+                    <li><Link to="/danhsachnhanvien"><FontAwesomeIcon icon={faUser} /> Nhân viên</Link></li>
+                    <li><Link to="/danhsachmo"><FontAwesomeIcon icon={faMonument} /> Danh sách mộ</Link></li>
+                    <li><Link to="/danhsachthanhtoan"><FontAwesomeIcon icon={faMoneyBillWave} /> Thanh toán</Link></li>
+                    <li><Link to="/danhsachphannhoikhachhang"><FontAwesomeIcon icon={faComments} /> Phản hồi khách hàng</Link></li>
                 </ul>
             </nav>
         </aside>

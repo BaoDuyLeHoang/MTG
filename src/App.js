@@ -1,13 +1,16 @@
-import './App.css';
-import StaffManagement from './admin/StaffManager/StaffManagement';
-import Dashboard from './admin/dashBoard/dashboard';
-import AddTask from './admin/addTask/AddTask';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Change Switch to Routes
+import Dashboard from './admin/dashBoard/dashboard'; // Import your components
+
 
 function App() {
   return (
-    <div className="App">
-      <AddTask/>
-    </div>
+    <Router> 
+      <Routes> {/* Use Routes instead of Switch */}
+        <Route path="/" element={<Dashboard />} /> {/* Use element prop */}
+        {/* Add more routes as needed */}
+      </Routes>
+    </Router>
   );
 }
 

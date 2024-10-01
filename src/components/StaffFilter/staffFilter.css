@@ -18,6 +18,7 @@
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s ease;
+  width: 20%;
 }
 
 .staff-filter button.active {

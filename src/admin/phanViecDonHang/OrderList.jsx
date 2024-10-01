@@ -1,8 +1,8 @@
 import Sidebar from "../../components/Sidebar/sideBar"
-import '../phanViecDonHang/PhanViecDonHang.css';
+import './PhanViecDonHang.css';
 import DateFilter from '../../components/DateFilter/dateFilter';
 
-const PhanViecDonHang = () => {
+const OrderList = () => {
     const handleDateFilterChange = (startDate, endDate) => {
         console.log('Start Date:', startDate);
         console.log('End Date:', endDate);
@@ -54,4 +54,4 @@ const PhanViecDonHang = () => {
         </div>
     )
 }
-export default PhanViecDonHang;
+export default OrderList;

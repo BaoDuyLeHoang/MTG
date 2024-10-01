@@ -13,16 +13,25 @@ const TaskDescription = () => {
             <table>
               <tbody>
                 <td>
-                  <tr> <h2>Tên Công Việc :</h2></tr>
-                  <tr> <h2>Trạng Thái :</h2></tr>
-                  <tr> <h2>Mô Tả Công Việc :</h2></tr>
+                  <tr>
+                    {" "}
+                    <h2>Tên Công Việc :</h2>
+                  </tr>
+                  <tr>
+                    {" "}
+                    <h2>Trạng Thái :</h2>
+                  </tr>
+                  <tr>
+                    {" "}
+                    <h2>Mô Tả Công Việc :</h2>
+                  </tr>
                 </td>
                 <td>
                   <tr> Tuoi cay khu vuc 20 </tr>
                   <tr> chua haon thanh</tr>
                   <tr>
                     Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Magni sequi consequuntur necessitatibus! Assumenda corrupti
+                    Magni sequi c onsequuntur necessitatibus! Assumenda corrupti
                     dolores facere. Sed quidem error odit perferendis libero
                     ducimus voluptatem, vitae quibusdam, temporibus repudiandae,
                     est pariatur?

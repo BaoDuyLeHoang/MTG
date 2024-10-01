@@ -44,7 +44,7 @@ const GraveDetail = () => {
                 <label>Bí danh:</label>
                 <span></span>
               </div>
-              <div className="info-item right-align">
+              <div className="info-item">
                 <label>Vị trí mộ:</label>
                 <span></span>
               </div>
@@ -58,7 +58,7 @@ const GraveDetail = () => {
                 <label>Ngày sinh:</label>
                 <span>19-3-1932</span>
               </div>
-              <div className="info-item right-align">
+              <div className="info-item">
                 <label>Ngày mất:</label>
                 <span></span>
               </div>
@@ -95,7 +95,6 @@ const GraveDetail = () => {
             <div className="status-grid">
               <div>
                 <label>
-                  {" "}
                   <b>Loại hoa được trồng:</b>
                 </label>
                 <span>Nguyễn Văn A</span>
@@ -115,7 +114,6 @@ const GraveDetail = () => {
             </div>
           </div>
         </div>
-
         <div className="service-history">
           <h2>Lịch sử bảo dưỡng / dịch vụ mộ:</h2>
           <table>

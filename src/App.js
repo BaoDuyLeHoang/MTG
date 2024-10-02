@@ -10,11 +10,18 @@ import TaskList from './admin/taskList/TaskList';
 import AccountManagement from './admin/accountManagement/accountManagement';
 import TaskDescription from './admin/taskDescription/TaskDescription';
 import GraveDetail from './admin/graveDetail/GraveDetail';
+import HomePage from './customer/homePage/homePage';
 function App() {
   return (
     <Router> 
       <Routes> {/* Use Routes instead of Switch */}
         <Route path="/" element={<Dashboard />} />
+
+
+
+
+        {/* admin */}
+        
         <Route path="/danhsachaccount" element={<AccountManagement />} />
         <Route path="/danhsachdonhang" element={<OrderList />} />
         <Route path="/danhsachnhanvien" element={<StaffManagement />} />

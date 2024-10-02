@@ -2,7 +2,9 @@ import Sidebar from "../../components/Sidebar/sideBar"
 import '../orderDetail/OrderDetail.css';
 import pl from '../../assets/logo/cay-bach1.jpg';
 import DatePicker from "react-datepicker";
+import { useState } from "react";
 const OrderDetail = () => {
+    const [selectedDate, setSelectedDate] = useState(null);
     return (
         <div className="order-detail-container">
             <Sidebar />
@@ -23,7 +25,7 @@ const OrderDetail = () => {
                     </div>
                     <div className="order-detail-row">
                         <div className="service-details">
-                            <img style={{ width: '74px', height: '83.55px' }} src={pl} />
+                            <img src={pl} className="service-img" />
                             <div className="service-text">
                                 <p>Thay cây ở mộ</p>
                                 <p>Loại: Cây bách</p>
@@ -31,11 +33,35 @@ const OrderDetail = () => {
                         </div>
                         <div className="quantity">2</div>
                         <div className="completion-time">
-                            <DatePicker />
+                            <DatePicker id="date-picker" selected={selectedDate}
+                                onChange={(date) => setSelectedDate(date)}
+                                dateFormat="dd/MM/yyyy" className="custom-input"
+                                placeholderText="21/09/2024" />
                         </div>
                         <div className="status">
                             <span className="status-pending">Đang xử lý</span>
                         </div>
+                        <ul id="menu">
+                            <ul id="menu">
+                                <li>
+                                    <a style={{ marginRight: '120px' }} href="javascript:void(0)">
+                                        Nhân viên
+                                        <span class="arrow arrow-down"></span>
+                                    </a>
+                                    <ul class="dropdown_menu">
+                                        <li>
+                                            <a href="javascript:void(0)">Nguyễn Công Trứ</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">Phạm Thành Trung</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">Trần Công Hãn</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </ul>
                     </div>
                     <div className="action">
                         <button className="deliver-button">Bàn giao</button>
@@ -44,7 +70,7 @@ const OrderDetail = () => {
                 <div className="order-summary">
                     <div className="order-summary-detail">
                         <div className="summary-order">
-                            <p><strong>Cập nhật tình trạng đơn hàng</strong></p>
+                            <h2>CẬP NHẬT TÌNH TRẠNG ĐƠN HÀNG</h2>
                             <p>Đơn hàng đã được tạo (12:15 12/09/2024)</p>
                             <p>Đơn hàng đã được xác nhận (15:20  12/09/2024)</p>
                         </div>

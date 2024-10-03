@@ -75,7 +75,7 @@
 
 .completion-time {
     flex: 1;
-    margin-left: -50px;
+    margin-left: 135px;
     display: flex;
     flex-direction: column;
     width: 18px;
@@ -132,7 +132,7 @@
 
 .status-pending {
     color: red;
-    margin-left: 20px;
+    margin-left: 27px;
 }
 
 .date-picker {

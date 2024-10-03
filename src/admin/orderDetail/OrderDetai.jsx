@@ -39,7 +39,6 @@ const OrderDetail = () => {
                 <div className="order-section">
                     <div className="order-detail-header">
                         <span>Dịch vụ:</span>
-                        <span>Số lượng</span>
                         <span>Thời gian hoàn thành</span>
                         <span>Trạng thái</span>
                         <span>Nhân viên trong khu vực</span>
@@ -52,7 +51,6 @@ const OrderDetail = () => {
                                 <p>Loại: Cây bách</p>
                             </div>
                         </div>
-                        <div className="quantity">2</div>
                         <div className="completion-time">
                             <DatePicker id="date-picker" selected={selectedDate}
                                 onChange={(date) => setSelectedDate(date)}

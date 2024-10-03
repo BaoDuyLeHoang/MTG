@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar/sideBar';
 import DateFilter from '../../components/DateFilter/dateFilter';
-import './payManagement.css';
+import '../payManagement/payManagement.css';
 
 const PayManagement = () => {
   const [payments, setPayments] = useState([]);
   const handleDateFilterChange = (startDate, endDate) => {
     console.log('Start Date:', startDate);
     console.log('End Date:', endDate);
-};
+  };
   useEffect(() => {
     // Fetch payment data from your API
     // This is just example data
@@ -40,8 +40,8 @@ const PayManagement = () => {
 
   return (
     <div className="pay-management-container">
-        <Sidebar />
-        <div className="pay-management-content">
+      <Sidebar />
+      <div className="pay-management-content">
         <h1>QUẢN LÝ THANH TOÁN</h1>
         <div className="date-filter">
           <DateFilter onFilterChange={handleDateFilterChange} className="date-filter" />
@@ -49,37 +49,37 @@ const PayManagement = () => {
             <button className="filter-button">Xuất</button>
           </div>
         </div>
-        
-      <table className="pay-management-table">
-        <thead>
-          <tr>
-            <th>Mã đơn hàng</th>
-            <th>Tên khách hàng</th>
-            <th>Ngày thanh toán</th>
-            <th>Trạng thái</th>
-            <th>Số tiền</th>
-            <th>Chi tiết</th>
-          </tr>
-        </thead>
-        <tbody>
-          {payments.map((payment) => (
-            <tr key={payment.id}>
-              <td>{payment.id}</td>
-              <td>{payment.customerName}</td>
-              <td>{payment.paymentDate}</td>
-              <td className={getStatusClass(payment.status)}>{payment.status}</td>
-              <td>{payment.amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-              <td>
-                <button className="detail-button" onClick={() => handleDetailClick(payment.id)}>
-                  Chi tiết
-                </button>
-              </td>
+
+        <table className="pay-management-table">
+          <thead>
+            <tr>
+              <th>Mã đơn hàng</th>
+              <th>Tên khách hàng</th>
+              <th>Ngày thanh toán</th>
+              <th>Trạng thái</th>
+              <th>Số tiền</th>
+              <th>Chi tiết</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-        </div>
-      
+          </thead>
+          <tbody>
+            {payments.map((payment) => (
+              <tr key={payment.id}>
+                <td>{payment.id}</td>
+                <td>{payment.customerName}</td>
+                <td>{payment.paymentDate}</td>
+                <td className={getStatusClass(payment.status)}>{payment.status}</td>
+                <td>{payment.amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                <td>
+                  <button className="detail-button" onClick={() => handleDetailClick(payment.id)}>
+                    Chi tiết
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   );
 };

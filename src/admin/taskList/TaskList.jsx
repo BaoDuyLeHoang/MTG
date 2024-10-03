@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const TaskList = () => {
   const [startDate, setStartDate] = useState('21/09/2024');
   const [endDate, setEndDate] = useState('21/09/2024');
-  
+
   const tasks = [
     {
       task: "Thay hoá ơ mỡ",
@@ -29,10 +29,10 @@ const TaskList = () => {
       <Sidebar /> {/* Add Sidebar component here */}
       <div className="task-content"> {/* Wrap task content in a new div */}
         <h1>Danh sách công việc</h1>
-        
-        
-    
-        
+
+
+
+
         <div className="date-filter-container">
           <div className="date-inputs-1">
             <div className="date-input-group">
@@ -43,7 +43,7 @@ const TaskList = () => {
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
-                
+
               </div>
             </div>
             <div className="date-input-group">
@@ -54,14 +54,15 @@ const TaskList = () => {
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
-               
+
               </div>
             </div>
           </div>
-          
-          <button className="create-task-btn">Tạo công việc</button>
+          <Link to="/taoCongViec">
+            <button className="create-task-btn">Tạo công việc</button>
+          </Link>
         </div>
-        
+
         <table className="task-table">
           <thead>
             <tr>
@@ -84,9 +85,9 @@ const TaskList = () => {
                 <td>{task.staff}</td>
                 <td className="status">{task.status}</td>
                 <td>
-                    <Link to="/chitietcongviec">
-                        <button className="detail-btn">Chi tiết</button>
-                    </Link>
+                  <Link to="/chitietcongviec">
+                    <button className="detail-btn">Chi tiết</button>
+                  </Link>
                 </td>
               </tr>
             ))}

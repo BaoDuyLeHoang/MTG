@@ -24,7 +24,7 @@ const Header = () => {
             <Link to="/gioi-thieu">Giới thiệu</Link>
           </li>
           <li>
-            <Link to="/dich-vu">Dịch vụ</Link>
+            <Link to="/dichvu">Dịch vụ</Link>
           </li>
           <li>
             <Link to="/tim-kiem-mo">Tìm kiếm mộ</Link>

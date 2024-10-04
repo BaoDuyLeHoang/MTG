@@ -1,0 +1,176 @@
+/* Container and Layout */
+.intro-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 0px;
+    padding-bottom: 20px; /* Add some padding at the bottom */
+    border-bottom: 2px solid #e0e0e0; /* Add a 2px solid line at the bottom */
+    margin-bottom: 20px; /* Add some margin below the line */
+  }
+  
+  /* Title */
+  .title {
+    font-size: 2.5rem; /* 40px */
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Quote */
+  .quote-wrapper {
+    text-align: center;
+  }
+  
+  .quote {
+    font-size: 1.125rem; /* 18px */
+    color: #4A5568; /* gray-700 */
+    font-style: italic;
+  }
+  
+  /* Service Grid */
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  /* Responsive grid for larger screens */
+  @media (min-width: 768px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .services-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  /* Tab Container and Styles */
+  .tab-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .tab {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .tab:hover {
+    background-color: #e0e0e0;
+  }
+
+  .tab.active {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .service-content {
+    margin-top: 24px;
+  }
+
+  .service-tabs-container {
+    margin-top: 40px;
+    padding: 0 150px;
+  }
+
+  .mui-tabs {
+    position: relative;
+    min-height: 48px;
+  }
+
+  .mui-tabs-header {
+    display: flex;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .mui-tab {
+    min-width: 200px;
+    padding: 12px 16px;
+    background-color: transparent;
+    border: none;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 1rem; /* Increased from 0.875rem */
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .mui-tab:hover {
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  .mui-tab.active {
+    color: #1976d2;
+  }
+
+  .mui-tabs-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    background-color: #000000;
+    transition: left 0.3s;
+  }
+
+  .service-content {
+    margin-top: 24px;
+  }
+
+  /* Add these new styles */
+  .service-content .ServiceCard h2 {
+    font-size: 2rem; /* Increase this value to make the title even bigger */
+    margin-bottom: 16px;
+    color: #333;
+  }
+
+  .service-content .ServiceCard p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #666;
+  }
+
+  /* ... existing styles ... */
+
+.service-container {
+  text-align: center;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.change-planner-service {
+  margin-bottom: 20px;
+}
+
+.change-planner-service h2 {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.sell-service-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .sell-service-grid {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sell-service-grid {
+    gap: 30px;
+  }
+}

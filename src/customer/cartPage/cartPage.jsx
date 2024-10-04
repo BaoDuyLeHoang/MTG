@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../../components/Header/header';
 import './cartPage.css';
+import deleteIcon from '../../assets/images/delete.png'; // Make sure to add this image to your assets folder
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([
@@ -19,6 +20,11 @@ const CartPage = () => {
     setCartItems(cartItems.map(item => 
       item.id === id ? { ...item, selected: !item.selected } : item
     ));
+  };
+
+  const handleSelectAll = () => {
+    const allSelected = cartItems.every(item => item.selected);
+    setCartItems(cartItems.map(item => ({ ...item, selected: !allSelected })));
   };
 
   const calculateCartTotal = () => {
@@ -41,7 +47,14 @@ const CartPage = () => {
         <table className="cart-table">
           <thead className='cart-table-header'>
             <tr>
-              <th>Chọn</th>
+              <th>
+                <input 
+                  type="checkbox" 
+                  checked={cartItems.every(item => item.selected)}
+                  onChange={handleSelectAll}
+                  className="select-all-checkbox"
+                />
+              </th>
               <th>Tên dịch vụ</th>
               <th>Loại</th>
               <th>Thời gian thực hiện</th>
@@ -69,10 +82,12 @@ const CartPage = () => {
                 </td>
                 <td>{item.type}</td>
                 <td>{item.time}</td>
-                <td>{item.price.toLocaleString('vi-VN')} đ</td>
+                <td className='price'>{item.price.toLocaleString('vi-VN')} đ</td>
                 <td>{item.graveCode}</td>
                 <td>
-                  <button onClick={() => handleDelete(item.id)} className="delete-btn">Xóa</button>
+                  <button onClick={() => handleDelete(item.id)} className="delete-btn">
+                    <img src={deleteIcon} alt="Delete" className="delete-icon" />
+                  </button>
                 </td>
               </tr>
             ))}

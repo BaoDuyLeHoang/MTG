@@ -2,6 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  
 }
 
 .cart-table {
@@ -26,7 +27,12 @@
   background-color: #ffffff;
   padding: 15px 12px; /* Increased padding for body cells */
 }
-
+.total-amount{
+  color: #45a049;
+}
+.price{
+  color: red;
+}
 .cart-table tr {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Add subtle shadow to rows */
 }
@@ -36,16 +42,21 @@
 }
 
 .delete-btn {
-  background-color: #ff4d4d;
-  color: white;
+  background-color: transparent;
   border: none;
-  padding: 5px 10px;
   cursor: pointer;
-  border-radius: 3px;
+  padding: 0;
+  transition: opacity 0.3s ease;
 }
 
 .delete-btn:hover {
-  background-color: #ff3333;
+  opacity: 0.7;
+}
+
+.delete-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .total-label {
@@ -174,4 +185,11 @@
 }
 .cart-table-header{
   margin-bottom: 200px;
+}
+
+.select-all-checkbox,
+.item-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }

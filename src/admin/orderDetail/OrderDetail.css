@@ -75,7 +75,7 @@
 
 .completion-time {
     flex: 1;
-    margin-left: 135px;
+    margin-left: 90px;
     display: flex;
     flex-direction: column;
     width: 18px;
@@ -128,11 +128,13 @@
 .status {
     flex: 1;
     text-align: left;
+    margin-top: -15px;
 }
 
 .status-pending {
-    color: red;
-    margin-left: 27px;
+    color: green;
+    margin-left: 90px;
+    margin-top: -90px;
 }
 
 .date-picker {
@@ -140,7 +142,7 @@
 }
 
 .staff-area select {
-    height: 30px;
+    height: 40px;
     margin-right: 120px;
     width: 55%;
 }

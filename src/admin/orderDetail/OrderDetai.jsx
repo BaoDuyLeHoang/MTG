@@ -58,7 +58,7 @@ const OrderDetail = () => {
                                 placeholderText="21/09/2024" />
                         </div>
                         <div className="status">
-                            <span className="status-pending">Đang xử lý</span>
+                            <span className="status-pending">Đã xử lý</span>
                         </div>
                         <div className="staff-area">
                             <select name="staffName" value={task.staffName} onChange={handleInputChange}>

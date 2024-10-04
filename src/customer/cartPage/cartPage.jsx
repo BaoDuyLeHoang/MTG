@@ -22,6 +22,11 @@ const CartPage = () => {
     return cartItems.reduce((total, item) => total + calculateTotal(item), 0);
   };
 
+  const handlePayment = () => {
+    // Implement payment functionality
+    console.log('Processing payment');
+  };
+
   return (
     <div className="cart-page">
       <Header />
@@ -63,6 +68,9 @@ const CartPage = () => {
             </tr>
           </tfoot>
         </table>
+        <div className="cart-actions">
+          <button onClick={handlePayment} className="payment-btn">Thanh Toán</button>
+        </div>
       </div>
     </div>
   );

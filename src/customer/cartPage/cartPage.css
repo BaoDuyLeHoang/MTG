@@ -47,3 +47,84 @@
 .total-amount {
   font-weight: bold;
 }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+.header-left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.header-center a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: bold;
+}
+
+.header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header-right a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+/* New styles to control which links are displayed */
+.header-center a:not(:nth-child(-n+4)) {
+  display: none;
+}
+
+.header-right a:not(:nth-child(-n+2)) {
+  display: none;
+}
+
+.cart-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.payment-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.75em 1.5em;
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  max-width: 200px;
+  width: 100%;
+  text-align: center;
+}
+
+.payment-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.payment-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}

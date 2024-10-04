@@ -7,8 +7,8 @@ import './StaffManagement.css';
 const StaffManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [staffData, setStaffData] = useState([
-        { id: 1, name: 'John Doe', startTime: '2023-01-01', status: 'Active', area: 'IT', performance: 'Excellent' },
-        { id: 2, name: 'Jane Smith', startTime: '2023-02-01', status: 'Inactive', area: 'HR', performance: 'Good' },
+        { id: 1, name: 'John Doe', startTime: '2023-01-01', status: 'Active', area: 'K12', performance: 'Excellent' },
+        { id: 2, name: 'Jane Smith', startTime: '2023-02-01', status: 'Inactive', area: 'K1', performance: 'Good' },
         // Add more staff data as needed
     ]);
 

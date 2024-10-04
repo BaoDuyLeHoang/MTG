@@ -1,36 +1,85 @@
+import React from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
-import '../taskDescription/TaskDescription.css';
-export default function TaskDescription() {
-    return (
-        <div className="task-description">
-            <Sidebar />
-            <div className="task-description-list">
-                <div className="ok">
-                    <h1>Chi tiết công việc</h1>
-                </div>
-                <div className="task-desc-fillers">
-                    <p><b>Tên công việc: </b>Thay đổi ngoại cảnh</p>
-                    <p><b>Trạng thái: </b>Quá hạn</p>
-                    <p><b>Mô tả công việc: </b>
-                        <input placeholder="Quét sạch lá rụng trong sân, bao gồm các khu vực như đường đi, lối vào, và các khu vực xung quanh vườn. Sau khi quét xong, lá cần được gom lại và bỏ vào bao hoặc khu vực thu gom rác." />
-                    </p>
-                    <p><b>Vị trí thực hiện: </b>MTG-K20011-3</p>
-                    <p><b>Người thực hiện: </b>Hoàng Nguyeenc ô</p>
-                    <p><b>Từ ngày: </b><input type="date" /></p>
-                    <p><b>Đến ngày: </b><input type="date" /></p>
-                </div>
-                <div className="oanh">
-                    <h3>Trao đổi</h3>
-                    <div className="huyen">
-                        <p><b>Họ và tên: </b>Nguyễn Văn A</p>
-                        <p><b>Ngày: </b>21/09/2024</p>
-                        <p><b>Vị trí thực hiện: </b>MTG-K20D11-3</p>
-                        <p><b>Lý do: </b><input type="text" placeholder="Ngày 21/09 tôi để soát cong việc" /></p>
-                    </div>
-                </div>
+import "./TaskDescription.css"; // Add styles for the main page layout
+
+const TaskDescription = () => {
+  return (
+    <div className="main-container">
+      <Sidebar />
+      <div className="task-detail-container">
+        <h1>Chi tiết công việc</h1>
+
+        <div className="task-info-container">
+          <div className="task-info-left">
+            <div className="info-row">
+              <label>Tên công việc:</label>
+              <span>Thay đổi ngoại cảnh</span>
             </div>
+            <div className="info-row">
+              <label>Trạng thái:</label>
+              <span className="status-overdue">Quá hạn</span>
+            </div>
+            <div className="info-row description">
+              <label>Mô tả công việc:</label>
+              <div className="description-box">
+                Quét sạch lá rụng trong sân, bao gồm các khu vực như đường đi,
+                lối vào, và các khu vực xung quanh vườn. Sau khi quét xong, lá
+                cần được đơm lại và bỏ vào bao hoặc khu vực thu gom rác.
+              </div>
+            </div>
+          </div>
 
+          <div className="task-info-right">
+            <div className="info-row">
+              <label>Vị trí thực hiện:</label>
+              <span>MTG-K20D11-3</span>
+            </div>
+            <div className="info-row">
+              <label>Người thực hiện:</label>
+              <span>Hoàng Nguyeenc ô</span>
+            </div>
+            <div className="date-inputs">
+              <div className="info-row">
+                <label>Từ ngày:</label>
+                <div className="date-input-container">
+                  <input type="text" value="21/09/2024" readOnly />
+                  <i className="fas fa-calendar-alt calendar-icon"></i>
+                </div>
+              </div>
+              <div className="info-row">
+                <label>Đến ngày:</label>
+                <div className="date-input-container">
+                  <input type="text" value="21/09/2024" readOnly />
+                  <i className="fas fa-calendar-alt calendar-icon"></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <h2>Trao đổi</h2>
+        <div className="exchange-section">
+          <div className="exchange-info">
+            <div className="info-row">
+              <label>Họ và tên:</label>
+              <span>Nguyễn Văn A</span>
+            </div>
+            <div className="info-row">
+              <label>Vị trí thực hiện:</label>
+              <span>MTG-K20D11-3</span>
+            </div>
+            <div className="info-row">
+              <label>Ngày:</label>
+              <span>21/09/2024</span>
+            </div>
+            <div className="info-row">
+              <label>Lý do:</label>
+              <div className="reason-box">Ngày 21/09 tôi đề suất công việc</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-    )
-}
+export default TaskDescription;

@@ -46,8 +46,15 @@
 
 .filter-search-container {
     display: flex;
-    align-items: center; /* Aligns items vertically */
+   gap: 10px;
+   align-items: baseline;
     margin-bottom: 20px; /* Space below the filter and search bar */
+}
+.staff-filter {
+    flex: 7;
+}
+.search-bar {
+    flex: 3;
 }
 button {
     border-radius: 5px;

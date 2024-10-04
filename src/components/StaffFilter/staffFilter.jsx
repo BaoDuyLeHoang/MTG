@@ -5,7 +5,7 @@ const StaffFilter = ({ onFilterChange }) => {
   const [activeStatus, setActiveStatus] = useState('active');
   const [selectedCategories, setSelectedCategories] = useState(['all']);
 
-  const categories = ['K01', 'K02', 'K03', 'K37', 'K45', 'K46', 'K47', 'K48'];
+  const categories = ['K01', 'K02'];
 
   const handleStatusChange = (status) => {
     setActiveStatus(status);

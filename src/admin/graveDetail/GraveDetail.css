@@ -1,96 +1,167 @@
-.grave-detail {
-    display: flex;
-    height: 100vh;
-}
-
-.sidebar {
-    width: 250px;
-    background-color: #f0f0f0;
+.memorial-container {
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    flex-grow: 1; /* Allow the main content to take the remaining space */
 }
-
-.sidebar nav ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar nav ul li {
-    margin-bottom: 10px;
-}
-
-.sidebar nav ul li a {
-    text-decoration: none;
-    color: #333;
-}
-
-.grave-detail-list {
-    padding: 20px;
-    flex: 1;
-    overflow-y: auto;
-}
-
-.status-fillers {
+  
+  .memorial-header {
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .image-container {
+    width: 300px;
+    flex-shrink: 0;
+  }
+  .image-container img{
+    width: 100%;
+    height: 100%;
+  }
+  
+  .memorial-image {
+    width: 100%;
+    height: auto;
+  }
+  
+  .personal-info {
+    flex-grow: 1;
+  }
+  
+  .personal-info h1 {
+    font-size: 24px;
     margin-bottom: 20px;
-}
+  }
 
-.status-fillers label {
-    display: inline;
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  .info-item {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .info-item.right-align {
+    justify-self: end;
+  }
+  
+  .info-item label {
+    font-weight: bold;
+  }
+  .memorial-footer{
+    display: flex;
+    gap: 8%;
+  }
+  .relative-info, .tomb-status {
+    margin-bottom: 30px;
+  }
+  .tomb-status{
+    margin-left: 2%;
+    width: 70%;
+  }
+  
+  h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .relative-details {
+    display: flex;
     flex-direction: column;
-}
-
-table {
+    gap: 20px;
+  }
+  
+  .status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; /* Add gap between columns and rows */
+  }
+  
+  .status-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Add small gap between label and span */
+  }
+  .relative-details > div {
+    font-weight: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Add small gap between label and span */
+  }
+  .status-grid span{
+    font-weight: normal;
+  }
+  .status-grid, .relative-details label {
+    font-weight: bold;
+  }
+  
+  table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-table th,
-table td {
+    margin-bottom: 15px;
+  }
+  
+  th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-}
-
-table th {
+  }
+  
+  th {
     background-color: #f2f2f2;
-}
-
-.pagination {
+  }
+  
+  .pagination {
     display: flex;
-    justify-content: right;
-    gap: 10px;
-}
-
-.pagination span {
-    cursor: pointer;
-}
-
-.hoai {
-    width: 324px;
-    height: 339px;
-}
-
-h2 {
-    text-align: center;
-}
-
-p {
-    text-align: left;
-}
-
-label {
-    display: flex;
-    flex-direction: row;
-}
-
-h1 {
-    text-align: left;
-}
-
-.we p {
     justify-content: center;
-    display: flex;
-    flex-direction: row;
-}
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .pagination span {
+    cursor: pointer;
+  }
+  
+  .report-btn {
+    background-color: #E3B171;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    float: right;
+  }
+  
+  @media (max-width: 768px) {
+    .memorial-header {
+      flex-direction: column;
+    }
+    
+    .image-container {
+      width: 100%;
+    }
+    
+    .info-grid, .status-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .relative-details {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+  
+  .layout-container {
+    display: flex; /* Use flexbox for layout */
+    gap: 20px; /* Add gap between sidebar and main content */
+  }
+  
+  .sidebar {
+    width: 250px; /* Set a width for the sidebar */
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+  }

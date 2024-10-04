@@ -78,10 +78,10 @@
 
 .completion-time {
     flex: 1;
-    margin-left: 94px;
+    margin-left: 90px;
     display: flex;
     flex-direction: column;
-    width: 18px;
+    width: 60px;
     margin-top: -40px;
 }
 
@@ -140,8 +140,9 @@
     margin-left: 83px;
 }
 
-.date-picker {
-    margin-left: -120px;
+#date-picker {
+    margin-left: 45px;
+    width: 55%;
 }
 
 .staff-area select {

@@ -6,24 +6,33 @@
 
 .cart-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 15px; /* This adds vertical space between rows */
   margin-top: 20px;
 }
 
-.cart-table th,
-.cart-table td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
+.cart-table thead {
+  background-color: #f2f2f2;
 }
 
 .cart-table th {
   background-color: #f2f2f2;
   font-weight: bold;
+  padding: 15px 12px; /* Increased padding for header cells */
+  border-bottom: 2px solid #ddd; /* Add a bottom border to separate header from body */
 }
 
-.cart-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+.cart-table td {
+  background-color: #ffffff;
+  padding: 15px 12px; /* Increased padding for body cells */
+}
+
+.cart-table tr {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Add subtle shadow to rows */
+}
+
+.cart-table-header {
+  margin-bottom: 20px; /* Add space below the header */
 }
 
 .delete-btn {
@@ -127,4 +136,42 @@
 .payment-btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}
+
+.item-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.cart-table th:first-child,
+.cart-table td:first-child {
+  width: 50px;
+  text-align: center;
+}
+
+.cart-table th:last-child,
+.cart-table td:last-child {
+  width: 80px;
+  text-align: center;
+}
+
+.service-info {
+  display: flex;
+  align-items: center;
+}
+
+.service-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.cart-table td {
+  vertical-align: middle;
+}
+.cart-table-header{
+  margin-bottom: 200px;
 }

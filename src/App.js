@@ -13,15 +13,15 @@ import GraveDetail from './admin/graveDetail/GraveDetail';
 import HomePage from './customer/homePage/homePage';
 import ServicePage from './customer/ServicePage/ServicePage';
 import CheckOut from './customer/CheckOutPage/CheckOut';
+import CartPage from './customer/CartPage/cartPage';
 function App() {
   return (
     <Router> 
       <Routes> {/* Use Routes instead of Switch */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<CartPage />} />
         {/* customer */}
         <Route path="/dichvu" element={<ServicePage />} />
         <Route path="/checkout" element={<CheckOut />} />
-
 
         {/* admin */}
         

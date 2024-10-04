@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../../components/Header/header';
-import './cartPage.css';
+import './CartPage.css';
 import deleteIcon from '../../assets/images/delete.png'; // Make sure to add this image to your assets folder
 
 const CartPage = () => {

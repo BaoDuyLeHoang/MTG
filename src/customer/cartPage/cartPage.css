@@ -67,14 +67,7 @@
 .total-amount {
   font-weight: bold;
 }
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #000;
-  color: #fff;
-  padding: 10px 20px;
-}
+
 
 .header-left {
   flex: 1;

@@ -30,7 +30,7 @@ const Sidebar = () => {
                     <li><Link to="/danhsachmo"><FontAwesomeIcon icon={faMonument} /> Danh sách mộ</Link></li>
                     <li><Link to="/danhsachthanhtoan"><FontAwesomeIcon icon={faMoneyBillWave} /> Thanh toán</Link></li>
                     <li><Link to="/danhsachphannhoikhachhang"><FontAwesomeIcon icon={faComments} /> Phản hồi khách hàng</Link></li>
-                    <li><Link to="/chitietdonhang"><FontAwesomeIcon icon={faShoppingCart} />Chi tiết đơn hàng</Link></li>
+                    <li><Link to="/chitietdonhang"><FontAwesomeIcon icon={faShoppingCart} />Giao việc</Link></li>
                 </ul>
             </nav>
         </aside>

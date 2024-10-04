@@ -12,6 +12,7 @@ import TaskDescription from './admin/taskDescription/TaskDescription';
 import GraveDetail from './admin/graveDetail/GraveDetail';
 import OrderDetail from './admin/orderDetail/OrderDetai';
 import AddTask from './admin/addTask/AddTask';
+import ProfileForm from './admin/profileForm/ProfileForm';
 function App() {
   return (
     <Router>
@@ -28,6 +29,7 @@ function App() {
         <Route path="/chitietmo" element={<GraveDetail />} />
         <Route path="/chitietdonhang" element={<OrderDetail />} />
         <Route path='/taoCongViec' element={<AddTask />} />
+        <Route path='/suathongtin' element={<ProfileForm />} />
       </Routes>
     </Router>
   );

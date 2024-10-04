@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar/sideBar';
 import './accountManagement.css';
+import { Link } from 'react-router-dom';
 
 const AccountManagement = () => {
   const [accounts, setAccounts] = useState([]);
@@ -43,7 +44,9 @@ const AccountManagement = () => {
                   {account.status}
                 </td>
                 <td>
-                  <button id="edit-button">Sửa</button>
+                  <Link to='/suathongtin'>
+                    <button id="edit-button">Sửa</button>
+                  </Link>
                   <button className='button-delete' id="delete-button">Xóa</button>
                 </td>
               </tr>

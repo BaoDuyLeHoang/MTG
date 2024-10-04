@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
-import "./TaskDescription.css"; // Add styles for the main page layout
+import "../taskDescription/TaskDescription.css"; // Add styles for the main page layout
 
 const TaskDescription = () => {
   return (

@@ -58,7 +58,7 @@ const OrderDetail = () => {
                                 placeholderText="21/09/2024" />
                         </div>
                         <div className="status">
-                            <span className="status-pending">Đã xử lý</span>
+                            <span className="status-pending">Đang xử lý</span>
                         </div>
                         <div className="staff-area">
                             <select name="staffName" value={task.staffName} onChange={handleInputChange}>
@@ -87,7 +87,6 @@ const OrderDetail = () => {
                         <p style={{ textAlign: 'right', marginTop: '-110px' }}>Đơn giá: 150.000đ</p>
                         <p style={{ textAlign: 'right', marginTop: '0px' }}>Số lượng: 2</p>
                         <p style={{ textAlign: 'right', marginTop: '4px' }}>Tổng tiền hàng: 300.000đ</p>
-                        <p style={{ textAlign: 'right', marginTop: '8px' }}>Tổng cộng giảm giá: -0đ</p>
                         <p style={{ textAlign: 'right', marginTop: '12px' }}>Tổng thanh toán: 300.000đ</p>
                     </div>
                 </div>

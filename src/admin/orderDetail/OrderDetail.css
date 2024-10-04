@@ -17,25 +17,27 @@
     background-color: #d9d9d9;
     font-weight: bold;
     font-size: 15px;
-    width: 1070px;
+    width: 1080px;
     height: 100px;
     margin-top: 20px;
     margin-left: 20px;
 }
 
+
 .section-name {
-    margin-left: 20px;
+    line-height: 40px;
+    margin-left: 30px;
 }
 
 .section-details {
-    margin-left: 350px;
-    margin-top: 20px;
+    margin-left: 370px;
+    margin-top: 0px;
 }
 
 .order-section {
     background-color: #d9d9d9;
     font-size: 15px;
-    width: 1070px;
+    width: 1080px;
     height: 300px;
     margin-top: 50px;
     margin-left: 20px;
@@ -47,7 +49,8 @@
 
 .order-detail-header span {
     margin-right: 96px;
-    margin-left: 12px;
+    margin-left: 35px;
+    margin-top: 10px;
 }
 
 .order-detail-header,
@@ -63,7 +66,7 @@
 }
 
 .service-text p {
-    margin-left: 15px;
+    margin-left: 30px;
     line-height: 1.2;
 }
 
@@ -75,10 +78,11 @@
 
 .completion-time {
     flex: 1;
-    margin-left: 90px;
+    margin-left: 94px;
     display: flex;
     flex-direction: column;
     width: 18px;
+    margin-top: -40px;
 }
 
 .date-label {
@@ -128,13 +132,12 @@
 .status {
     flex: 1;
     text-align: left;
-    margin-top: -15px;
+    margin-top: -65px;
 }
 
 .status-pending {
-    color: green;
-    margin-left: 90px;
-    margin-top: -90px;
+    color: red;
+    margin-left: 83px;
 }
 
 .date-picker {
@@ -145,6 +148,11 @@
     height: 40px;
     margin-right: 120px;
     width: 55%;
+    margin-top: -200px;
+}
+
+.staff-area {
+    margin-top: -30px;
 }
 
 /* Button alignment to the right */
@@ -164,7 +172,8 @@
     transition: background-color 0.3s ease;
     padding: 10px 20px;
     width: 100px;
-    margin-top: 10px;
+    margin-top: -10px;
+    margin-right: 20px;
 }
 
 .order-summary {
@@ -175,7 +184,8 @@
 .service-img {
     width: 74px;
     height: 83.55px;
-    margin-left: 20px;
+    margin-left: 30px;
+    margin-top: 20px;
 }
 
 .summary-order {

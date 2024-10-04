@@ -21,7 +21,7 @@ const Slider = ({ images }) => {
       <button onClick={goToPrevious} className="left-arrow">
         ❮
       </button>
-      <div className="image-container">
+      <div className="imageSlider-container">
         <img src={images[currentIndex]} alt="slider-img" />
       </div>
       <button onClick={goToNext} className="right-arrow">

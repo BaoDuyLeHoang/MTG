@@ -41,7 +41,6 @@ export default function GraveView() {
               <td>Tên thân nhân</td>
               <td>SĐT người thân</td>
               <td>Tình trạng mộ</td>
-              <td>Người quản lý</td>
               <td>Action</td>
             </tr>
           </thead>
@@ -54,7 +53,6 @@ export default function GraveView() {
                 <td>{grave.relativeName}</td>
                 <td>{grave.relativePhone}</td>
                 <td>{grave.status}</td>
-                <td>{grave.manager}</td>
                 <td>
                   <Link to={`/chitietmo/${grave.id}`}>
                     <button>Chi tiết</button>

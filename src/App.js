@@ -15,7 +15,7 @@ function App() {
   return (
     <Router> 
       <Routes> {/* Use Routes instead of Switch */}
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<HomePage />} />
 
 
 

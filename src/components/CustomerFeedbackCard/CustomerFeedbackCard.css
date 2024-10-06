@@ -1,0 +1,64 @@
+.review-card {
+    max-width: 200px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+
+  .stars {
+    display: flex;
+    margin-bottom: 8px;
+  }
+
+  .star {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    color: #d1d5db;
+  }
+
+  .star.filled {
+    color: #fbbf24;
+  }
+
+  .review-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+
+  .review-body {
+    color: #4b5563;
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+  }
+
+  .reviewer {
+    display: flex;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
+
+  .reviewer-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reviewer-name {
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .review-date {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0;
+  }

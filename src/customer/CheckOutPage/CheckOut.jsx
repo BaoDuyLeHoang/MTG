@@ -4,7 +4,6 @@ import "./CheckOutPage.css";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
-
 const CheckOut = () => {
   const productData = [
     { id: 1, sanPham: "Thay hoa ở mộ", donGia: 150000 },

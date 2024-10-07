@@ -1,16 +1,20 @@
 .task-list-container {
-    display: flex; /* Use flexbox for layout */
-   
+    display: flex;
+    /* Use flexbox for layout */
+
     font-family: Arial, sans-serif;
 }
 
 .sidebar {
-    width: 250px; /* Set a fixed width for the sidebar */
-    margin-right: 20px; /* Space between sidebar and task content */
+    width: 250px;
+    /* Set a fixed width for the sidebar */
+    margin-right: 20px;
+    /* Space between sidebar and task content */
 }
 
 .task-content {
-    flex: 1; /* Allow task content to take the remaining space */
+    flex: 1;
+    /* Allow task content to take the remaining space */
 }
 
 .task-list-container h1 {
@@ -47,8 +51,8 @@
 
 .date-input-group {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    gap: 0px;
 }
 
 .input-with-icon {
@@ -79,8 +83,8 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 20px;
-    width: 15%;
+    margin-right: 35px;
+    width: 70%;
     margin-top: 10px;
 }
 

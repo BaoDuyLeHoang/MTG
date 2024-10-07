@@ -88,6 +88,12 @@ table th {
 button {
     cursor: pointer;
 }
+
 .date-filter {
-   margin-bottom: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: 300px;
+    width: 100%;
 }

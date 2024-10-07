@@ -10,15 +10,24 @@ import TaskList from './admin/taskList/TaskList';
 import AccountManagement from './admin/accountManagement/accountManagement';
 import TaskDescription from './admin/taskDescription/TaskDescription';
 import GraveDetail from './admin/graveDetail/GraveDetail';
+import OrderDetail from './admin/orderDetail/OrderDetai';
+import AddTask from './admin/addTask/AddTask';
+import ProfileForm from './admin/profileForm/ProfileForm';
 import HomePage from './customer/homePage/homePage';
+import ServicePage from './customer/ServicePage/ServicePage';
+import CheckOut from './customer/CheckOutPage/CheckOut';
+import CartPage from './customer/CartPage/cartPage';
+import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
 function App() {
   return (
-    <Router> 
+    <Router>
       <Routes> {/* Use Routes instead of Switch */}
-        <Route path="/" element={<Dashboard />} />
-
-
-
+        <Route path="/" element={<HomePage />} />
+        {/* customer */}
+        <Route path="/tim-kiem-mo" element={<SearchGraveInterface />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/dichvu" element={<ServicePage />} />
+        <Route path="/checkout" element={<CheckOut />} />
 
         {/* admin */}
         
@@ -31,6 +40,9 @@ function App() {
         <Route path="/danhsachphannhoikhachhang" element={<FeedbackManagement />} />
         <Route path="/chitietcongviec" element={<TaskDescription />} />
         <Route path="/chitietmo" element={<GraveDetail />} />
+        <Route path="/chitietdonhang" element={<OrderDetail />} />
+        <Route path='/taoCongViec' element={<AddTask />} />
+        <Route path='/suathongtin' element={<ProfileForm />} />
       </Routes>
     </Router>
   );

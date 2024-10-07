@@ -1,0 +1,38 @@
+.home-page-overview-content {
+    text-align: center;
+    padding-left: 10%;
+    padding-right: 10%;
+    border-top: 2px solid #e5e7eb;
+}
+
+.home-page-map-image {
+    text-align: center;
+}
+
+.home-page-map-image img {
+    width: 50%;
+    height: 50%;
+}
+
+.home-page-customer-review {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-top: 2px solid #e5e7eb;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
+
+.home-page-map-overview {
+    text-align: center;
+    border-top: 2px solid #e5e7eb;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
+.home-page-customer-review-item{
+    display: flex;
+    gap: 20px;
+}

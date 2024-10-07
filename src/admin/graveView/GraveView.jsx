@@ -1,7 +1,28 @@
+import React, { useState, useEffect } from 'react';
 import Sidebar from "../../components/Sidebar/sideBar";
 import "../graveView/GraveView.css";
 import { Link } from "react-router-dom";
+
 export default function GraveView() {
+  const [graves, setGraves] = useState([]);
+
+  useEffect(() => {
+    fetchGraves();
+  }, []);
+
+  const fetchGraves = async () => {
+    try {
+      const response = await fetch('http://localhost:5244/api/MartyrGrave');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setGraves(data);
+    } catch (error) {
+      console.error('Error fetching graves:', error);
+    }
+  };
+  
   return (
     <div className="grave-view">
       <Sidebar />
@@ -20,22 +41,20 @@ export default function GraveView() {
               <td>Tên thân nhân</td>
               <td>SĐT người thân</td>
               <td>Tình trạng mộ</td>
-              <td>Người quản lý</td>
               <td>Action</td>
             </tr>
           </thead>
           <tbody>
-            {Array.from({ length: 11 }).map((_, index) => (
+            {graves.map((grave, index) => (
               <tr key={index}>
-                <td>MTG-K20-12-10</td>
-                <td>Nguyễn Công Trứ</td>
-                <td>K20-12-10</td>
-                <td>Nguyễn Văn A</td>
-                <td>0901283461547</td>
-                <td>Tốt</td>
-                <td>Nguyen Van A</td>
+                <td>{grave.code}</td>
+                <td>{grave.name}</td>
+                <td>{grave.location}</td>
+                <td>{grave.relativeName}</td>
+                <td>{grave.relativePhone}</td>
+                <td>{grave.status}</td>
                 <td>
-                  <Link to="/chitietmo">
+                  <Link to={`/chitietmo/${grave.id}`}>
                     <button>Chi tiết</button>
                   </Link>
                 </td>

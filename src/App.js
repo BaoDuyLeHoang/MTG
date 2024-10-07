@@ -13,11 +13,24 @@ import GraveDetail from './admin/graveDetail/GraveDetail';
 import OrderDetail from './admin/orderDetail/OrderDetai';
 import AddTask from './admin/addTask/AddTask';
 import ProfileForm from './admin/profileForm/ProfileForm';
+import HomePage from './customer/homePage/homePage';
+import ServicePage from './customer/ServicePage/ServicePage';
+import CheckOut from './customer/CheckOutPage/CheckOut';
+import CartPage from './customer/CartPage/cartPage';
+import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
 function App() {
   return (
     <Router>
       <Routes> {/* Use Routes instead of Switch */}
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<HomePage />} />
+        {/* customer */}
+        <Route path="/tim-kiem-mo" element={<SearchGraveInterface />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/dichvu" element={<ServicePage />} />
+        <Route path="/checkout" element={<CheckOut />} />
+
+        {/* admin */}
+        
         <Route path="/danhsachaccount" element={<AccountManagement />} />
         <Route path="/danhsachdonhang" element={<OrderList />} />
         <Route path="/danhsachnhanvien" element={<StaffManagement />} />

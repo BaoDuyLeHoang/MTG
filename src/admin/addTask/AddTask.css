@@ -43,7 +43,8 @@
 
 .task-fillers-item1,
 .task-fillers-item2 {
-    width: 48%; /* Adjust as needed */
+    width: 48%;
+    /* Adjust as needed */
 }
 
 .task-fillers p {
@@ -63,6 +64,7 @@
     padding: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    margin-left: 0px;
 }
 
 .task-fillers textarea {
@@ -71,7 +73,8 @@
 }
 
 .task-fillers select {
-    height: 30px; /* Adjust as needed */
+    height: 30px;
+    /* Adjust as needed */
 }
 
 #create-task-btn {
@@ -92,28 +95,35 @@
 h3 {
     text-align: left;
 }
+
 .task-fillers-item {
     display: flex;
     flex-direction: column;
 }
+
 .task-fillers-item1 {
     display: flex;
     flex-direction: column;
-    
+
 }
+
 .task-fillers-item2 {
     display: flex;
     flex-direction: column;
-    
+
 }
+
 .date-filter {
-    flex: 1 ;
-    display: flex;
+    flex: 1;
+    display: inline;
+    margin-left: 120px;
+    margin-right: 10px;
     align-items: center;
     justify-content: flex-start;
     gap: 40px;
+    width: 75%;
+}
 
-  }
-  .date-filter label  {
+.date-filter label {
     font-weight: bold;
-  }
+}

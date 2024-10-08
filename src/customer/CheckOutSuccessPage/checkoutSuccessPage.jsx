@@ -2,8 +2,16 @@ import React from 'react';
 import './checkoutSuccessPage.css';
 import successImage from '../../assets/images/success.png'; // Make sure to add this image to your assets folder
 import image from '../../assets/images/image.png';
+import { useNavigate } from 'react-router-dom';
 
 const CheckoutSuccessPage = () => {
+    const navigate = useNavigate();
+    const handleReturnHome = () => {
+        navigate('/'); // Navigate to the home page
+    };
+    const handleHistory = () => {
+        navigate('/history'); // Navigate to the history page
+    };
   return (
     <div className="checkout-success-page">
       <div className="success-content">
@@ -16,7 +24,7 @@ const CheckoutSuccessPage = () => {
           CẢM ƠN BẠN ĐÃ LUÔN TIN TƯỞNG VÀ SỬ DỤNG DỊCH VỤ CỦA CHÚNG TÔI
         </p>
         <div className="action-buttons">
-          <button className="home-button">Trở về trang chủ</button>
+          <button className="home-button" onClick={handleReturnHome}>Trở về trang chủ</button>
           <button className="history-button">Lịch sử giao dịch</button>
         </div>
       </div>

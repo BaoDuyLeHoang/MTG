@@ -54,6 +54,7 @@ const Header = () => {
                 <Link to="/profile">Hồ sơ</Link>
                 <Link to="/mothannhan">Mo nguoi than</Link>
                 <Link onClick={handleLogout}>Đăng xuất</Link>
+                <Link to="/cart">gio hang</Link>
               </>
             ) : (
               <Link to="/login">Đăng nhập</Link>

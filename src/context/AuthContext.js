@@ -22,6 +22,7 @@ export function AuthProvider({ children }) {
         role: parseInt(decodedToken.role, 10),
         accountName: decodedToken.accountName || decodedToken.sub || 'User', // Fallback to 'sub' claim or 'User'
         accountId: decodedToken.accountId || decodedToken.sub, // Add this line
+        customerCode: decodedToken.customerCode || null, // Add this line
         // other user info from token
       });
       console.log('User updated in AuthContext:', decodedToken); // Add this line for debugging

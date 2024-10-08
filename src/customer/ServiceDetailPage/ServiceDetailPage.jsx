@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getServiceDetails, getServicesByCategory } from "../../APIcontroller/API";
+import { getServiceDetails, getServicesByCategory, getGravesByCustomerCode, addToCart } from "../../APIcontroller/API";
 import "./ServiceDetailPage.css";
 import Header from "../../components/Header/header";
+import { useAuth } from "../../context/AuthContext";
 
 const ServiceDetailPage = () => {
   const [service, setService] = useState(null);
   const [otherServices, setOtherServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [graveOptions, setGraveOptions] = useState([]);
+  const [selectedGrave, setSelectedGrave] = useState("");
   const { serviceId } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,6 +21,30 @@ const ServiceDetailPage = () => {
         setLoading(true);
         const details = await getServiceDetails(serviceId);
         setService(details);
+
+        // Log the entire user object
+        console.log("User object:", user);
+        
+        // Log the customer code (if it exists)
+        console.log("Customer Code:", user?.customerCode);
+
+        // If customerCode doesn't exist, log all keys of the user object
+        if (!user?.customerCode) {
+          console.log("User object keys:", Object.keys(user || {}));
+        }
+
+        // Fetch grave options for the customer
+        if (user && user.customerCode) {
+          const graves = await getGravesByCustomerCode(user.customerCode);
+          console.log("Graves received:", graves); // Keep this for debugging
+
+          setGraveOptions(graves.map(grave => ({
+            value: grave.martyrId,
+            label: grave.matyrGraveInformations[0]?.name || grave.martyrCode || "Unknown"
+          })));
+        } else {
+          console.log("Unable to fetch graves: No customer code found in the token");
+        }
 
         // Fetch other services from the same category
         if (details.categoryId) {
@@ -37,7 +65,48 @@ const ServiceDetailPage = () => {
     };
 
     fetchData();
-  }, [serviceId]);
+  }, [serviceId, user]);
+
+  const handleGraveChange = (event) => {
+    setSelectedGrave(event.target.value);
+  };
+
+  const handleAddToCart = async () => {
+    if (!selectedGrave) {
+      alert("Vui lòng chọn mộ trước khi thêm vào giỏ hàng");
+      return;
+    }
+
+    if (!user || !user.accountId) {
+      alert("Không tìm thấy thông tin tài khoản. Vui lòng đăng nhập lại.");
+      return;
+    }
+
+    try {
+      console.log('User:', user);
+      console.log('Selected Grave:', selectedGrave);
+      console.log('Service:', service);
+
+      const cartItem = {
+        accountId: user.accountId,
+        serviceId: serviceId,
+        martyrId: parseInt(selectedGrave, 10) // Convert to number if necessary
+      };
+
+      console.log('Cart Item to be sent:', cartItem);
+
+      await addToCart(cartItem);
+      alert("Đã thêm dịch vụ vào giỏ hàng thành công!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
+      }
+      alert("Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại sau.");
+    }
+  };
 
   // Add this helper function at the top of your component or in a separate utils file
   const shuffleArray = (array) => {
@@ -69,9 +138,13 @@ const ServiceDetailPage = () => {
         <p className="description">{service.description}</p>
 
         <h2 className="section-title">Chọn mộ</h2>
-        <select className="grave-select">
+        <select 
+          className="grave-select" 
+          value={selectedGrave} 
+          onChange={handleGraveChange}
+        >
           <option value="">Chọn tên mộ</option>
-          {service.graveOptions && service.graveOptions.map((grave) => (
+          {graveOptions && graveOptions.map((grave) => (
             <option key={grave.value} value={grave.value}>
               {grave.label}
             </option>
@@ -108,7 +181,9 @@ const ServiceDetailPage = () => {
             </tr>
           </tbody>
         </table>
-        <button className="add-to-cart">Thêm vào giỏ hàng</button>
+        <button className="add-to-cart" onClick={handleAddToCart}>
+          Thêm vào giỏ hàng
+        </button>
 
         <h2 className="section-title">Dịch vụ khác</h2>
         <div className="other-services">

@@ -22,17 +22,17 @@ const SearchGraveInterface = () => {
             <div className="filters">
               <input
                 type="text"
-                className="filter-input"
+                className="filter-input-byear"
                 placeholder="Năm sinh"
               />
               <input
                 type="text"
-                className="filter-input"
+                className="filter-input-dyear"
                 placeholder="Năm mất"
               />
               <input
                 type="text"
-                className="filter-input"
+                className="filter-input-hometown"
                 placeholder="Quê quán"
               />
             </div>

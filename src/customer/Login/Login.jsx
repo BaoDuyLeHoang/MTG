@@ -17,20 +17,20 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     const result = await loginUser({ accountName, password });
 
     if (result.success) {
-      console.log('Login successful', result.data);
+      console.log("Login successful", result.data);
       login(result.data.token); // Make sure this matches the key in your result
-      navigate('/'); // Redirect to the dashboard or user's page
+      navigate("/"); // Redirect to the dashboard or user's page
     } else {
       // Handle login failure
-      console.error('Login failed:', result); // Log the full result
+      console.error("Login failed:", result); // Log the full result
       setError(result.error);
       if (result.fullResponse) {
-        console.log('Full server response:', result.fullResponse);
+        console.log("Full server response:", result.fullResponse);
       }
     }
 
@@ -66,10 +66,11 @@ export default function Login() {
           <button type="submit" className="login-btn" disabled={isLoading}>
             {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
-          {error && <p className="error-message">{error}</p>}
           <a href="#" className="forgot-password">
             Quên mật khẩu?
           </a>
+          {error && <p className="error-message">{error}</p>}
+          
         </form>
       </div>
     </div>

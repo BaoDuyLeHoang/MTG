@@ -1,0 +1,141 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.header-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.service-list {
+    padding-left: 20px;
+    margin-bottom: 32px;
+}
+
+.service-list li {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+
+.pricing-table th,
+.pricing-table td {
+    border: none;
+    padding: 8px;
+    text-align: left;
+}
+
+.pricing-table th:last-child,
+.pricing-table td:last-child {
+    text-align: right;
+}
+
+.total-row {
+    font-weight: bold;
+    border-top: 1px solid #000;
+    /* Add this line */
+}
+
+.total-row td {
+    padding-top: 16px;
+    /* Add some extra padding above the total row */
+}
+
+.add-to-cart {
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: none;
+    width: 15%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 32px;
+}
+
+.other-services {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.service-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.service-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.service-card h3 {
+    padding: 10px;
+    text-align: center;
+    margin: 0;
+    background-color: white;
+}
+
+.description {
+    text-align: left;
+    align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+    .other-services {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .other-services {
+        grid-template-columns: 1fr;
+    }
+}
+
+.service-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+    align-self: flex-start;
+}
+
+.section-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    align-self: flex-start;
+}
+
+.grave-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

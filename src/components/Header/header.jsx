@@ -17,7 +17,7 @@ const Header = () => {
     // You may want to redirect the user to the login page or home page after logout
   };
 
-  const displayName = user ? (user.accountName || `User ${user.accountId}`) : "👤";
+  const displayName = user ? (user.accountName) : "👤";
 
   return (
     <header className="header">
@@ -51,10 +51,9 @@ const Header = () => {
           <div className="settings-dropdown">
             {user ? (
               <>
-                <span>{displayName}</span>
                 <Link to="/profile">Hồ sơ</Link>
                 <Link to="/mothannhan">Mo nguoi than</Link>
-                <button onClick={handleLogout}>Đăng xuất</button>
+                <Link onClick={handleLogout}>Đăng xuất</Link>
               </>
             ) : (
               <Link to="/login">Đăng nhập</Link>

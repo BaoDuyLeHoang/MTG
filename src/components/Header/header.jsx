@@ -2,13 +2,22 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
   const [showSettings, setShowSettings] = useState(false);
+  const { user, logout } = useAuth(); // Get both user and logout from useAuth
 
   const toggleSettings = () => {
     setShowSettings(!showSettings);
   };
+
+  const handleLogout = () => {
+    logout(); // Use the logout function from AuthContext
+    // You may want to redirect the user to the login page or home page after logout
+  };
+
+  const displayName = user ? (user.accountName || `User ${user.accountId}`) : "👤";
 
   return (
     <header className="header">
@@ -36,13 +45,20 @@ const Header = () => {
       </nav>
       <div className="user-settings">
         <button onClick={toggleSettings} className="user-icon">
-          👤
+          {displayName}
         </button>
         {showSettings && (
           <div className="settings-dropdown">
-            <Link to="/profile">Hồ sơ</Link>
-            <Link to="/login">Đăng nhập</Link>
-            <Link to="/mothannhan">Mo nguoi than</Link>
+            {user ? (
+              <>
+                <span>{displayName}</span>
+                <Link to="/profile">Hồ sơ</Link>
+                <Link to="/mothannhan">Mo nguoi than</Link>
+                <button onClick={handleLogout}>Đăng xuất</button>
+              </>
+            ) : (
+              <Link to="/login">Đăng nhập</Link>
+            )}
           </div>
         )}
       </div>

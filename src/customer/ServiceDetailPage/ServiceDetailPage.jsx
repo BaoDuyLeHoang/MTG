@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getServiceDetails, getServicesByCategory, getGravesByCustomerCode, addToCart } from "../../APIcontroller/API";
 import "./ServiceDetailPage.css";
 import Header from "../../components/Header/header";
@@ -14,6 +14,7 @@ const ServiceDetailPage = () => {
   const [selectedGrave, setSelectedGrave] = useState("");
   const { serviceId } = useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,6 +98,9 @@ const ServiceDetailPage = () => {
 
       await addToCart(cartItem);
       alert("Đã thêm dịch vụ vào giỏ hàng thành công!");
+      
+      // Navigate to the checkout page with the cart item
+      navigate('/checkout', { state: { selectedItems: [cartItem] } });
     } catch (error) {
       console.error("Error adding to cart:", error);
       if (error.response) {

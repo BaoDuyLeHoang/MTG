@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Header from '../../components/Header/header';
 import './cartPage.css';
 import deleteIcon from '../../assets/images/delete.png';
@@ -10,6 +11,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -64,8 +66,11 @@ const CartPage = () => {
 
   const handlePayment = () => {
     const selectedItems = cartItems.filter(item => item.selected);
-    console.log('Processing payment for:', selectedItems);
-    // Implement payment logic here
+    if (selectedItems.length === 0) {
+      alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+      return;
+    }
+    navigate('/checkout', { state: { selectedItems } });
   };
 
   if (loading) return <div>Loading...</div>;

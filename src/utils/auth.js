@@ -14,8 +14,12 @@ export function decodeToken(token) {
   try {
     const base64Url = token.split(".")[1];
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const decodedToken = JSON.parse(window.atob(base64));
-    console.log('Decoded token:', decodedToken); // Add this line
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    const decodedToken = JSON.parse(jsonPayload);
+    console.log('Full decoded token payload:', decodedToken);
     return decodedToken;
   } catch (error) {
     console.error('Error decoding token:', error);

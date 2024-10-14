@@ -17,21 +17,47 @@ export function AuthProvider({ children }) {
 
   const updateUserFromToken = (token) => {
     const decodedToken = decodeToken(token);
+    console.log('Decoded token:', decodedToken);
     if (decodedToken) {
-      setUser({
-        role: parseInt(decodedToken.role, 10),
-        accountName: decodedToken.accountName || decodedToken.sub || 'User', // Fallback to 'sub' claim or 'User'
-        accountId: decodedToken.accountId || decodedToken.sub, // Add this line
-        customerCode: decodedToken.customerCode || null, // Add this line
+      const roleId = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      console.log('RoleId from token:', roleId);
+      
+      let role = 'Unknown';
+      switch (roleId) {
+        case '1':
+          role = ROLES.ADMIN;
+          break;
+        case '2':
+          role = ROLES.MANAGER;
+          break;
+        case '3':
+          role = ROLES.STAFF;
+          break;
+        case '4':
+          role = ROLES.CUSTOMER;
+          break;
+        default:
+          console.warn(`Unknown RoleId: ${roleId}`);
+      }
+      
+      const updatedUser = {
+        role: role,
+        roleId: roleId,
+        accountName: decodedToken.accountName || decodedToken.sub || 'User',
+        accountId: decodedToken.accountId || decodedToken.sub,
+        customerCode: decodedToken.customerCode || null,
         // other user info from token
-      });
-      console.log('User updated in AuthContext:', decodedToken); // Add this line for debugging
+      };
+      setUser(updatedUser);
+      console.log('User updated in AuthContext:', updatedUser);
+      return updatedUser;
     }
+    return null;
   };
 
   const login = (token) => {
     localStorage.setItem('accessToken', token);
-    updateUserFromToken(token);
+    return updateUserFromToken(token);
   };
 
   const logout = () => {

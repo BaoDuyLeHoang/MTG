@@ -100,7 +100,7 @@ const ServiceDetailPage = () => {
       alert("Đã thêm dịch vụ vào giỏ hàng thành công!");
       
       // Navigate to the checkout page with the cart item
-      navigate('/checkout', { state: { selectedItems: [cartItem] } });
+     
     } catch (error) {
       console.error("Error adding to cart:", error);
       if (error.response) {

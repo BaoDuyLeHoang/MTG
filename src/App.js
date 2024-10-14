@@ -44,6 +44,14 @@ function App() {
           <Route path="/chitietdichvu/:serviceId" element={<ServiceDetailPage />} />
           <Route path="/checkout" element={<CheckOut />} />
           {/* admin */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole={ROLES.ADMIN}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/danhsachaccount" element={<AccountManagement />} />
           <Route path="/danhsachdonhang" element={<OrderList />} />
           <Route path="/danhsachnhanvien" element={<StaffManagement />} />

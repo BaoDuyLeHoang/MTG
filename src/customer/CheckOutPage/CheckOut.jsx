@@ -70,10 +70,16 @@ const CheckOut = () => {
     setIsLoading(true);
 
     try {
-      const response = await createOrder(user.accountId);
+      const response = await createOrder(user.accountId, selectedPaymentMethod);
 
-      alert("Đặt hàng thành công!");
-      navigate('/order-confirmation', { state: { orderId: response.orderId } });
+      if (response.paymentUrl) {
+        // If there's a payment URL, navigate to it
+        window.location.href = response.paymentUrl;
+      } else {
+        // If no payment URL, assume success and navigate to order confirmation
+        alert("Đặt hàng thành công!");
+        navigate('/order-confirmation', { state: { orderId: response.orderId } });
+      }
     } catch (error) {
       console.error("Error creating order:", error);
       alert("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");

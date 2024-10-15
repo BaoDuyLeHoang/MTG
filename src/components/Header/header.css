@@ -50,6 +50,7 @@
     background: none;
     border: none;
     cursor: pointer;
+    margin-right: 20px;
     font-size: 1.5rem;
     color: white; /* Ensure icon is visible */
 }

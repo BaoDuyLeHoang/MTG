@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./header.css";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useAuth } from "../../context/AuthContext";
-
+import { useLogout } from "../../APIcontroller/LogoutController";
 const Header = () => {
   const [showSettings, setShowSettings] = useState(false);
   const { user, logout } = useAuth(); // Get both user and logout from useAuth
@@ -52,9 +52,9 @@ const Header = () => {
             {user ? (
               <>
                 <Link to="/profile">Hồ sơ</Link>
-                <Link to="/mothannhan">Mo nguoi than</Link>
-                <Link onClick={handleLogout}>Đăng xuất</Link>
-                <Link to="/cart">gio hang</Link>
+                <Link to="/mothannhan">Mo nguoi than</Link> 
+                <Link to="/cart">Gio hang</Link>
+                <Link onClick={logout}>Đăng xuất</Link>
               </>
             ) : (
               <Link to="/login">Đăng nhập</Link>

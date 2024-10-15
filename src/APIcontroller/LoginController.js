@@ -24,11 +24,12 @@ export const loginUser = async (credentials) => {
     console.log('Full server response:', data); // Add this line
 
     // Check if the token exists in the response
-    if (data.accessToken) { // Change this line if the token key is different
+    if (data.accessToken) {
       return {
         success: true,
         data: {
-          token: data.accessToken, // And this line
+          token: data.accessToken,
+          role: data.role, // Add this line to include the role from the API response
           // Include any other relevant data from the response
         }
       };

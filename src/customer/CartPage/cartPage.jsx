@@ -70,7 +70,8 @@ const CartPage = () => {
       alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
       return;
     }
-    navigate('/checkout', { state: { selectedItems } });
+    // Only pass the account ID to the checkout page
+    navigate('/checkout', { state: { accountId: user.accountId } });
   };
 
   if (loading) return <div>Loading...</div>;

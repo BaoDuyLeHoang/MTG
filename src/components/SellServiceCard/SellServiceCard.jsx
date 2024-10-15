@@ -1,7 +1,7 @@
 import React from "react";
 import "./SellServiceCard.css";
 
-const SellServiceCard = ({ serviceName, title, price, imagePath }) => {
+const SellServiceCard = ({ serviceName, price, imagePath }) => {
   return (
     <div className="sell-service-card">
       <img src={imagePath} alt={serviceName} className="sell-service-card-image" />

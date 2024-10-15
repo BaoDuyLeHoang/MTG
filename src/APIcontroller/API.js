@@ -10,6 +10,7 @@ export const API_ENDPOINTS = {
   ADD_TO_CART: '/CartItems', // Add this new endpoint
   GET_CART_ITEMS: '/CartItems/cart', // Add this new endpoint
   CREATE_ORDER: '/Orders', // Add this new endpoint
+  GET_ALL_ORDERS: '/Orders', // Add this new endpoint
   // Add other endpoints as needed
 };
 
@@ -125,6 +126,21 @@ export const getCartItems = async (accountId) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching cart items:', error);
+    throw error;
+  }
+};
+
+export const getAllOrders = async () => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.GET_ALL_ORDERS}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching all orders:', error);
     throw error;
   }
 };

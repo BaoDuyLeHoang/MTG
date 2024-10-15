@@ -1,19 +1,33 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { decodeToken, hasRequiredRole, ROLES } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
+const SESSION_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+export function AuthProvider({ children, navigate }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
-      updateUserFromToken(token);
+    const lastActivity = localStorage.getItem('lastActivity');
+    if (token && lastActivity) {
+      const currentTime = new Date().getTime();
+      if (currentTime - parseInt(lastActivity) < SESSION_DURATION) {
+        updateUserFromToken(token);
+        updateLastActivity();
+      } else {
+        logout();
+      }
     }
     setLoading(false);
   }, []);
+
+  const updateLastActivity = () => {
+    localStorage.setItem('lastActivity', new Date().getTime().toString());
+  };
 
   const updateUserFromToken = (token) => {
     const decodedToken = decodeToken(token);
@@ -57,20 +71,36 @@ export function AuthProvider({ children }) {
 
   const login = (token) => {
     localStorage.setItem('accessToken', token);
+    updateLastActivity();
     return updateUserFromToken(token);
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('lastActivity');
     setUser(null);
+    navigate('/login');
   };
 
   const hasRole = (requiredRole) => {
     return user ? hasRequiredRole(user.role, requiredRole) : false;
   };
 
+  const checkSession = () => {
+    const lastActivity = localStorage.getItem('lastActivity');
+    if (lastActivity) {
+      const currentTime = new Date().getTime();
+      if (currentTime - parseInt(lastActivity) > SESSION_DURATION) {
+        logout();
+        return false;
+      }
+      updateLastActivity();
+    }
+    return true;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, hasRole, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, hasRole, login, logout, checkSession }}>
       {children}
     </AuthContext.Provider>
   );

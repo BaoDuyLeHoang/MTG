@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/header';
 import './cartPage.css';
 import deleteIcon from '../../assets/images/delete.png';
-import { getCartItemsByCustomerId, addToCart } from "../../APIcontroller/API";
+import { getCartItemsByCustomerId, updateItemStatus } from "../../APIcontroller/API";
 import { useAuth } from "../../context/AuthContext";
 
 const CartPage = () => {
@@ -11,7 +11,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -27,9 +27,15 @@ const CartPage = () => {
         console.log('Cart items response:', response);
 
         if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
-          setCartItems(response.cartItemList.map(item => ({ ...item, selected: false })));
+          const mappedItems = response.cartItemList.map(item => ({
+            ...item,
+            selected: item.status || false // Set default value to false if status is undefined
+          }));
+          setCartItems(mappedItems);
+          console.log('All cart items:', mappedItems); // New console log
         } else {
           setCartItems([]);
+          console.log('Cart is empty'); // New console log
         }
         setLoading(false);
       } catch (error) {
@@ -47,15 +53,35 @@ const CartPage = () => {
     // You might want to add an API call here to delete the item from the backend
   };
 
-  const handleSelectItem = (cartId) => {
-    setCartItems(cartItems.map(item => 
-      item.cartId === cartId ? { ...item, selected: !item.selected } : item
-    ));
+  const handleSelectItem = async (cartId) => {
+    try {
+      const updatedItems = cartItems.map(item => 
+        item.cartId === cartId ? { ...item, selected: !item.selected } : item
+      );
+      setCartItems(updatedItems);
+      
+      const selectedItem = updatedItems.find(item => item.cartId === cartId);
+      await updateItemStatus(cartId, selectedItem.selected);
+    } catch (error) {
+      console.error("Error updating item status:", error);
+      // Optionally, you can show an error message to the user here
+    }
   };
 
-  const handleSelectAll = () => {
-    const allSelected = cartItems.every(item => item.selected);
-    setCartItems(cartItems.map(item => ({ ...item, selected: !allSelected })));
+  const handleSelectAll = async () => {
+    try {
+      const allSelected = cartItems.every(item => item.selected);
+      const updatedItems = cartItems.map(item => ({ ...item, selected: !allSelected }));
+      setCartItems(updatedItems);
+      
+      // Update status for all items
+      for (const item of updatedItems) {
+        await updateItemStatus(item.cartId, item.selected);
+      }
+    } catch (error) {
+      console.error("Error updating all items status:", error);
+      // Optionally, you can show an error message to the user here
+    }
   };
 
   const calculateCartTotal = () => {
@@ -91,7 +117,7 @@ const CartPage = () => {
                 <th>
                   <input 
                     type="checkbox" 
-                    checked={cartItems.every(item => item.selected)}
+                    checked={cartItems.length > 0 && cartItems.every(item => item.selected)}
                     onChange={handleSelectAll}
                     className="select-all-checkbox"
                   />

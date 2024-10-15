@@ -9,7 +9,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ROLES } from "./utils/auth";
 import Dashboard from "./admin/dashBoard/dashboard"; // Import your components
-import OrderList from "./admin/phanViecDonHang/OrderList";
+import OrderList from "./manager/orderDetail/OrderDetai";
 import StaffManagement from "./admin/StaffManager/StaffManagement";
 import GraveView from "./admin/graveView/GraveView";
 import PayManagement from "./admin/payManagement/payManagement";
@@ -18,7 +18,7 @@ import TaskList from "./admin/taskList/TaskList";
 import AccountManagement from "./admin/accountManagement/accountManagement";
 import TaskDescription from "./admin/taskDescription/TaskDescription";
 import GraveDetail from "./admin/graveDetail/GraveDetail";
-import OrderDetail from "./admin/orderDetail/OrderDetai";
+import OrderDetail from "./manager/orderDetail/OrderDetai";
 import AddTask from "./admin/addTask/AddTask";
 import HomePage from "./customer/homePage/homePage";
 import ServicePage from "./customer/ServicePage/ServicePage";
@@ -72,7 +72,7 @@ function AppContent() {
             path="/manager"
             element={
               <ProtectedRoute requiredRole={ROLES.MANAGER}>
-                <OrderList />
+                <OrderManagementManager />
               </ProtectedRoute>
             }
           />
@@ -81,6 +81,14 @@ function AppContent() {
             element={
               <ProtectedRoute requiredRole={ROLES.MANAGER}>
                 <OrderManagementManager />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/danhsachdonhang/:orderId"
+            element={
+              <ProtectedRoute requiredRole={ROLES.MANAGER}>
+                <OrderDetail />
               </ProtectedRoute>
             }
           />

@@ -1,23 +1,51 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from "../../components/Header/header";
 import "./CheckOutPage.css";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
-import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
-const CheckOut = () => {
-  const productData = [
-    { id: 1, sanPham: "Thay hoa ở mộ", donGia: 150000 },
-    { id: 2, sanPham: "Dọn dẹp mộ phần", donGia: 200000 },
-  ];
-  const handleAction = (id) => {
-    console.log(`Action for product with id ${id} is triggered`);
-  };
+import { useAuth } from "../../context/AuthContext";
+import { createOrder, getCheckoutItemsByCustomerId } from "../../APIcontroller/API";
 
+const CheckOut = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [cartItems, setCartItems] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      const accountId = location.state?.accountId || user?.accountId;
+      if (accountId) {
+        try {
+          const response = await getCheckoutItemsByCustomerId(accountId);
+          console.log("Fetched cart items:", response);
+          if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
+            setCartItems(response.cartItemList);
+          } else {
+            setCartItems([]);
+          }
+        } catch (error) {
+          console.error("Error fetching cart items:", error);
+          alert("Có lỗi xảy ra khi tải giỏ hàng. Vui lòng thử lại sau.");
+          setCartItems([]);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+        alert("Không tìm thấy thông tin tài khoản. Vui lòng đăng nhập lại.");
+      }
+    };
+
+    fetchCartItems();
+  }, [location.state, user]);
 
   const paymentMethods = [
     { id: "cash", name: "Thanh toán tiền mặt" },
-    { id: "viettel", name: "VNPay" },
+    { id: "VNPay", name: "VNPay" },
     { id: "momo", name: "Ví Momo" },
   ];
 
@@ -25,9 +53,44 @@ const CheckOut = () => {
     setSelectedPaymentMethod(methodId);
   };
 
+  const handleRemoveItem = (cartId) => {
+    setCartItems(cartItems.filter(item => item.cartId !== cartId));
+  };
+
   const totalPrice = useMemo(() => {
-    return productData.reduce((sum, product) => sum + product.donGia, 0);
-  }, [productData]);
+    return cartItems.reduce((sum, item) => sum + (item.serviceView?.price || 0), 0);
+  }, [cartItems]);
+
+  const handlePayment = async () => {
+    if (!selectedPaymentMethod) {
+      alert("Vui lòng chọn phương thức thanh toán");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await createOrder(user.accountId, selectedPaymentMethod);
+
+      if (response.paymentUrl) {
+        // If there's a payment URL, navigate to it
+        window.location.href = response.paymentUrl;
+      } else {
+        // If no payment URL, assume success and navigate to order confirmation
+        alert("Đặt hàng thành công!");
+        navigate('/order-confirmation', { state: { orderId: response.orderId } });
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      alert("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -51,13 +114,13 @@ const CheckOut = () => {
                 <span className="product-price">Đơn giá</span>
                 <span className="product-action">Xóa</span>
               </div>
-              {productData.map((product) => (
-                <div key={product.id} className="product-item">
-                  <span className="product-name">{product.sanPham}</span>
-                  <span className="product-price">{product.donGia}</span>
+              {cartItems.map((item) => (
+                <div key={item.cartId} className="product-item">
+                  <span className="product-name">{item.serviceView.serviceName}</span>
+                  <span className="product-price">{item.serviceView.price.toLocaleString()}đ</span>
                   <span className="product-action">
                     <FaTrashAlt 
-                      onClick={() => handleAction(product.id)}
+                      onClick={() => handleRemoveItem(item.cartId)}
                       style={{ cursor: 'pointer' }}
                     />
                   </span>
@@ -88,7 +151,13 @@ const CheckOut = () => {
                 </label>
               ))}
             </div>
-            <button className="checkout-button">Thanh toán</button>
+            <button 
+              className="checkout-button" 
+              onClick={handlePayment}
+              disabled={isLoading}
+            >
+              {isLoading ? "Đang xử lý..." : "Thanh toán"}
+            </button>
           </div>
         </div>
       </div>

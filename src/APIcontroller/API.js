@@ -16,6 +16,8 @@ export const API_ENDPOINTS = {
   UPDATE_ITEM_STATUS: '/updateItemStatus', // Make sure this is correct
   DELETE_CART_ITEM: '/CartItems', // Add this new endpoint
   CREATE_TASK: '/Task/tasks', // Add this new endpoint
+  GET_TASKS_BY_ACCOUNT: '/Task/tasks/account', // Add this new endpoint
+  UPDATE_TASK_STATUS: '/Task/tasks', // Add this new endpoint
   // Add other endpoints as needed
 };
 
@@ -226,13 +228,13 @@ export const deleteCartItem = async (cartItemId) => {
   }
 };
 
-export const createTaskForStaff = async (taskData) => {
+export const createTaskForStaff = async (tasksData) => {
   try {
     const token = localStorage.getItem('accessToken');
-    console.log('Creating task for staff:', taskData);
+    console.log('Creating tasks for staff:', JSON.stringify(tasksData, null, 2));
     console.log('API URL:', `${BASE_URL}${API_ENDPOINTS.CREATE_TASK}`);
 
-    const response = await axios.post(`${BASE_URL}${API_ENDPOINTS.CREATE_TASK}`, taskData, {
+    const response = await axios.post(`${BASE_URL}${API_ENDPOINTS.CREATE_TASK}`, tasksData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -242,9 +244,58 @@ export const createTaskForStaff = async (taskData) => {
     console.log('API Response:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error creating task for staff:', error.response ? error.response.data : error.message);
+    if (error.response && error.response.data) {
+      console.error('Detailed error response:', JSON.stringify(error.response.data, null, 2));
+    }
+    console.error('Error creating tasks for staff:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+// Add this new function to fetch tasks by account ID
+export const getTasksByAccountId = async (accountId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    console.log(`Fetching tasks for account ID: ${accountId}`);
+    console.log('API URL:', `${BASE_URL}${API_ENDPOINTS.GET_TASKS_BY_ACCOUNT}/${accountId}`);
+
+    const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.GET_TASKS_BY_ACCOUNT}/${accountId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    console.log('API Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tasks for account:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+// Add this new function to update task status
+export const updateTaskStatus = async (taskId, newStatus) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    console.log(`Updating task status for task ID: ${taskId} to status: ${newStatus}`);
+    console.log('API URL:', `${BASE_URL}${API_ENDPOINTS.UPDATE_TASK_STATUS}/${taskId}/status/${newStatus}`);
+
+    const response = await axios.put(`${BASE_URL}${API_ENDPOINTS.UPDATE_TASK_STATUS}/${taskId}/status/${newStatus}`, null, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    console.log('API Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating task status:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
 
 // You can add more API functions here as needed
+
+
+
+

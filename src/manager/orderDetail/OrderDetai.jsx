@@ -11,55 +11,72 @@ const OrderDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
-    // Add this new state for start date
     const [startDate, setStartDate] = useState(null);
+    const [selectedStaff, setSelectedStaff] = useState({});
 
-    const staffArea = [
-        { id: 1, name: 'Lê Hoàng Bảo Duy' },
-        { id: 2, name: 'Lý Nhật Nam' },
-        { id: 3, name: 'Lê Mai' }
-    ];
+    // Function to get status text based on status number
+    const getStatusText = (status) => {
+        switch (status) {
+            case 0: return "Pending";
+            case 1: return "Processing";
+            case 2: return "Completed";
+            case 3: return "Cancelled";
+            default: return "Unknown";
+        }
+    };
 
     useEffect(() => {
         const fetchOrderDetail = async () => {
             try {
                 const data = await getOrderById(orderId);
+                console.log("Fetched Order Detail:", data);
                 setOrderDetail(data);
                 setSelectedDate(new Date(data.endDate));
-                // Set the start date from the API response
                 setStartDate(new Date(data.startDate));
                 setLoading(false);
             } catch (err) {
                 setError("Failed to fetch order details");
                 setLoading(false);
+                console.error("Error fetching order details:", err);
             }
         };
 
         fetchOrderDetail();
     }, [orderId]);
 
-    const handleInputChange = (e) => {
-        // Implement if needed
+    const handleStaffSelection = (detailId, staffId) => {
+        console.log(`Staff selected for detail ${detailId}: ${staffId}`);
+        setSelectedStaff(prev => {
+            const newState = {...prev, [detailId]: staffId};
+            console.log("Updated selectedStaff state:", newState);
+            return newState;
+        });
     };
 
-    const handleCreateTask = async (detail) => {
-        const taskData = {
-            accountId: 0, // Replace with actual account ID if available
-            orderId: orderDetail.orderId,
-            detailId: detail.detailId, // Assuming each detail has an ID
-            endDate: selectedDate.toISOString()
-        };
-
+    const handleBanGiao = async () => {
         try {
-            const result = await createTaskForStaff(taskData);
-            console.log('Task created successfully:', result);
-            // Handle success (e.g., show a success message, update UI)
-            alert('Task created successfully!');
-            // You might want to refresh the order details here
+            console.log("Starting task assignment process...");
+            const tasksToCreate = orderDetail.orderDetails.map(detail => {
+                const staffId = selectedStaff[detail.detailId];
+                if (!staffId) {
+                    throw new Error(`No staff selected for detail ${detail.detailId}`);
+                }
+                return {
+                    accountId: parseInt(staffId, 10),
+                    orderId: parseInt(orderDetail.orderId, 10),
+                    detailId: parseInt(detail.detailId, 10),
+                    endDate: selectedDate.toISOString()
+                };
+            });
+
+            console.log("Sending tasks data:", JSON.stringify(tasksToCreate, null, 2));
+            const result = await createTaskForStaff(tasksToCreate);
+            console.log("Tasks creation result:", result);
+            
+            alert('All tasks assigned successfully!');
         } catch (error) {
-            console.error('Failed to create task:', error);
-            // Handle error (e.g., show error message to user)
-            alert('Failed to create task. Please try again.');
+            console.error('Failed to assign tasks:', error);
+            alert(`Failed to assign tasks: ${error.message}`);
         }
     };
 
@@ -74,7 +91,10 @@ const OrderDetail = () => {
                 <div className="header-container">
                     <div className="section-name">Order Details</div>
                     <div className="section-details">
-                        Order ID: {orderDetail.orderId}
+                        Order ID: {orderDetail.orderId} | 
+                        Status: <span className={`status-${orderDetail.status}`}>
+                            {getStatusText(orderDetail.status)}
+                        </span>
                     </div>
                 </div>
                 <div className="order-section">
@@ -105,24 +125,29 @@ const OrderDetail = () => {
                                     </td>
                                     <td>
                                         <span className={`status-${orderDetail.status}`}>
-                                            {orderDetail.status === 0 ? 'Pending' : 'Completed'}
+                                            {getStatusText(orderDetail.status)}
                                         </span>
                                     </td>
                                     <td>
-                                        <select name="staffName" onChange={handleInputChange}>
+                                        <select 
+                                            name="staffName" 
+                                            onChange={(e) => handleStaffSelection(detail.detailId, e.target.value)}
+                                            value={selectedStaff[detail.detailId] || ""}
+                                        >
                                             <option value="">Choose staff</option>
-                                            {staffArea.map(staff => (
-                                                <option key={staff.id} value={staff.name}>{staff.name}</option>
+                                            {detail.staffs.map(staff => (
+                                                <option key={staff.accountId} value={staff.accountId}>
+                                                    {staff.staffFullName}
+                                                </option>
                                             ))}
                                         </select>
-                                        <button onClick={() => handleCreateTask(detail)}>Assign Task</button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <div className="action">
-                        <button className="deliver-button">Bàn giao</button>
+                        <button className="deliver-button" onClick={handleBanGiao}>Bàn giao</button>
                     </div>
                 </div>
                 <div className="order-summary">
@@ -150,4 +175,5 @@ const OrderDetail = () => {
         </div >
     )
 }
+
 export default OrderDetail;

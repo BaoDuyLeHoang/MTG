@@ -16,7 +16,7 @@ import StaffManagement from "./admin/StaffManager/StaffManagement";
 import GraveView from "./admin/graveView/GraveView";
 import PayManagement from "./admin/payManagement/payManagement";
 import FeedbackManagement from "./admin/feedbackManagement/FeedbackManagement";
-import TaskList from "./admin/taskList/TaskList";
+
 import AccountManagement from "./admin/accountManagement/accountManagement";
 import TaskDescription from "./admin/taskDescription/TaskDescription";
 import GraveDetail from "./admin/graveDetail/GraveDetail";
@@ -27,7 +27,7 @@ import OrderManagementManager from "./manager/OrderManagement/OrderManagement";
 import OrderDetail from "./manager/orderDetail/OrderDetai";
 
 // Staff imports
-import OrderManagement from "./staff/OrderManagement/OrderManagement";
+import TaskList from "./staff/OrderManagement/TaskList";
 
 // Customer imports
 import HomePage from "./customer/homePage/homePage";
@@ -39,6 +39,7 @@ import Login from "./customer/Login/Login";
 import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
 import CheckoutSuccessPage from './customer/CheckOutSuccessPage/checkoutSuccessPage';
 import CheckoutFailPage from './customer/CheckOutFailPage/checkoutFailPage';
+import TaskDetails from './staff/TaskDetail/TaskDetail';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -79,7 +80,8 @@ function AppContent() {
           <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
 
           {/* Staff routes */}
-          <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><OrderManagement /></ProtectedRoute>} />
+          <Route path="/staff/chitietcongviec" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />
+          <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
         </Routes>
       </SessionCheck>
     </AuthProvider>

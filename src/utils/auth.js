@@ -29,3 +29,5 @@ export function decodeToken(token) {
 export function hasRequiredRole(userRole, requiredRole) {
     return userRole <= requiredRole;
   }
+
+

@@ -1,0 +1,131 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+.order-management-container {
+    display: flex;
+    min-height: 100vh;
+    overflow: auto;
+}
+
+.order-management-content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.order-table th, .order-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.order-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.order-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.order-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.loading-message, .no-orders-message {
+    margin-top: 20px;
+}
+
+/* TaskList.css */
+.task-list-container {
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+
+.task-list-content {
+    flex-grow: 1;
+    padding: 20px;
+    max-width: calc(100% - 250px); /* Adjust based on your sidebar width */
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.filter-section button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.date-range > * {
+    margin-right: 20px;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.task-table th, .task-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.task-table th {
+    background-color: #f2f2f2;
+}
+
+.confirm-button {
+    background-color: #ffc107;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.reject-button {
+    background-color: transparent;
+    color: red;
+    border: none;
+    cursor: pointer;
+}
+
+.complete-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}

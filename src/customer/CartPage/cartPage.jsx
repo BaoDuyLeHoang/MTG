@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/header';
-import './cartPage.css';
+import './CartPage.css';
 import deleteIcon from '../../assets/images/delete.png';
 import { getCartItemsByCustomerId, updateItemStatus } from "../../APIcontroller/API";
 import { useAuth } from "../../context/AuthContext";

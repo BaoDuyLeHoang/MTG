@@ -1,28 +1,4 @@
-
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Change Switch to Routes
-import Dashboard from './admin/dashBoard/dashboard'; // Import your components
-import OrderList from './admin/phanViecDonHang/OrderList';
-import StaffManagement from './admin/StaffManager/StaffManagement';
-import GraveView from './admin/graveView/GraveView';
-import PayManagement from './admin/payManagement/payManagement';
-import FeedbackManagement from './admin/feedbackManagement/FeedbackManagement';
-import TaskList from './admin/taskList/TaskList';
-import AccountManagement from './admin/accountManagement/accountManagement';
-import TaskDescription from './admin/taskDescription/TaskDescription';
-import GraveDetail from './admin/graveDetail/GraveDetail';
-import OrderDetail from './admin/orderDetail/OrderDetai';
-import AddTask from './admin/addTask/AddTask';
-import ProfileForm from './admin/profileForm/ProfileForm';
-import HomePage from './customer/homePage/homePage';
-import ServicePage from './customer/ServicePage/ServicePage';
-import CheckOut from './customer/CheckOutPage/CheckOut';
-import CartPage from './customer/CartPage/cartPage';
-import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
-import CheckoutSuccessPage from './customer/CheckOutSuccessPage/checkoutSuccessPage';
-import CheckoutFailPage from './customer/CheckOutFailPage/checkoutFailPage';
-
-import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -32,8 +8,10 @@ import {
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ROLES } from "./utils/auth";
-import Dashboard from "./admin/dashBoard/dashboard"; // Import your components
-import OrderList from "./manager/orderDetail/OrderDetai";
+import SessionCheck from "./components/SessionCheck";
+
+// Admin imports
+import Dashboard from "./admin/dashBoard/dashboard";
 import StaffManagement from "./admin/StaffManager/StaffManagement";
 import GraveView from "./admin/graveView/GraveView";
 import PayManagement from "./admin/payManagement/payManagement";
@@ -42,142 +20,76 @@ import TaskList from "./admin/taskList/TaskList";
 import AccountManagement from "./admin/accountManagement/accountManagement";
 import TaskDescription from "./admin/taskDescription/TaskDescription";
 import GraveDetail from "./admin/graveDetail/GraveDetail";
-import OrderDetail from "./manager/orderDetail/OrderDetai";
 import AddTask from "./admin/addTask/AddTask";
+
+// Manager imports
+import OrderManagementManager from "./manager/OrderManagement/OrderManagement";
+import OrderDetail from "./manager/orderDetail/OrderDetai";
+
+// Staff imports
+import OrderManagement from "./staff/OrderManagement/OrderManagement";
+
+// Customer imports
 import HomePage from "./customer/homePage/homePage";
 import ServicePage from "./customer/ServicePage/ServicePage";
 import CheckOut from "./customer/CheckOutPage/CheckOut";
 import CartPage from "./customer/CartPage/CartPage";
 import ServiceDetailPage from "./customer/ServiceDetailPage/ServiceDetailPage";
 import Login from "./customer/Login/Login";
-import SessionCheck from "./components/SessionCheck"; // Import the new component
-import OrderManagement from "./staff/OrderManagement/OrderManagement";
-import OrderManagementManager from "./manager/OrderManagement/OrderManagement";
+import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
+import CheckoutSuccessPage from './customer/CheckOutSuccessPage/checkoutSuccessPage';
+import CheckoutFailPage from './customer/CheckOutFailPage/checkoutFailPage';
+
 function AppContent() {
   const navigate = useNavigate();
 
   return (
     <AuthProvider navigate={navigate}>
       <SessionCheck>
-        {" "}
-        {/* Wrap your Routes with SessionCheck */}
         <Routes>
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
-          {/* customer */}
           <Route path="/" element={<HomePage />} />
-          {/* customer */}
-          <Route
-            path="/user"
-            element={
-              <ProtectedRoute requiredRole={ROLES.CUSTOMER}>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-
+          <Route path="/tim-kiem-mo" element={<SearchGraveInterface />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/dichvu" element={<ServicePage />} />
-          <Route
-            path="/chitietdichvu/:serviceId"
-            element={<ServiceDetailPage />}
-          />
+          <Route path="/chitietdichvu/:serviceId" element={<ServiceDetailPage />} />
           <Route path="/checkout" element={<CheckOut />} />
-          {/* admin */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute requiredRole={ROLES.ADMIN}>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          {/* manager */}
-          <Route
-            path="/manager"
-            element={
-              <ProtectedRoute requiredRole={ROLES.MANAGER}>
-                <OrderManagementManager />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/danhsachdonhang"
-            element={
-              <ProtectedRoute requiredRole={ROLES.MANAGER}>
-                <OrderManagementManager />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/danhsachdonhang/:orderId"
-            element={
-              <ProtectedRoute requiredRole={ROLES.MANAGER}>
-                <OrderDetail />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/checkout-fail" element={<CheckoutFailPage />} />
+          <Route path="/checkout-success" element={<CheckoutSuccessPage />} />
 
-<Route
-            path="/staff"
-            element={
-              <ProtectedRoute requiredRole={ROLES.STAFF}>
-                <OrderManagement />
-              </ProtectedRoute>
-            }
-          />
+          {/* Protected routes */}
+          <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
+          
+          {/* Admin routes */}
+          <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
+          <Route path="/danhsachaccount" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AccountManagement /></ProtectedRoute>} />
+          <Route path="/danhsachnhanvien" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><StaffManagement /></ProtectedRoute>} />
+          <Route path="/danhsachmo" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveView /></ProtectedRoute>} />
+          <Route path="/danhSachCongViec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><TaskList /></ProtectedRoute>} />
+          <Route path="/danhsachthanhtoan" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><PayManagement /></ProtectedRoute>} />
+          <Route path="/danhsachphannhoikhachhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><FeedbackManagement /></ProtectedRoute>} />
+          <Route path="/chitietcongviec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><TaskDescription /></ProtectedRoute>} />
+          <Route path="/chitietmo" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetail /></ProtectedRoute>} />
+          <Route path="/taoCongViec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AddTask /></ProtectedRoute>} />
 
-          <Route path="/danhsachaccount" element={<AccountManagement />} />
-          <Route path="/danhsachnhanvien" element={<StaffManagement />} />
-          <Route path="/danhsachmo" element={<GraveView />} />
-          <Route path="/danhSachCongViec" element={<TaskList />} />
-          <Route path="/danhsachthanhtoan" element={<PayManagement />} />
-          <Route
-            path="/danhsachphannhoikhachhang"
-            element={<FeedbackManagement />}
-          />
-          <Route path="/chitietcongviec" element={<TaskDescription />} />
-          <Route path="/chitietmo" element={<GraveDetail />} />
-          <Route path="/chitietdonhang" element={<OrderDetail />} />
-          <Route path="/taoCongViec" element={<AddTask />} />
+          {/* Manager routes */}
+          <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
+          <Route path="/danhsachdonhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
+          <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
+
+          {/* Staff routes */}
+          <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><OrderManagement /></ProtectedRoute>} />
         </Routes>
       </SessionCheck>
     </AuthProvider>
   );
 }
 
-
 function App() {
   return (
     <Router>
-      <Routes> {/* Use Routes instead of Switch */}
-        <Route path="/" element={<HomePage />} />
-        
-        {/* customer */}
-        <Route path="/tim-kiem-mo" element={<SearchGraveInterface />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/dichvu" element={<ServicePage />} />
-        <Route path="/checkout" element={<CheckOut />} />
-        <Route path="/checkout-fail" element={<CheckoutFailPage />} />
-        <Route path="/checkout-success" element={<CheckoutSuccessPage />} /> 
-
-        {/* admin */}
-        
-        <Route path="/danhsachaccount" element={<AccountManagement />} />
-        <Route path="/danhsachdonhang" element={<OrderList />} />
-        <Route path="/danhsachnhanvien" element={<StaffManagement />} />
-        <Route path="/danhsachmo" element={<GraveView />} />
-        <Route path="/danhSachCongViec" element={<TaskList />} />
-        <Route path="/danhsachthanhtoan" element={<PayManagement />} />
-        <Route path="/danhsachphannhoikhachhang" element={<FeedbackManagement />} />
-        <Route path="/chitietcongviec" element={<TaskDescription />} />
-        <Route path="/chitietmo" element={<GraveDetail />} />
-        <Route path="/chitietdonhang" element={<OrderDetail />} />
-        <Route path='/taoCongViec' element={<AddTask />} />
-        <Route path='/suathongtin' element={<ProfileForm />} />
-      </Routes>
-
       <AppContent />
-
     </Router>
   );
 }

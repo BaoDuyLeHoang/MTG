@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getOrderById } from "../../APIcontroller/API";
+import { getOrderById, createTaskForStaff } from "../../APIcontroller/API";
 import Sidebar from "../../components/Sidebar/sideBar"
 import '../orderDetail/OrderDetail.css';
 import DatePicker from "react-datepicker";
@@ -40,6 +40,27 @@ const OrderDetail = () => {
 
     const handleInputChange = (e) => {
         // Implement if needed
+    };
+
+    const handleCreateTask = async (detail) => {
+        const taskData = {
+            accountId: 0, // Replace with actual account ID if available
+            orderId: orderDetail.orderId,
+            detailId: detail.detailId, // Assuming each detail has an ID
+            endDate: selectedDate.toISOString()
+        };
+
+        try {
+            const result = await createTaskForStaff(taskData);
+            console.log('Task created successfully:', result);
+            // Handle success (e.g., show a success message, update UI)
+            alert('Task created successfully!');
+            // You might want to refresh the order details here
+        } catch (error) {
+            console.error('Failed to create task:', error);
+            // Handle error (e.g., show error message to user)
+            alert('Failed to create task. Please try again.');
+        }
     };
 
     if (loading) return <div>Loading...</div>;
@@ -94,6 +115,7 @@ const OrderDetail = () => {
                                                 <option key={staff.id} value={staff.name}>{staff.name}</option>
                                             ))}
                                         </select>
+                                        <button onClick={() => handleCreateTask(detail)}>Assign Task</button>
                                     </td>
                                 </tr>
                             ))}

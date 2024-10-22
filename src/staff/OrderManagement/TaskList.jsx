@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './TaskList.css'; // You'll need to create this CSS file
 import Sidebar from '../../components/Sidebar/sideBar';
+import { useNavigate } from 'react-router-dom';
 
 const TaskList = () => {
     const [tasks, setTasks] = useState([]);
@@ -13,6 +14,7 @@ const TaskList = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [filter, setFilter] = useState('all'); // 'all', 'completed', 'pending'
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTasks();
@@ -85,6 +87,10 @@ const TaskList = () => {
         return true;
     });
 
+    const handleViewDetails = (taskId) => {
+        navigate(`/task-detail/${taskId}`);
+    };
+
     return (
         <div className="task-list-container">
             <Sidebar />
@@ -125,15 +131,9 @@ const TaskList = () => {
                                 <td>{new Date(task.endDate).toLocaleDateString()}</td>
                                 <td>{getStatusText(task.status)}</td>
                                 <td>
-                                    {task.status === 1 && (
-                                        <>
-                                            <button className="confirm-button" onClick={() => handleConfirm(task.taskId)}>XÁC NHẬN</button>
-                                            <button className="reject-button" onClick={() => handleReject(task.taskId)}>Từ chối</button>
-                                        </>
-                                    )}
-                                    {task.status === 3 && (
-                                        <button className="complete-button" onClick={() => handleComplete(task.taskId)}>Hoàn thành</button>
-                                    )}
+                                    <button className="detail-button" onClick={() => handleViewDetails(task.taskId)}>
+                                        Chi tiết
+                                    </button>
                                 </td>
                             </tr>
                         ))}

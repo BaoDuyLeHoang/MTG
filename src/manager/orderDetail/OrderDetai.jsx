@@ -15,12 +15,14 @@ const OrderDetail = () => {
     const [selectedStaff, setSelectedStaff] = useState({});
 
     // Function to get status text based on status number
-    const getStatusText = (status) => {
-        switch (status) {
-            case 0: return "Pending";
-            case 1: return "Processing";
-            case 2: return "Completed";
-            case 3: return "Cancelled";
+    const getStatusText = (statusTask) => {
+        switch (statusTask) {
+            case 0: return "Đang chờ";
+            case 1: return "Đã giao";
+            case 2: return "Từ chối";
+            case 3: return "Đang thực hiện";
+            case 4: return "Hoàn thành";
+            case 5: return "Thất bại";
             default: return "Unknown";
         }
     };
@@ -124,8 +126,8 @@ const OrderDetail = () => {
                                         />
                                     </td>
                                     <td>
-                                        <span className={`status-${orderDetail.status}`}>
-                                            {getStatusText(orderDetail.status)}
+                                        <span className={`status-${detail.statusTask}`}>
+                                            {getStatusText(detail.statusTask)}
                                         </span>
                                     </td>
                                     <td>

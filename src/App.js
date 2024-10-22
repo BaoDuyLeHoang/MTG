@@ -31,6 +31,7 @@ import TaskList from "./staff/OrderManagement/TaskList";
 
 // Customer imports
 import HomePage from "./customer/homePage/homePage";
+import MyGraveDetail from "./customer/MyGraveDetail/MyGraveDetail";
 import ServicePage from "./customer/ServicePage/ServicePage";
 import CheckOut from "./customer/CheckOutPage/CheckOut";
 import CartPage from "./customer/CartPage/CartPage";
@@ -59,9 +60,10 @@ function AppContent() {
           <Route path="/checkout-fail" element={<CheckoutFailPage />} />
           <Route path="/checkout-success" element={<CheckoutSuccessPage />} />
 
+
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
-          
+          <Route path="/mothannhan" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><MyGraveDetail /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
           <Route path="/danhsachaccount" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AccountManagement /></ProtectedRoute>} />
@@ -80,8 +82,8 @@ function AppContent() {
           <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
 
           {/* Staff routes */}
-          <Route path="/staff/chitietcongviec" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />
           <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
+          <Route path="/task-detail/:taskId" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />
         </Routes>
       </SessionCheck>
     </AuthProvider>

@@ -30,20 +30,21 @@
 }
 
 .status {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-weight: bold;
 }
 
-.status-in-progress {
-  background: #dbeafe;
-  color: #1e40af;
-}
+.status-0 { color: #FFA500; } /* Orange for "Đang chờ" */
+.status-1 { color: #4CAF50; } /* Green for "Đã giao" */
+.status-2 { color: #FF0000; } /* Red for "Từ chối" */
+.status-3 { color: #2196F3; } /* Blue for "Đang thực hiện" */
+.status-4 {color: #4CAF50; } /* Green for "Hoàn thành" */
+.status-5 {  color: #FF0000; } /* Red for "Thất bại" */
 
 .content {
   padding: 20px;
+  width: 100%;
 }
 
 .info-grid {
@@ -73,6 +74,9 @@
   color: #64748b;
   font-size: 14px;
   line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .info-content p {

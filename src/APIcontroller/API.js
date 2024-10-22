@@ -17,7 +17,7 @@ export const API_ENDPOINTS = {
   DELETE_CART_ITEM: '/CartItems', // Add this new endpoint
   CREATE_TASK: '/Task/tasks', // Add this new endpoint
   GET_TASKS_BY_ACCOUNT: '/Task/tasks/account', // Add this new endpoint
-  UPDATE_TASK_STATUS: '/Task/tasks', // Add this new endpoint
+  UPDATE_TASK_STATUS: '/Task/tasks', // Update this line
   // Add other endpoints as needed
 };
 
@@ -296,6 +296,38 @@ export const updateTaskStatus = async (taskId, newStatus) => {
 
 // You can add more API functions here as needed
 
-
-
-
+export const getTaskById = async (taskId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    console.log('Fetching task with ID:', taskId); // Debug log
+    const response = await axios.get(`${BASE_URL}/Task/tasks/${taskId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log('API response:', response.data); // Debug log
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching task details:', error);
+    if (error.response) {
+      if (error.response.status === 401) {
+        throw new Error('You do not have permission to access this task. Please check your authentication.');
+      } else {
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+        if (error.response.headers['content-type']?.includes('text/plain')) {
+          throw new Error(`Server error: ${error.response.data}`);
+        } else {
+          throw new Error('An error occurred while fetching the task. Please try again later.');
+        }
+      }
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+      throw new Error('Unable to reach the server. Please check your internet connection.');
+    } else {
+      console.error('Error message:', error.message);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
+  }
+};

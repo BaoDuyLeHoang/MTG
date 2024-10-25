@@ -43,7 +43,7 @@ import CheckoutFailPage from './customer/CheckOutFailPage/checkoutFailPage';
 import TaskDetails from './staff/TaskDetail/TaskDetail';
 import OrderHistory from './customer/OrderHistory/OrderHistory';
 import SearchResult from './customer/SearchResult/SearchResult';
-
+import ServiceListing from './customer/ServiceListing/ServiceListing';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -62,7 +62,8 @@ function AppContent() {
           <Route path="/checkout-fail" element={<CheckoutFailPage />} />
           <Route path="/checkout-success" element={<CheckoutSuccessPage />} />
           <Route path="/search-results" element={<SearchResult />} />
-          <Route path="/chitietmo" element={<MyGraveDetail />} />
+          <Route path="/chitietmo/:martyrId" element={<MyGraveDetail />} />
+          <Route path="/dichvutheoloai" element={<ServiceListing />} />
 
 
           {/* Protected routes */}

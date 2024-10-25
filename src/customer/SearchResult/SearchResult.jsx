@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './SearchResult.css';
 
 
 const SearchResult = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [results, setResults] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,6 +130,10 @@ const SearchResult = () => {
     return buttons;
   };
 
+  const handleCardClick = (martyrId) => {
+    navigate(`/chitietmo/${martyrId}`);
+  };
+
   return (
     <div className="container">
       <h1 className="heading">Kết Quả Tìm Kiếm</h1>
@@ -140,6 +145,8 @@ const SearchResult = () => {
             className={`card ${hoveredCard === grave.martyrId ? 'cardHover' : ''}`}
             onMouseEnter={() => setHoveredCard(grave.martyrId)}
             onMouseLeave={() => setHoveredCard(null)}
+            onClick={() => handleCardClick(grave.martyrId)}
+            style={{ cursor: 'pointer' }}
           >
             <div className="imageContainer">
               <img

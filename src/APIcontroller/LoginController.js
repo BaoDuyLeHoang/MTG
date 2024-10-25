@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Replace these with your actual API details from Swagger
-const API_BASE_URL = 'https://annhien.somee.com/api';
+const API_BASE_URL = 'https://localhost:7006/api';
 const LOGIN_ENDPOINT = '/Auth/auth';
 
 // Function to handle login
@@ -9,7 +9,7 @@ export const loginUser = async (credentials) => {
   try {
     const response = await axios.post(`${API_BASE_URL}${LOGIN_ENDPOINT}`, 
       {
-        AccountName: credentials.accountName,
+        phoneNumber: credentials.phoneNumber,
         password: credentials.password,
       },
       {

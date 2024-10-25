@@ -6,9 +6,10 @@ import lk from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import { loginUser } from "../../APIcontroller/LoginController";
 import { useAuth } from "../../context/AuthContext";
 import { ROLES } from "../../utils/auth";
+import { addToCart } from "../../APIcontroller/API"; // Import the addToCart function
 
 export default function Login() {
-  const [accountName, setAccountName] = useState("");
+  const [phoneNumber, setphoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +22,7 @@ export default function Login() {
     setError("");
 
     try {
-      const result = await loginUser({ accountName, password });
+      const result = await loginUser({ phoneNumber, password });
       console.log("Full login API response:", result);
 
       if (result.success) {
@@ -33,6 +34,35 @@ export default function Login() {
         if (user && user.role) {
           console.log("User role after processing:", user.role);
           console.log("User roleId after processing:", user.roleId);
+
+          // Check for pending cart items
+          const selectedMartyrId = sessionStorage.getItem("selectedMartyrId");
+          const pendingServiceId = sessionStorage.getItem("pendingServiceId");
+          console.log("User roleId after processing:", );
+          if (selectedMartyrId && pendingServiceId && user.accountId) {
+            try {
+              console.log("Adding pending item to cart");
+              await addToCart({
+                serviceId: pendingServiceId,
+                accountId: user.accountId,
+                martyrId: selectedMartyrId
+              }, result.data.token);
+              console.log("Successfully added pending item to cart");
+              
+              // Clear the pending items from session storage
+              sessionStorage.removeItem("selectedMartyrId");
+              sessionStorage.removeItem("pendingServiceId");
+              
+              // Redirect to cart page
+              navigate("/cart");
+              return; // Exit the function early
+            } catch (error) {
+              console.error("Error adding pending item to cart:", error);
+              // You might want to show an error message to the user here
+            }
+          }
+
+          // If no pending items or after adding to cart, proceed with normal navigation
           switch (user.role) {
             case ROLES.ADMIN:
               navigate("/admin");
@@ -78,8 +108,8 @@ export default function Login() {
             <label>Tên đăng nhập</label>
             <input
               type="text"
-              value={accountName}
-              onChange={(e) => setAccountName(e.target.value)}
+              value={phoneNumber}
+              onChange={(e) => setphoneNumber(e.target.value)}
               required
             />
           </div>

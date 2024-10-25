@@ -1,0 +1,274 @@
+/* Container Styles */
+.sl-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Header Styles */
+  .sl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    margin-top: 5%;
+  }
+  
+  .sl-header h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .sl-cart-icon {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .sl-cart-icon-image {
+    font-size: 24px;
+  }
+  
+  .sl-cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    min-width: 20px;
+    text-align: center;
+  }
+  
+  /* Filter Styles */
+  .sl-filter-container {
+    margin-bottom: 24px;
+  }
+  
+  .sl-category-select {
+    width: 100%;
+    max-width: 280px;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 16px;
+    color: #374151;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  
+  .sl-category-select:hover {
+    border-color: #3b82f6;
+  }
+  
+  .sl-category-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+  
+  /* Services Grid */
+  .sl-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  
+  /* Service Card Styles */
+  .sl-service-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .sl-service-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sl-service-image-container {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+  
+  .sl-service-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  
+  .sl-service-card:hover .sl-service-image {
+    transform: scale(1.05);
+  }
+  
+  .sl-service-category {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    text-transform: capitalize;
+  }
+  
+  .sl-service-content {
+    padding: 16px;
+  }
+  
+  .sl-service-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+  }
+  
+  .sl-service-description {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  
+  .sl-service-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+  }
+  
+  .sl-add-to-cart-button {
+    width: 100%;
+    padding: 8px 16px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .sl-add-to-cart-button:hover:not(:disabled) {
+    background-color: #2563eb;
+  }
+  
+  .sl-add-to-cart-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .sl-add-to-cart-button.sl-in-cart {
+    background-color: #10b981;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .sl-container {
+      padding: 16px;
+    }
+  
+    .sl-header h1 {
+      font-size: 24px;
+    }
+  
+    .sl-services-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .sl-service-card {
+      max-width: 100%;
+    }
+  }
+
+  /* Pagination */
+  .sl-pagination {
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .sl-pagination-button {
+    padding: 8px 16px;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    color: #374151;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sl-pagination-button:hover:not(:disabled) {
+    background-color: #e5e7eb;
+  }
+
+  .sl-pagination-button:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .sl-pagination-numbers {
+    display: flex;
+    gap: 8px;
+  }
+
+  .sl-pagination-number {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background-color: white;
+    color: #374151;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sl-pagination-number:hover:not(.sl-active) {
+    background-color: #f3f4f6;
+  }
+
+  .sl-pagination-number.sl-active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+  }
+
+  /* Responsive adjustments for pagination */
+  @media (max-width: 768px) {
+    .sl-pagination {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sl-pagination-numbers {
+      order: -1;
+    }
+
+    .sl-pagination-button {
+      width: 100%;
+    }
+  }
+
+  /* Add this if you want to hide some pagination numbers on mobile */
+  @media (max-width: 480px) {
+    .sl-pagination-numbers {
+      display: none;
+    }
+  }

@@ -62,11 +62,12 @@ function AppContent() {
           <Route path="/checkout-fail" element={<CheckoutFailPage />} />
           <Route path="/checkout-success" element={<CheckoutSuccessPage />} />
           <Route path="/search-results" element={<SearchResult />} />
+          <Route path="/chitietmo" element={<MyGraveDetail />} />
 
 
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
-          <Route path="/mothannhan" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><MyGraveDetail /></ProtectedRoute>} />
+          
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />

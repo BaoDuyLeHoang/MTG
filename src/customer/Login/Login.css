@@ -89,13 +89,17 @@ body {
 }
 
 .forgot-password {
-    line-height: 58px;
+   
     color: #333;
     font-size: 14px;
-    padding: 10px;
-    margin-right: 59%;
 }
 
 .forgot-password:hover {
     text-decoration: underline;
+}
+.forgot-password-register-container{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 5%;
 }

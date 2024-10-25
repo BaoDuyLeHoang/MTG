@@ -13,46 +13,67 @@ const ServiceDetailPage = () => {
   const [graveOptions, setGraveOptions] = useState([]);
   const [selectedGrave, setSelectedGrave] = useState("");
   const { serviceId } = useParams();
-  const { user } = useAuth();
+  const { user, checkSession } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        
+        if (!checkSession()) {
+          setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+          setLoading(false);
+          navigate('/login');
+          return;
+        }
+
+        const token = localStorage.getItem('accessToken');
+        console.log("Current auth token:", token);
+
+        if (!token) {
+          console.error("No token found in localStorage");
+          setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+          setLoading(false);
+          navigate('/login');
+          return;
+        }
+
         const details = await getServiceDetails(serviceId);
         setService(details);
 
-        // Log the entire user object
         console.log("User object:", user);
-        
-        // Log the customer code (if it exists)
         console.log("Customer Code:", user?.customerCode);
 
-        // If customerCode doesn't exist, log all keys of the user object
-        if (!user?.customerCode) {
-          console.log("User object keys:", Object.keys(user || {}));
-        }
-
-        // Fetch grave options for the customer
         if (user && user.customerCode) {
-          const graves = await getGravesByCustomerCode(user.customerCode);
-          console.log("Graves received:", graves); // Keep this for debugging
+          try {
+            const graves = await getGravesByCustomerCode(user.customerCode, token);
+            console.log("Graves received:", graves);
 
-          setGraveOptions(graves.map(grave => ({
-            value: grave.martyrId,
-            label: grave.matyrGraveInformations[0]?.name || grave.martyrCode || "Unknown"
-          })));
+            setGraveOptions(graves.map(grave => ({
+              value: grave.martyrId,
+              label: grave.matyrGraveInformations[0]?.name || grave.martyrCode || "Unknown"
+            })));
+          } catch (graveError) {
+            console.error("Full error object:", graveError);
+            if (graveError.response && graveError.response.status === 401) {
+              console.error("Unauthorized access when fetching graves. User might need to re-authenticate.");
+              setError("Phiên đăng nhập đã hết hạn hoặc không có quyền truy cập. Vui lòng đăng nhập lại.");
+              navigate('/login');
+            } else {
+              console.error("Error fetching graves:", graveError);
+              setError("Không thể tải thông tin mộ. Vui lòng thử lại sau.");
+            }
+          }
         } else {
-          console.log("Unable to fetch graves: No customer code found in the token");
+          console.error("No customer code found for the user");
+          setError("Không tìm thấy mã khách hàng. Vui lòng đăng nhập lại.");
         }
 
         // Fetch other services from the same category
         if (details.categoryId) {
           const categoryServices = await getServicesByCategory(details.categoryId);
-          // Filter out the current service from the list
           const filteredServices = categoryServices.filter(s => s.id !== serviceId);
-          // Randomly select up to 4 services
           const randomServices = shuffleArray(filteredServices).slice(0, 4);
           setOtherServices(randomServices);
         }
@@ -60,13 +81,13 @@ const ServiceDetailPage = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError('Failed to load service details. Please try again later.');
+        setError('Không thể tải thông tin dịch vụ. Vui lòng thử lại sau.');
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [serviceId, user]);
+  }, [serviceId, user, navigate, checkSession]);
 
   const handleGraveChange = (event) => {
     setSelectedGrave(event.target.value);

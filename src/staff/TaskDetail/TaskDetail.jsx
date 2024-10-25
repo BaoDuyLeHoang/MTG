@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import { Upload, X, User, Calendar, Flag, MapPin } from 'lucide-react';
 import './TaskDetail.css';
 import Sidebar from '../../components/Sidebar/sideBar';
-import { getTaskById, updateTaskStatus } from '../../APIcontroller/API';
-import { app, storage } from '../../firebase'; // Adjust the path as needed
+import { getTaskById, updateTaskStatus, updateTaskStatusWithImages } from '../../APIcontroller/API';
+import { storage } from '../../firebase'; // Make sure this import is correct
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const TaskDetails = () => {
@@ -35,6 +35,12 @@ const TaskDetails = () => {
 
     fetchTaskDetails();
   }, [taskId]);
+
+  const uploadImageToFirebase = async (file) => {
+    const storageRef = ref(storage, `task_images/${taskId}/${file.name}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  };
 
   const handleFileUpload = async (files) => {
     setUploading(true);
@@ -78,15 +84,6 @@ const TaskDetails = () => {
     // You may want to implement that functionality if needed.
   };
 
-  const uploadImageToFirebase = async (file) => {
-    if (!taskId) {
-      throw new Error('TaskId is undefined. Cannot upload image.');
-    }
-    const storageRef = ref(storage, `task_images/${taskId}/${file.name}`);
-    await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
-  };
-
   const getStatusText = (status) => {
     switch (status) {
       case 1: return 'Đã giao';
@@ -98,23 +95,36 @@ const TaskDetails = () => {
     }
   };
 
-  const canCompleteOrRefuse = images.length > 0;
-
-  if (error) return <div className="error-message">{error}</div>;
-  if (!task) return <div>Loading...</div>;
-
   const handleStatusUpdate = async (newStatus) => {
     try {
-      await updateTaskStatus(taskId, newStatus);
+      if (newStatus === 4 && images.length > 0) {
+        // Send image URLs to your API
+        const imageUrls = images.map(img => img.url);
+        await updateTaskStatusWithImages(taskId, imageUrls);
+      } else {
+        // Just update status
+        await updateTaskStatus(taskId, newStatus);
+      }
       // Refresh the task data after updating
       const updatedTask = await getTaskById(taskId);
       setTask(updatedTask);
-      alert(newStatus === 3 ? 'Task accepted successfully' : 'Task refused successfully');
+      let message = '';
+      switch (newStatus) {
+        case 3: message = 'Task accepted successfully'; break;
+        case 2: message = 'Task refused successfully'; break;
+        case 4: message = 'Task completed successfully'; break;
+        case 5: message = 'Task marked as failed'; break;
+        default: message = 'Task status updated successfully';
+      }
+      alert(message);
     } catch (error) {
       console.error('Error updating task status:', error);
       alert('Failed to update task status. Please try again.');
     }
   };
+
+  if (error) return <div className="error-message">{error}</div>;
+  if (!task) return <div>Loading...</div>;
 
   return (
     <div className="page-layout">
@@ -215,32 +225,26 @@ const TaskDetails = () => {
                   </button>
                 </>
               )}
-              {(task.status === 2 || task.status === 3) && (
+              {task.status === 2 && (
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => handleStatusUpdate(4)}
+                >
+                  Thất bại
+                </button>
+              )}
+              {task.status === 3 && (
                 <>
                   <button 
-                    className="btn btn-primary" 
-                    disabled={!canCompleteOrRefuse}
-                    onClick={() => {/* Handle complete task */}}
+                    className="btn btn-primary"
+                    onClick={() => handleStatusUpdate(4)}
+                    disabled={images.length === 0}
                   >
-                    Complete Task
-                  </button>
-                  <button 
-                    className="btn btn-secondary" 
-                    disabled={!canCompleteOrRefuse}
-                    onClick={() => {/* Handle refuse task */}}
-                  >
-                    Refuse Task
+                    Hoàn thành
                   </button>
                 </>
               )}
-              {(task.status === 4 || task.status === 5) && (
-                <button 
-                  className="btn btn-secondary"
-                  onClick={() => {/* Handle update status */}}
-                >
-                  Update Status
-                </button>
-              )}
+              {/* No buttons for status 4 and 5 */}
             </div>
           </div>
         </div>

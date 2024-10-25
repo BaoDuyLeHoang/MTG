@@ -26,7 +26,7 @@ export default function Login() {
 
       if (result.success) {
         console.log("Login successful, token:", result.data.token);
-        
+
         const user = login(result.data.token);
         console.log("Full user object after login:", user);
 
@@ -35,16 +35,16 @@ export default function Login() {
           console.log("User roleId after processing:", user.roleId);
           switch (user.role) {
             case ROLES.ADMIN:
-              navigate('/admin');
+              navigate("/admin");
               break;
             case ROLES.MANAGER:
-              navigate('/manager');
+              navigate("/manager");
               break;
             case ROLES.STAFF:
-              navigate('/staff');
+              navigate("/staff");
               break;
             case ROLES.CUSTOMER:
-              navigate('/user');
+              navigate("/user");
               break;
             default:
               console.error("Unknown user role:", user.role);
@@ -75,7 +75,7 @@ export default function Login() {
       <div className="login-box">
         <form onSubmit={handleLogin} className="login-form">
           <div className="input-group">
-            <label>Username</label>
+            <label>Tên đăng nhập</label>
             <input
               type="text"
               value={accountName}
@@ -93,13 +93,17 @@ export default function Login() {
             />
           </div>
           <button type="submit" className="login-btn" disabled={isLoading}>
-            {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
-          <a href="#" className="forgot-password">
-            Quên mật khẩu?
-          </a>
+          <div className="forgot-password-register-container">
+            <a href="#" className="forgot-password">
+              Quên mật khẩu?
+            </a>
+            <a href="#" className="forgot-password">
+              Đăng ký
+            </a>
+          </div>
           {error && <p className="error-message">{error}</p>}
-          
         </form>
       </div>
     </div>

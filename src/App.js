@@ -41,6 +41,8 @@ import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveI
 import CheckoutSuccessPage from './customer/CheckOutSuccessPage/checkoutSuccessPage';
 import CheckoutFailPage from './customer/CheckOutFailPage/checkoutFailPage';
 import TaskDetails from './staff/TaskDetail/TaskDetail';
+import OrderHistory from './customer/OrderHistory/OrderHistory';
+import SearchResult from './customer/SearchResult/SearchResult';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -59,11 +61,13 @@ function AppContent() {
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/checkout-fail" element={<CheckoutFailPage />} />
           <Route path="/checkout-success" element={<CheckoutSuccessPage />} />
+          <Route path="/search-results" element={<SearchResult />} />
 
 
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
           <Route path="/mothannhan" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><MyGraveDetail /></ProtectedRoute>} />
+          <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
           <Route path="/danhsachaccount" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AccountManagement /></ProtectedRoute>} />
@@ -75,6 +79,7 @@ function AppContent() {
           <Route path="/chitietcongviec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><TaskDescription /></ProtectedRoute>} />
           <Route path="/chitietmo" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetail /></ProtectedRoute>} />
           <Route path="/taoCongViec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AddTask /></ProtectedRoute>} />
+          
 
           {/* Manager routes */}
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />

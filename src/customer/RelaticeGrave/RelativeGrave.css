@@ -1,0 +1,260 @@
+/* styles/GraveManagement.css */
+
+
+  
+  .header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .subtitle {
+    color: #666;
+  }
+  
+  .graves-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .graves-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .grave-list{
+    width: 100%;
+  }
+  .grave-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .grave-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .image-container {
+    flex: 0 0 200px;
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .grave-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .grave-info {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .martyr-name {
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+  }
+  
+  .relation {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 15px 0;
+  }
+  
+  .info-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .label {
+    font-weight: bold;
+  }
+  
+  .status-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  .status-maintained {
+    background-color: #e6f4ea;
+    color: #1e8e3e;
+  }
+  
+  .status-needs-maintenance {
+    background-color: #fce8e6;
+    color: #d93025;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+  }
+  
+  .button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+  
+  .button-primary {
+    background-color: #1a73e8;
+    color: white;
+  }
+  
+  .button-secondary {
+    background-color: #f1f3f4;
+    color: #1a73e8;
+  }
+  
+  @media (max-width: 768px) {
+    .grave-card {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .image-container {
+      width: 100%;
+      height: 200px;
+    }
+
+    .button-group {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+.relative-grave-container {
+  width: 100%;
+}
+
+.relative-grave-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.relative-grave-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.relative-grave-image-container {
+  flex: 0 0 200px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.relative-grave-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.relative-grave-info {
+  flex: 1;
+  padding: 20px;
+}
+
+.relative-grave-martyr-name {
+  font-size: 1.5rem;
+  margin: 0 0 10px 0;
+}
+
+.relative-grave-relation {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 15px 0;
+}
+
+.relative-grave-info-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.relative-grave-label {
+  font-weight: bold;
+}
+
+.relative-grave-status-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.relative-grave-status-maintained {
+  background-color: #e6f4ea;
+  color: #1e8e3e;
+}
+
+.relative-grave-status-needs-maintenance {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+.relative-grave-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+
+.relative-grave-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.relative-grave-button-primary {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.relative-grave-button-secondary {
+  background-color: #f1f3f4;
+  color: #1a73e8;
+}
+
+@media (max-width: 768px) {
+  .relative-grave-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .relative-grave-image-container {
+    width: 100%;
+    height: 200px;
+  }
+
+  .relative-grave-button-group {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

@@ -8,7 +8,7 @@ import lk from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useAuth } from "../../context/AuthContext";
 import { ROLES } from "../../utils/auth";
 import { registerGuestAccount } from "../../APIcontroller/API";
-
+import { addToCart } from "../../APIcontroller/API";
 export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -57,11 +57,36 @@ export default function Register() {
           const loginResult = await loginWithCredentials(phoneNumber, password);
           if (loginResult.success) {
             console.log("Login successful after registration");
-            
-            // Navigate to main page after a short delay
-            setTimeout(() => {
-              navigate("/");
-            }, 2000);
+            const accountId = loginResult.user.accountId;
+            const selectedMartyrId = sessionStorage.getItem("selectedMartyrId");
+            const pendingServiceId = sessionStorage.getItem("pendingServiceId");
+            if (selectedMartyrId && pendingServiceId && accountId) {
+              try {
+                console.log("Adding pending item to cart");
+                await addToCart({
+                  serviceId: pendingServiceId,
+                  accountId: loginResult.user.accountId,
+                  martyrId: selectedMartyrId
+                }, loginResult.user.token);
+                console.log("Successfully added pending item to cart");
+                
+                // Clear the pending items from session storage
+                sessionStorage.removeItem("selectedMartyrId");
+                sessionStorage.removeItem("pendingServiceId");
+                
+                // Redirect to cart page
+                navigate("/cart");
+                return; // Exit the function early
+              } catch (error) {
+                console.error("Error adding pending item to cart:", error);
+                // You might want to show an error message to the user here
+              }
+            } else {
+              // If there's no pending item, navigate to home page after a delay
+              setTimeout(() => {
+                navigate("/");
+              }, 2000);
+            }
           } else {
             console.error("Login failed after registration:", loginResult.error);
             setError("Registration successful, but login failed. Please try logging in manually.");

@@ -2,14 +2,12 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  
 }
 
 .cart-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 15px; /* This adds vertical space between rows */
-  margin-top: 20px;
   margin-top: 5%;
 }
 

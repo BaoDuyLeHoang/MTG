@@ -10,6 +10,7 @@
   border-collapse: separate;
   border-spacing: 0 15px; /* This adds vertical space between rows */
   margin-top: 20px;
+  margin-top: 5%;
 }
 
 .cart-table thead {
@@ -185,4 +186,33 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+
+.empty-cart-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+}
+
+.empty-cart-message h1 {
+  margin-bottom: 20px;
+}
+
+.go-to-services-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 30%;
+}
+
+.go-to-services-btn:hover {
+  background-color: #0056b3;
 }

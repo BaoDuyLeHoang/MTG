@@ -1,107 +1,192 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/header';
-import './cartPage.css';
-import deleteIcon from '../../assets/images/delete.png'; // Make sure to add this image to your assets folder
+import './CartPage.css';
+import deleteIcon from '../../assets/images/delete.png';
+import { getCartItemsByCustomerId, updateItemStatus } from "../../APIcontroller/API";
+import { useAuth } from "../../context/AuthContext";
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: 'Dịch vụ A', type: 'Loại 1', time: '2 giờ', price: 100000, graveCode: 'MO001', selected: false, image: 'https://static.spacet.vn/image-resized/768x7680_max/img/blog/2024-04-19/662236be443d0e3865d73562.webp' },
-    { id: 2, name: 'Dịch vụ B', type: 'Loại 2', time: '1 giờ', price: 150000, graveCode: 'MO002', selected: false, image: 'https://static.spacet.vn/image-resized/768x7680_max/img/blog/2024-04-19/662236be443d0e3865d73562.webp' },
-    { id: 3, name: 'Dịch vụ C', type: 'Loại 3', time: '3 giờ', price: 200000, graveCode: 'MO003', selected: false, image: 'https://static.spacet.vn/image-resized/768x7680_max/img/blog/2024-04-19/662236be443d0e3865d73562.webp' },
-    { id: 4, name: 'Dịch vụ D', type: 'Loại 4', time: '4 giờ', price: 250000, graveCode: 'MO004', selected: false, image: 'https://static.spacet.vn/image-resized/768x7680_max/img/blog/2024-04-19/662236be443d0e3865d73562.webp' },
-    { id: 5, name: 'Dịch vụ E', type: 'Loại 5', time: '5 giờ', price: 300000, graveCode: 'MO005', selected: false, image: 'https://static.spacet.vn/image-resized/768x7680_max/img/blog/2024-04-19/662236be443d0e3865d73562.webp' },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const navigate = useNavigate();
 
-  const handleDelete = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (isAuthLoading) {
+        // Wait for authentication to complete
+        return;
+      }
+
+      if (!user || !user.accountId) {
+        setError("User not authenticated. Please log in and try again.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await getCartItemsByCustomerId(user.accountId);
+        console.log('Cart items response:', response);
+
+        if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
+          const mappedItems = response.cartItemList.map(item => ({
+            ...item,
+            selected: item.status || false
+          }));
+          setCartItems(mappedItems);
+          console.log('All cart items:', mappedItems);
+        } else if (response && response.message === "No cart items found for this account.") {
+          setCartItems([]);
+          console.log('Cart is empty');
+        } else {
+          setCartItems([]);
+          console.log('Unexpected response format');
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+        setError("Failed to load cart items. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    fetchCartItems();
+  }, [user, isAuthLoading]);
+
+  const handleDelete = (cartId) => {
+    setCartItems(cartItems.filter(item => item.cartId !== cartId));
+    // You might want to add an API call here to delete the item from the backend
   };
 
-  const handleSelectItem = (id) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, selected: !item.selected } : item
-    ));
+  const handleSelectItem = async (cartId) => {
+    try {
+      const updatedItems = cartItems.map(item => 
+        item.cartId === cartId ? { ...item, selected: !item.selected } : item
+      );
+      setCartItems(updatedItems);
+      
+      const selectedItem = updatedItems.find(item => item.cartId === cartId);
+      await updateItemStatus(cartId, selectedItem.selected);
+    } catch (error) {
+      console.error("Error updating item status:", error);
+      // Optionally, you can show an error message to the user here
+    }
   };
 
-  const handleSelectAll = () => {
-    const allSelected = cartItems.every(item => item.selected);
-    setCartItems(cartItems.map(item => ({ ...item, selected: !allSelected })));
+  const handleSelectAll = async () => {
+    try {
+      const allSelected = cartItems.every(item => item.selected);
+      const updatedItems = cartItems.map(item => ({ ...item, selected: !allSelected }));
+      setCartItems(updatedItems);
+      
+      // Update status for all items
+      for (const item of updatedItems) {
+        await updateItemStatus(item.cartId, item.selected);
+      }
+    } catch (error) {
+      console.error("Error updating all items status:", error);
+      // Optionally, you can show an error message to the user here
+    }
   };
 
   const calculateCartTotal = () => {
     return cartItems
       .filter(item => item.selected)
-      .reduce((total, item) => total + item.price, 0);
+      .reduce((total, item) => total + item.serviceView.price, 0);
   };
 
   const handlePayment = () => {
     const selectedItems = cartItems.filter(item => item.selected);
-    console.log('Processing payment for:', selectedItems);
-    // Implement payment logic here
+    if (selectedItems.length === 0) {
+      alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+      return;
+    }
+    // Only pass the account ID to the checkout page
+    navigate('/checkout', { state: { accountId: user.accountId } });
+  };
+
+  const navigateToServices = () => {
+    navigate('/dichvu'); // Adjust this path if needed
   };
 
   return (
     <div className="cart-page">
       <Header />
       <div className="cart-container">
-        <h1>Giỏ hàng</h1>
-        <table className="cart-table">
-          <thead className='cart-table-header'>
-            <tr>
-              <th>
-                <input 
-                  type="checkbox" 
-                  checked={cartItems.every(item => item.selected)}
-                  onChange={handleSelectAll}
-                  className="select-all-checkbox"
-                />
-              </th>
-              <th>Tên dịch vụ</th>
-              <th>Loại</th>
-              <th>Thời gian thực hiện</th>
-              <th>Giá</th>
-              <th>Mã mộ</th>
-              <th>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cartItems.map((item) => (
-              <tr key={item.id}>
-                <td>
+        {loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>{error}</div>
+        ) : cartItems.length === 0 ? (
+          <div className="empty-cart-message">
+            <h1>Giỏ hàng của bạn đang trống</h1>
+            <button onClick={navigateToServices} className="go-to-services-btn">
+              Xem Dịch Vụ
+            </button>
+          </div>
+        ) : (
+          <table className="cart-table">
+            <thead className='cart-table-header'>
+              <tr>
+                <th>
                   <input 
                     type="checkbox" 
-                    checked={item.selected}
-                    onChange={() => handleSelectItem(item.id)}
-                    className="item-checkbox"
+                    checked={cartItems.length > 0 && cartItems.every(item => item.selected)}
+                    onChange={handleSelectAll}
+                    className="select-all-checkbox"
                   />
-                </td>
-                <td>
-                  <div className="service-info">
-                    <img src={item.image} alt={item.name} className="service-image" />
-                    <span>{item.name}</span>
-                  </div>
-                </td>
-                <td>{item.type}</td>
-                <td>{item.time}</td>
-                <td className='price'>{item.price.toLocaleString('vi-VN')} đ</td>
-                <td>{item.graveCode}</td>
-                <td>
-                  <button onClick={() => handleDelete(item.id)} className="delete-btn">
-                    <img src={deleteIcon} alt="Delete" className="delete-icon" />
-                  </button>
-                </td>
+                </th>
+                <th>Tên dịch vụ</th>
+                <th>Mô tả</th>
+                <th>Giá</th>
+                <th>Mã mộ</th>
+                <th>Thao tác</th>
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan="4" className="total-label">Tổng cộng:</td>
-              <td colSpan="3" className="total-amount">{calculateCartTotal().toLocaleString('vi-VN')} đ</td>
-            </tr>
-          </tfoot>
-        </table>
-        <div className="cart-actions">
-          <button onClick={handlePayment} className="payment-btn">Thanh Toán</button>
-        </div>
+            </thead>
+            <tbody>
+              {cartItems.map((item) => (
+                <tr key={item.cartId}>
+                  <td>
+                    <input 
+                      type="checkbox" 
+                      checked={item.selected}
+                      onChange={() => handleSelectItem(item.cartId)}
+                      className="item-checkbox"
+                    />
+                  </td>
+                  <td>
+                    <div className="service-info">
+                      <img src={item.serviceView.imagePath} alt={item.serviceView.serviceName} className="service-image" />
+                      <span>{item.serviceView.serviceName}</span>
+                    </div>
+                  </td>
+                  <td>{item.serviceView.description}</td>
+                  <td className='price'>{item.serviceView.price.toLocaleString('vi-VN')} đ</td>
+                  <td>{item.martyrCode}</td>
+                  <td>
+                    <button onClick={() => handleDelete(item.cartId)} className="delete-btn">
+                      <img src={deleteIcon} alt="Delete" className="delete-icon" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="3" className="total-label">Tổng cộng:</td>
+                <td colSpan="3" className="total-amount">{calculateCartTotal().toLocaleString('vi-VN')} đ</td>
+              </tr>
+            </tfoot>
+          </table>
+        )}
+        {cartItems.length > 0 && (
+          <div className="cart-actions">
+            <button onClick={handlePayment} className="payment-btn">Thanh Toán</button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -114,6 +114,7 @@ export const getCartItemsByCustomerId = async (customerId) => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
       }
     );
@@ -571,3 +572,28 @@ export const getAllServices = async () => {
   }
 };
 
+export const registerGuestAccount = async (registrationData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/Auth/register-account-guest`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(registrationData),
+    });
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      // If the response is JSON, parse it
+      const data = await response.json();
+      return { success: true, data };
+    } else {
+      // If the response is not JSON, treat it as plain text
+      const text = await response.text();
+      return { success: true, message: text };
+    }
+  } catch (error) {
+    console.error('Error in registerGuestAccount:', error);
+    return { success: false, error: error.message };
+  }
+};

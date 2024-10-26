@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SearchResult.css';
+import Header from '../../components/Header/header'; // Import the Header component
 
 
 const SearchResult = () => {
@@ -63,7 +64,7 @@ const SearchResult = () => {
       <button
         key="prev"
         onClick={() => handlePageChange(currentPage - 1)}
-        className={`pageButton ${currentPage === 1 ? 'disabledPageButton' : ''}`}
+        className={`search-result__page-button ${currentPage === 1 ? 'search-result__page-button--disabled' : ''}`}
         disabled={currentPage === 1}
       >
         ‹
@@ -76,13 +77,13 @@ const SearchResult = () => {
         <button
           key={1}
           onClick={() => handlePageChange(1)}
-          className="pageButton"
+          className="search-result__page-button"
         >
           1
         </button>
       );
       if (startPage > 2) {
-        buttons.push(<span key="ellipsis1">...</span>);
+        buttons.push(<span key="ellipsis1" className="search-result__page-ellipsis">...</span>);
       }
     }
 
@@ -92,7 +93,7 @@ const SearchResult = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`pageButton ${currentPage === i ? 'activePageButton' : ''}`}
+          className={`search-result__page-button ${currentPage === i ? 'search-result__page-button--active' : ''}`}
         >
           {i}
         </button>
@@ -102,13 +103,13 @@ const SearchResult = () => {
     // Last page
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
-        buttons.push(<span key="ellipsis2">...</span>);
+        buttons.push(<span key="ellipsis2" className="search-result__page-ellipsis">...</span>);
       }
       buttons.push(
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className="pageButton"
+          className="search-result__page-button"
         >
           {totalPages}
         </button>
@@ -120,7 +121,7 @@ const SearchResult = () => {
       <button
         key="next"
         onClick={() => handlePageChange(currentPage + 1)}
-        className={`pageButton ${currentPage === totalPages ? 'disabledPageButton' : ''}`}
+        className={`search-result__page-button ${currentPage === totalPages ? 'search-result__page-button--disabled' : ''}`}
         disabled={currentPage === totalPages}
       >
         ›
@@ -135,58 +136,61 @@ const SearchResult = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="heading">Kết Quả Tìm Kiếm</h1>
-      
-      <div className="resultsGrid">
-        {currentResults.map((grave) => (
-          <div
-            key={grave.martyrId}
-            className={`card ${hoveredCard === grave.martyrId ? 'cardHover' : ''}`}
-            onMouseEnter={() => setHoveredCard(grave.martyrId)}
-            onMouseLeave={() => setHoveredCard(null)}
-            onClick={() => handleCardClick(grave.martyrId)}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className="imageContainer">
-              <img
-                src="/api/placeholder/400/320"
-                alt={`Grave location of ${grave.name}`}
-                className="image"
-              />
-            </div>
-            
-            <div className="content">
-              <h2 className="name">{grave.name}</h2>
-              
-              <div className="infoGrid">
-                <div className="infoItem">
-                  <CalendarIcon />
-                  <span>Năm sinh: {new Date(grave.dateOfBirth).getFullYear()}</span>
-                </div>
-                <div className="infoItem">
-                  <CalendarIcon />
-                  <span>Năm mất: {new Date(grave.dateOfSacrifice).getFullYear()}</span>
-                </div>
-                <div className="infoItem">
-                  <HomeIcon />
-                  <span>Quê quán: {grave.origin}</span>
-                </div>
-                <div className="infoItem">
-                  <LocationIcon />
-                  <span>Vị trí: {grave.location}</span>
-                </div>
+    <>
+      <Header />
+      <div className="search-result__container">
+        <h1 className="search-result__heading">Kết Quả Tìm Kiếm</h1>
+        
+        <div className="search-result__grid">
+          {currentResults.map((grave) => (
+            <div
+              key={grave.martyrId}
+              className={`search-result__card ${hoveredCard === grave.martyrId ? 'search-result__card--hover' : ''}`}
+              onMouseEnter={() => setHoveredCard(grave.martyrId)}
+              onMouseLeave={() => setHoveredCard(null)}
+              onClick={() => handleCardClick(grave.martyrId)}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className="search-result__image-container">
+                <img
+                  src={grave.imageUrls[0].image}
+                  alt={`Grave location of ${grave.name}`}
+                  className="search-result__image"
+                />
               </div>
               
+              <div className="search-result__content">
+                <h2 className="search-result__name">{grave.name}</h2>
+                
+                <div className="search-result__info-grid">
+                  <div className="search-result__info-item">
+                   
+                    <span>Năm sinh: {new Date(grave.dateOfBirth).getFullYear()}</span>
+                  </div>
+                  <div className="search-result__info-item">
+                    
+                    <span>Năm mất: {new Date(grave.dateOfSacrifice).getFullYear()}</span>
+                  </div>
+                  <div className="search-result__info-item">
+                   
+                    <span>Quê quán: {grave.homeTown}</span>
+                  </div>
+                  <div className="search-result__info-item">
+                    
+                    <span>Vị trí: {grave.graveLocation}</span>
+                  </div>
+                </div>
+                
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="pagination">
-        {renderPaginationButtons()}
+        <div className="search-result__pagination">
+          {renderPaginationButtons()}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

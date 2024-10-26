@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { decodeToken, hasRequiredRole, ROLES } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
-
+import { loginUser } from '../APIcontroller/LoginController';
 const AuthContext = createContext(null);
 
 const SESSION_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
@@ -69,7 +69,24 @@ export function AuthProvider({ children, navigate }) {
     return null;
   };
 
-  const login = (token) => {
+  const loginWithCredentials = async (phoneNumber, password) => {
+    try {
+      const result = await loginUser({ phoneNumber, password });
+      if (result.success && result.data.token) {
+        localStorage.setItem('accessToken', result.data.token);
+        updateLastActivity();
+        const user = updateUserFromToken(result.data.token);
+        return { success: true, user };
+      } else {
+        return { success: false, error: result.error || 'Sai tài khoản hoặc mật khẩu' };
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      return { success: false, error: error.message || 'An unexpected error occurred' };
+    }
+  };
+
+  const loginWithToken = (token) => {
     localStorage.setItem('accessToken', token);
     updateLastActivity();
     return updateUserFromToken(token);
@@ -100,7 +117,7 @@ export function AuthProvider({ children, navigate }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, hasRole, login, logout, checkSession }}>
+    <AuthContext.Provider value={{ user, loading, hasRole, loginWithCredentials, loginWithToken, logout, checkSession }}>
       {children}
     </AuthContext.Provider>
   );

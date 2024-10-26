@@ -4,6 +4,8 @@ import "./header.css";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -47,7 +49,7 @@ const Header = () => {
       </nav>
       <div className="user-settings">
         <button onClick={toggleSettings} className="user-icon">
-          {displayName}
+          <FontAwesomeIcon icon={faUser} />
         </button>
         {showSettings && (
           <div className="settings-dropdown">

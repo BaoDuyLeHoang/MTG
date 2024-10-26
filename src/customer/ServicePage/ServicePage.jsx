@@ -59,7 +59,7 @@ const ServicePage = () => {
         </div>
       </div>
       <div className="service-container">
-        <h1>Dich vu dang co san</h1>
+        <h1>Dịch vụ đang có sẵn</h1>
         {services.map((category, index) => (
           <div key={index} className="change-planner-service">
             <h2>{category.categoryName}</h2>

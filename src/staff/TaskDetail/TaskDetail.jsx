@@ -6,6 +6,7 @@ import Sidebar from '../../components/Sidebar/sideBar';
 import { getTaskById, updateTaskStatus, updateTaskStatusWithImages } from '../../APIcontroller/API';
 import { storage } from '../../firebase'; // Make sure this import is correct
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import AlertMessage from '../../components/AlertMessage/AlertMessage';
 
 const TaskDetails = () => {
   const [task, setTask] = useState(null);
@@ -14,6 +15,9 @@ const TaskDetails = () => {
   const { taskId } = useParams();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('success');
 
   useEffect(() => {
     const fetchTaskDetails = async () => {
@@ -110,17 +114,28 @@ const TaskDetails = () => {
       setTask(updatedTask);
       let message = '';
       switch (newStatus) {
-        case 3: message = 'Task accepted successfully'; break;
-        case 2: message = 'Task refused successfully'; break;
-        case 4: message = 'Task completed successfully'; break;
-        case 5: message = 'Task marked as failed'; break;
-        default: message = 'Task status updated successfully';
+        case 3: message = 'Nhiệm vụ đã được chấp nhận thành công'; break;
+        case 2: message = 'Nhiệm vụ đã được từ chối thành công'; break;
+        case 4: message = 'Nhiệm vụ đã hoàn thành thành công'; break;
+        case 5: message = 'Nhiệm vụ đã được đánh dấu là thất bại'; break;
+        default: message = 'Trạng thái nhiệm vụ đã được cập nhật thành công';
       }
-      alert(message);
+      setAlertMessage(message);
+      setAlertSeverity('success');
+      setAlertOpen(true);
     } catch (error) {
       console.error('Error updating task status:', error);
-      alert('Failed to update task status. Please try again.');
+      setAlertMessage('Không thể cập nhật trạng thái nhiệm vụ. Vui lòng thử lại.');
+      setAlertSeverity('error');
+      setAlertOpen(true);
     }
+  };
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
   };
 
   if (error) return <div className="error-message">{error}</div>;
@@ -249,6 +264,12 @@ const TaskDetails = () => {
           </div>
         </div>
       </div>
+      <AlertMessage
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity={alertSeverity}
+        message={alertMessage}
+      />
     </div>
   );
 };

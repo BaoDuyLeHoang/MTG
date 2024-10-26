@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // Add this import
+import AlertMessage from "../../components/AlertMessage/AlertMessage"; // Add this import
 
 import "./ServiceListing.css";
 import { getAllServices, addToCart } from "../../APIcontroller/API";
@@ -19,6 +20,10 @@ const ServiceListing = () => {
 
   const navigate = useNavigate();
   const { user, checkSession } = useAuth(); // Add this line to use the AuthContext
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
 
   useEffect(() => {
     const layDichVu = async () => {
@@ -83,6 +88,11 @@ const ServiceListing = () => {
         setGioHang([...gioHang, dichVu]);
         console.log("Successfully added to cart");
 
+        // Show success alert
+        setAlertMessage("Dịch vụ đã được thêm vào giỏ hàng thành công!");
+        setAlertSeverity("success");
+        setAlertOpen(true);
+
         // Save the serviceId to session storage
         const savedCartIds = JSON.parse(sessionStorage.getItem("savedCartIds") || "[]");
         if (!savedCartIds.includes(dichVu.serviceId)) {
@@ -95,7 +105,10 @@ const ServiceListing = () => {
 
       } catch (error) {
         console.error("Error adding to cart:", error);
-        // Handle error (e.g., show an error message to the user)
+        // Show error alert
+        setAlertMessage("Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.");
+        setAlertSeverity("error");
+        setAlertOpen(true);
       }
     } else {
       console.log("User not logged in or accountId not available");
@@ -116,6 +129,13 @@ const ServiceListing = () => {
     return gioHang.some((item) => item.serviceId === serviceId);
   };
 
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
+
   if (dangTai) {
     return <div className="sl-loading">Đang tải dịch vụ...</div>;
   }
@@ -128,7 +148,7 @@ const ServiceListing = () => {
     <div className="service-listing-page">
       <Header />
       <div className="sl-container">
-      <div className="sl-header">
+        <div className="sl-header">
           <h1>Dịch Vụ Tưởng Niệm</h1>
         </div>
         <div className="sl-filter-container">
@@ -218,6 +238,12 @@ const ServiceListing = () => {
           </div>
         )}
       </div>
+      <AlertMessage
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity={alertSeverity}
+        message={alertMessage}
+      />
     </div>
   );
 };

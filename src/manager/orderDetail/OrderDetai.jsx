@@ -75,7 +75,7 @@ const OrderDetail = () => {
             const result = await createTaskForStaff(tasksToCreate);
             console.log("Tasks creation result:", result);
             
-            alert('All tasks assigned successfully!');
+            // alert('All tasks assigned successfully!');
         } catch (error) {
             console.error('Failed to assign tasks:', error);
             alert(`Failed to assign tasks: ${error.message}`);

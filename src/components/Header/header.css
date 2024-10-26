@@ -1,6 +1,7 @@
 .header {
     display: flex;
-    position: fixed;
+    position: sticky;
+    top: 0; /* Ensure the header sticks to the top */
     justify-content: space-between;
     align-items: center;
     background-color: rgb(66, 50, 50);
@@ -51,6 +52,7 @@
 .user-settings {
     position: relative;
     margin-left: auto; /* Push user settings to the right */
+    margin-right: 5%; /* Add margin to move it 5% from the right edge */
 }
 
 .user-icon {
@@ -61,7 +63,6 @@
     margin-right: 20px;
     font-size: 1rem;
     width: 100%;
-    align-items: right;
   }
   .user-icon button{
     background: none;
@@ -114,5 +115,6 @@
 
     .user-settings {
         order: 2;
+        margin-right: 5%; /* Maintain the 5% margin on smaller screens */
     }
 }

@@ -4,6 +4,7 @@ import { getServiceDetails, getServicesByCategory, getGravesByCustomerCode, addT
 import "./ServiceDetailPage.css";
 import Header from "../../components/Header/header";
 import { useAuth } from "../../context/AuthContext";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const ServiceDetailPage = () => {
   const [service, setService] = useState(null);
@@ -15,6 +16,9 @@ const ServiceDetailPage = () => {
   const { serviceId } = useParams();
   const { user, checkSession } = useAuth();
   const navigate = useNavigate();
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("info");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,14 +97,27 @@ const ServiceDetailPage = () => {
     setSelectedGrave(event.target.value);
   };
 
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
+
+  const showAlert = (message, severity = "info") => {
+    setAlertMessage(message);
+    setAlertSeverity(severity);
+    setAlertOpen(true);
+  };
+
   const handleAddToCart = async () => {
     if (!selectedGrave) {
-      alert("Vui lòng chọn mộ trước khi thêm vào giỏ hàng");
+      showAlert("Vui lòng chọn mộ trước khi thêm vào giỏ hàng", "warning");
       return;
     }
 
     if (!user || !user.accountId) {
-      alert("Không tìm thấy thông tin tài khoản. Vui lòng đăng nhập lại.");
+      showAlert("Không tìm thấy thông tin tài khoản. Vui lòng đăng nhập lại.", "error");
       return;
     }
 
@@ -118,7 +135,7 @@ const ServiceDetailPage = () => {
       console.log('Cart Item to be sent:', cartItem);
 
       await addToCart(cartItem);
-      
+      showAlert("Đã thêm vào giỏ hàng thành công", "success");
       
       // Navigate to the checkout page with the cart item
      
@@ -129,7 +146,7 @@ const ServiceDetailPage = () => {
         console.error("Response status:", error.response.status);
         console.error("Response headers:", error.response.headers);
       }
-      alert("Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại sau.");
+      showAlert("Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại sau.", "error");
     }
   };
 
@@ -157,6 +174,12 @@ const ServiceDetailPage = () => {
   return (
     <>
       <Header />
+      <AlertMessage
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity={alertSeverity}
+        message={alertMessage}
+      />
       <div className="container">
         <img src={service.image} alt={service.serviceName} className="header-image" />
         <h1 className="service-title">{service.serviceName}</h1>
@@ -190,7 +213,7 @@ const ServiceDetailPage = () => {
               <tr key={index}>
                 <td>{item.materialName}</td>
                 <td>{item.description}</td>
-                <td>{item.price}</td>
+                <td>{item.price} đ</td>
               </tr>
             ))}
             <tr className="separator-row">
@@ -202,7 +225,7 @@ const ServiceDetailPage = () => {
             </tr>
             <tr>
               <td colSpan={2}>Tổng giá tiền</td>
-              <td>{service.price}</td>
+              <td>{service.price} đ</td>
             </tr>
           </tbody>
         </table>

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Calendar, MapPin, Filter } from 'lucide-react';
-import './OrderHistory.css';
-import { getOrdersByAccountId } from '../../APIcontroller/API';
-import Header from '../../components/Header/header'; // Import the Header component
-import { useAuth } from '../../context/AuthContext'; // Import useAuth
+import React, { useState, useEffect } from "react";
+import { Search, Calendar, MapPin, Filter } from "lucide-react";
+import "./OrderHistory.css";
+import { getOrdersByAccountId } from "../../APIcontroller/API";
+import Header from "../../components/Header/header"; // Import the Header component
+import { useAuth } from "../../context/AuthContext"; // Import useAuth
 
-const iconStyle = { 
-  verticalAlign: 'middle',
-  marginRight: '8px'
+const iconStyle = {
+  verticalAlign: "middle",
+  marginRight: "8px",
 };
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth(); // Get user from AuthContext
@@ -21,7 +21,7 @@ const OrderHistory = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       if (!user || !user.accountId) {
-        setError('User information not available. Please log in.');
+        setError("User information not available. Please log in.");
         setLoading(false);
         return;
       }
@@ -31,8 +31,8 @@ const OrderHistory = () => {
         setOrders(fetchedOrders);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching orders:', err);
-        setError('Failed to fetch orders. Please try again later.');
+        console.error("Error fetching orders:", err);
+        setError("Failed to fetch orders. Please try again later.");
         setLoading(false);
       }
     };
@@ -42,33 +42,49 @@ const OrderHistory = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case 1: return 'status-pending';
-      case 2: return 'status-refused';
-      case 3: return 'status-in-progress';
-      case 4: return 'status-completed';
-      case 5: return 'status-failed';
-      default: return 'status-default';
+      case 1:
+        return "status-pending";
+      case 2:
+        return "status-refused";
+      case 3:
+        return "status-in-progress";
+      case 4:
+        return "status-completed";
+      case 5:
+        return "status-failed";
+      default:
+        return "status-default";
     }
   };
 
   const getStatusText = (status) => {
     switch (status) {
-        case 1: return 'Đã giao';
-      case 0: return "Đang giao cho nhan vien";
-      case 2: return "Từ chối";
-      case 3: return "Đang thực hiện";
-      case 4: return "Hoàn thành";
-      case 5: return "Thất bại";
-      default: return "Unknown";
+      case 0:
+        return "Đang giao cho nhân viên";
+      case 1:
+        return "Đã giao";
+
+      case 2:
+        return "Từ chối";
+      case 3:
+        return "Đang thực hiện";
+      case 4:
+        return "Hoàn thành";
+      case 5:
+        return "Thất bại";
+      default:
+        return "Unknown";
     }
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.orderDetails.some(detail => 
-      detail.martyrName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.orderId.toString().includes(searchTerm.toLowerCase())
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch = order.orderDetails.some(
+      (detail) =>
+        detail.martyrName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.orderId.toString().includes(searchTerm.toLowerCase())
     );
-    const matchesStatus = statusFilter === 'all' || order.status.toString() === statusFilter;
+    const matchesStatus =
+      statusFilter === "all" || order.status.toString() === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -81,7 +97,9 @@ const OrderHistory = () => {
       <div className="order-history">
         <div className="page-header">
           <h1 className="page-title">Lịch Sử Đơn Hàng</h1>
-          <p className="page-description">Xem và quản lý các đơn hàng bảo trì mộ liệt sĩ</p>
+          <p className="page-description">
+            Xem và quản lý các đơn hàng bảo trì mộ liệt sĩ
+          </p>
         </div>
 
         <div className="filters">
@@ -94,7 +112,7 @@ const OrderHistory = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <select
             className="status-select"
             value={statusFilter}
@@ -115,7 +133,9 @@ const OrderHistory = () => {
               <div className="card-header">
                 <div className="card-header-content">
                   <h2 className="order-id">Đơn hàng: {order.orderId}</h2>
-                  <span className={`status-badge ${getStatusClass(order.status)}`}>
+                  <span
+                    className={`status-badge ${getStatusClass(order.status)}`}
+                  >
                     {getStatusText(order.status)}
                   </span>
                 </div>
@@ -125,29 +145,51 @@ const OrderHistory = () => {
                   <div>
                     <div className="detail-item">
                       <Calendar size={16} style={iconStyle} />
-                      <span>Ngày đặt: {new Date(order.orderDate).toLocaleDateString('vi-VN')}</span>
+                      <span>
+                        Ngày đặt:{" "}
+                        {new Date(order.orderDate).toLocaleDateString("vi-VN")}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <Calendar size={16} style={iconStyle} />
-                      <span>Ngày bắt đầu: {new Date(order.startDate).toLocaleDateString('vi-VN')}</span>
+                      <span>
+                        Ngày bắt đầu:{" "}
+                        {new Date(order.startDate).toLocaleDateString("vi-VN")}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <Calendar size={16} style={iconStyle} />
-                      <span>Ngày kết thúc: {new Date(order.endDate).toLocaleDateString('vi-VN')}</span>
+                      <span>
+                        Ngày kết thúc:{" "}
+                        {new Date(order.endDate).toLocaleDateString("vi-VN")}
+                      </span>
                     </div>
                   </div>
                   <div>
-                    <h4 className="total-amount">Tổng tiền: {order.totalPrice.toLocaleString('vi-VN')} đ</h4>
+                    <h4 className="total-amount">
+                      Tổng tiền: {order.totalPrice.toLocaleString("vi-VN")} đ
+                    </h4>
                   </div>
                 </div>
                 {order.orderDetails.map((detail, index) => (
                   <div key={index} className="service-detail">
                     <h4 className="service-name">{detail.serviceName}</h4>
-                    <p className="martyr-name">Tên liệt sĩ: {detail.martyrName}</p>
-                    <p className="price">Giá: {detail.orderPrice.toLocaleString('vi-VN')} đ</p>
-                    <p className="status-order">Trạng thái: {getStatusText(detail.statusTask)}</p>
+                    <p className="martyr-name">
+                      Tên liệt sĩ: {detail.martyrName}
+                    </p>
+                    <p className="price">
+                      Giá: {detail.orderPrice.toLocaleString("vi-VN")} đ
+                    </p>
+                    <p className="status-order">
+                      Trạng thái: {getStatusText(detail.statusTask)}
+                    </p>
                     {detail.staffs && detail.staffs.length > 0 && (
-                      <p className="staff">Nhân viên: {detail.staffs.map(staff => staff.staffFullName).join(', ')}</p>
+                      <p className="staff">
+                        Nhân viên:{" "}
+                        {detail.staffs
+                          .map((staff) => staff.staffFullName)
+                          .join(", ")}
+                      </p>
                     )}
                   </div>
                 ))}

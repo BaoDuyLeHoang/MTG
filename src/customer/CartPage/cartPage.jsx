@@ -10,13 +10,18 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartItems = async () => {
+      if (isAuthLoading) {
+        // Wait for authentication to complete
+        return;
+      }
+
       if (!user || !user.accountId) {
-        setError("User not authenticated");
+        setError("User not authenticated. Please log in and try again.");
         setLoading(false);
         return;
       }
@@ -29,13 +34,16 @@ const CartPage = () => {
         if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
           const mappedItems = response.cartItemList.map(item => ({
             ...item,
-            selected: item.status || false // Set default value to false if status is undefined
+            selected: item.status || false
           }));
           setCartItems(mappedItems);
-          console.log('All cart items:', mappedItems); // New console log
+          console.log('All cart items:', mappedItems);
+        } else if (response && response.message === "No cart items found for this account.") {
+          setCartItems([]);
+          console.log('Cart is empty');
         } else {
           setCartItems([]);
-          console.log('Cart is empty'); // New console log
+          console.log('Unexpected response format');
         }
         setLoading(false);
       } catch (error) {
@@ -46,7 +54,7 @@ const CartPage = () => {
     };
 
     fetchCartItems();
-  }, [user]);
+  }, [user, isAuthLoading]);
 
   const handleDelete = (cartId) => {
     setCartItems(cartItems.filter(item => item.cartId !== cartId));
@@ -100,16 +108,25 @@ const CartPage = () => {
     navigate('/checkout', { state: { accountId: user.accountId } });
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  const navigateToServices = () => {
+    navigate('/dichvu'); // Adjust this path if needed
+  };
 
   return (
     <div className="cart-page">
       <Header />
       <div className="cart-container">
-        <h1>Giỏ hàng</h1>
-        {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
+        {loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>{error}</div>
+        ) : cartItems.length === 0 ? (
+          <div className="empty-cart-message">
+            <h1>Giỏ hàng của bạn đang trống</h1>
+            <button onClick={navigateToServices} className="go-to-services-btn">
+              Xem Dịch Vụ
+            </button>
+          </div>
         ) : (
           <table className="cart-table">
             <thead className='cart-table-header'>
@@ -165,9 +182,11 @@ const CartPage = () => {
             </tfoot>
           </table>
         )}
-        <div className="cart-actions">
-          <button onClick={handlePayment} className="payment-btn">Thanh Toán</button>
-        </div>
+        {cartItems.length > 0 && (
+          <div className="cart-actions">
+            <button onClick={handlePayment} className="payment-btn">Thanh Toán</button>
+          </div>
+        )}
       </div>
     </div>
   );

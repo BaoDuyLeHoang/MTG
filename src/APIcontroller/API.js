@@ -265,10 +265,7 @@ export const deleteCartItem = async (cartItemId) => {
   try {
     const token = localStorage.getItem("accessToken");
     console.log("Deleting cart item with ID:", cartItemId);
-    console.log(
-      "API URL:",
-      `${BASE_URL}${API_ENDPOINTS.DELETE_CART_ITEM}/${cartItemId}`
-    );
+    console.log("API URL:", `${BASE_URL}${API_ENDPOINTS.DELETE_CART_ITEM}/${cartItemId}`);
 
     const response = await axios.delete(
       `${BASE_URL}${API_ENDPOINTS.DELETE_CART_ITEM}/${cartItemId}`,
@@ -597,3 +594,4 @@ export const registerGuestAccount = async (registrationData) => {
     return { success: false, error: error.message };
   }
 };
+

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./SearchGraveInterface.css";
 import Header from "../Header/header";
 import { searchGraves } from "../../APIcontroller/API";
+import AlertMessage from "../AlertMessage/AlertMessage";
 
 const SearchGraveInterface = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const SearchGraveInterface = () => {
     deathYear: "",
     hometown: "",
   });
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,18 +24,34 @@ const SearchGraveInterface = () => {
     e.preventDefault();
     try {
       const results = await searchGraves(searchParams);
-      // Navigate to the search results page with the results
-      navigate("/search-results", { state: { results } });
+      if (results.length === 0) {
+        setAlertOpen(true);
+      } else {
+        navigate("/search-results", { state: { results } });
+      }
     } catch (error) {
       console.error("Error searching graves:", error);
-      // Handle error (e.g., show an error message to the user)
+      setAlertOpen(true);
     }
+  };
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
   };
 
   return (
     <div>
       <div>
         <Header />
+        <AlertMessage
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity="info"
+        message="Không có kết quả"
+      />
       </div>
       <div className="search-grave-interface-container">
         <div className="search-container">
@@ -79,6 +97,7 @@ const SearchGraveInterface = () => {
           </form>
         </div>
       </div>
+   
     </div>
   );
 };

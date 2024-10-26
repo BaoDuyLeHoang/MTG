@@ -139,3 +139,12 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.service-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.service-card-link:hover {
+    opacity: 0.8;
+}

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Header from '../../components/Header/header';
 import './CartPage.css';
 import deleteIcon from '../../assets/images/delete.png';
-import { getCartItemsByCustomerId, updateItemStatus } from "../../APIcontroller/API";
+import { getCartItemsByCustomerId, updateItemStatus, deleteCartItem } from "../../APIcontroller/API";
 import { useAuth } from "../../context/AuthContext";
+import AlertMessage from '../../components/AlertMessage/AlertMessage';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -12,6 +13,11 @@ const CartPage = () => {
   const [error, setError] = useState(null);
   const { user, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Add these new state variables for the alert
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('success');
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -56,9 +62,21 @@ const CartPage = () => {
     fetchCartItems();
   }, [user, isAuthLoading]);
 
-  const handleDelete = (cartId) => {
-    setCartItems(cartItems.filter(item => item.cartId !== cartId));
-    // You might want to add an API call here to delete the item from the backend
+  const handleDelete = async (cartId) => {
+    try {
+      await deleteCartItem(cartId);
+      setCartItems(cartItems.filter(item => item.cartId !== cartId));
+      // Show success alert
+      setAlertMessage("Sản phẩm đã được xóa khỏi giỏ hàng thành công!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
+      // Show error alert
+      setAlertMessage("Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại sau.");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+    }
   };
 
   const handleSelectItem = async (cartId) => {
@@ -112,9 +130,23 @@ const CartPage = () => {
     navigate('/dichvu'); // Adjust this path if needed
   };
 
+  // Function to handle closing the alert
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
+
   return (
     <div className="cart-page">
       <Header />
+      <AlertMessage 
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity={alertSeverity}
+        message={alertMessage}
+      />
       <div className="cart-container">
         {loading ? (
           <div>Loading...</div>
@@ -165,7 +197,9 @@ const CartPage = () => {
                   </td>
                   <td>{item.serviceView.description}</td>
                   <td className='price'>{item.serviceView.price.toLocaleString('vi-VN')} đ</td>
-                  <td>{item.martyrCode}</td>
+                  <td>
+                    <Link to={`/chitietmo/${item.marrtyrId}`}>{item.martyrCode}</Link>
+                  </td>
                   <td>
                     <button onClick={() => handleDelete(item.cartId)} className="delete-btn">
                       <img src={deleteIcon} alt="Delete" className="delete-icon" />

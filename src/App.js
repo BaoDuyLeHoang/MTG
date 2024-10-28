@@ -46,6 +46,7 @@ import SearchResult from './customer/SearchResult/SearchResult';
 import ServiceListing from './customer/ServiceListing/ServiceListing';
 import Register from './customer/Register/Register';
 import RelativeGrave from './customer/RelaticeGrave/RelativeGrave';
+import OrderDetailCus from './customer/OrderDetailCus/OrderDetailCus';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -70,7 +71,7 @@ function AppContent() {
           <Route path="/relative-grave" element={<RelativeGrave />} />
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
-          
+          <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />

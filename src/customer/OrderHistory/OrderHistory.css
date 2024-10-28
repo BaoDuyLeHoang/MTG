@@ -204,6 +204,9 @@
     display: flex;
     align-items: center;
   }
+  .martyr-name {
+    grid-column: span 2;
+  }
 
   .service-detail .staff {
     grid-column: 1 / -1;
@@ -213,4 +216,21 @@
     .service-detail {
       grid-template-columns: 1fr;
     }
+  }
+
+  .view-detail-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .view-detail-button:hover {
+    background-color: #0056b3;
   }

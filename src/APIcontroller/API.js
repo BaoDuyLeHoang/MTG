@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
   GET_TASKS_BY_ACCOUNT: "/Task/tasks/account", // Add this new endpoint
   UPDATE_TASK_STATUS: "/Task/tasks", // Update this line
   GET_ALL_SERVICES: "/Service/services", // Add this new endpoint
+  GET_ORDER_DETAILS: "/Orders", // Add this line
   // Add other endpoints as needed
 };
 
@@ -595,3 +596,25 @@ export const registerGuestAccount = async (registrationData) => {
   }
 };
 
+// Add new function to fetch order details
+export const getOrderDetails = async (orderId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching order details for ID: ${orderId}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_ORDER_DETAILS}/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("Order details API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    throw error;
+  }
+};

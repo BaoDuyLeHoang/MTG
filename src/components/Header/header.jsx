@@ -25,7 +25,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="logo">
+      <div className="header-logo">
         <img src={logo} alt="Logo" />
       </div>
       <nav className="navigation">

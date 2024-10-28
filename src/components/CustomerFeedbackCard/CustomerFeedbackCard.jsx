@@ -1,11 +1,12 @@
 import React from "react";
 import "./CustomerFeedbackCard.css";
 import image1 from "../../assets/images/image1.png";
+
 const CustomerFeedbackCard = () => {
   return (
-    <>
-      <div className="review-card">
-        <div className="stars">
+    <div className="review-card">
+      <div className="review-card-content">
+        <div className="stars-container">
           {[...Array(5)].map((_, index) => (
             <svg
               key={index}
@@ -36,7 +37,7 @@ const CustomerFeedbackCard = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

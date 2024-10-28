@@ -34,21 +34,24 @@ export default function Login() {
         // Check for pending cart items
         const selectedMartyrId = sessionStorage.getItem("selectedMartyrId");
         const pendingServiceId = sessionStorage.getItem("pendingServiceId");
-        
+
         if (selectedMartyrId && pendingServiceId && result.user.accountId) {
           try {
             console.log("Adding pending item to cart");
-            await addToCart({
-              serviceId: pendingServiceId,
-              accountId: result.user.accountId,
-              martyrId: selectedMartyrId
-            }, result.user.token);
+            await addToCart(
+              {
+                serviceId: pendingServiceId,
+                accountId: result.user.accountId,
+                martyrId: selectedMartyrId,
+              },
+              result.user.token
+            );
             console.log("Successfully added pending item to cart");
-            
+
             // Clear the pending items from session storage
             sessionStorage.removeItem("selectedMartyrId");
             sessionStorage.removeItem("pendingServiceId");
-            
+
             // Redirect to cart page
             navigate("/cart");
             return; // Exit the function early
@@ -78,7 +81,11 @@ export default function Login() {
         }
       } else {
         console.error("Đăng nhập thất bại:", result);
-        setAlertMessage(result.error ? translateErrorMessage(result.error) : "Đăng nhập thất bại. Vui lòng thử lại.");
+        setAlertMessage(
+          result.error
+            ? translateErrorMessage(result.error)
+            : "Đăng nhập thất bại. Vui lòng thử lại."
+        );
         setOpenAlert(true);
       }
     } catch (error) {
@@ -92,69 +99,75 @@ export default function Login() {
 
   const translateErrorMessage = (error) => {
     const translations = {
-      "Login failed. Please try again.": "Đăng nhập thất bại. Vui lòng thử lại.",
+      "Login failed. Please try again.":
+        "Đăng nhập thất bại. Vui lòng thử lại.",
       "Invalid credentials": "Thông tin đăng nhập không hợp lệ",
       "User not found": "Không tìm thấy người dùng",
-      "Incorrect password": "Mật khẩu không chính xác",
+      "Incorrect password": "Mật khẩu không chính x��c",
       "Account is locked": "Tài khoản đã bị khóa",
-      "Too many failed attempts": "Quá nhiều lần đăng nhập thất bại. Vui lòng thử lại sau.",
+      "Too many failed attempts":
+        "Quá nhiều lần đăng nhập thất bại. Vui lòng thử lại sau.",
       // Add more translations as needed
     };
     return translations[error] || "Đăng nhập thất bại. Vui lòng thử lại.";
   };
 
   const handleCloseAlert = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setOpenAlert(false);
   };
 
   return (
-    <div className="login-container">
+    <div>
       <Header />
-      <AlertMessage
-        open={openAlert}
-        handleClose={handleCloseAlert}
-        severity="error"
-        message={alertMessage}
-      />
-      <div className="login-image">
-        <img src={lk} className="login-logo" />
-      </div>
-      <div className="login-box">
-        <form onSubmit={handleLogin} className="login-form">
-          <div className="input-group">
-            <label>Số điện thoại</label>
-            <input
-              type="text"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              required
-            />
+      <div className="login-container">
+        <AlertMessage
+          open={openAlert}
+          handleClose={handleCloseAlert}
+          severity="error"
+          message={alertMessage}
+        />
+        <div className="login-content">
+          <div className="login-image">
+            <img src={lk} className="login-logo" alt="logo" />
           </div>
-          <div className="input-group">
-            <label>Mật khẩu</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <div className="login-box">
+            <form onSubmit={handleLogin} className="login-form">
+              <div className="input-group">
+                <label>Số điện thoại</label>
+                <input
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Mật khẩu</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className="login-btn" disabled={isLoading}>
+                {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+              </button>
+              <div className="forgot-password-register-container">
+                <a href="#" className="forgot-password">
+                  Quên mật khẩu?
+                </a>
+                <Link to="/register" className="forgot-password">
+                  Đăng ký
+                </Link>
+              </div>
+              {error && <p className="error-message">{error}</p>}
+            </form>
           </div>
-          <button type="submit" className="login-btn" disabled={isLoading}>
-            {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
-          </button>
-          <div className="forgot-password-register-container">
-            <a href="#" className="forgot-password">
-              Quên mật khẩu?
-            </a>
-            <Link to="/register" className="forgot-password">
-              Đăng ký
-            </Link>
-          </div>
-          {error && <p className="error-message">{error}</p>}
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,129 @@
+.staff-management-container {
+    display: flex;
+}
+
+.staff-table-container {
+    flex: 1;
+    padding: 20px;
+}
+
+.sidebar {
+    width: 250px; /* Adjust the width as needed */
+}
+
+.page-title {
+    text-align: left; /* Align the title to the left */
+    margin-bottom: 20px; /* Add some space below the title */
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Center the text in table cells */
+
+
+.staff-table th, .staff-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.staff-table th {
+    background-color: #f4f4f4;
+    font-weight: 600;
+}
+
+.staff-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+}
+
+.status-badge.active {
+    background-color: #e6f4ea;
+    color: #137333;
+}
+
+.status-badge.inactive {
+    background-color: #fce8e6;
+    color: #c5221f;
+}
+
+.action-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #1a73e8;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.action-button:hover {
+    background-color: #1557b0;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #666;
+}
+
+.filter-search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.staff-filter {
+    flex: 7;
+}
+.search-bar {
+    flex: 3;
+}
+button {
+    border-radius: 5px;
+    width: 80px;
+    background-color: rgb(194, 185, 101); /* Change button color to RGB */
+    
+}
+
+.status-action-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    min-width: 120px;  /* Added fixed minimum width */
+    width: fit-content;  /* Allow button to grow if text is longer */
+    padding: 8px 16px;  /* Slightly increased padding */
+}
+
+.status-action-btn.deactivate {
+    background-color: #ff4d4f;
+    color: white;
+}
+
+.status-action-btn.deactivate:hover {
+    background-color: #ff7875;
+}
+
+.status-action-btn.activate {
+    background-color: #52c41a;
+    color: white;
+}
+
+.status-action-btn.activate:hover {
+    background-color: #73d13d;
+}

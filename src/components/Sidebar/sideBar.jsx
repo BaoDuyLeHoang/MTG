@@ -1,70 +1,163 @@
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faShoppingCart, faHistory, faTasks, faUser, faMonument, faSignOutAlt, faMoneyBillWave, faComments } from '@fortawesome/free-solid-svg-icons';
-import logo from '../../assets/logo/logo-giao-duc-an-nhien.png';
-import './sideBar.css';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHome,
+  faShoppingCart,
+  faHistory,
+  faTasks,
+  faUser,
+  faMonument,
+  faSignOutAlt,
+  faMoneyBillWave,
+  faComments,
+  faChartLine,
+} from "@fortawesome/free-solid-svg-icons";
+import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
+import "./sideBar.css";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Sidebar = () => {
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const handleLogout = async () => {
-        try {
-            await logout();
-            navigate('/login');
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    };
+  // Moved menuItems inside component to access user context
+  const menuItems = [
+    { to: "/", icon: faChartLine, text: "Thống kê", roles: [1, 2] },
+    {
+      to: "/danhsachaccount",
+      icon: faUser,
+      text: "Quản lý tài khoản",
+      roles: [1],
+    },
+    {
+      to: "/danhsachdonhang",
+      icon: faShoppingCart,
+      text: "Đơn hàng",
+      roles: [2],
+    },
+    { to: "/danhSachCongViec", icon: faTasks, text: "Công việc", roles: [2] },
+    { to: "/danhsachnhanvien", icon: faUser, text: "Nhân viên", roles: [2] },
+    { to: "/danhsachmo", icon: faMonument, text: "Danh sách mộ", roles: [2] },
+    {
+      to: "/danhsachthanhtoan",
+      icon: faMoneyBillWave,
+      text: "Thanh toán",
+      roles: [2],
+    },
+    {
+      to: "/danhsachphannhoikhachhang",
+      icon: faComments,
+      text: "Phản hồi khách hàng",
+      roles: [2],
+    },
+    {
+      to: "/chitietdonhang",
+      icon: faShoppingCart,
+      text: "Giao việc",
+      roles: [2],
+    },
+  ];
 
-    const menuItems = [
-        { to: "/", icon: faHome, text: "Trang chủ", roles: [1, "staff"] },
-        { to: "/danhsachaccount", icon: faUser, text: "Quản lý tài khoản", roles: [1] },
-        { to: "/danhsachdonhang", icon: faShoppingCart, text: "Đơn hàng", roles: [2] },
-        { to: "/danhSachCongViec", icon: faTasks, text: "Công việc", roles: [2] },
-        { to: "/danhsachnhanvien", icon: faUser, text: "Nhân viên", roles: [2] },
-        { to: "/danhsachmo", icon: faMonument, text: "Danh sách mộ", roles: [2] },
-        { to: "/danhsachthanhtoan", icon: faMoneyBillWave, text: "Thanh toán", roles: [2] },
-        { to: "/danhsachphannhoikhachhang", icon: faComments, text: "Phản hồi khách hàng", roles: [2] },
-        { to: "/chitietdonhang", icon: faShoppingCart, text: "Giao việc", roles: [2] },
-    ];
+  // Group menu items by category
+  const menuCategories = {
+    admin: menuItems.filter((item) => item.roles.includes(1)),
+    staff: menuItems.filter((item) => item.roles.includes(2)),
+  };
 
-    return (
-        <aside className="sidebar">
-            <div className="logo-container">
-                <img src={logo} alt="Logo" className="logo" />
-            </div>
-            <div className='user-info'>
-                <div className='user-avatar'>
-                    <img alt="Avatar" />
-                </div>
-                <div className='user-details'>
-                    <p>{user?.accountName || 'User Name'}</p>
-                    <p>{user?.role || 'Role'}</p>
-                </div>
-            </div>
-            <nav className="sidebar-nav">
-                <ul>
-                    {menuItems.map((item, index) => (
-                        (item.roles.includes(user?.role)) && (
-                            <li key={index}>
-                                <Link to={item.to}>
-                                    <FontAwesomeIcon icon={item.icon} /> {item.text}
-                                </Link>
-                            </li>
-                        )
-                    ))}
-                    <li>
-                        <Link onClick={handleLogout}>
-                            <FontAwesomeIcon icon={faSignOutAlt} /> Đăng xuất
-                        </Link>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    );
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Add toast notification here
+    }
+  };
+
+  // Active menu item tracking
+  const isActiveRoute = (path) => location.pathname === path;
+
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-header">
+        <div className="logo-container">
+          <img src={logo} alt="Logo" className="logo" />
+        </div>
+        <h3 className="user-name">Welcome, {user?.accountName || "Guest"}!</h3>
+        <div className="user-profile">
+          <div className="user-avatar">
+            {user?.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={user?.accountName || "User"}
+                onError={(e) => {
+                  e.target.style.display = "none";
+                  e.target.nextElementSibling.style.display = "flex";
+                }}
+              />
+            ) : (
+              <div className="default-avatar">
+                <FontAwesomeIcon icon={faUser} />
+              </div>
+            )}
+          </div>
+
+          <div className="user-info">
+            <span className="user-role">
+              {user?.role === 1 ? "Admin" : user?.role === 2 ? "Staff" : "User"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <nav className="sidebar-nav">
+        {user?.role === 1 && (
+          <div className="menu-category">
+            <h3>Admin</h3>
+            <MenuItems
+              items={menuCategories.admin}
+              isActiveRoute={isActiveRoute}
+            />
+          </div>
+        )}
+
+        {user?.role === 2 && (
+          <div className="menu-category">
+            <h3>Staff</h3>
+            <MenuItems
+              items={menuCategories.staff}
+              isActiveRoute={isActiveRoute}
+            />
+          </div>
+        )}
+
+        <div className="sidebar-footer">
+          <button className="logout-button" onClick={handleLogout}>
+            <FontAwesomeIcon icon={faSignOutAlt} /> Đăng xuất
+          </button>
+        </div>
+      </nav>
+    </aside>
+  );
 };
+
+// Separate component for menu items
+const MenuItems = ({ items, isActiveRoute }) => (
+  <ul>
+    {items.map((item, index) => (
+      <li key={index}>
+        <Link
+          to={item.to}
+          className={`sidebar-menu-item ${isActiveRoute(item.to) ? "active" : ""}`}
+        >
+          <FontAwesomeIcon icon={item.icon} />
+          <span>{item.text}</span>
+        </Link>
+      </li>
+    ))}
+  </ul>
+);
 
 export default Sidebar;

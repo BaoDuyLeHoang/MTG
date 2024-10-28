@@ -1,68 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './staffFilter.css';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
-const StaffFilter = ({ onFilterChange }) => {
-  const [activeStatus, setActiveStatus] = useState('active');
-  const [selectedCategories, setSelectedCategories] = useState(['all']);
+const StaffFilter = ({ onFilterChange, staffData }) => {
+  const [selectedArea, setSelectedArea] = useState('all');
+  const [uniqueAreas, setUniqueAreas] = useState([]);
 
-  const categories = ['K01', 'K02'];
+  useEffect(() => {
+    // Extract unique areas from staffData
+    const areas = [...new Set(staffData.map(staff => staff.areaId))]
+      .filter(areaId => areaId !== null)
+      .sort((a, b) => a - b);
 
-  const handleStatusChange = (status) => {
-    setActiveStatus(status);
-    onFilterChange({ status, categories: selectedCategories });
-  };
+    setUniqueAreas(areas);
+  }, [staffData]);
 
-  const handleCategoryChange = (category) => {
-    let newCategories;
-    if (category === 'all') {
-      newCategories = ['all'];
-    } else {
-      newCategories = selectedCategories.includes('all') 
-        ? [category]
-        : selectedCategories.includes(category)
-          ? selectedCategories.filter(c => c !== category)
-          : [...selectedCategories, category];
-      
-      if (newCategories.length === 0) {
-        newCategories = ['all'];
-      } else if (newCategories.length === categories.length) {
-        newCategories = ['all'];
-      }
-    }
-    setSelectedCategories(newCategories);
-    onFilterChange({ status: activeStatus, categories: newCategories });
+  const handleAreaChange = (areaId) => {
+    const newArea = areaId === selectedArea ? 'all' : areaId;
+    setSelectedArea(newArea);
+    onFilterChange(newArea);
   };
 
   return (
     <div className="staff-filter">
-      <div className="status-filter">
-        <button 
-          className={activeStatus === 'active' ? 'active' : ''}
-          onClick={() => handleStatusChange('active')}
-        >
-          ✓ Đang hoạt động
-        </button>
-        <button 
-          className={activeStatus === 'inactive' ? 'active' : ''}
-          onClick={() => handleStatusChange('inactive')}
-        >
-          Ngưng hoạt động
-        </button>
+      <div className="filter-header">
+        <FaMapMarkerAlt className="location-icon" />
+        <h3>Lọc theo khu vực</h3>
       </div>
-      <div className="category-filter">
+      <div className="area-filter">
         <button 
-          className={selectedCategories.includes('all') ? 'active' : ''}
-          onClick={() => handleCategoryChange('all')}
+          className={`filter-btn ${selectedArea === 'all' ? 'active' : ''}`}
+          onClick={() => handleAreaChange('all')}
         >
-          ✓ Tất cả
+          Tất cả khu vực
         </button>
-        {categories.map(category => (
-          <button 
-            key={category}
-            className={selectedCategories.includes(category) ? 'active' : ''}
-            onClick={() => handleCategoryChange(category)}
+        {uniqueAreas.map(areaId => (
+          <button
+            key={areaId}
+            className={`filter-btn ${selectedArea === areaId ? 'active' : ''}`}
+            onClick={() => handleAreaChange(areaId)}
           >
-            {category}
+            Khu vực {areaId}
           </button>
         ))}
       </div>

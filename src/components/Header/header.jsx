@@ -55,7 +55,7 @@ const Header = () => {
           <div className="settings-dropdown">
             {user ? (
               <>
-                {/* <Link to="/profile">Hồ sơ</Link> */}
+                <Link to="/user-profile">Hồ sơ</Link>
                  <Link to="/relative-grave">Mộ người thân</Link>  
                 <Link to="/cart">Giỏ hàng</Link>
                 <Link to="/order-history">Lịch sử đơn hàng</Link>

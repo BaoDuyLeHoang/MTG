@@ -50,6 +50,7 @@ import ServiceListing from './customer/ServiceListing/ServiceListing';
 import Register from './customer/Register/Register';
 import RelativeGrave from './customer/RelaticeGrave/RelativeGrave';
 import OrderDetailCus from './customer/OrderDetailCus/OrderDetailCus';
+import UserProfile from './customer/UserProfile/UserProfile';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -76,6 +77,7 @@ function AppContent() {
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
           <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
+          <Route path="/user-profile" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><UserProfile /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
           <Route path="/danhsachaccount" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AccountManagement /></ProtectedRoute>} />

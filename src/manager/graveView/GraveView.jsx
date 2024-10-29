@@ -7,7 +7,7 @@ import { getAllGraves } from "../../APIcontroller/API";
 export default function GraveView() {
   const [graves, setGraves] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(8);
+  const [pageSize] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -53,6 +53,15 @@ export default function GraveView() {
     }
   };
 
+  const filteredGraves = graves.filter((grave) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      (grave.martyrCode && grave.martyrCode.toLowerCase().includes(searchLower)) ||
+      (grave.name?.[0] && grave.name[0].toLowerCase().includes(searchLower)) ||
+      (grave.areaId && grave.areaId.toString().includes(searchLower))
+    );
+  });
+
   if (loading) {
     return (
       <div className="gv-container">
@@ -79,15 +88,18 @@ export default function GraveView() {
     <div className="gv-container">
       <Sidebar />
       <div className="gv-content">
-        <h1 className="gv-title">Quản Lý Mộ</h1>
+        <h1 className="gv-title">Danh Sách Mộ</h1>
         <div className="gv-search-filters">
-          <input
-            type="search"
-            className="gv-search-input"
-            placeholder="Tìm kiếm..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className="search-wrapper">
+            <i className="fas fa-search search-icon"></i>
+            <input
+              type="search"
+              className="search-input"
+              placeholder="Tìm kiếm theo mã mộ, tên liệt sĩ hoặc khu vực..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           <Link to="/them-mo">
             <button type="button" className="gv-add-button">Thêm mộ</button>
           </Link>
@@ -104,8 +116,8 @@ export default function GraveView() {
               </tr>
             </thead>
             <tbody>
-              {graves.length > 0 ? (
-                graves.map((grave) => (
+              {filteredGraves.length > 0 ? (
+                filteredGraves.map((grave) => (
                   <tr key={grave.martyrId} className="gv-table-row">
                     <td>{grave.martyrCode || "N/A"}</td>
                     <td>{grave.name?.[0] || "N/A"}</td>
@@ -127,7 +139,7 @@ export default function GraveView() {
               ) : (
                 <tr>
                   <td colSpan="5" className="gv-no-data">
-                    Không có dữ liệu
+                    Không tìm thấy kết quả phù hợp
                   </td>
                 </tr>
               )}

@@ -676,7 +676,7 @@ export const updateAccountStatus = async (accountId) => {
     }
 };
 
-export const getAllGraves = async (page = 1, pageSize = 10) => {
+export const  getAllGraves = async (page = 1, pageSize = 5) => {
   try {
     const token = localStorage.getItem("accessToken");
     console.log("Fetching graves with pagination");

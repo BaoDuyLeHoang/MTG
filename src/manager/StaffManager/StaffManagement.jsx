@@ -53,55 +53,58 @@ const StaffManagement = () => {
     return (
         <div className="staff-management-container">
             <Sidebar />
-            <div className="staff-table-container">
-                <h1 className="page-title">Danh sách nhân viên</h1>
-                <div className="filter-search-container">
-                    <StaffFilter 
-                        onFilterChange={handleFilterChange} 
-                        staffData={staffData} // Pass the staff data to the filter
-                    />
-                    <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-                </div>
+            <div className="staff-management-content">
+                <h1>Quản Lý Nhân Viên</h1>
+                
                 {loading ? (
-                    <div className="loading">Loading...</div>
+                    <div className="centered">
+                        <div className="loading-spinner"></div>
+                        <p>Đang tải dữ liệu...</p>
+                    </div>
                 ) : (
-                    <table className="staff-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên nhân viên</th>
-                                <th>Thời gian bắt đầu làm</th>
-                                <th>Tình trạng</th>
-                                <th>Khu Vực</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredStaff.map((staff) => (
-                                <tr key={staff.accountId}>
-                                    <td>{staff.accountId}</td>
-                                    <td>{staff.fullName}</td>
-                                    <td>{new Date(staff.createAt).toLocaleDateString()}</td>
-                                    <td>
-                                        <span className={`status-badge ${staff.status ? 'active' : 'inactive'}`}>
-                                            {staff.status ? 'Hoạt động' : 'Không hoạt động'}
-                                        </span>
-                                    </td>
-                                    <td>{staff.areaId}</td>
-                                    <td>{staff.email}</td>
-                                    <td>
-                                        <button 
-                                            className={`status-action-btn ${staff.status ? 'deactivate' : 'activate'}`}
-                                            onClick={() => handleAction(staff.accountId, staff.status)}
-                                        >
-                                            {staff.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
-                                        </button>
-                                    </td>
+                    <div className="table-container">
+                        <table className="staff-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên nhân viên</th>
+                                    <th>Thời gian bắt đầu làm</th>
+                                    <th>Tình trạng</th>
+                                    <th>Khu Vực</th>
+                                    <th>Email</th>
+                                    <th>Hành động</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {filteredStaff.map((staff) => (
+                                    <tr key={staff.accountId}>
+                                        <td>#{staff.accountId}</td>
+                                        <td>{staff.fullName}</td>
+                                        <td>{new Date(staff.createAt).toLocaleDateString('vi-VN', {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit'
+                                        })}</td>
+                                        <td>
+                                            <span className={`status ${staff.status ? 'status-green' : 'status-red'}`}>
+                                                {staff.status ? 'Hoạt động' : 'Không hoạt động'}
+                                            </span>
+                                        </td>
+                                        <td>{staff.areaId}</td>
+                                        <td>{staff.email}</td>
+                                        <td>
+                                            <button 
+                                                className="detail-button"
+                                                onClick={() => handleAction(staff.accountId, staff.status)}
+                                            >
+                                                {staff.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>

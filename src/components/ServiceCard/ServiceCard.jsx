@@ -1,14 +1,22 @@
 import React from "react";
 import "./ServiceCard.css";
-import image1 from '../../assets/images/image1.png'
-const ServiceCard = ({ categoryName, description, imageSrc }) => {
+
+
+const ServiceCard = ({ categoryName, description, urlImageCategory }) => {
   return (
-    <div className="container">
-      <div className="image-wrapper">
-        <img src={image1} alt={categoryName} className="image" />
+    <div className="service-card">
+      <div className="service-card__image-wrapper">
+        <img 
+          src={urlImageCategory} // Use provided imageSrc or fallback to default
+          alt={categoryName}
+          className="service-card__image"
+          loading="lazy" // Add lazy loading for better performance
+        />
       </div>
-      <h4 className="card-title">{categoryName}</h4>
-      <p className="description">{description}</p>
+      <div className="service-card__content">
+        <h4 className="service-card__title">{categoryName}</h4>
+        <p className="service-card__description">{description}</p>
+      </div>
     </div>
   );
 };

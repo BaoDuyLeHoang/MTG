@@ -7,7 +7,7 @@ import { getAllGraves } from "../../APIcontroller/API";
 export default function GraveView() {
   const [graves, setGraves] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,46 +55,47 @@ export default function GraveView() {
 
   if (loading) {
     return (
-      <div className="grave-view">
+      <div className="gv-container">
         <Sidebar />
-        <aside className="grave-view-list">
-          <div>Loading...</div>
-        </aside>
+        <div className="gv-content">
+          <div className="gv-loading">Loading...</div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="grave-view">
+      <div className="gv-container">
         <Sidebar />
-        <aside className="grave-view-list">
-          <div>Error: {error}</div>
-        </aside>
+        <div className="gv-content">
+          <div className="gv-error">Error: {error}</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="grave-view">
+    <div className="gv-container">
       <Sidebar />
-      <aside className="grave-view-list">
-        <h1>Danh sách mộ</h1>
-        <div className="search-fillers">
+      <div className="gv-content">
+        <h1 className="gv-title">Quản Lý Mộ</h1>
+        <div className="gv-search-filters">
           <input
             type="search"
+            className="gv-search-input"
             placeholder="Tìm kiếm..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Link to="/them-mo">
-            <button type="button">Thêm mộ</button>
+            <button type="button" className="gv-add-button">Thêm mộ</button>
           </Link>
         </div>
-        <div className="table-container">
-          <table>
+        <div className="gv-table-container">
+          <table className="gv-table">
             <thead>
-              <tr>
+              <tr className="gv-table-header">
                 <th>Mã mộ</th>
                 <th>Tên liệt sĩ</th>
                 <th>Vị trí mộ</th>
@@ -105,7 +106,7 @@ export default function GraveView() {
             <tbody>
               {graves.length > 0 ? (
                 graves.map((grave) => (
-                  <tr key={grave.martyrId}>
+                  <tr key={grave.martyrId} className="gv-table-row">
                     <td>{grave.martyrCode || "N/A"}</td>
                     <td>{grave.name?.[0] || "N/A"}</td>
                     <td>{`Khu ${grave.areaId || "N/A"}`}</td>
@@ -113,23 +114,19 @@ export default function GraveView() {
                       <img
                         src={grave.image}
                         alt={grave.name?.[0]}
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          objectFit: "cover",
-                        }}
+                        className="gv-grave-image"
                       />
                     </td>
                     <td>
                       <Link to={`/chitietmo/${grave.martyrId}`}>
-                        <button className="detail-button">Chi tiết</button>
+                        <button className="gv-detail-button">Chi tiết</button>
                       </Link>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="no-data">
+                  <td colSpan="5" className="gv-no-data">
                     Không có dữ liệu
                   </td>
                 </tr>
@@ -137,24 +134,18 @@ export default function GraveView() {
             </tbody>
           </table>
         </div>
-        <div className="pagination">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={currentPage === 1 ? "disabled" : ""}
-          >
-            &lt;
-          </button>
-          <span>{`Trang ${currentPage} / ${totalPages}`}</span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={currentPage === totalPages ? "disabled" : ""}
-          >
-            &gt;
-          </button>
+        <div className="gv-pagination">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`gv-page-button ${currentPage === page ? "gv-page-active" : ""}`}
+            >
+              {page}
+            </button>
+          ))}
         </div>
-      </aside>
+      </div>
     </div>
   );
 }

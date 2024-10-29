@@ -11,6 +11,29 @@ const OrderManagement = () => {
   const [error, setError] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 8;
+
+  const filteredOrders = orders
+    .filter((order) => {
+      const matchesSearch =
+        order.orderId.toString().includes(searchTerm) ||
+        order.accountId.toString().includes(searchTerm);
+      const matchesStatus =
+        statusFilter === "all" || order.status.toString() === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -94,15 +117,54 @@ const OrderManagement = () => {
   return (
     <div className="order-management-container">
       <Sidebar />
-      <div className="order-management-content centered">
+      <div className="order-management-content">
         <h1>Quản Lý Đơn Hàng</h1>
-        <p>Xin chào, {user?.accountName || "Nhân viên"}</p>
-        {loading && <div className="centered">Đang tải...</div>}
-        {error && <div className="centered error">{error}</div>}
-        {!loading && !error && orders.length === 0 && (
-          <div className="centered">Không có đơn hàng nào để hiển thị.</div>
-        )}
-        {!loading && !error && orders.length > 0 && (
+        
+        <div className="controls-container">
+          <div className="search-wrapper">
+            <i className="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              placeholder="Tìm kiếm theo Mã đơn hàng hoặc Mã tài khoản..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+          <div className="filter-wrapper">
+            <i className="fas fa-filter filter-icon"></i>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="status-filter"
+            >
+              <option value="all">Tất cả trạng thái</option>
+              <option value="0">Chưa thanh toán</option>
+              <option value="1">Đã thanh toán</option>
+              <option value="2">Hủy thanh toán</option>
+              <option value="3">Đang thực hiện</option>
+              <option value="4">Đã hoàn thành</option>
+              <option value="5">Đơn hàng thất bại</option>
+              <option value="6">Đã hoàn tiền</option>
+            </select>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="centered">
+            <div className="loading-spinner"></div>
+            <p>Đang tải dữ liệu...</p>
+          </div>
+        ) : error ? (
+          <div className="error">
+            <i className="fas fa-exclamation-circle"></i> {error}
+          </div>
+        ) : filteredOrders.length === 0 ? (
+          <div className="centered">
+            <i className="fas fa-inbox"></i>
+            <p>Không tìm thấy đơn hàng nào.</p>
+          </div>
+        ) : (
           <div className="table-container">
             <table className="order-table">
               <thead>
@@ -117,16 +179,26 @@ const OrderManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
+                {currentOrders.map((order) => (
                   <tr key={order.orderId}>
-                    <td>{order.orderId}</td>
+                    <td>#{order.orderId}</td>
                     <td>{order.accountId}</td>
-                    <td>{new Date(order.orderDate).toLocaleDateString()}</td>
                     <td>
-                      {order.totalPrice.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
+                      {new Date(order.orderDate).toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
                       })}
+                    </td>
+                    <td>
+                      <strong>
+                        {order.totalPrice.toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
+                      </strong>
                     </td>
                     <td>
                       <span
@@ -162,6 +234,18 @@ const OrderManagement = () => {
                 ))}
               </tbody>
             </table>
+
+            <div className="pagination">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={currentPage === page ? "active" : ""}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>

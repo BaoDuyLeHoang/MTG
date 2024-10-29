@@ -37,15 +37,10 @@ const Sidebar = () => {
       text: "Đơn hàng",
       roles: [2],
     },
-    { to: "/danhSachCongViec", icon: faTasks, text: "Công việc", roles: [2] },
+   
     { to: "/danhsachnhanvien", icon: faUser, text: "Nhân viên", roles: [2] },
     { to: "/danhsachmo", icon: faMonument, text: "Danh sách mộ", roles: [2] },
-    {
-      to: "/danhsachthanhtoan",
-      icon: faMoneyBillWave,
-      text: "Thanh toán",
-      roles: [2],
-    },
+    
     {
       to: "/danhsachphannhoikhachhang",
       icon: faComments,
@@ -58,12 +53,36 @@ const Sidebar = () => {
       text: "Giao việc",
       roles: [2],
     },
+    { to: "/danhSachCongViec", icon: faTasks, text: "Công việc", roles: [3] },
+    {
+        to: "/danhsachthanhtoan",
+        icon: faMoneyBillWave,
+        text: "Thanh toán",
+        roles: [2],
+      },
   ];
+  {
 
-  // Group menu items by category
+  }
+
+  // First, define the role constants to avoid magic numbers
+  const ROLES = {
+    ADMIN: 1,
+    MANAGER: 2,
+    STAFF: 3
+  };
+
+  // Then improve the menu filtering
   const menuCategories = {
-    admin: menuItems.filter((item) => item.roles.includes(1)),
-    staff: menuItems.filter((item) => item.roles.includes(2)),
+    admin: menuItems.filter(item => 
+      item.roles.includes(ROLES.ADMIN)
+    ),
+    manager: menuItems.filter(item => 
+      item.roles.includes(ROLES.MANAGER)
+    ),
+    staff: menuItems.filter(item => 
+      item.roles.includes(ROLES.STAFF)
+    )
   };
 
   const handleLogout = async () => {
@@ -106,30 +125,31 @@ const Sidebar = () => {
 
           <div className="user-info">
             <span className="user-role">
-              {user?.role === 1 ? "Admin" : user?.role === 2 ? "Staff" : "User"}
+              {user?.role === 1 ? "Admin" : user?.role === 2 ? "Manager" : "Staff"}
             </span>
           </div>
         </div>
       </div>
 
       <nav className="sidebar-nav">
-        {user?.role === 1 && (
+        {user?.role === ROLES.ADMIN && (
           <div className="menu-category">
-            <h3>Admin</h3>
-            <MenuItems
-              items={menuCategories.admin}
-              isActiveRoute={isActiveRoute}
-            />
+            <h3>Admin Dashboard</h3>
+            <MenuItems items={menuCategories.admin} isActiveRoute={isActiveRoute} />
           </div>
         )}
 
-        {user?.role === 2 && (
+        {user?.role === ROLES.MANAGER && (
           <div className="menu-category">
-            <h3>Staff</h3>
-            <MenuItems
-              items={menuCategories.staff}
-              isActiveRoute={isActiveRoute}
-            />
+            <h3>Manager Dashboard</h3>
+            <MenuItems items={menuCategories.manager} isActiveRoute={isActiveRoute} />
+          </div>
+        )}
+
+        {user?.role === ROLES.STAFF && (
+          <div className="menu-category">
+            <h3>Staff Dashboard</h3>
+            <MenuItems items={menuCategories.staff} isActiveRoute={isActiveRoute} />
           </div>
         )}
 

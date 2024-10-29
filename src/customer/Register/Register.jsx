@@ -123,11 +123,11 @@ export default function Register() {
   return (
     <div className="register-container">
       <Header />
-      <div className="register-image">
-        <img src={lk} className="register-logo" alt="Logo" />
-      </div>
       <div className="register-box">
-        <form  className="register-form">
+        <div className="register-image">
+          <img src={lk} className="register-logo" alt="Logo" />
+        </div>
+        <form className="register-form">
           <div className="input-group">
             <label>Số điện thoại</label>
             <input

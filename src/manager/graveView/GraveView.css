@@ -1,158 +1,3 @@
-.grave-view {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f8f9fa;
-}
-
-.sidebar {
-    width: 250px;
-    background-color: #f0f0f0;
-    padding: 20px;
-}
-
-.logo {
-    max-width: 100%;
-    margin-bottom: 20px;
-}
-
-
-.grave-view-list {
-    flex: 1;
-    padding: 30px;
-}
-
-.grave-view-list h1 {
-    color: #2c3e50;
-    margin-bottom: 25px;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.search-fillers {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    gap: 20px;
-}
-
-.search-fillers input {
-    flex: 1;
-    max-width: 350px;
-    padding: 10px 15px;
-    border: 1px solid #e1e4e8;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: border-color 0.2s;
-    background-color: white;
-}
-
-.search-fillers input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.search-fillers button {
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
-.search-fillers button:hover {
-    background-color: #218838;
-}
-
-.table-container {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    margin-bottom: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-th {
-    background-color: #f8f9fa;
-    color: #495057;
-    font-weight: 600;
-    padding: 16px;
-    text-align: left;
-    border-bottom: 2px solid #e9ecef;
-    font-size: 14px;
-}
-
-td {
-    padding: 16px;
-    border-bottom: 1px solid #e9ecef;
-    color: #2d3436;
-    font-size: 14px;
-    vertical-align: middle;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-tr:hover {
-    background-color: #f8f9fa;
-}
-
-.detail-button {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.detail-button:hover {
-    background-color: #0056b3;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.pagination button {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    background-color: white;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.pagination button:hover:not(.disabled) {
-    background-color: #f0f0f0;
-}
-
-.pagination button.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.pagination span {
-    font-size: 14px;
-    color: #666;
-}
-
 .no-data {
     text-align: center;
     padding: 20px;
@@ -164,4 +9,190 @@ tr:hover {
     text-align: center;
     padding: 20px;
     color: #666;
+}
+
+.gv-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.gv-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.gv-loading,
+.gv-error {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+}
+
+.gv-error {
+  color: #ff0000;
+}
+
+.gv-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.gv-title-container h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+}
+
+.gv-search-filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.gv-search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 300px;
+}
+
+.gv-add-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gv-table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.gv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.gv-table th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  padding: 1.2rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.gv-table th:hover {
+  background-color: #e9ecef;
+}
+
+.gv-table thead {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.gv-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.gv-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.gv-grave-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.gv-detail-button {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+}
+
+.gv-detail-button:hover {
+  background-color: #2980b9;
+}
+
+.gv-no-data {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-size: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add these styles if you want alternating row colors */
+.gv-table-row:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.gv-table-row:nth-child(even):hover {
+  background-color: #f3f4f6;
+}
+
+.gv-pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.gv-page-button {
+  min-width: 32px;
+  height: 32px;
+  padding: 4px 8px;
+  border: 1px solid #d9d9d9;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.gv-page-active {
+  background: #1677ff;
+  color: white;
+  border-color: #1677ff;
+}
+
+.gv-page-button:hover:not(.gv-page-active) {
+  border-color: #1677ff;
+  color: #1677ff;
+}
+
+/* Update the title styles */
+.gv-content h1.gv-title {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
 }

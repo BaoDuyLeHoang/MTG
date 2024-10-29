@@ -10,6 +10,14 @@ const ServicePage = () => {
   const [services, setServices] = useState([]);
   const [categoryServices, setCategoryServices] = useState({});
 
+  // Add scroll handler function
+  const scrollToCategory = (categoryName) => {
+    const element = document.getElementById(`category-${categoryName}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -49,19 +57,25 @@ const ServicePage = () => {
 
         <div className="services-grid">
           {services.map((service, index) => (
-            <ServiceCard
-              key={index}
-              categoryName={service.categoryName}
-              description={service.description}
-              imageSrc={`service-${index + 1}.jpg`}
-            />
+            <div onClick={() => scrollToCategory(service.categoryName)} style={{ cursor: 'pointer' }}>
+              <ServiceCard
+                key={index}
+                categoryName={service.categoryName}
+                description={service.description}
+                urlImageCategory={service.urlImageCategory}
+              />
+            </div>
           ))}
         </div>
       </div>
       <div className="service-container">
         <h1>Dịch vụ đang có sẵn</h1>
         {services.map((category, index) => (
-          <div key={index} className="change-planner-service">
+          <div 
+            key={index} 
+            className="change-planner-service"
+            id={`category-${category.categoryName}`}
+          >
             <h2>{category.categoryName}</h2>
             <div className="sell-service-grid">
               {categoryServices[category.categoryId]?.map(

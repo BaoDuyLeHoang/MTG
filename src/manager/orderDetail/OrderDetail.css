@@ -1,255 +1,236 @@
 .order-detail-container {
     display: flex;
-    width: 100vh;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    width: 100%;
 }
 
 .order-admin-full {
-    margin-left: 30px;
-}
-
-.content {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #F5F5F5;
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
 }
 
 .header-container {
-    background-color: #d9d9d9;
-    font-weight: bold;
-    font-size: 15px;
-    width: 1080px;
-    height: 100px;
-    margin-top: 20px;
-    margin-left: 20px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    border: 1px solid rgba(0,0,0,0.05);
 }
-
 
 .section-name {
-    line-height: 40px;
-    margin-left: 30px;
-}
-
-.section-details {
-    margin-left: 370px;
-    margin-top: 0px;
-}
-
-.order-section {
-    background-color: #d9d9d9;
-    font-size: 15px;
-    width: 1080px;
-    height: 300px;
-    margin-top: 50px;
-    margin-left: 20px;
-}
-
-.order-section span {
-    font-weight: bold;
-}
-
-.order-detail-header span {
-    margin-right: 96px;
-    margin-left: 35px;
-    margin-top: 10px;
-}
-
-.order-detail-header,
-.order-detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-}
-
-.summary-detail .quantity {
-    margin-right: 10px;
-}
-
-.service-text p {
-    margin-left: 30px;
-    line-height: 1.2;
-}
-
-.quantity {
-    flex: 1;
-    text-align: left;
-    margin-left: 95px;
-}
-
-.completion-time {
-    flex: 1;
-    margin-left: 90px;
-    display: flex;
-    flex-direction: column;
-    width: 60px;
-    margin-top: -40px;
-}
-
-.date-label {
-    font-size: 12px;
-    color: #a0a0a0;
-    margin-bottom: 4px;
-}
-
-/* Custom input styles */
-.custom-input {
-    padding: 8px;
-    border: 1px solid #a0a0a0;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #333;
-    background-color: #f8f8f8;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.custom-input:hover,
-.custom-input:focus {
-    border-color: #7f56da;
-    outline: none;
-}
-
-/* DatePicker calendar icon */
-.react-datepicker__input-container .react-datepicker__input {
-    width: 100%;
-}
-
-.react-datepicker-wrapper {
-    width: 100%;
-}
-
-.custom-input {
-    padding: 8px;
-    border: 1px solid #a0a0a0;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #333;
-    background-color: #f8f8f8;
-    width: 50%;
-    box-sizing: border-box;
-}
-
-.status {
-    flex: 1;
-    text-align: left;
-    margin-top: -70px;
-}
-
-.status-pending {
-    color: red;
-    margin-left: 85px;
-}
-
-#date-picker {
-    margin-left: 30px;
-    width: 65%;
-    height: 40px;
-    margin-top: -210px;
-}
-
-.staff-area select {
-    height: 40px;
-    margin-right: 125px;
-    width: 60%;
-    margin-top: -220px;
-}
-
-.staff-area {
-    margin-top: -45px;
-}
-
-/* Button alignment to the right */
-.action {
-    flex: 1;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a2b4b;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    margin-right: 25px;
-}
-
-.deliver-button {
-    background-color: #e8c67e;
-    cursor: pointer;
-    border: none;
-    border-radius: 20px;
-    transition: background-color 0.3s ease;
-    padding: 10px 20px;
-    width: 100px;
-    margin-top: -10px;
-    margin-right: 20px;
-}
-
-.order-summary {
-    background-color: #fff;
-    padding: 20px;
-}
-
-.service-img {
-    width: 74px;
-    height: 83.55px;
-    margin-left: 30px;
-    margin-top: 20px;
-}
-
-.summary-order {
-    display: inline;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    margin-top: 20px;
-}
-
-.order-detail-table {
-    width: 100%;
-    border-collapse: collapse;
+    gap: 12px;
     margin-bottom: 20px;
 }
 
-.order-detail-table th,
-.order-detail-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+.header-icon {
+    color: #2563eb;
+}
+
+.order-badge {
+    background-color: #2563eb;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.order-detail-table {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 25px 0;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .order-detail-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+    background-color: #f8fafc;
+    padding: 18px 24px;
+    font-weight: 600;
+    text-align: left;
+    color: #475569;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.order-detail-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.order-detail-table td {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
 }
 
-.order-detail-table tr:hover {
-    background-color: #f5f5f5;
+.order-detail-table tr:last-child td {
+    border-bottom: none;
 }
 
-.custom-input {
+.order-detail-table select,
+.order-detail-table input[type="date"] {
     width: 100%;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 14px;
+    transition: all 0.2s;
 }
 
-.status-0 {
-    color: orange;
+.order-detail-table select:hover,
+.order-detail-table input[type="date"]:hover {
+    border-color: #2563eb;
 }
 
-.status-1 {
-    color: green;
+.order-detail-table select:focus,
+.order-detail-table input[type="date"]:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .deliver-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: #2563eb;
     color: white;
+    padding: 12px 24px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .deliver-button:hover {
-    background-color: #45a049;
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+}
+
+.timeline {
+    position: relative;
+    margin: 40px 0;
+    padding-left: 50px;
+}
+
+.timeline-item {
+    background-color: white;
+    padding: 20px 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -35px;
+    width: 14px;
+    height: 14px;
+    background-color: #2563eb;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -29px;
+    top: 14px;
+    height: calc(100% + 30px);
+    width: 2px;
+    background-color: #e2e8f0;
+}
+
+.price-summary {
+    background-color: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.price-item.total {
+    border-top: 2px solid #e2e8f0;
+    border-bottom: none;
+    padding-top: 20px;
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 1.2em;
+    color: #1a2b4b;
+}
+
+.summary-icon {
+    margin-right: 10px;
+    color: #2563eb;
+}
+
+/* Status colors for Vietnamese text */
+.status-0 { /* Chờ xử lý */
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.status-1 { /* Đang giao */
+    background-color: #e0f2fe;
+    color: #075985;
+    border: 1px solid #7dd3fc;
+}
+
+.status-2 { /* Đã hủy */
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.status-3 { /* Đang thực hiện */
+    background-color: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #93c5fd;
+}
+
+.status-4 { /* Hoàn thành */
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.status-5 { /* Thất bại */
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
 }

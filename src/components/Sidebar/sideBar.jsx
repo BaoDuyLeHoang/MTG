@@ -28,7 +28,13 @@ const Sidebar = () => {
         to: "/profilestaff",
         icon: faUser,
         text: "Hồ sơ nhân viên",
-        roles: [2,3],
+        roles: [2],
+      },
+      {
+        to: "/profilestaff-staff",
+        icon: faUser,
+        text: "Hồ sơ nhân viên",
+        roles: [3],
       },
     { to: "/", icon: faChartLine, text: "Thống kê", roles: [1, 2] },
     {
@@ -60,7 +66,7 @@ const Sidebar = () => {
       roles: [2],
     },
     
-    { to: "/danhSachCongViec", icon: faTasks, text: "Công việc", roles: [3] },
+    { to: "/danhsachdonhang-staff", icon: faTasks, text: "Công việc", roles: [3] },
     {
         to: "/danhsachthanhtoan",
         icon: faMoneyBillWave,

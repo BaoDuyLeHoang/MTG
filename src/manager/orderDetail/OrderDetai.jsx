@@ -4,6 +4,7 @@ import { getOrderById, createTaskForStaff } from "../../APIcontroller/API";
 import Sidebar from "../../components/Sidebar/sideBar"
 import '../orderDetail/OrderDetail.css';
 import DatePicker from "react-datepicker";
+import { FaClipboardList, FaClock, FaMoneyBillWave } from 'react-icons/fa';
 
 const OrderDetail = () => {
     const { orderId } = useParams();
@@ -17,13 +18,13 @@ const OrderDetail = () => {
     // Function to get status text based on status number
     const getStatusText = (statusTask) => {
         switch (statusTask) {
-            case 0: return "Đang chờ";
-            case 1: return "Đã giao";
-            case 2: return "Từ chối";
+            case 0: return "Chờ xử lý";
+            case 1: return "Đang giao";
+            case 2: return "Đã hủy";
             case 3: return "Đang thực hiện";
             case 4: return "Hoàn thành";
             case 5: return "Thất bại";
-            default: return "Unknown";
+            default: return "Không xác định";
         }
     };
 
@@ -82,19 +83,22 @@ const OrderDetail = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Đang tải...</div>;
     if (error) return <div>{error}</div>;
-    if (!orderDetail) return <div>No order details found</div>;
+    if (!orderDetail) return <div>Không tìm thấy chi tiết đơn hàng</div>;
 
     return (
         <div className="order-detail-container">
             <Sidebar />
             <div className="order-admin-full">
                 <div className="header-container">
-                    <div className="section-name">Order Details</div>
+                    <div className="section-name">
+                        <FaClipboardList className="header-icon" />
+                        Chi Tiết Đơn Hàng
+                    </div>
                     <div className="section-details">
-                        Order ID: {orderDetail.orderId} | 
-                        Status: <span className={`status-${orderDetail.status}`}>
+                        <span className="order-badge">Mã đơn hàng: {orderDetail.orderId}</span> | 
+                        Trạng thái: <span className={`status-badge status-${orderDetail.status}`}>
                             {getStatusText(orderDetail.status)}
                         </span>
                     </div>
@@ -103,12 +107,12 @@ const OrderDetail = () => {
                     <table className="order-detail-table">
                         <thead>
                             <tr>
-                                <th>Service</th>
-                                <th>Martyr Name</th>
-                                <th>Price</th>
-                                <th>Completion Date</th>
-                                <th>Status</th>
-                                <th>Staff</th>
+                                <th>Dịch Vụ</th>
+                                <th>Tên Liệt Sĩ</th>
+                                <th>Giá</th>
+                                <th>Ngày Hoàn Thành</th>
+                                <th>Trạng Thái</th>
+                                <th>Nhân Viên</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,7 +140,7 @@ const OrderDetail = () => {
                                             onChange={(e) => handleStaffSelection(detail.detailId, e.target.value)}
                                             value={selectedStaff[detail.detailId] || ""}
                                         >
-                                            <option value="">Choose staff</option>
+                                            <option value="">Chọn nhân viên</option>
                                             {detail.staffs.map(staff => (
                                                 <option key={staff.accountId} value={staff.accountId}>
                                                     {staff.staffFullName}
@@ -155,27 +159,50 @@ const OrderDetail = () => {
                 <div className="order-summary">
                     <div className="order-summary-detail">
                         <div className="summary-order">
-                            <h2>CẬP NHẬT TÌNH TRẠNG ĐƠN HÀNG</h2>
-                            <p>Đơn hàng đã được tạo ({startDate && startDate.toLocaleString('vi-VN', { 
-                                hour: '2-digit', 
-                                minute: '2-digit', 
-                                day: '2-digit', 
-                                month: '2-digit', 
-                                year: 'numeric' 
-                            })})</p>
-                            <p>Đơn hàng đã được xác nhận (15:20  12/09/2024)</p>
+                            <h2><FaClock className="summary-icon" /> CẬP NHẬT TÌNH TRẠNG ĐƠN HÀNG</h2>
+                            <div className="timeline">
+                                <div className="timeline-item">
+                                    <div className="timeline-dot"></div>
+                                    <p>Đơn hàng đã được tạo ({startDate && startDate.toLocaleString('vi-VN', { 
+                                        hour: '2-digit', 
+                                        minute: '2-digit', 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: 'numeric' 
+                                    })})</p>
+                                </div>
+                                <div className="timeline-item">
+                                    <div className="timeline-dot"></div>
+                                    <p>Đơn hàng đã được xác nhận (15:20 12/09/2024)</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="summary-detail">
-                        <p style={{ textAlign: 'right', marginTop: '-110px' }}>Đơn giá: 150.000đ</p>
-                        <p style={{ textAlign: 'right', marginTop: '0px' }}>Số lượng: 2</p>
-                        <p style={{ textAlign: 'right', marginTop: '4px' }}>Tổng tiền hàng: 300.000đ</p>
-                        <p style={{ textAlign: 'right', marginTop: '12px' }}>Tổng thanh toán: 300.000đ</p>
+                        <div className="price-summary">
+                            <h3><FaMoneyBillWave className="summary-icon" /> Chi tiết thanh toán</h3>
+                            <div className="price-item">
+                                <span>Đơn giá:</span>
+                                <span>150.000đ</span>
+                            </div>
+                            <div className="price-item">
+                                <span>Số lượng:</span>
+                                <span>2</span>
+                            </div>
+                            <div className="price-item">
+                                <span>Tổng tiền hàng:</span>
+                                <span>300.000đ</span>
+                            </div>
+                            <div className="price-item total">
+                                <span>Tổng thanh toán:</span>
+                                <span>300.000đ</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div >
-    )
+        </div>
+    );
 }
 
 export default OrderDetail;

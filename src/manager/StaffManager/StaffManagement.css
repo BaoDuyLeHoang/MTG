@@ -108,7 +108,49 @@
     align-items: center;
 }
 
-/* Loading spinner styles if needed */
-.loading-spinner {
-    /* Add your loading spinner styles here */
+
+
+.report-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.report-button:hover {
+    background-color: #45a049;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    margin: 0 8px;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.icon-button:hover {
+    transform: scale(1.15);
+}
+
+.toggle-active {
+    color: #28a745;
+    width: 28px;
+    height: 28px;
+}
+
+.toggle-inactive {
+    color: #dc3545;
+    width: 28px;
+    height: 28px;
+}
+
+.icon-button:hover svg {
+    color: #007bff;
 }

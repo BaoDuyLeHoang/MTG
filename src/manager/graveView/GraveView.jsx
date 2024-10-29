@@ -130,7 +130,7 @@ export default function GraveView() {
                       />
                     </td>
                     <td>
-                      <Link to={`/chitietmoquanly`}>
+                      <Link to={`/chitietmoquanly/${grave.martyrId}`}>
                         <button className="gv-detail-button">Chi tiết</button>
                       </Link>
                     </td>

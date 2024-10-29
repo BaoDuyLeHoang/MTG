@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Header from '../../components/Header/header';
 import './cartPage.css'; // {{ edit_1 }}
 import deleteIcon from '../../assets/images/delete.png';
-import { getCartItemsByCustomerId, updateItemStatus } from "../../APIcontroller/API";
+import { getCartItemsByCustomerId, updateItemStatus, deleteCartItem } from "../../APIcontroller/API";
 import { useAuth } from "../../context/AuthContext";
+import AlertMessage from '../../components/AlertMessage/AlertMessage';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -13,22 +14,16 @@ const CartPage = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
 
+  // Add these new state variables for the alert
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('success');
+
   useEffect(() => {
     const fetchCartItems = async () => {
-      if (isAuthLoading) {
-        // Wait for authentication to complete
-        return;
-      }
-
-      if (!user || !user.accountId) {
-        setError("User not authenticated. Please log in and try again.");
-        setLoading(false);
-        return;
-      }
-
       try {
         setLoading(true);
-        const response = await getCartItemsByCustomerId(user.accountId);
+        const response = await getCartItemsByCustomerId(user?.accountId);
         console.log('Cart items response:', response);
 
         if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
@@ -45,20 +40,38 @@ const CartPage = () => {
           setCartItems([]);
           console.log('Unexpected response format');
         }
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching cart items:", error);
         setError("Failed to load cart items. Please try again later.");
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchCartItems();
+    // Only fetch cart items if we have a user and auth loading is complete
+    if (!isAuthLoading && user?.accountId) {
+      fetchCartItems();
+    } else if (!isAuthLoading && !user) {
+      
+      setLoading(false);
+    }
   }, [user, isAuthLoading]);
 
-  const handleDelete = (cartId) => {
-    setCartItems(cartItems.filter(item => item.cartId !== cartId));
-    // You might want to add an API call here to delete the item from the backend
+  const handleDelete = async (cartId) => {
+    try {
+      await deleteCartItem(cartId);
+      setCartItems(cartItems.filter(item => item.cartId !== cartId));
+      // Show success alert
+      setAlertMessage("Sản phẩm đã được xóa khỏi giỏ hàng thành công!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
+      // Show error alert
+      setAlertMessage("Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại sau.");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+    }
   };
 
   const handleSelectItem = async (cartId) => {
@@ -101,10 +114,11 @@ const CartPage = () => {
   const handlePayment = () => {
     const selectedItems = cartItems.filter(item => item.selected);
     if (selectedItems.length === 0) {
-      alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+      setAlertMessage("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+      setAlertSeverity("warning");
+      setAlertOpen(true);
       return;
     }
-    // Only pass the account ID to the checkout page
     navigate('/checkout', { state: { accountId: user.accountId } });
   };
 
@@ -112,31 +126,53 @@ const CartPage = () => {
     navigate('/dichvu'); // Adjust this path if needed
   };
 
+  // Function to handle closing the alert
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
+
   return (
-    <div className="cart-page">
+    <div className="cart-page-wrapper">
       <Header />
-      <div className="cart-container">
+      <AlertMessage 
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity={alertSeverity}
+        message={alertMessage}
+      />
+      <div className="cart-page-container">
+        <div className="cart-page-header">
+          <h1 className="cart-page-title">Giỏ hàng của bạn</h1>
+          <p className="cart-page-subtitle">
+            {cartItems.length} sản phẩm trong giỏ hàng
+          </p>
+        </div>
         {loading ? (
-          <div>Loading...</div>
+          <div className="cart-page-loading-spinner">
+            <div>Đang tải...</div>
+          </div>
         ) : error ? (
           <div>{error}</div>
         ) : cartItems.length === 0 ? (
-          <div className="empty-cart-message">
+          <div className="cart-page-empty-message">
             <h1>Giỏ hàng của bạn đang trống</h1>
-            <button onClick={navigateToServices} className="go-to-services-btn">
+            <button onClick={navigateToServices} className="cart-page-services-btn">
               Xem Dịch Vụ
             </button>
           </div>
         ) : (
-          <table className="cart-table">
-            <thead className='cart-table-header'>
+          <table className="cart-page-table">
+            <thead className='cart-page-table-header'>
               <tr>
                 <th>
                   <input 
                     type="checkbox" 
                     checked={cartItems.length > 0 && cartItems.every(item => item.selected)}
                     onChange={handleSelectAll}
-                    className="select-all-checkbox"
+                    className="cart-page-select-all"
                   />
                 </th>
                 <th>Tên dịch vụ</th>
@@ -154,21 +190,23 @@ const CartPage = () => {
                       type="checkbox" 
                       checked={item.selected}
                       onChange={() => handleSelectItem(item.cartId)}
-                      className="item-checkbox"
+                      className="cart-page-item-checkbox"
                     />
                   </td>
                   <td>
-                    <div className="service-info">
-                      <img src={item.serviceView.imagePath} alt={item.serviceView.serviceName} className="service-image" />
+                    <div className="cart-page-service-info">
+                      <img src={item.serviceView.imagePath} alt={item.serviceView.serviceName} className="cart-page-service-image" />
                       <span>{item.serviceView.serviceName}</span>
                     </div>
                   </td>
                   <td>{item.serviceView.description}</td>
-                  <td className='price'>{item.serviceView.price.toLocaleString('vi-VN')} đ</td>
-                  <td>{item.martyrCode}</td>
+                  <td className='cart-page-price'>{item.serviceView.price.toLocaleString('vi-VN')} đ</td>
                   <td>
-                    <button onClick={() => handleDelete(item.cartId)} className="delete-btn">
-                      <img src={deleteIcon} alt="Delete" className="delete-icon" />
+                    <Link to={`/chitietmo/${item.martyrId}`} className="cart-page-martyr-link">{item.martyrCode}</Link>
+                  </td>
+                  <td>
+                    <button onClick={() => handleDelete(item.cartId)} className="cart-page-delete-btn">
+                      <img src={deleteIcon} alt="Delete" className="cart-page-delete-icon" />
                     </button>
                   </td>
                 </tr>
@@ -176,15 +214,15 @@ const CartPage = () => {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan="3" className="total-label">Tổng cộng:</td>
-                <td colSpan="3" className="total-amount">{calculateCartTotal().toLocaleString('vi-VN')} đ</td>
+                <td colSpan="3" className="cart-page-total-label">Tổng cộng:</td>
+                <td colSpan="3" className="cart-page-total-amount">{calculateCartTotal().toLocaleString('vi-VN')} đ</td>
               </tr>
             </tfoot>
           </table>
         )}
         {cartItems.length > 0 && (
-          <div className="cart-actions">
-            <button onClick={handlePayment} className="payment-btn">Thanh Toán</button>
+          <div className="cart-page-actions">
+            <button onClick={handlePayment} className="cart-page-payment-btn">Thanh Toán</button>
           </div>
         )}
       </div>

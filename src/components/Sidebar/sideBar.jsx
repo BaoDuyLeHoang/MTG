@@ -24,6 +24,12 @@ const Sidebar = () => {
 
   // Moved menuItems inside component to access user context
   const menuItems = [
+    {
+        to: "/profilestaff",
+        icon: faUser,
+        text: "Hồ sơ nhân viên",
+        roles: [2,3],
+      },
     { to: "/", icon: faChartLine, text: "Thống kê", roles: [1, 2] },
     {
       to: "/danhsachaccount",
@@ -53,6 +59,7 @@ const Sidebar = () => {
       text: "Giao việc",
       roles: [2],
     },
+    
     { to: "/danhSachCongViec", icon: faTasks, text: "Công việc", roles: [3] },
     {
         to: "/danhsachthanhtoan",

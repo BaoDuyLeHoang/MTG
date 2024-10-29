@@ -8,7 +8,7 @@ aside.sidebar {
     top: 0;
     z-index: 1000;
     overflow-y: auto;
-    padding-bottom: 5%;
+    position: sticky;
 }
 
 .sidebar-header {

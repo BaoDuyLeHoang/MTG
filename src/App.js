@@ -27,8 +27,10 @@ import OrderManagementManager from "./manager/OrderManagement/OrderManagement";
 import OrderDetail from "./manager/orderDetail/OrderDetai";
 import GraveView from "./manager/graveView/GraveView";
 import FeedbackManagement from "./manager/feedbackManagement/FeedbackManagement";
-import GraveDetail from "./manager/graveDetail/GraveDetail";
 import StaffManagement from "./manager/StaffManager/StaffManagement";
+import ProfileStaff from "./manager/ProfileStaff/ProfileStaff";
+import CreateGrave from "./manager/CreateGrave/CreateGrave";
+import GraveDetailManager from "./manager/GraveDetailManager/GraveDetailManager";
 // Staff imports
 import TaskList from "./staff/OrderManagement/TaskList";
 
@@ -87,7 +89,6 @@ function AppContent() {
           <Route path="/danhsachthanhtoan" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><PayManagement /></ProtectedRoute>} />
           <Route path="/danhsachphannhoikhachhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><FeedbackManagement /></ProtectedRoute>} />
           <Route path="/chitietcongviec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><TaskDescription /></ProtectedRoute>} />
-          <Route path="/chitietmo" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetail /></ProtectedRoute>} />
           <Route path="/taoCongViec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AddTask /></ProtectedRoute>} />
           
 
@@ -95,7 +96,9 @@ function AppContent() {
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
-
+          <Route path="/profilestaff" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ProfileStaff /></ProtectedRoute>} />
+          <Route path="/creategrave" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><CreateGrave /></ProtectedRoute>} />
+          <Route path="/chitietmoquanly" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
           {/* Staff routes */}
           <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
           <Route path="/task-detail/:taskId" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />

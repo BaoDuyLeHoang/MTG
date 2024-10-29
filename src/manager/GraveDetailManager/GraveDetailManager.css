@@ -1,0 +1,193 @@
+.grave-details {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .grave-details h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+  
+  .image-section img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .info-card h2 {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 15px;
+  }
+  
+  .info-card p {
+    margin: 8px 0;
+    color: #666;
+  }
+  
+  .label {
+    font-weight: 600;
+    color: #444;
+  }
+  
+  .form-group {
+    margin: 10px 0;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #444;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .update-btn, .save-btn, .cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .update-btn {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .save-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .cancel-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .update-btn:hover {
+    background-color: #1976D2;
+  }
+  
+  .save-btn:hover {
+    background-color: #388E3C;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #D32F2F;
+  }
+  
+  @media (max-width: 768px) {
+    .content-wrapper {
+      grid-template-columns: 1fr;
+    }
+    
+    .image-section {
+      margin-bottom: 20px;
+    }
+  }
+  
+  .martyr-profile {
+    padding: 20px;
+  }
+  
+  .profile-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+  }
+  
+  .profile-photo {
+    flex: 0 0 300px;
+  }
+  
+  .profile-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .profile-details {
+    flex: 1;
+  }
+  
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 30px;
+  }
+  
+  .detail-group {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+  }
+  
+  .detail-group label {
+    color: #666;
+    min-width: 100px;
+    font-weight: normal;
+  }
+  
+  .detail-group span {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .detail-group input {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  h1 {
+    color: #2c5282;
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #edf2f7;
+  }

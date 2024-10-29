@@ -100,7 +100,7 @@ export default function GraveView() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Link to="/them-mo">
+          <Link to="/creategrave">
             <button type="button" className="gv-add-button">Thêm mộ</button>
           </Link>
         </div>
@@ -130,7 +130,7 @@ export default function GraveView() {
                       />
                     </td>
                     <td>
-                      <Link to={`/chitietmo/${grave.martyrId}`}>
+                      <Link to={`/chitietmoquanly`}>
                         <button className="gv-detail-button">Chi tiết</button>
                       </Link>
                     </td>

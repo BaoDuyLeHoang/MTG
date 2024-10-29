@@ -127,6 +127,7 @@ export default function Login() {
           <div className="input-group">
             <label>Số điện thoại</label>
             <input
+              id="text"
               type="text"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
@@ -136,6 +137,7 @@ export default function Login() {
           <div className="input-group">
             <label>Mật khẩu</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

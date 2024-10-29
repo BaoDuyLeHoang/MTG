@@ -9,19 +9,6 @@
     padding: 20px;
 }
 
-.sidebar nav ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar nav ul li {
-    margin-bottom: 10px;
-}
-
-.sidebar nav ul li a {
-    text-decoration: none;
-    color: #333;
-}
 
 .header h1 {
     text-align: center;

@@ -1,37 +1,74 @@
 .sell-service-card {
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  background: white;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  width: 100%;
-  max-width: 220px;
-  margin: 10px;
+  max-width: 300px;
 }
 
 .sell-service-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sell-service-card-image-container {
+  height: 200px;
+  overflow: hidden;
 }
 
 .sell-service-card-image {
   width: 100%;
-  height: 150px;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.sell-service-card:hover .sell-service-card-image {
+  transform: scale(1.05);
 }
 
 .sell-service-card-content {
-  padding: 12px;
+  padding: 1.5rem;
 }
 
 .sell-service-card-title {
-  margin: 0 0 6px 0;
-  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
   color: #333;
 }
 
-.sell-service-card-price {
-  margin: 0;
+.sell-service-card-description {
+  color: #666;
   font-size: 0.9rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.sell-service-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.sell-service-card-price {
+  font-size: 1.25rem;
   font-weight: bold;
-  color: #4a4a4a;
+  color: #2c5282;
+  margin: 0;
+}
+
+.sell-service-card-button {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sell-service-card-button:hover {
+  background-color: #3182ce;
 }

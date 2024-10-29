@@ -12,20 +12,23 @@ import SessionCheck from "./components/SessionCheck";
 
 // Admin imports
 import Dashboard from "./admin/dashBoard/dashboard";
-import StaffManagement from "./admin/StaffManager/StaffManagement";
-import GraveView from "./admin/graveView/GraveView";
+
+
 import PayManagement from "./admin/payManagement/payManagement";
-import FeedbackManagement from "./admin/feedbackManagement/FeedbackManagement";
+
 
 import AccountManagement from "./admin/accountManagement/accountManagement";
 import TaskDescription from "./admin/taskDescription/TaskDescription";
-import GraveDetail from "./admin/graveDetail/GraveDetail";
+
 import AddTask from "./admin/addTask/AddTask";
 
 // Manager imports
 import OrderManagementManager from "./manager/OrderManagement/OrderManagement";
 import OrderDetail from "./manager/orderDetail/OrderDetai";
-
+import GraveView from "./manager/graveView/GraveView";
+import FeedbackManagement from "./manager/feedbackManagement/FeedbackManagement";
+import GraveDetail from "./manager/graveDetail/GraveDetail";
+import StaffManagement from "./manager/StaffManager/StaffManagement";
 // Staff imports
 import TaskList from "./staff/OrderManagement/TaskList";
 
@@ -34,7 +37,7 @@ import HomePage from "./customer/homePage/homePage";
 import MyGraveDetail from "./customer/MyGraveDetail/MyGraveDetail";
 import ServicePage from "./customer/ServicePage/ServicePage";
 import CheckOut from "./customer/CheckOutPage/CheckOut";
-
+import CartPage from "./customer/CartPage/CartPage";
 import ServiceDetailPage from "./customer/ServiceDetailPage/ServiceDetailPage";
 import Login from "./customer/Login/Login";
 import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
@@ -45,8 +48,9 @@ import OrderHistory from './customer/OrderHistory/OrderHistory';
 import SearchResult from './customer/SearchResult/SearchResult';
 import ServiceListing from './customer/ServiceListing/ServiceListing';
 import Register from './customer/Register/Register';
-import CartPage from "./customer/CartPage/cartPage"; // {{ edit_1 }}
-
+import RelativeGrave from './customer/RelaticeGrave/RelativeGrave';
+import OrderDetailCus from './customer/OrderDetailCus/OrderDetailCus';
+import UserProfile from './customer/UserProfile/UserProfile';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -68,11 +72,12 @@ function AppContent() {
           <Route path="/chitietmo/:martyrId" element={<MyGraveDetail />} />
           <Route path="/dichvutheoloai" element={<ServiceListing />} />
           <Route path="/register" element={<Register />} />
-
+          <Route path="/relative-grave" element={<RelativeGrave />} />
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
-          
+          <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
+          <Route path="/user-profile" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><UserProfile /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
           <Route path="/danhsachaccount" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AccountManagement /></ProtectedRoute>} />

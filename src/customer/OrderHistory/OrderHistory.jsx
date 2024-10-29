@@ -4,6 +4,7 @@ import "./OrderHistory.css";
 import { getOrdersByAccountId } from "../../APIcontroller/API";
 import Header from "../../components/Header/header"; // Import the Header component
 import { useAuth } from "../../context/AuthContext"; // Import useAuth
+import { Link } from "react-router-dom";
 
 const iconStyle = {
   verticalAlign: "middle",
@@ -193,6 +194,12 @@ const OrderHistory = () => {
                     )}
                   </div>
                 ))}
+                <Link 
+                  to={`/order-detail-cus/${order.orderId}`} 
+                  className="view-detail-button"
+                >
+                  Xem chi tiết
+                </Link>
               </div>
             </div>
           ))}

@@ -1,4 +1,4 @@
-.grave-view {
+.feedback-management {
     display: flex;
     height: 100vh;
 }
@@ -14,38 +14,20 @@
     margin-bottom: 20px;
 }
 
-.sidebar nav ul {
-    list-style-type: none;
-    padding: 0;
-}
 
-.sidebar nav ul li {
-    margin-bottom: 10px;
-}
-
-.sidebar nav ul li a {
-    text-decoration: none;
-    color: #333;
-}
-
-.grave-view-list {
+.feedback-list {
     padding: 20px;
     flex: 1;
     overflow-y: auto;
 }
 
-.search-fillers {
+.date-fillers {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.search-fillers input {
-    display: flex;
-    flex-direction: column;
-}
-
-.search-fillers button {
+.date-fillers label {
     display: flex;
     flex-direction: column;
 }
@@ -69,7 +51,7 @@ table th {
 
 .pagination {
     display: flex;
-    justify-content: right;
+    justify-content: center;
     gap: 10px;
 }
 

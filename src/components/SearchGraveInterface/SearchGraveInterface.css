@@ -53,19 +53,34 @@
 
 .filters {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    width: 100%;
+    gap: 10px;
+    margin: 10px 0;
 }
 
-.filter-input {
-    flex: 1;
+.filters input {
     padding: 10px 15px;
-    border: 2px solid #ddd;
+    border: 1px solid #e0e0e0;
     border-radius: 20px;
+    background: white;
     font-size: 14px;
-    outline: none;
 }
+
+.filter-input-byear,
+.filter-input-dyear {
+    width: 120px;
+}
+
+.filter-input-hometown {
+    flex-grow: 1;
+}
+
+/* Remove spinner arrows from number inputs */
+.filters input[type="number"]::-webkit-inner-spin-button,
+.filters input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 
 .search-button {
     width: 100%;
@@ -81,8 +96,4 @@
 
 .search-button:hover {
     background-color: #B39245;
-}
-.filter-input-dyear, .filter-input-byear, .filter-input-hometown{
-    padding: 10px 15px;
-    border-radius: 20px;
 }

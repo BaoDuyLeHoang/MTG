@@ -18,14 +18,14 @@ const Header = () => {
 
   const handleLogout = () => {
     logout(); // Use the logout function from AuthContext
-    navigate('/'); // Redirect to home page after logout
+    navigate('/login'); // Redirect to home page after logout
   };
 
   const displayName = user ? (user.accountName) : "👤";
 
   return (
     <header className="header">
-      <div className="logo">
+      <div className="header-logo">
         <img src={logo} alt="Logo" />
       </div>
       <nav className="navigation">
@@ -55,8 +55,8 @@ const Header = () => {
           <div className="settings-dropdown">
             {user ? (
               <>
-                <Link to="/profile">Hồ sơ</Link>
-                <Link to="/mothannhan">Mộ người thân</Link> 
+                <Link to="/user-profile">Hồ sơ</Link>
+                 <Link to="/relative-grave">Mộ người thân</Link>  
                 <Link to="/cart">Giỏ hàng</Link>
                 <Link to="/order-history">Lịch sử đơn hàng</Link>
                 <Link onClick={handleLogout}>Đăng xuất</Link>

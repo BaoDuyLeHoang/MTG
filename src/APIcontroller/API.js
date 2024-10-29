@@ -20,7 +20,10 @@ export const API_ENDPOINTS = {
   GET_TASKS_BY_ACCOUNT: "/Task/tasks/account", // Add this new endpoint
   UPDATE_TASK_STATUS: "/Task/tasks", // Update this line
   GET_ALL_SERVICES: "/Service/services", // Add this new endpoint
+  GET_ORDER_DETAILS: "/Orders", // Add this line
   // Add other endpoints as needed
+  GET_ALL_STAFF: "/staffs",
+  UPDATE_ACCOUNT_STATUS: "/updateStatus", // Add this line
 };
 
 export const getServices = async () => {
@@ -265,10 +268,7 @@ export const deleteCartItem = async (cartItemId) => {
   try {
     const token = localStorage.getItem("accessToken");
     console.log("Deleting cart item with ID:", cartItemId);
-    console.log(
-      "API URL:",
-      `${BASE_URL}${API_ENDPOINTS.DELETE_CART_ITEM}/${cartItemId}`
-    );
+    console.log("API URL:", `${BASE_URL}${API_ENDPOINTS.DELETE_CART_ITEM}/${cartItemId}`);
 
     const response = await axios.delete(
       `${BASE_URL}${API_ENDPOINTS.DELETE_CART_ITEM}/${cartItemId}`,
@@ -597,3 +597,107 @@ export const registerGuestAccount = async (registrationData) => {
     return { success: false, error: error.message };
   }
 };
+
+// Add new function to fetch order details
+export const getOrderDetails = async (orderId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching order details for ID: ${orderId}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_ORDER_DETAILS}/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("Order details API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    throw error;
+  }
+};
+
+// Add this new function to get all staff
+export const getAllStaff = async (page = 1, pageSize = 10) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Fetching all staff");
+    console.log("API URL:", `${BASE_URL}${API_ENDPOINTS.GET_ALL_STAFF}`);
+
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_ALL_STAFF}?page=${page}&pageSize=${pageSize}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Staff API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching staff:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+// Add this new function
+export const updateAccountStatus = async (accountId) => {
+    try {
+        const token = localStorage.getItem("accessToken");
+        console.log(`Updating status for account ID: ${accountId}`);
+        
+        const response = await axios.put(
+            `${BASE_URL}${API_ENDPOINTS.UPDATE_ACCOUNT_STATUS}/${accountId}`,
+            null,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        console.log("Status update response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error(
+            "Error updating account status:",
+            error.response ? error.response.data : error.message
+        );
+        throw error;
+    }
+};
+
+export const  getAllGraves = async (page = 1, pageSize = 5) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Fetching graves with pagination");
+    
+    const response = await axios.get(
+      `${BASE_URL}/MartyrGrave?page=${page}&pageSize=${pageSize}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("Graves API Response:", response.data);
+    return response.data; // This should return the object with graveList and totalPage
+  } catch (error) {
+    console.error(
+      "Error fetching graves:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+

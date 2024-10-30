@@ -70,13 +70,13 @@ const TaskList = () => {
 
     const getStatusText = (status) => {
         switch (status) {
-            case 0: return 'Chờ xác nhận';
-            case 1: return 'Đã giao, chờ xác nhận';
-            case 2: return 'Từ chối';
-            case 3: return 'Đang thực hiện';
-            case 4: return 'Hoàn thành';
-            case 5: return 'Thất bại';
-            default: return 'Không xác định';
+            case 0: return { text: 'Chờ xác nhận', color: '#f39c12' }; // Orange
+            case 1: return { text: 'Đã giao, chờ xác nhận', color: '#3498db' }; // Blue
+            case 2: return { text: 'Từ chối', color: '#e74c3c' }; // Red
+            case 3: return { text: 'Đang thực hiện', color: '#2ecc71' }; // Green
+            case 4: return { text: 'Hoàn thành', color: '#27ae60' }; // Dark Green
+            case 5: return { text: 'Thất bại', color: '#c0392b' }; // Dark Red
+            default: return { text: 'Không xác định', color: '#95a5a6' }; // Gray
         }
     };
 
@@ -92,26 +92,27 @@ const TaskList = () => {
     };
 
     return (
-        <div className="task-list-container">
+        <div className="staff-task-list-container">
             <Sidebar />
-            <div className="task-list-content">
-                <div className="filter-section">
-                    <button onClick={() => setFilter('all')} className={filter === 'all' ? 'active' : ''}>Tất cả</button>
-                    <button onClick={() => setFilter('completed')} className={filter === 'completed' ? 'active' : ''}>Đã hoàn thành</button>
-                    <button onClick={() => setFilter('pending')} className={filter === 'pending' ? 'active' : ''}>Chưa hoàn thành</button>
+            <div className="staff-task-list-content">
+                <h1 className="staff-task-list-page-title">Quản Lý Công Việc</h1>
+                <div className="staff-task-list-filter-section">
+                    <button onClick={() => setFilter('all')} className={`staff-task-list-filter-btn ${filter === 'all' ? 'active' : ''}`}>Tất cả</button>
+                    <button onClick={() => setFilter('completed')} className={`staff-task-list-filter-btn ${filter === 'completed' ? 'active' : ''}`}>Đã hoàn thành</button>
+                    <button onClick={() => setFilter('pending')} className={`staff-task-list-filter-btn ${filter === 'pending' ? 'active' : ''}`}>Chưa hoàn thành</button>
                 </div>
-                <div className="date-range">
+                <div className="staff-task-list-date-range">
                     <span>Công việc:</span>
-                    <div>
+                    <div className="staff-task-list-date-picker">
                         <span>Từ ngày:</span>
                         <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
                     </div>
-                    <div>
+                    <div className="staff-task-list-date-picker">
                         <span>Đến ngày:</span>
                         <DatePicker selected={endDate} onChange={date => setEndDate(date)} />
                     </div>
                 </div>
-                <table className="task-table">
+                <table className="staff-task-list-table">
                     <thead>
                         <tr>
                             <th>Công việc</th>
@@ -129,9 +130,20 @@ const TaskList = () => {
                                 <td>{task.graveLocation || `MTG-K${task.orderId}D${task.detailId}`}</td>
                                 <td>{new Date(task.startDate).toLocaleDateString()}</td>
                                 <td>{new Date(task.endDate).toLocaleDateString()}</td>
-                                <td>{getStatusText(task.status)}</td>
                                 <td>
-                                    <button className="detail-button" onClick={() => handleViewDetails(task.taskId)}>
+                                    <span className="status-badge" style={{
+                                        backgroundColor: getStatusText(task.status).color,
+                                        color: 'white',
+                                        padding: '6px 12px',
+                                        borderRadius: '12px',
+                                        fontSize: '0.9em',
+                                        fontWeight: '500'
+                                    }}>
+                                        {getStatusText(task.status).text}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button className="staff-task-list-detail-button" onClick={() => handleViewDetails(task.taskId)}>
                                         Chi tiết
                                     </button>
                                 </td>

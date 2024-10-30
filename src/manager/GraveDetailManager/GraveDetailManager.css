@@ -1,0 +1,627 @@
+.grave-detail-manager-layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+}
+
+.grave-detail-manager-container {
+  flex: 1;
+  padding: 2rem;
+}
+
+.grave-detail-manager-info {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.grave-detail-manager-info h1 {
+  color: #2d3436;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  padding-bottom: 15px;
+  position: relative;
+}
+
+.grave-detail-manager-info h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #ff7e5f, #feb47b);
+  border-radius: 2px;
+}
+
+.grave-detail-manager-info-container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 2.5rem;
+  height: 100%;
+}
+
+
+
+.grave-detail-manager-image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.grave-detail-manager-image-section:hover img {
+  transform: scale(1.05);
+}
+
+.grave-detail-manager-detail-section {
+  background: linear-gradient(145deg, #ffffff, #f5f7fa);
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.grave-detail-manager-detail-section h2 {
+  color: #2d3436;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.grave-detail-manager-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.info-item {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.info-item label {
+  display: block;
+  text-transform: uppercase;
+  color: #636e72;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.info-item span {
+  color: #2d3436;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.grave-detail-manager-inscription {
+  grid-column: 1 / -1;
+  background: linear-gradient(145deg, #ffffff, #f5f7fa);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.grave-detail-manager-inscription h3 {
+  color: #2d3436;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.grave-detail-manager-inscription p {
+  color: #636e72;
+  line-height: 1.6;
+}
+
+/* Location Section */
+.grave-detail-manager-location-section {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.grave-detail-manager-location-grid {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.grave-detail-manager-location-item {
+  background: linear-gradient(145deg, #ffffff, #f5f7fa);
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.grave-detail-manager-location-item:hover {
+  transform: translateY(-3px);
+}
+
+.grave-detail-manager-location-item input,
+.grave-detail-manager-location-manager-info input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.grave-detail-manager-location-manager-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Personal Info Section */
+.grave-detail-manager-personal-section {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.grave-detail-manager-personal-item {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.grave-detail-manager-personal-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.grave-detail-manager-personal-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #2d3436;
+  margin-bottom: 0.8rem;
+}
+
+.grave-detail-manager-personal-contact {
+  display: flex;
+  gap: 1.5rem;
+  color: #636e72;
+}
+
+.grave-detail-manager-personal-contact span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.grave-detail-manager-personal-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.grave-detail-manager-personal-contact input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* Modal Styling */
+.grave-detail-manager-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.grave-detail-manager-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.grave-detail-manager-modal-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+.grave-detail-manager-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+}
+
+.grave-detail-manager-service-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.grave-detail-manager-book-service-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 50%;
+}
+
+.grave-detail-manager-book-service-button:hover {
+  background-color: #2980b9;
+}
+
+.grave-detail-manager-info-container {
+  gap: 2rem;
+}
+
+.grave-detail-manager-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 250px;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.grave-detail-manager-personal-section {
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.grave-detail-manager-personal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grave-detail-manager-personal-item {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.grave-detail-manager-personal-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.grave-detail-manager-personal-contact {
+  display: flex;
+  gap: 1rem;
+  color: #666;
+}
+
+.grave-detail-manager-location-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.grave-detail-manager-location-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.grave-detail-manager-location-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grave-detail-manager-location-item label {
+  font-weight: bold;
+  color: #666;
+}
+
+.grave-detail-manager-location-manager {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grave-detail-manager-location-manager label {
+  font-weight: bold;
+  color: #666;
+}
+
+.grave-detail-manager-location-manager-info {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .grave-detail-manager-info-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .grave-detail-manager-image-section {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .grave-detail-manager-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .grave-detail-manager-info {
+    padding: 1.5rem;
+  }
+  
+  .grave-detail-manager-info h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.header-with-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.edit-actions button,
+.header-with-actions button {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Edit button */
+.header-with-actions button {
+  background-color: #4CAF50;
+  color: white;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.header-with-actions button:hover {
+  background-color: #43a047;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Save button */
+.edit-actions button:first-child {
+  background-color: #2196F3;
+  color: white;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+}
+
+.edit-actions button:first-child:hover {
+  background-color: #1e88e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+/* Cancel button */
+.edit-actions button:last-child {
+  background-color: #ffffff;
+  color: #666;
+  border: 2px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.edit-actions button:last-child:hover {
+  background-color: #f5f5f5;
+  border-color: #bbb;
+  transform: translateY(-1px);
+}
+
+/* Input Fields */
+.grave-detail-manager-info-item {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.grave-detail-manager-info-item label {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.grave-detail-manager-info-item input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.grave-detail-manager-info-item input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.grave-detail-manager-info-item input:hover {
+  border-color: #bbb;
+}
+
+/* Read-only state */
+.grave-detail-manager-info-item span {
+  display: block;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #333;
+  font-size: 1rem;
+  border: 2px solid transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header-with-actions {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .edit-actions {
+    flex-direction: row;
+    justify-content: stretch;
+  }
+
+  .edit-actions button,
+  .header-with-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Section headers */
+.grave-detail-manager-location-section h2,
+.grave-detail-manager-personal-section h2 {
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.grave-detail-manager-location-manager {
+  margin-top: 1rem;
+}
+
+.grave-detail-manager-location-manager label {
+  display: block;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.manager-info-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.manager-name, .manager-phone {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.manager-name:not(:last-child) {
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 0.5rem;
+}
+
+.manager-label {
+  color: #6c757d;
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.manager-value {
+  color: #212529;
+  font-weight: 600;
+  margin-left: 1rem;
+}
+
+/* Edit mode styles */
+.grave-detail-manager-location-manager-info input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.grave-detail-manager-location-manager-info input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.grave-detail-manager-location-manager-info input:hover {
+  border-color: #bbb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .manager-name, .manager-phone {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .manager-value {
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+}

@@ -4,6 +4,7 @@ import StaffFilter from '../../components/StaffFilter/staffFilter';
 import SearchBar from '../../components/SearchBar/searchBar';
 import './StaffManagement.css';
 import { getAllStaff, updateAccountStatus } from '../../APIcontroller/API';
+import { ToggleLeft, ToggleRight, FileText } from 'lucide-react';
 
 const StaffManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -50,6 +51,11 @@ const StaffManagement = () => {
         }
     };
 
+    const handleCreateReport = (staffId) => {
+        // Implement the logic to create a report for the given staffId
+        console.log(`Creating report for staff ID: ${staffId}`);
+    };
+
     return (
         <div className="staff-management-container">
             <Sidebar />
@@ -94,10 +100,22 @@ const StaffManagement = () => {
                                         <td>{staff.email}</td>
                                         <td>
                                             <button 
-                                                className="detail-button"
+                                                className="icon-button"
                                                 onClick={() => handleAction(staff.accountId, staff.status)}
+                                                title={staff.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
                                             >
-                                                {staff.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
+                                                {staff.status ? (
+                                                    <ToggleRight className="toggle-active" size={28} />
+                                                ) : (
+                                                    <ToggleLeft className="toggle-inactive" size={28} />
+                                                )}
+                                            </button>
+                                            <button 
+                                                className="clipboard-pen"
+                                                onClick={() => handleCreateReport(staff.accountId)}
+                                                title="Tạo báo cáo"
+                                            >
+                                                <FileText size={28} />
                                             </button>
                                         </td>
                                     </tr>

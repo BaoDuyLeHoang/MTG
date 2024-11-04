@@ -56,8 +56,8 @@ import RelativeGrave from './pages/customer/RelaticeGrave/RelativeGrave';
 import OrderDetailCus from './pages/customer/OrderDetailCus/OrderDetailCus';
 import UserProfile from './pages/customer/UserProfile/UserProfile';
 import BlogView from './pages/customer/BlogView/BlogView';
-
-
+import BlogManagement from './pages/staff/BlogManagement/BlogManagement';
+import BlogManager from './pages/manager/BlogManager/BlogManager';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -80,8 +80,10 @@ function AppContent() {
           <Route path="/dichvutheoloai" element={<ServiceListing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/relative-grave" element={<RelativeGrave />} />
-          <Route path="/blog-create" element={<BlogCreate />} />
+          
           <Route path="/blog-view" element={<BlogView />} />
+         
+          
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
           <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
@@ -106,11 +108,15 @@ function AppContent() {
           <Route path="/profilestaff" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/creategrave" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><CreateGrave /></ProtectedRoute>} />
           <Route path="/chitietmoquanly/:martyrId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
+          <Route path="/blog-manager" element={<BlogManager />} />
           {/* Staff routes */}
           <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
           <Route path="/danhsachdonhang-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
           <Route path="/task-detail/:taskId" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />
           <Route path="/profilestaff-staff" element={<ProtectedRoute requiredRole={[ROLES.STAFF]}><ProfileStaff /></ProtectedRoute>} />
+          <Route path="/blog-management" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogManagement /></ProtectedRoute>} />
+          <Route path="/blog-create" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogCreate /></ProtectedRoute>} />
+
           
 
         </Routes>

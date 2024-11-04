@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../../components/Sidebar/sideBar';
-import StaffFilter from '../../../components/StaffFilter/staffFilter';
-import SearchBar from '../../../components/SearchBar/searchBar';
+
 import './StaffManagement.css';
 import { getAllStaff, updateAccountStatus } from '../../../APIcontroller/API';
 import { ToggleLeft, ToggleRight, FileText } from 'lucide-react';

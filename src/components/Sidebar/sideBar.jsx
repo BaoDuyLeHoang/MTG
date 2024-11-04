@@ -73,6 +73,19 @@ const Sidebar = () => {
         text: "Thanh toán",
         roles: [2],
       },
+      {
+        to: "/danhsachbaiviet",
+        icon: faMoneyBillWave,
+        text: "Bài viết",
+        roles: [3],
+      },
+      {
+        to: "/danhsachphannhoikhachhang",
+        icon: faComments,
+        text: "Phản hồi khách hàng",
+        roles: [3],
+      },
+
   ];
   {
 

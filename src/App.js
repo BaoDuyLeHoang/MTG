@@ -5,54 +5,59 @@ import {
   Route,
   useNavigate,
 } from "react-router-dom";
+
+
+// Context and Utils
 import { AuthProvider } from "./context/AuthContext";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ROLES } from "./utils/auth";
+
+// Common Components
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import SessionCheck from "./components/SessionCheck";
-
-// Admin imports
-import Dashboard from "./admin/dashBoard/dashboard";
-
-
-import PayManagement from "./admin/payManagement/payManagement";
-
-
-import AccountManagement from "./admin/accountManagement/accountManagement";
-import TaskDescription from "./admin/taskDescription/TaskDescription";
-
-import AddTask from "./admin/addTask/AddTask";
-
-// Manager imports
-import OrderManagementManager from "./manager/OrderManagement/OrderManagement";
-import OrderDetail from "./manager/orderDetail/OrderDetai";
-import GraveView from "./manager/graveView/GraveView";
-import FeedbackManagement from "./manager/feedbackManagement/FeedbackManagement";
-import StaffManagement from "./manager/StaffManager/StaffManagement";
-import ProfileStaff from "./manager/ProfileStaff/ProfileStaff";
-import CreateGrave from "./manager/CreateGrave/CreateGrave";
-import GraveDetailManager from "./manager/GraveDetailManager/GraveDetailManager";
-// Staff imports
-import TaskList from "./staff/OrderManagement/TaskList";
-
-// Customer imports
-import HomePage from "./customer/homePage/homePage";
-import MyGraveDetail from "./customer/MyGraveDetail/MyGraveDetail";
-import ServicePage from "./customer/ServicePage/ServicePage";
-import CheckOut from "./customer/CheckOutPage/CheckOut";
-import CartPage from "./customer/CartPage/CartPage";
-import ServiceDetailPage from "./customer/ServiceDetailPage/ServiceDetailPage";
-import Login from "./customer/Login/Login";
 import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
-import CheckoutSuccessPage from './customer/CheckOutSuccessPage/checkoutSuccessPage';
-import CheckoutFailPage from './customer/CheckOutFailPage/checkoutFailPage';
-import TaskDetails from './staff/TaskDetail/TaskDetail';
-import OrderHistory from './customer/OrderHistory/OrderHistory';
-import SearchResult from './customer/SearchResult/SearchResult';
-import ServiceListing from './customer/ServiceListing/ServiceListing';
-import Register from './customer/Register/Register';
-import RelativeGrave from './customer/RelaticeGrave/RelativeGrave';
-import OrderDetailCus from './customer/OrderDetailCus/OrderDetailCus';
-import UserProfile from './customer/UserProfile/UserProfile';
+
+// Admin Components
+import Dashboard from "./pages/admin/dashBoard/dashboard";
+import PayManagement from "./pages/admin/payManagement/payManagement";
+import AccountManagement from "./pages/admin/accountManagement/accountManagement";
+import TaskDescription from "./pages/admin/taskDescription/TaskDescription";
+import AddTask from "./pages/admin/addTask/AddTask";
+
+// Manager Components
+import OrderManagementManager from "./pages/manager/OrderManagement/OrderManagement";
+import OrderDetail from "./pages/manager/orderDetail/OrderDetai";
+  import GraveView from "./pages/manager/graveView/GraveView";
+import FeedbackManagement from "./pages/manager/feedbackManagement/FeedbackManagement";
+import StaffManagement from "./pages/manager/StaffManager/StaffManagement";
+import ProfileStaff from "./pages/manager/ProfileStaff/ProfileStaff";
+import CreateGrave from "./pages/manager/CreateGrave/CreateGrave";
+import GraveDetailManager from "./pages/manager/GraveDetailManager/GraveDetailManager";
+
+// Staff Components
+import TaskList from "./pages/staff/OrderManagement/TaskList";
+  import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
+import TaskDetails from './pages/staff/TaskDetail/TaskDetail';
+
+// Customer Components
+import HomePage from "./pages/customer/homePage/homePage";
+import MyGraveDetail from "./pages/customer/MyGraveDetail/MyGraveDetail";
+    import ServicePage from "./pages/customer/ServicePage/ServicePage";
+import CheckOut from "./pages/customer/CheckOutPage/CheckOut";
+import CartPage from "./pages/customer/CartPage/CartPage";
+import ServiceDetailPage from "./pages/customer/ServiceDetailPage/ServiceDetailPage";
+import Login from "./pages/customer/Login/Login";
+import CheckoutSuccessPage from './pages/customer/CheckOutSuccessPage/checkoutSuccessPage';
+import CheckoutFailPage from './pages/customer/CheckOutFailPage/checkoutFailPage';
+import OrderHistory from './pages/customer/OrderHistory/OrderHistory';
+import SearchResult from './pages/customer/SearchResult/SearchResult';
+import ServiceListing from './pages/customer/ServiceListing/ServiceListing';
+import Register from './pages/customer/Register/Register';
+import RelativeGrave from './pages/customer/RelaticeGrave/RelativeGrave';
+import OrderDetailCus from './pages/customer/OrderDetailCus/OrderDetailCus';
+import UserProfile from './pages/customer/UserProfile/UserProfile';
+import BlogView from './pages/customer/BlogView/BlogView';
+
+
 function AppContent() {
   const navigate = useNavigate();
 
@@ -75,6 +80,8 @@ function AppContent() {
           <Route path="/dichvutheoloai" element={<ServiceListing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/relative-grave" element={<RelativeGrave />} />
+          <Route path="/blog-create" element={<BlogCreate />} />
+          <Route path="/blog-view" element={<BlogView />} />
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
           <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Replace these with your actual API details from Swagger
-const API_BASE_URL = 'https://localhost:7006/api';
+const API_BASE_URL = 'http://localhost:5244/api';
 const LOGIN_ENDPOINT = '/Auth/auth';
 
 // Function to handle login

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://localhost:7006/api"; // Replace with your actual API base URL
+const BASE_URL = "http://localhost:5244/api"; // Replace with your actual API base URL
 
 export const API_ENDPOINTS = {
   GET_SERVICES: "/ServiceCategory/categories",

@@ -80,12 +80,12 @@ const TaskList = () => {
         }
     };
 
-    const filteredTasks = tasks.filter(task => {
+    const filteredTasks = Array.isArray(tasks) ? tasks.filter(task => {
         if (filter === 'all') return true;
         if (filter === 'completed') return task.status === 4;
         if (filter === 'pending') return task.status === 0 || task.status === 1 || task.status === 3;
         return true;
-    });
+    }) : [];
 
     const handleViewDetails = (taskId) => {
         navigate(`/task-detail/${taskId}`);

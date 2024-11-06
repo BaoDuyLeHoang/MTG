@@ -58,6 +58,8 @@ import UserProfile from './pages/customer/UserProfile/UserProfile';
 import BlogView from './pages/customer/BlogView/BlogView';
 import BlogManagement from './pages/staff/BlogManagement/BlogManagement';
 import BlogManager from './pages/manager/BlogManager/BlogManager';
+import ScheduleManager from './pages/staff/ScheduleManager/ScheduleManager';
+import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -82,6 +84,7 @@ function AppContent() {
           <Route path="/relative-grave" element={<RelativeGrave />} />
           
           <Route path="/blog-view" element={<BlogView />} />
+          
          
           
           {/* Protected routes */}
@@ -103,6 +106,7 @@ function AppContent() {
 
           {/* Manager routes */}
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
+          <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleStaff /></ProtectedRoute>} />
           <Route path="/danhsachdonhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
           <Route path="/profilestaff" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />
@@ -110,12 +114,13 @@ function AppContent() {
           <Route path="/chitietmoquanly/:martyrId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
           <Route path="/blog-manager" element={<BlogManager />} />
           {/* Staff routes */}
-          <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
+          <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ScheduleManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
           <Route path="/task-detail/:taskId" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />
           <Route path="/profilestaff-staff" element={<ProtectedRoute requiredRole={[ROLES.STAFF]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/blog-management" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogManagement /></ProtectedRoute>} />
           <Route path="/blog-create" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogCreate /></ProtectedRoute>} />
+          <Route path="/schedule-staff" element={<ScheduleManager />} />
 
           
 

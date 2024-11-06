@@ -80,21 +80,24 @@ const CheckOut = () => {
       return;
     }
 
-    // if (!completionDate) {
-    //   alert("Vui lòng chọn ngày hoàn thành");
-    //   return;
-    // }
+    if (!completionDate) {
+      alert("Vui lòng chọn ngày hoàn thành");
+      return;
+    }
 
     setIsLoading(true);
 
     try {
-      const response = await createOrder(user.accountId, selectedPaymentMethod, completionDate, customerNote);
+      const response = await createOrder(
+        user.accountId, 
+        selectedPaymentMethod, 
+        completionDate,
+        customerNote
+      );
 
       if (response.paymentUrl) {
-        // If there's a payment URL, navigate to it
         window.location.href = response.paymentUrl;
       } else {
-        // If no payment URL, assume success and navigate to order confirmation
         alert("Đặt hàng thành công!");
         navigate('/order-confirmation', { state: { orderId: response.orderId } });
       }

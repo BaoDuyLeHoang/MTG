@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Upload, X, User, Calendar, Flag, MapPin } from 'lucide-react';
+import { Upload, X, User, Calendar, Flag, MapPin, CheckCircle, Clock, AlertCircle, Camera } from 'lucide-react';
 import './TaskDetail.css';
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { getTaskById, updateTaskStatus, updateTaskStatusWithImages } from '../../../APIcontroller/API';
@@ -19,6 +19,12 @@ const TaskDetails = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
+  const [checkInTime, setCheckInTime] = useState(null);
+  const [checkInLocation, setCheckInLocation] = useState(null);
+  const [isCheckedIn, setIsCheckedIn] = useState(false);
+  const [checkInPhoto, setCheckInPhoto] = useState(null);
+  const [checkInPhotoPreview, setCheckInPhotoPreview] = useState(null);
+  const checkInPhotoRef = useRef(null);
 
   useEffect(() => {
     const fetchTaskDetails = async () => {
@@ -139,124 +145,358 @@ const TaskDetails = () => {
     setAlertOpen(false);
   };
 
+  const handleCheckInPhoto = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setAlertMessage('Ảnh không được vượt quá 5MB');
+        setAlertSeverity('error');
+        setAlertOpen(true);
+        return;
+      }
+      if (!['image/jpeg', 'image/png', 'image/heic'].includes(file.type)) {
+        setAlertMessage('Chỉ chấp nhận file ảnh định dạng JPG, PNG hoặc HEIC');
+        setAlertSeverity('error');
+        setAlertOpen(true);
+        return;
+      }
+      setCheckInPhoto(file);
+      const previewUrl = URL.createObjectURL(file);
+      setCheckInPhotoPreview(previewUrl);
+    }
+  };
+
+  const handleCheckIn = async () => {
+    if (!checkInPhoto) {
+      setAlertMessage('Vui lòng chụp ảnh xác nhận vị trí của bạn');
+      setAlertSeverity('error');
+      setAlertOpen(true);
+      return;
+    }
+
+    setAlertMessage('Đang xác định vị trí của bạn...');
+    setAlertSeverity('info');
+    setAlertOpen(true);
+
+    try {
+      // First upload the check-in photo
+      const storageRef = ref(storage, `checkin_photos/${taskId}/${Date.now()}_${checkInPhoto.name}`);
+      await uploadBytes(storageRef, checkInPhoto);
+      const photoUrl = await getDownloadURL(storageRef);
+
+      // Then get location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const now = new Date();
+            setCheckInTime(now);
+            setCheckInLocation({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            });
+            setIsCheckedIn(true);
+            setAlertMessage('Check-in thành công! Bạn có thể xem chi tiết nhiệm vụ.');
+            setAlertSeverity('success');
+            setAlertOpen(true);
+            
+            // Here you might want to send the check-in data to your backend
+            // including the photoUrl, location, and timestamp
+          },
+          (error) => {
+            let errorMessage = 'Không thể xác định vị trí của bạn. ';
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                errorMessage += 'Vui lòng cấp quyền truy cập vị trí cho trình duyệt.';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMessage += 'Thông tin vị trí không khả dụng.';
+                break;
+              case error.TIMEOUT:
+                errorMessage += 'Quá thời gian yêu cầu vị trí.';
+                break;
+              default:
+                errorMessage += 'Đã xảy ra lỗi không xác định.';
+            }
+            setAlertMessage(errorMessage);
+            setAlertSeverity('error');
+            setAlertOpen(true);
+          }
+        );
+      }
+    } catch (error) {
+      console.error('Error during check-in:', error);
+      setAlertMessage('Đã xảy ra lỗi khi tải ảnh lên. Vui lòng thử lại.');
+      setAlertSeverity('error');
+      setAlertOpen(true);
+    }
+  };
+
+  // Add these new helper functions
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('vi-VN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const formatTime = (dateString) => {
+    return new Date(dateString).toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   if (error) return <div className="error-message">{error}</div>;
   if (!task) return <div>Loading...</div>;
 
   return (
-    <div className="page-layout">
+    <div className="td-page-layout">
       <Sidebar />
-      <div className="main-content">
-        <div className="container">
-          <div className="task-detail-header">
-            <h1>Nhiệm vụ #{task.taskId}: {task.serviceName}</h1>
-            <span className={`status status-${getStatusText(task.status).toLowerCase().replace(' ', '-')}`}>
-              {getStatusText(task.status)}
-            </span>
-          </div>
-
-          <div className="content">
-            <div className="info-grid">
-              <div className="info-card">
-                <h3><User size={16} /> Thông tin nhiệm vụ</h3>
-                <div className="info-content">
-                  <p><strong>Người được giao:</strong> {task.fullname}</p>
-                  <p><strong>Ngày bắt đầu:</strong> {new Date(task.startDate).toLocaleDateString()}</p>
-                  <p><strong>Ngày kết thúc:</strong> {new Date(task.endDate).toLocaleDateString()}</p>
-                </div>
+      <div className="td-main-content">
+        <div className="td-container">
+          {!isCheckedIn && task.status === 3 ? (
+            <div className="td-checkin-card">
+              <div className="td-checkin-header">
+                <AlertCircle size={24} className="td-checkin-alert" />
+                <h2 className="td-checkin-title">Yêu Cầu Check-in</h2>
               </div>
 
-              <div className="info-card">
-                <h3><MapPin size={16} /> Vị trí mộ</h3>
-                <div className="info-content">
-                  <p><strong>Vị trí:</strong> {task.graveLocation}</p>
+              <div className="td-checkin-content">
+                <div className="td-checkin-preview">
+                  <div className="td-preview-header">
+                    <div className="td-preview-id">#{task.taskId}</div>
+                    <span className={`td-status-badge td-status-${task.status}`}>
+                      {getStatusText(task.status)}
+                    </span>
+                  </div>
+                  <h3 className="td-preview-title">{task.serviceName}</h3>
+                  <div className="td-preview-details">
+                    <div className="td-preview-item">
+                      <MapPin size={16} />
+                      <span>{task.graveLocation}</span>
+                    </div>
+                    <div className="td-preview-item">
+                      <Calendar size={16} />
+                      <span>{formatDate(task.startDate)}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="description-card">
-              <h3>Mô tả</h3>
-              <p>{task.serviceDescription || 'Không có mô tả.'}</p>
-            </div>
+                <div className="td-checkin-steps">
+                  <h3 className="td-steps-title">Hướng dẫn check-in</h3>
+                  <div className="td-step">
+                    <div className="td-step-number">1</div>
+                    <div className="td-step-content">
+                      <p className="td-step-text">Đảm bảo bạn đã đến đúng địa điểm làm việc</p>
+                    </div>
+                  </div>
+                  <div className="td-step">
+                    <div className="td-step-number">2</div>
+                    <div className="td-step-content">
+                      <p className="td-step-text">Chụp ảnh tài liệu để xác nhận vị trí</p>
+                    </div>
+                  </div>
+                  <div className="td-step">
+                    <div className="td-step-number">3</div>
+                    <div className="td-step-content">
+                      <p className="td-step-text">Nhấn nút check-in để xác nhận vị trí</p>
+                    </div>
+                  </div>
+                </div>
 
-            {task.status !== 1 && task.status !== 4 && task.status !== 5 && (
-              <div className="upload-section">
-                <h3>Ảnh tài liệu</h3>
-                
-                <div 
-                  className="upload-area"
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current.click()}
-                >
+                <div className="td-checkin-photo-section">
                   <input
                     type="file"
-                    ref={fileInputRef}
-                    style={{ display: 'none' }}
-                    onChange={handleFileInput}
-                    multiple
+                    ref={checkInPhotoRef}
+                    className="td-checkin-photo-input"
                     accept="image/jpeg,image/png,image/heic"
+                    onChange={handleCheckInPhoto}
+                    style={{ display: 'none' }}
                   />
-                  <Upload className="upload-icon" />
-                  <p className="upload-text">
-                    {uploading ? 'Đang tải lên...' : 'Nhấp để tải lên hoặc kéo và thả'}
-                  </p>
-                  <p className="upload-note">JPG, PNG hoặc HEIC (tối đa 5MB)</p>
-                </div>
-
-                <div className="image-grid">
-                  {images.map((image) => (
-                    <div key={image.id} className="image-preview">
-                      <img src={image.url} alt="Tài liệu" />
-                      <button
-                        onClick={() => removeImage(image.id)}
-                        className="remove-button"
+                  
+                  {!checkInPhotoPreview ? (
+                    <div 
+                      className="td-checkin-photo-upload"
+                      onClick={() => checkInPhotoRef.current.click()}
+                    >
+                      <Camera size={32} />
+                      <p className="td-upload-text">Chụp ảnh xác nhận vị trí</p>
+                      <span className="td-upload-hint">Nhấn để chụp ảnh hoặc chọn từ thư viện</span>
+                    </div>
+                  ) : (
+                    <div className="td-checkin-photo-preview">
+                      <img src={checkInPhotoPreview} alt="Ảnh check-in" />
+                      <button 
+                        className="td-photo-remove"
+                        onClick={() => {
+                          setCheckInPhoto(null);
+                          setCheckInPhotoPreview(null);
+                        }}
                       >
-                        <X size={14} />
+                        <X size={16} />
                       </button>
                     </div>
-                  ))}
+                  )}
+                </div>
+
+                <div className="td-checkin-prompt">
+                  <button 
+                    className="td-btn td-btn-checkin"
+                    onClick={handleCheckIn}
+                    disabled={!checkInPhoto}
+                  >
+                    <CheckCircle size={20} />
+                    Check-in ngay
+                  </button>
+                  <p className="td-checkin-note">
+                    <Clock size={14} />
+                    Thời gian check-in có hiệu lực trong 24 giờ
+                  </p>
+                </div>
+
+                {checkInTime && (
+                  <div className="td-checkin-info">
+                    <h4>Thông tin Check-in</h4>
+                    <div className="td-info-item">
+                      <Clock size={16} />
+                      <span>Thời gian: {checkInTime.toLocaleString('vi-VN')}</span>
+                    </div>
+                    {checkInLocation && (
+                      <div className="td-info-item">
+                        <MapPin size={16} />
+                        <span>Tọa độ: {checkInLocation.lat.toFixed(6)}, {checkInLocation.lng.toFixed(6)}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            // Original task detail content
+            <>
+              <div className="td-header">
+                <div className="td-header-content">
+                  <div className="td-task-id">#{task.taskId}</div>
+                  <h1 className="td-title">{task.serviceName}</h1>
+                  <span className={`td-status-badge td-status-${task.status}`}>
+                    {getStatusText(task.status)}
+                  </span>
                 </div>
               </div>
-            )}
 
-            <div className="action-buttons">
-              {task.status === 1 && (
-                <>
-                  <button 
-                    className="btn btn-primary"
-                    onClick={() => handleStatusUpdate(3)}
+              <div className="td-grid">
+                <div className="td-card">
+                  <div className="td-card-header">
+                    <User size={20} />
+                    <h2 className="td-card-title">Thông tin nhiệm vụ</h2>
+                  </div>
+                  <div className="td-card-content">
+                    <div className="td-info-row">
+                      <div className="td-info-label">Người được giao</div>
+                      <div className="td-info-value">{task.fullname}</div>
+                    </div>
+                    <div className="td-info-row">
+                      <div className="td-info-label">Ngày bắt đầu</div>
+                      <div className="td-info-value">{new Date(task.startDate).toLocaleDateString()}</div>
+                    </div>
+                    <div className="td-info-row">
+                      <div className="td-info-label">Ngày kết thúc</div>
+                      <div className="td-info-value">{new Date(task.endDate).toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="td-card">
+                  <div className="td-card-header">
+                    <MapPin size={20} />
+                    <h2 className="td-card-title">Vị trí mộ</h2>
+                  </div>
+                  <div className="td-card-content">
+                    <div className="td-info-row">
+                      <div className="td-info-label">Vị trí</div>
+                      <div className="td-info-value">{task.graveLocation}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="td-description-card">
+                <h3>Mô tả</h3>
+                <p>{task.serviceDescription || 'Không có mô tả.'}</p>
+              </div>
+
+              {task.status !== 1 && task.status !== 4 && task.status !== 5 && (
+                <div className="td-upload-section">
+                  <h3>Ảnh tài liệu</h3>
+                  
+                  <div 
+                    className="td-upload-area"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current.click()}
                   >
-                    Chấp nhận
-                  </button>
-                  <button 
-                    className="btn btn-secondary"
-                    onClick={() => handleStatusUpdate(2)}
-                  >
-                    Từ chối
-                  </button>
-                </>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleFileInput}
+                      multiple
+                      accept="image/jpeg,image/png,image/heic"
+                    />
+                    <Upload className="td-upload-icon" />
+                    <p className="td-upload-text">
+                      {uploading ? 'Đang tải lên...' : 'Nhấp để tải lên hoặc kéo và thả'}
+                    </p>
+                    <p className="td-upload-note">JPG, PNG hoặc HEIC (tối đa 5MB)</p>
+                  </div>
+
+                  <div className="td-image-grid">
+                    {images.map((image) => (
+                      <div key={image.id} className="td-image-item">
+                        <img src={image.url} alt="Tài liệu" />
+                        <button
+                          onClick={() => removeImage(image.id)}
+                          className="td-remove-btn"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
-              {task.status === 2 && (
-                <button 
-                  className="btn btn-primary"
-                  onClick={() => handleStatusUpdate(4)}
-                >
-                  Thất bại
-                </button>
-              )}
-              {task.status === 3 && (
-                <>
-                  <button 
-                    className="btn btn-primary"
-                    onClick={() => handleStatusUpdate(4)}
-                    disabled={images.length === 0}
-                  >
-                    Hoàn thành
+
+              <div className="td-actions">
+                {task.status === 1 && (
+                  <>
+                    <button className="td-btn td-btn-accept">
+                      <CheckCircle size={20} />
+                      Chấp nhận nhiệm vụ
+                    </button>
+                    <button className="td-btn td-btn-reject">
+                      <X size={20} />
+                      Từ chối nhiệm vụ
+                    </button>
+                  </>
+                )}
+                {task.status === 2 && (
+                  <button className="td-btn td-btn-primary">
+                    Thất bại
                   </button>
-                </>
-              )}
-            </div>
-          </div>
+                )}
+                {task.status === 3 && (
+                  <>
+                    <button className="td-btn td-btn-complete">
+                      <CheckCircle size={20} />
+                      Hoàn thành nhiệm vụ
+                    </button>
+                  </>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
       <AlertMessage

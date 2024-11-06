@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Calendar, Eye, Check, X } from 'lucide-react';
 import './BlogManager.css';
 import Sidebar from '../../../components/Sidebar/sideBar';
-
+import image from '../../../assets/images/image2.png';
 const BlogApprovalDashboard = () => {
   const [posts, setPosts] = useState([
     {

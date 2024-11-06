@@ -60,6 +60,7 @@ export function AuthProvider({ children, navigate }) {
         accountName: decodedToken.accountName || decodedToken.sub || 'User',
         accountId: decodedToken.accountId || decodedToken.sub,
         customerCode: decodedToken.customerCode || null,
+        areaId: decodedToken.areaId || null,
         // other user info from token
       };
       setUser(updatedUser);

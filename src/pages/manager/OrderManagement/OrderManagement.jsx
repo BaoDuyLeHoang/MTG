@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Sidebar/sideBar";
 import { useAuth } from "../../../context/AuthContext";
 import "./OrderManagement.css";
-import { getAllOrders } from "../../../APIcontroller/API";
+import { getOrdersByManagerArea } from "../../../services/orders";
 import { useNavigate } from "react-router-dom";
 
 const OrderManagement = () => {
@@ -16,20 +16,12 @@ const OrderManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 8;
 
-  const filteredOrders = orders
-    .filter((order) => {
-      const matchesSearch =
-        order.orderId.toString().includes(searchTerm) ||
-        order.accountId.toString().includes(searchTerm);
-      const matchesStatus =
-        statusFilter === "all" || order.status.toString() === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
+ 
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -46,72 +38,96 @@ const OrderManagement = () => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        setError(null); // Reset error state before fetching
-        const data = await getAllOrders();
-        console.log("Fetched orders:", data);
-        if (Array.isArray(data) && data.length > 0) {
-          setOrders(data);
+        setError(null);
+        const response = await getOrdersByManagerArea(user.accountId);
+        console.log("Fetched orders:", response);
+        if (response && response.orderDetails && Array.isArray(response.orderDetails)) {
+          setOrders(response.orderDetails);
         } else {
-          setError(
-            "Không có đơn hàng nào được tìm thấy hoặc dữ liệu không hợp lệ."
-          );
+          setError("Không có đơn hàng nào được tìm thấy hoặc dữ liệu không hợp lệ.");
         }
       } catch (error) {
         console.error("Error fetching orders:", error);
         setError(`Không thể tải danh sách đơn hàng. Lỗi: ${error.message}`);
-        setOrders([]); // Reset orders state on error
+        setOrders([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchOrders();
-  }, [navigate]);
+  }, [navigate, user.accountId]);
 
-  const getStatusText = (status) => {
-    switch (status) {
-      case 0:
-        return "Chưa thanh toán";
-      case 1:
-        return "Đã thanh toán";
-      case 2:
-        return "Hủy thanh toán";
-      case 3:
-        return "Đang thực hiện";
-      case 4:
-        return "Đã hoàn thành";
-      case 5:
-        return "Đơn hàng thất bại";
-      case 6:
-        return "Đã hoàn tiền";
-      default:
-        return "Không xác định";
+  const getStatusText = (status, isOrderStatus = false) => {
+    if (isOrderStatus) {
+      // Order Status
+      switch (status) {
+        case 1:
+          return "Đã thanh toán";
+        case 2:
+          return "Đã hủy";
+        case 4:
+          return "Đã hoàn thành";
+        case 5:
+          return "Quá hạn";
+        default:
+          return "Không xác định";
+      }
+    } else {
+      // Task Status
+      switch (status) {
+        case 0:
+          return "Đang bàn giao";
+        case 1:
+          return "Đã giao";
+        case 3:
+          return "Đang thực hiện";
+        case 4:
+          return "Đã hoàn thành";
+        case 5:
+          return "Quá hạn";
+        default:
+          return "Không xác định";
+      }
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 0:
-        return "status-yellow";
-      case 1:
-        return "status-green";
-      case 2:
-        return "status-red";
-      case 3:
-        return "status-yellow";
-      case 4:
-        return "status-green";
-      case 5:
-        return "status-red";
-      case 6:
-        return "status-blue";
-      default:
-        return "";
+  const getStatusColor = (status, isOrderStatus = false) => {
+    if (isOrderStatus) {
+      // Order Status
+      switch (status) {
+        case 1:
+          return "status-green"; // Đã thanh toán - green
+        case 2:
+          return "status-red"; // Đã hủy - red
+        case 4:
+          return "status-green"; // Đã hoàn thành - green
+        case 5:
+          return "status-red"; // Quá hạn - red
+        default:
+          return "";
+      }
+    } else {
+      // Task Status
+      switch (status) {
+        case 1:
+          return "status-yellow"; // Đang bàn giao - yellow
+        case 2:
+          return "status-red"; // Đã từ chối - red
+        case 3:
+          return "status-yellow"; // Đang thực hiện - yellow
+        case 4:
+          return "status-green"; // Đã hoàn thành - green
+        case 5:
+          return "status-red"; // Quá hạn - red
+        default:
+          return "";
+      }
     }
   };
 
   const handleViewDetails = (orderId) => {
-    navigate(`/danhsachdonhang/${orderId}`);
+    navigate(`/danhsachdonhang/${orderId}?managerId=${user.accountId}`);
   };
 
   return (
@@ -139,13 +155,15 @@ const OrderManagement = () => {
               className="status-filter"
             >
               <option value="all">Tất cả trạng thái</option>
-              <option value="0">Chưa thanh toán</option>
-              <option value="1">Đã thanh toán</option>
-              <option value="2">Hủy thanh toán</option>
-              <option value="3">Đang thực hiện</option>
-              <option value="4">Đã hoàn thành</option>
-              <option value="5">Đơn hàng thất bại</option>
-              <option value="6">Đã hoàn tiền</option>
+              <option value="order_1">Đã thanh toán</option>
+              <option value="order_2">Đã hủy</option>
+              <option value="order_4">Đã hoàn thành</option>
+              <option value="order_5">Quá hạn</option>
+              <option value="task_1">Đang bàn giao</option>
+              <option value="task_2">Đã từ chối</option>
+              <option value="task_3">Đang thực hiện</option>
+              <option value="task_4">Đã hoàn thành</option>
+              <option value="task_5">Quá hạn</option>
             </select>
           </div>
         </div>
@@ -159,7 +177,7 @@ const OrderManagement = () => {
           <div className="error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
-        ) : filteredOrders.length === 0 ? (
+        ) : orders.length === 0 ? (
           <div className="centered">
             <i className="fas fa-inbox"></i>
             <p>Không tìm thấy đơn hàng nào.</p>
@@ -169,63 +187,53 @@ const OrderManagement = () => {
             <table className="order-table">
               <thead>
                 <tr>
-                  <th>Mã Đơn Hàng</th>
-                  <th>Mã Tài Khoản</th>
-                  <th>Ngày Đặt Hàng</th>
-                  <th>Tổng Giá</th>
-                  <th>Trạng Thái</th>
-                  <th>Chi tiết</th>
+                  <th>Mã Chi Tiết</th>
+                  <th>Tên Dịch Vụ</th>
+                  <th>Tên Liệt Sĩ</th>
+                  <th>Giá Dịch Vụ</th>
+                  <th>Trạng Thái Đơn Hàng</th>
+                  <th>Trạng Thái Công Việc</th>
+                  <th>Nhân Viên</th>
                   <th>Hành Động</th>
                 </tr>
               </thead>
               <tbody>
                 {currentOrders.map((order) => (
-                  <tr key={order.orderId}>
-                    <td>#{order.orderId}</td>
-                    <td>{order.accountId}</td>
-                    <td>
-                      {new Date(order.orderDate).toLocaleDateString('vi-VN', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </td>
+                  <tr key={order.detailId}>
+                    <td>#{order.detailId}</td>
+                    <td>{order.serviceName}</td>
+                    <td>{order.martyrName}</td>
                     <td>
                       <strong>
-                        {order.totalPrice.toLocaleString("vi-VN", {
+                        {order.orderPrice ? order.orderPrice.toLocaleString("vi-VN", {
                           style: "currency",
                           currency: "VND",
-                        })}
+                        }) : '0 VND'}
                       </strong>
                     </td>
                     <td>
-                      <span
-                        className={`status ${getStatusColor(order.status)}`}
-                      >
-                        {getStatusText(order.status)}
+                      <span className={`status ${getStatusColor(order.orderStatus, true)}`}>
+                        {getStatusText(order.orderStatus, true)}
                       </span>
                     </td>
                     <td>
-                      <ul>
-                        {order.orderDetails.map((detail, index) => (
-                          <li key={index}>
-                            {detail.serviceName} - {detail.martyrName} -{" "}
-                            {detail.orderPrice.toLocaleString("vi-VN", {
-                              style: "currency",
-                              currency: "VND",
-                            })}
-                          </li>
-                        ))}
-                      </ul>
+                      <span className={`status ${getStatusColor(order.statusTask)}`}>
+                        {getStatusText(order.statusTask)}
+                      </span>
                     </td>
-
+                    
+                    <td>
+                      {order.staffs && order.staffs.map((staff, index) => (
+                        <div key={index}>
+                          {staff.staffFullName}
+                        </div>
+                      ))}
+                    </td>
                     <td>
                       <button
                         className="detail-button"
-                        onClick={() => handleViewDetails(order.orderId)}
-                        disabled={!order.orderId}
+                        onClick={() => handleViewDetails(order.detailId,user.accountId)}
+                        disabled={!order.detailId}
                       >
                         Chi tiết
                       </button>

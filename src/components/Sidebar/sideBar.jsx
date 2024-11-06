@@ -46,6 +46,12 @@ const Sidebar = () => {
       roles: [1, 2] 
     },
     {
+      to: "/schedule-manager",
+      icon: faUser,
+      text: "Lịch công việc",
+      roles: [2],
+    },
+    {
       to: "/danhsachdonhang",
       icon: faShoppingCart,
       text: "Đơn hàng",

@@ -1,0 +1,287 @@
+.home-page-overview-content {
+    text-align: center;
+    padding-left: 10%;
+    padding-right: 10%;
+    border-top: 2px solid #e5e7eb;
+}
+
+.home-page-map-image {
+    text-align: center;
+}
+
+.home-page-map-image img {
+    width: 50%;
+    height: 50%;
+}
+
+.home-page-customer-review {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-top: 2px solid #e5e7eb;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
+
+.home-page-map-overview {
+    text-align: center;
+    border-top: 2px solid #e5e7eb;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
+.home-page-customer-review-item{
+    display: flex;
+    gap: 20px;
+}
+
+.home-page {
+  background-color: #f5f5f5;
+}
+
+.section {
+  padding: 4rem 0;
+}
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: #4a90e2;
+}
+
+/* Introduction Section */
+.introduction-section {
+  background-color: white;
+  
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.introduction-text {
+  line-height: 1.8;
+  color: #555;
+  font-size: 1.1rem;
+  text-align: justify;
+}
+
+/* Map Section */
+.map-section {
+  padding: 4rem 0;
+  background-color: #f8f9fa;
+}
+
+.map-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  
+}
+
+.map-wrapper {
+  width: 100%;
+  height: 500px;
+}
+
+.map-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  
+}
+
+.map-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.map-info h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.map-info p {
+  margin: 0;
+  color: #666;
+}
+
+/* Reviews Section */
+.reviews-section {
+  padding: 6rem 0;
+  background: linear-gradient(to bottom, #fff, #f8f9fa);
+}
+
+.reviews-container {
+  width: 100%;
+  overflow-x: auto; /* Allows horizontal scrolling if needed */
+  padding: 20px 0;
+}
+
+.reviews-grid {
+  display: flex;
+  flex-direction: row; /* Makes cards horizontal */
+  gap: 24px; /* Space between cards */
+  padding: 0 20px;
+}
+
+.review-card-wrapper {
+  flex: 0 0 auto; /* Prevents cards from stretching */
+  width: 400px; /* Fixed width for each card */
+}
+
+/* Optional: Add smooth scrolling for touch devices */
+@media (hover: none) {
+  .reviews-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .section {
+    padding: 2rem 0;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .introduction-text {
+    font-size: 1rem;
+  }
+}
+
+.home-introduction-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+  text-align: justify;
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 4px solid #8b0000; /* Dark red border - you can adjust the color */
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  
+  /* Add a subtle gradient background */
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.95),
+    rgba(245, 245, 245, 0.95)
+  );
+
+  /* First letter styling */
+  &::first-letter {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #8b0000;
+    float: left;
+    padding-right: 8px;
+    line-height: 1;
+  }
+
+  /* Add hover effect */
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+  }
+
+  /* Optional: Add a subtle pattern overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+    pointer-events: none;
+    border-radius: 0 8px 8px 0;
+  }
+}
+
+/* Add responsive design */
+@media (max-width: 768px) {
+  .home-introduction-text {
+    font-size: 1rem;
+    padding: 1.5rem;
+    line-height: 1.6;
+    
+    &::first-letter {
+      font-size: 2em;
+    }
+  }
+}
+
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.map-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.map-section-button {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.map-section-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  
+}
+
+.map-section-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+}

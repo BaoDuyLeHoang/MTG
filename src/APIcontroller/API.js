@@ -146,18 +146,21 @@ export const getCheckoutItemsByCustomerId = async (customerId) => {
     throw error;
   }
 };
-export const createOrder = async (accountId) => {
+export const createOrder = async (accountId, paymentMethod, completionDate, customerNote) => {
   try {
     const token = localStorage.getItem("accessToken");
     console.log("Creating order for account ID:", accountId);
-    console.log(
-      "API URL:",
-      `${BASE_URL}${API_ENDPOINTS.CREATE_ORDER}/${accountId}`
-    );
+    console.log("API URL:", `${BASE_URL}${API_ENDPOINTS.CREATE_ORDER}/${accountId}`);
+
+    const requestBody = {
+     
+      expectedCompletionDate: completionDate,
+      note: customerNote
+    };
 
     const response = await axios.post(
       `${BASE_URL}${API_ENDPOINTS.CREATE_ORDER}?customerId=${accountId}`,
-      {}, // Empty object as we're not sending any data in the body
+      requestBody,  // Replace empty object with our new request body
       {
         headers: {
           "Content-Type": "application/json",

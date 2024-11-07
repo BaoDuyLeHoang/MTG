@@ -24,24 +24,32 @@ const Sidebar = () => {
 
   // Moved menuItems inside component to access user context
   const menuItems = [
-    {
-        to: "/profilestaff",
-        icon: faUser,
-        text: "Hồ sơ nhân viên",
-        roles: [2],
-      },
-      {
-        to: "/profilestaff-staff",
-        icon: faUser,
-        text: "Hồ sơ nhân viên",
-        roles: [3],
-      },
-    { to: "/", icon: faChartLine, text: "Thống kê", roles: [1, 2] },
+    // Admin Items (Role 1)
     {
       to: "/danhsachaccount",
       icon: faUser,
       text: "Quản lý tài khoản",
       roles: [1],
+    },
+
+    // Manager Items (Role 2)
+    {
+      to: "/profilestaff",
+      icon: faUser,
+      text: "Hồ sơ nhân viên",
+      roles: [2],
+    },
+    { 
+      to: "/", 
+      icon: faChartLine, 
+      text: "Thống kê", 
+      roles: [1, 2] 
+    },
+    {
+      to: "/schedule-manager",
+      icon: faUser,
+      text: "Lịch công việc",
+      roles: [2],
     },
     {
       to: "/danhsachdonhang",
@@ -49,10 +57,18 @@ const Sidebar = () => {
       text: "Đơn hàng",
       roles: [2],
     },
-   
-    { to: "/danhsachnhanvien", icon: faUser, text: "Nhân viên", roles: [2] },
-    { to: "/danhsachmo", icon: faMonument, text: "Danh sách mộ", roles: [2] },
-    
+    { 
+      to: "/danhsachnhanvien", 
+      icon: faUser, 
+      text: "Nhân viên", 
+      roles: [2] 
+    },
+    { 
+      to: "/danhsachmo", 
+      icon: faMonument, 
+      text: "Danh sách mộ", 
+      roles: [2] 
+    },
     {
       to: "/danhsachphannhoikhachhang",
       icon: faComments,
@@ -65,18 +81,42 @@ const Sidebar = () => {
       text: "Giao việc",
       roles: [2],
     },
-    
-    { to: "/danhsachdonhang-staff", icon: faTasks, text: "Công việc", roles: [3] },
     {
-        to: "/danhsachthanhtoan",
-        icon: faMoneyBillWave,
-        text: "Thanh toán",
-        roles: [2],
-      },
-  ];
-  {
+      to: "/blog-manager",
+      icon: faComments,
+      text: "Quản lý bài viết",
+      roles: [2],
+    },
+    {
+      to: "/danhsachthanhtoan",
+      icon: faMoneyBillWave,
+      text: "Thanh toán",
+      roles: [2],
+    },
 
-  }
+    // Staff Items (Role 3)
+    {
+      to: "/profilestaff-staff",
+      icon: faUser,
+      text: "Hồ sơ nhân viên",
+      roles: [3],
+    },
+    { 
+      to: "/schedule-staff", 
+      icon: faTasks, 
+      text: "Công việc", 
+      roles: [3] 
+    },
+    {
+      to: "/blog-management",
+      icon: faMoneyBillWave,
+      text: "Bài viết",
+      roles: [3],
+    },
+    
+
+
+  ];
 
   // First, define the role constants to avoid magic numbers
   const ROLES = {

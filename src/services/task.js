@@ -50,3 +50,20 @@ export const getTasksByAccountId = async (accountId, date, pageIndex = 1, pageSi
         throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
     }
 };
+
+export const addTaskImages = async (scheduleDetailId, urlImages) => {
+    try {
+        const response = await axios.put(
+            `${BASE_URL}/Task/tasks/${scheduleDetailId}/images`,
+            { urlImages },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to add images to task');
+    }
+};

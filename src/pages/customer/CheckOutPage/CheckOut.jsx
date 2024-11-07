@@ -5,6 +5,8 @@ import "./CheckOutPage.css";
 import { FaTrashAlt } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 import { createOrder, getCheckoutItemsByCustomerId } from "../../../APIcontroller/API";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const CheckOut = () => {
   const location = useLocation();
@@ -13,7 +15,7 @@ const CheckOut = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [completionDate, setCompletionDate] = useState("");
+  const [completionDate, setCompletionDate] = useState(null);
   const [customerNote, setCustomerNote] = useState("");
 
   useEffect(() => {
@@ -179,12 +181,29 @@ const CheckOut = () => {
             <div className="additional-info">
               <div className="form-group">
                 <label>Ngày hoàn thành dự kiến *</label>
-                <input
-                  type="date"
-                  value={completionDate}
-                  onChange={(e) => setCompletionDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
+                <DatePicker
+                  selected={completionDate}
+                  onChange={(date) => setCompletionDate(date)}
+                  dateFormat="dd/MM/yyyy"
+                  minDate={new Date()}
+                  placeholderText="dd/mm/yyyy"
+                  className="form-control"
                   required
+                  locale="vi"
+                  isClearable
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={15}
+                  customInput={
+                    <input
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px'
+                      }}
+                    />
+                  }
                 />
               </div>
               <div className="form-group">

@@ -15,13 +15,7 @@ const OrderManagement = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 8;
-
- 
-
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const [totalPages, setTotalPages] = useState(1);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -39,10 +33,11 @@ const OrderManagement = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await getOrdersByManagerArea(user.accountId);
+        const response = await getOrdersByManagerArea(user.accountId, currentPage);
         console.log("Fetched orders:", response);
         if (response && response.orderDetails && Array.isArray(response.orderDetails)) {
           setOrders(response.orderDetails);
+          setTotalPages(response.totalPage);
         } else {
           setError("Không có đơn hàng nào được tìm thấy hoặc dữ liệu không hợp lệ.");
         }
@@ -56,7 +51,7 @@ const OrderManagement = () => {
     };
 
     fetchOrders();
-  }, [navigate, user.accountId]);
+  }, [navigate, user.accountId, currentPage]);
 
   const getStatusText = (status, isOrderStatus = false) => {
     if (isOrderStatus) {
@@ -198,7 +193,7 @@ const OrderManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentOrders.map((order) => (
+                {orders.map((order) => (
                   <tr key={order.detailId}>
                     <td>#{order.detailId}</td>
                     <td>{order.serviceName}</td>

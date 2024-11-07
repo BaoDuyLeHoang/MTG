@@ -116,7 +116,7 @@ function AppContent() {
           {/* Staff routes */}
           <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ScheduleManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />
-          <Route path="/task-detail/:taskId" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />
+          <Route path="/task-detail/:accountId/:scheduleDetailId" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskDetails /></ProtectedRoute>} />
           <Route path="/profilestaff-staff" element={<ProtectedRoute requiredRole={[ROLES.STAFF]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/blog-management" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogManagement /></ProtectedRoute>} />
           <Route path="/blog-create" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogCreate /></ProtectedRoute>} />

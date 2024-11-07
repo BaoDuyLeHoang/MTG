@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,32 +14,40 @@ import {
   faTag
 } from '@fortawesome/free-solid-svg-icons';
 import './BlogManagement.css';
-
+import { getBlogByAccountId } from '../../../services/blog';
+import { useAuth } from '../../../context/AuthContext';
 const BlogManagement = () => {
   const navigate = useNavigate();
-  const [blogs, setBlogs] = useState([
-    {
-      id: 1,
-      title: 'Lịch Sử Nghĩa Trang An Nhiên',
-      excerpt: 'Khám phá lịch sử phong phú của nghĩa trang...',
-      createdAt: '2024-03-15',
-      status: 'published',
-      author: 'Nguyễn Văn A',
-      category: 'Lịch sử'
-    },
-    {
-      id: 2,
-      title: 'Hướng Dẫn Bảo Trì Vườn Tưởng Niệm',
-      excerpt: 'Các phương pháp tốt nhất để duy trì không gian thiêng liêng...',
-      createdAt: '2024-03-20',
-      status: 'draft',
-      author: 'Trần Thị B',
-      category: 'Bảo trì'
-    }
-  ]);
+  const [blogs, setBlogs] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const { user } = useAuth();
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const accountId = user?.accountId;
+        const response = await getBlogByAccountId(accountId);
+        
+        const transformedBlogs = response.data.map(blog => ({
+          id: blog.blogId,
+          title: blog.blogName,
+          excerpt: blog.blogDescription,
+          createdAt: blog.createDate,
+          status: blog.status ? 'published' : 'hidden',
+          author: blog.fullName,
+          category: blog.historyEventName,
+          image: blog.historicalImages?.[0] || null
+        }));
+        
+        setBlogs(transformedBlogs);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   const handleCreateBlog = () => {
     navigate('/blog-create');
@@ -103,6 +111,11 @@ const BlogManagement = () => {
           <div className="blog-mgmt-list">
             {filteredBlogs.map(blog => (
               <div key={blog.id} className="blog-mgmt-card">
+                {blog.image && (
+                  <div className="blog-mgmt-card-image">
+                    <img src={blog.image} alt={blog.title} />
+                  </div>
+                )}
                 <div className="blog-mgmt-card-header">
                   <h2>{blog.title}</h2>
                   <div className="blog-mgmt-actions">

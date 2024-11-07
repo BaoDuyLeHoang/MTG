@@ -37,6 +37,7 @@ import { createScheduleDetailForStaff } from '../../../services/scheduleDetail';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { getScheduleDetailForStaff } from '../../../services/scheduleDetail';
 import { useNavigate } from 'react-router-dom';
+import { getByScheduleDetailId } from '../../../services/scheduleDetail';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -375,8 +376,18 @@ const ScheduleManager = () => {
     }));
   };
 
-  const handleTaskClick = (taskId) => {
-    navigate(`/task-detail/${taskId}`);
+  const handleTaskClick = async (scheduleDetailId) => {
+    try {
+      // Navigate directly with both parameters
+      navigate(`/task-detail/${user.accountId}/${scheduleDetailId}`);
+    } catch (error) {
+      console.error('Error navigating to task detail:', error);
+      setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Không thể chuyển trang. Vui lòng thử lại sau.'
+      });
+    }
   };
 
   return (
@@ -402,15 +413,6 @@ const ScheduleManager = () => {
                   onClick={() => setWeekOffset((prev) => prev + 1)}
                 >
                   Tuần Sau
-                </Button>
-              </div>
-              <div className="mgmt-dashboard__task-controls">
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => setSchedule({})}
-                >
-                  Xóa Lịch
                 </Button>
               </div>
             </div>
@@ -445,7 +447,7 @@ const ScheduleManager = () => {
                           const key = `${formattedDate}-${timeSlot.slotId}`;
                           const assignments = schedule[key] || [];
                           
-                          console.log('Cell key:', key, 'Assignments:', assignments);
+                      
                           
                           return (
                             <TableCell
@@ -539,150 +541,6 @@ const ScheduleManager = () => {
                 </Table>
               )}
             </TableContainer>
-
-            <Paper sx={{ p: 3, mt: 3 }}>
-              <div className="mgmt-summary">
-                <div
-                  className="mgmt-summary__header"
-                  sx={{
-                    mb: 2,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <h2>
-                    Tổng Kết Công Việc (
-                    {formatDate(getWeekDates(weekOffset)[0])} -{" "}
-                    {formatDate(getWeekDates(weekOffset)[6])})
-                  </h2>
-                  <div className="mgmt-summary__view-toggle">
-                    <Button
-                      variant={
-                        summaryView === "staff" ? "contained" : "outlined"
-                      }
-                      onClick={() => setSummaryView("staff")}
-                      sx={{ mr: 1 }}
-                    >
-                      Theo Nhân Viên
-                    </Button>
-                    <Button
-                      variant={
-                        summaryView === "task" ? "contained" : "outlined"
-                      }
-                      onClick={() => setSummaryView("task")}
-                    >
-                      Theo Công Việc
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="mgmt-summary__content">
-                  {summaryView === "staff" ? (
-                    <TableContainer>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Nhân Viên</TableCell>
-                            <TableCell align="center">
-                              Tổng Số Công Việc
-                            </TableCell>
-                            <TableCell>Chi Tiết Theo Ngày</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {Object.entries(summary.staffSummary).map(
-                            ([staff, data]) => (
-                              <TableRow key={staff}>
-                                <TableCell>{staff}</TableCell>
-                                <TableCell align="center">
-                                  {data.totalTasks}
-                                </TableCell>
-                                <TableCell>
-                                  {Object.entries(data.dateWiseTasks).map(
-                                    ([date, tasks]) => (
-                                      <div key={date}>
-                                        <strong>{date}:</strong>
-                                        <ul
-                                          style={{
-                                            margin: "4px 0",
-                                            paddingLeft: "20px",
-                                          }}
-                                        >
-                                          {tasks.map((task, index) => (
-                                            <li key={index}>{task}</li>
-                                          ))}
-                                        </ul>
-                                      </div>
-                                    )
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  ) : (
-                    <TableContainer>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Công Việc</TableCell>
-                            <TableCell align="center">
-                              Tổng Số Phân Công
-                            </TableCell>
-                            <TableCell>Chi Tiết Theo Ngày</TableCell>
-                            <TableCell align="center">Thao Tác</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {Object.entries(summary.taskSummary).map(
-                            ([task, data]) => (
-                              <TableRow key={task}>
-                                <TableCell>{task}</TableCell>
-                                <TableCell align="center">
-                                  {data.total}
-                                </TableCell>
-                                <TableCell>
-                                  {Object.entries(data.dateWiseAssignments).map(
-                                    ([date, staff]) => (
-                                      <div key={date}>
-                                        <strong>{date}:</strong>
-                                        <ul
-                                          style={{
-                                            margin: "4px 0",
-                                            paddingLeft: "20px",
-                                          }}
-                                        >
-                                          {staff.map((staffMember, index) => (
-                                            <li key={index}>{staffMember}</li>
-                                          ))}
-                                        </ul>
-                                      </div>
-                                    )
-                                  )}
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Button
-                                    variant="contained"
-                                    size="small"
-                                    onClick={() => handleViewDetail(task, data)}
-                                    sx={{ minWidth: '100px' }}
-                                  >
-                                    Xem Chi Tiết
-                                  </Button>
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-                </div>
-              </div>
-            </Paper>
           </div>
         </div>
       </div>

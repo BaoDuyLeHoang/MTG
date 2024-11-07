@@ -470,6 +470,17 @@
   box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.15);
 }
 
+.blog-create-category-select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
 .blog-create-image-button {
   padding: 0.875rem 1.5rem;
   background-color: #fff;

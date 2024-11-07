@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Sidebar/sideBar";
+import { getAllFeedback } from "../../../services/feedback";
 import "./FeedbackManagement.css";
 
 export default function FeedbackManagement() {
@@ -8,23 +9,27 @@ export default function FeedbackManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
 
-  // Simulated data - replace with actual API call
+  // Replace simulated data with actual API call
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setFeedbackData(
-        Array.from({ length: 5 }).map((_, index) => ({
-          id: index + 1,
-          creatorName: "Nguyen Cong Ty",
-          createdDate: "01/01/2024",
-          type: "Lỗi web",
-          title: "WEB lỗi quá nhiều",
-        }))
-      );
-      setLoading(false);
-    }, 1000);
-  }, []);
+    const fetchFeedbacks = async () => {
+      try {
+        setLoading(true);
+        const response = await getAllFeedback(currentPage, pageSize);
+        console.log('API Response:', response); // For debugging
+        setFeedbackData(response.data?.items || []); // Assuming the data is nested under 'items'
+      } catch (error) {
+        console.error("Error fetching feedback:", error);
+        setFeedbackData([]); // Set empty array on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeedbacks();
+  }, [currentPage, pageSize]);
 
   return (
     <div className="fb-management-container">
@@ -90,20 +95,45 @@ export default function FeedbackManagement() {
                 </tr>
               </thead>
               <tbody>
-                {feedbackData.map((feedback) => (
-                  <tr key={feedback.id}>
-                    <td>#{feedback.id}</td>
-                    <td>{feedback.creatorName}</td>
-                    <td>{feedback.createdDate}</td>
-                    <td>{feedback.type}</td>
-                    <td>{feedback.title}</td>
-                    <td>
-                      <button className="detail-button">Xem</button>
+                {feedbackData && feedbackData.length > 0 ? (
+                  feedbackData.map((feedback) => (
+                    <tr key={feedback.id}>
+                      <td>#{feedback.id}</td>
+                      <td>{feedback.creatorName}</td>
+                      <td>{new Date(feedback.createdDate).toLocaleDateString('vi-VN')}</td>
+                      <td>{feedback.type}</td>
+                      <td>{feedback.title}</td>
+                      <td>
+                        <button className="detail-button">Xem</button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center' }}>
+                      Chưa có phản hồi nào
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
+
+            {/* Add pagination controls */}
+            <div className="pagination">
+              <button 
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Trước
+              </button>
+              <span>Trang {currentPage}</span>
+              <button 
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                disabled={feedbackData.length < pageSize}
+              >
+                Sau
+              </button>
+            </div>
           </div>
         )}
       </div>

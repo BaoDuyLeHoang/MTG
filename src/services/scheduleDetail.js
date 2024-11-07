@@ -39,3 +39,23 @@ export const getScheduleDetailForStaff = async (accountId, slotId, date) => {
   }
 };
   
+export const getByScheduleDetailId = async (accountId, scheduleDetailId) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/ScheduleDetail/GetByScheduleDetailId`,
+      {
+        params: {
+          accountId,
+          scheduleDetailId
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+  

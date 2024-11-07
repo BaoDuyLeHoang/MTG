@@ -1,9 +1,12 @@
 // BlogEditor.js
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./BlogCreate.css";
 import Sidebar from "../../../components/Sidebar/sideBar";
+import { getAllHistoricalEvents } from '../../../services/historical';
+import { createBlog } from '../../../services/blog';
+import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 
 const BlogCreate = () => {
   const [title, setTitle] = useState("");
@@ -12,6 +15,34 @@ const BlogCreate = () => {
   const [isPreview, setIsPreview] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const quillRef = useRef();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [description, setDescription] = useState("");
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('success');
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const events = await getAllHistoricalEvents();
+        const mappedCategories = events.map(event => ({
+          value: event.historyId,
+          label: event.historyEventName
+        }));
+        setCategories(mappedCategories);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const modules = {
     toolbar: [
@@ -58,9 +89,58 @@ const BlogCreate = () => {
     }
   };
 
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  const handlePublish = async () => {
+    try {
+      setError(null);
+      setIsSubmitting(true);
+
+      if (!title || !content || !category) {
+        throw new Error('Vui lòng điền đầy đủ tiêu đề, nội dung và danh mục');
+      }
+
+      const blogData = {
+        historyId: parseInt(category),
+        blogName: title,
+        blogDescription: description,
+        blogContent: content,
+        historicalImageUrls: imagePreview ? [imagePreview] : [],
+        relatedMartyrIds: []
+      };
+
+      await createBlog(blogData);
+      // Show success message using AlertMessage
+      setAlertSeverity('success');
+      setAlertMessage('Bài viết đã được đăng thành công!');
+      setAlertOpen(true);
+      
+      // Optional: Clear form or redirect
+      // window.location.href = '/staff/blogs';
+      
+    } catch (error) {
+      setError(error.message);
+      // Show error message using AlertMessage
+      setAlertSeverity('error');
+      setAlertMessage(error.message);
+      setAlertOpen(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="blog-create-layout">
       <Sidebar />
+      <AlertMessage
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity={alertSeverity}
+        message={alertMessage}
+      />
+      
       <div className="blog-create-container">
         <div className="blog-create-header">
           <h1 className="blog-create-title">Tạo Bài Viết Mới</h1>
@@ -73,19 +153,30 @@ const BlogCreate = () => {
           />
         </div>
 
+        <div className="blog-create-description">
+          <textarea
+            className="blog-create-description-input"
+            placeholder="Nhập mô tả ngắn cho bài viết..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+          />
+        </div>
+
         <div className="blog-create-toolbar">
           <div className="blog-create-categories">
             <select
               className="blog-create-category-select"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              disabled={loading}
             >
               <option value="">-- Chọn danh mục --</option>
-              <option value="tin-tuc">Tin tức</option>
-              <option value="thong-bao">Thông báo</option>
-              <option value="dich-vu">Dịch vụ</option>
-              <option value="huong-dan">Hướng dẫn</option>
-              <option value="ky-niem">Kỷ niệm</option>
+              {categories.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -127,15 +218,29 @@ const BlogCreate = () => {
         </div>
 
         <div className="blog-create-actions">
+          {error && <div className="blog-create-error">{error}</div>}
+          
           <button
             className="blog-create-preview-btn"
             onClick={() => setIsPreview(!isPreview)}
           >
             {isPreview ? "Chỉnh sửa" : "Xem trước"}
           </button>
+          
           <div className="blog-create-publish-group">
-            <button className="blog-create-draft-btn">Lưu nháp</button>
-            <button className="blog-create-publish-btn">Đăng bài</button>
+            <button 
+              className="blog-create-draft-btn"
+              disabled={isSubmitting}
+            >
+              Lưu nháp
+            </button>
+            <button
+              className="blog-create-publish-btn"
+              onClick={handlePublish}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Đang đăng..." : "Đăng bài"}
+            </button>
           </div>
         </div>
       </div>

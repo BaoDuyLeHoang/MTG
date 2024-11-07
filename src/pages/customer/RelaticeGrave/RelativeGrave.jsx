@@ -3,7 +3,7 @@ import "./RelativeGrave.css";
 import Header from "../../../components/Header/header";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import { getGravesByCustomerCode } from "../../../APIcontroller/API";
+import { getMartyrGraveByCustomerId } from "../../../services/graves";
 
 const RelativeGrave = () => {
   const [graves, setGraves] = useState([]);
@@ -14,19 +14,17 @@ const RelativeGrave = () => {
   useEffect(() => {
     const fetchGraves = async () => {
       try {
-        if (!user?.customerCode) {
-          
+        if (!user?.accountId) {
           setLoading(false);
           return;
         }
 
         const token = localStorage.getItem('accessToken');
-        console.log("Fetching graves for customer code:", user.customerCode); // Debug log
+        console.log("Fetching graves for customer ID:", user.accountId);
         
-        const response = await getGravesByCustomerCode(user.customerCode, token);
-        console.log("API Response:", response); // Debug log
+        const response = await getMartyrGraveByCustomerId(user.accountId, token);
+        console.log("API Response:", response);
         
-        // Check if response is the data directly (not nested in .data property)
         const gravesData = Array.isArray(response) ? response : response.data;
         
         if (Array.isArray(gravesData)) {
@@ -82,8 +80,8 @@ const RelativeGrave = () => {
       
       <div className="relative-grave-list">
         {graves.map((grave) => {
-          const info = grave.matyrGraveInformations[0]; // Get the first information object
-          const imageUrl = grave.images[0]?.urlPath; // Get the first image URL
+          const info = grave.matyrGraveInformations[0];
+          const imageUrl = grave.images[0]?.urlPath;
           
           return (
             <div key={grave.martyrId} className="relative-grave-card">

@@ -48,3 +48,27 @@ export const createBlog = async (blogData) => {
     throw error;
   }
 };
+
+export const getAllBlogsManager = async () => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await axios.get(`${BASE_URL}/Blog/GetAllBlogs`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/login';
+    }
+    throw error;
+  }
+};

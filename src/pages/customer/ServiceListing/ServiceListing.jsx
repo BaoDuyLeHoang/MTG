@@ -149,9 +149,12 @@ const ServiceListing = () => {
       <Header />
       <div className="sl-container">
         <div className="sl-header">
-          <h1>Dịch Vụ Tưởng Niệm</h1>
+          <h1>Dịch Vụ</h1>
         </div>
         <div className="sl-filter-container">
+          <div>
+            <h1>Tên Liệt sĩ</h1>
+          </div>
           <select
             className="sl-category-select"
             value={danhMucDaChon}

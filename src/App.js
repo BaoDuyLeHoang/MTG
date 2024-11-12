@@ -33,6 +33,7 @@ import ProfileStaff from "./pages/manager/ProfileStaff/ProfileStaff";
 import CreateGrave from "./pages/manager/CreateGrave/CreateGrave";
 import GraveDetailManager from "./pages/manager/GraveDetailManager/GraveDetailManager";
 import AttendanceManager from "./pages/manager/AttendanceManager/AttendanceManager";
+import CreateService from "./pages/manager/CreateService/CreateService";
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
   import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
@@ -60,6 +61,7 @@ import BlogManagement from './pages/staff/BlogManagement/BlogManagement';
 import BlogManager from './pages/manager/BlogManager/BlogManager';
 import ScheduleManager from './pages/staff/ScheduleManager/ScheduleManager';
 import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
+import ServiceList from './pages/manager/ServiceList/ServiceList';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -84,8 +86,10 @@ function AppContent() {
           <Route path="/relative-grave" element={<RelativeGrave />} />
           
           <Route path="/blog-view" element={<BlogView />} />
-          
-         
+          <Route path="/create-service" element={<CreateService />} />
+          <Route path="/service-list" element={<ServiceList />} />
+
+
           
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />

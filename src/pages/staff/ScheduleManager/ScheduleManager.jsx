@@ -395,7 +395,7 @@ const ScheduleManager = () => {
       <Sidebar />
       <div className="main-content">
         <div className="mgmt-dashboard">
-          <h1 className="mgmt-dashboard__title">Bảng Quản Lý Lịch Trnh</h1>
+          <h1 className="mgmt-dashboard__title">Bảng Quản Lý Lịch Trình</h1>
           <div className="mgmt-dashboard__header">
             <div className="mgmt-dashboard__controls">
               <div className="mgmt-dashboard__week-nav">

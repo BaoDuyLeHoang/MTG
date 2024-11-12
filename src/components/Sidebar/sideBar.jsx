@@ -11,6 +11,19 @@ import {
   faMoneyBillWave,
   faComments,
   faChartLine,
+  faUserCog,
+  faCalendarAlt,
+  faClipboardList,
+  faUsers,
+  faBuilding,
+  faCommentDots,
+  faListAlt,
+  faFileAlt,
+  faUserClock,
+  faCreditCard,
+  faUserTie,
+  faBriefcase,
+  faPen
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import "./sideBar.css";
@@ -27,7 +40,7 @@ const Sidebar = () => {
     // Admin Items (Role 1)
     {
       to: "/danhsachaccount",
-      icon: faUser,
+      icon: faUserCog,
       text: "Quản lý tài khoản",
       roles: [1],
     },
@@ -35,7 +48,7 @@ const Sidebar = () => {
     // Manager Items (Role 2)
     {
       to: "/profilestaff",
-      icon: faUser,
+      icon: faUserTie,
       text: "Hồ sơ nhân viên",
       roles: [2],
     },
@@ -47,7 +60,7 @@ const Sidebar = () => {
     },
     {
       to: "/schedule-manager",
-      icon: faUser,
+      icon: faCalendarAlt,
       text: "Lịch công việc",
       roles: [2],
     },
@@ -59,7 +72,7 @@ const Sidebar = () => {
     },
     { 
       to: "/danhsachnhanvien", 
-      icon: faUser, 
+      icon: faUsers, 
       text: "Nhân viên", 
       roles: [2] 
     },
@@ -71,25 +84,31 @@ const Sidebar = () => {
     },
     {
       to: "/danhsachphannhoikhachhang",
-      icon: faComments,
+      icon: faCommentDots,
       text: "Phản hồi khách hàng",
       roles: [2],
     },
     {
       to: "/chitietdonhang",
-      icon: faShoppingCart,
+      icon: faClipboardList,
       text: "Giao việc",
       roles: [2],
     },
     {
       to: "/blog-manager",
-      icon: faComments,
+      icon: faFileAlt,
       text: "Quản lý bài viết",
       roles: [2],
     },
     {
+      to: "/attendance-manager",
+      icon: faUserClock,
+      text: "Quản lý chấm công",
+      roles: [2],
+    },
+    {
       to: "/danhsachthanhtoan",
-      icon: faMoneyBillWave,
+      icon: faCreditCard,
       text: "Thanh toán",
       roles: [2],
     },
@@ -97,19 +116,25 @@ const Sidebar = () => {
     // Staff Items (Role 3)
     {
       to: "/profilestaff-staff",
-      icon: faUser,
+      icon: faUserTie,
       text: "Hồ sơ nhân viên",
       roles: [3],
     },
     { 
       to: "/schedule-staff", 
-      icon: faTasks, 
+      icon: faBriefcase, 
       text: "Công việc", 
+      roles: [3] 
+    },
+    { 
+      to: "/danhsachdonhang-staff", 
+      icon: faClipboardList, 
+      text: "Đơn hàng", 
       roles: [3] 
     },
     {
       to: "/blog-management",
-      icon: faMoneyBillWave,
+      icon: faPen,
       text: "Bài viết",
       roles: [3],
     },

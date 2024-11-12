@@ -1,0 +1,70 @@
+.service-list-container {
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.service-list-title {
+  margin-bottom: 32px !important;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.table-container {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Style table header */
+.MuiTableHead-root .MuiTableCell-root {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  font-size: 0.813rem;
+  letter-spacing: 0.5px;
+}
+
+/* Style table rows */
+.MuiTableRow-root:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+.MuiTableCell-root {
+  padding: 16px 24px;
+}
+
+/* Style status badges */
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.813rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
+}
+
+.status-badge.active {
+  background-color: #dcf5e3;
+  color: #0a5d1d;
+}
+
+.status-badge.inactive {
+  background-color: #ffe8e8;
+  color: #c62828;
+}
+
+/* Layout styles */
+.page-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px 32px;
+} 

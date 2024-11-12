@@ -32,7 +32,7 @@ import StaffManagement from "./pages/manager/StaffManager/StaffManagement";
 import ProfileStaff from "./pages/manager/ProfileStaff/ProfileStaff";
 import CreateGrave from "./pages/manager/CreateGrave/CreateGrave";
 import GraveDetailManager from "./pages/manager/GraveDetailManager/GraveDetailManager";
-
+import AttendanceManager from "./pages/manager/AttendanceManager/AttendanceManager";
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
   import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
@@ -113,6 +113,8 @@ function AppContent() {
           <Route path="/creategrave" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><CreateGrave /></ProtectedRoute>} />
           <Route path="/chitietmoquanly/:martyrId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
           <Route path="/blog-manager" element={<BlogManager />} />
+          <Route path="/attendance-manager" element={<AttendanceManager />} />
+          
           {/* Staff routes */}
           <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ScheduleManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />

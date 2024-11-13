@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import "./header.css";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -18,10 +18,9 @@ const Header = () => {
 
   const handleLogout = () => {
     logout(); // Use the logout function from AuthContext
-    navigate('/login'); // Redirect to home page after logout
   };
 
-  const displayName = user ? (user.accountName) : "👤";
+  const displayName = user ? user.accountName : "👤";
 
   return (
     <header className="header">
@@ -56,10 +55,12 @@ const Header = () => {
             {user ? (
               <>
                 <Link to="/user-profile">Hồ sơ</Link>
-                 <Link to="/relative-grave">Mộ người thân</Link>  
+                <Link to="/relative-grave">Mộ người thân</Link>
                 <Link to="/cart">Giỏ hàng</Link>
                 <Link to="/order-history">Lịch sử đơn hàng</Link>
-                <Link onClick={handleLogout}>Đăng xuất</Link>
+                <button onClick={handleLogout} className="logout-link">
+                  Đăng xuất
+                </button>
               </>
             ) : (
               <Link to="/login">Đăng nhập</Link>

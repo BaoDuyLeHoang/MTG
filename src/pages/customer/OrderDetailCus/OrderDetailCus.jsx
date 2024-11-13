@@ -4,27 +4,32 @@ import { getOrderDetails } from '../../../APIcontroller/API';
 import './OrderDetailCus.css';
 import Header from '../../../components/Header/header';
 import FeedbackModal from '../../../components/FeedbackModal/FeedbackModal';
+import { useAuth } from '../../../context/AuthContext'; 
 
 const OrderDetailCus = () => {
   const [orderData, setOrderData] = useState(null);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const { orderId } = useParams(); // Assuming you're using react-router and have the orderId in the URL
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const data = await getOrderDetails(orderId);
+        if (!user || !user.accountId) {
+          console.error('User information not available');
+          return;
+        }
+        const data = await getOrderDetails(orderId, user.accountId); // Pass accountId
         setOrderData(data);
       } catch (error) {
         console.error('Error fetching order details:', error);
-        // Handle error appropriately
       }
     };
 
     if (orderId) {
       fetchOrderDetails();
     }
-  }, [orderId]);
+  }, [orderId, user]);
 
   // Add simple formatting functions
   const formatDate = (dateString) => {
@@ -37,14 +42,38 @@ const OrderDetailCus = () => {
 
   const getStatusLabel = (status) => {
     const statusMap = {
-      1: 'Chờ xác nhận',
-      2: 'Đã xác nhận',
-      3: 'Đang thực hiện',
-      4: 'Hoàn thành',
-       5: 'Đã hủy'
+      0: 'Đang chờ',
+      1: 'Đã thanh toán',
+      2: 'Đã thất bại',
+      4: 'Hoàn thành'
     };
     return statusMap[status] || 'Unknown';
   };
+
+  const getTaskStatusLabel = (statusTask) => {
+    const taskStatusMap = {
+      0: 'Đang chờ',
+      1: 'Đang bàn giao',
+      2: 'Từ chối',
+      3: 'Đang thực hiện',
+      4: 'Hoàn thành',
+      5: 'Thất bại'
+    };
+    return taskStatusMap[statusTask] || 'Unknown';
+  };
+
+  const getTaskStatusClass = (statusTask) => {
+    const statusClassMap = {
+      0: 'status-waiting',
+      1: 'status-transferring',
+      2: 'status-rejected',
+      3: 'status-in-progress',
+      4: 'status-completed',
+      5: 'status-failed'
+    };
+    return statusClassMap[statusTask] || '';
+  };
+
 
   const handleFeedbackSubmit = async (feedbackData) => {
     try {
@@ -79,7 +108,7 @@ const OrderDetailCus = () => {
         <div className="odc-info">
           <div className="odc-info-group">
             <p><strong>Ngày đặt:</strong> {formatDate(orderData.orderDate)}</p>
-            <p><strong>Thời gian thực hiện:</strong> {formatDate(orderData.startDate)} - {formatDate(orderData.endDate)}</p>
+            <p><strong>Thời gian thực hiện:</strong> {formatDate(orderData.orderDate)} - {formatDate(orderData.expectedCompletionDate)}</p>
             <p><strong>Trạng thái:</strong> <span className={`odc-status odc-status-${orderData.status}`}>{getStatusLabel(orderData.status)}</span></p>
            
           </div>
@@ -94,11 +123,22 @@ const OrderDetailCus = () => {
                 <span className="odc-price">{formatPrice(detail.orderPrice)} VNĐ</span>
               </div>
               <p className="odc-martyr-name"><strong>Liệt sĩ:</strong> {detail.martyrName}</p>
+              <p><strong>Trạng thái công việc:</strong> 
+                <span className={`odc-status ${getTaskStatusClass(detail.staffs?.length === 0 ? 0 : detail.statusTask)}`}>
+                  {detail.staffs?.length === 0 ? 'Đang chờ' : getTaskStatusLabel(detail.statusTask)}
+                </span>
+              </p>
               <div className="odc-staff-list">
                 <strong>Nhân viên thực hiện:</strong>
-                {detail.staffs.map((staff) => (
-                  <span key={staff.accountId} className="odc-staff-name">{staff.staffFullName}</span>
-                ))}
+                {detail.staffs && detail.staffs.length > 0 ? (
+                  detail.staffs.map((staff) => (
+                    <span key={staff.accountId} className="odc-staff-name">
+                      {staff.staffFullName}
+                    </span>
+                  ))
+                ) : (
+                  <span className="odc-staff-name">Đang chờ phân công</span>
+                )}
               </div>
             </div>
           ))}

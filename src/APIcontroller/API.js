@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const BASE_URL = "https://localhost:7006/api"; // Replace with your actual API base URL
 
@@ -20,10 +21,15 @@ export const API_ENDPOINTS = {
   GET_TASKS_BY_ACCOUNT: "/Task/tasks/account", // Add this new endpoint
   UPDATE_TASK_STATUS: "/Task/tasks", // Update this line
   GET_ALL_SERVICES: "/Service/services", // Add this new endpoint
-  GET_ORDER_DETAILS: "/Orders", // Add this line
+  GET_ORDER_DETAILS: "/Orders/GetOrderByIdForCustomer", // Add this line
   // Add other endpoints as needed
   GET_ALL_STAFF: "/staffs",
   UPDATE_ACCOUNT_STATUS: "/updateStatus", // Add this line
+  GET_ALL_BLOGS: "/Blog/GetAllBlogsForCustomer",
+  GET_BLOG_CATEGORIES: "/BlogCategory/GetAllBlogCategoriesWithStatusTrue",
+  GET_BLOG_BY_ID: "/Blog/GetBlogById",
+  POST_COMMENT: "/Comment",
+  POST_COMMENT_ICON: "/CommentIcon",
 };
 
 export const getServices = async () => {
@@ -602,13 +608,13 @@ export const registerGuestAccount = async (registrationData) => {
 };
 
 // Add new function to fetch order details
-export const getOrderDetails = async (orderId) => {
+export const getOrderDetails = async (orderId, accountId) => {
   try {
     const token = localStorage.getItem("accessToken");
-    console.log(`Fetching order details for ID: ${orderId}`);
+    console.log(`Fetching order details for ID: ${orderId} and accountId: ${accountId}`);
     
     const response = await axios.get(
-      `${BASE_URL}${API_ENDPOINTS.GET_ORDER_DETAILS}/${orderId}`,
+      `${BASE_URL}${API_ENDPOINTS.GET_ORDER_DETAILS}/${orderId}?customerId=${accountId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -704,3 +710,189 @@ export const  getAllGraves = async (page = 1, pageSize = 5) => {
   }
 };
 
+
+export const getAllBlogs = async (pageIndex = 1, pageSize = 4) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching blogs - Page ${pageIndex}, Size ${pageSize}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_ALL_BLOGS}?pageIndex=${pageIndex}&pageSize=${pageSize}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("Blogs API Response:", response.data);
+    return response.data; // Returns { message, data: [...blogs], totalPage }
+  } catch (error) {
+    console.error(
+      "Error fetching blogs:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+
+export const getBlogCategories = async (pageIndex = 1, pageSize = 4) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_BLOG_CATEGORIES}?pageIndex=${pageIndex}&pageSize=${pageSize}`
+    );
+    console.log("Blog Categories API Response:", response.data);
+    return response.data; // Returns { message, data: [...categories], totalPage }
+  } catch (error) {
+    console.error(
+      "Error fetching blog categories:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const getBlogById = async (blogId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.GET_BLOG_BY_ID}/${blogId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching blog details:", error);
+    throw error;
+  }
+};
+
+export const postComment = async (blogId, content) => {
+  const accessToken = localStorage.getItem('accessToken');
+  
+  try {
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.POST_COMMENT}`,
+      {
+        blogId,
+        content
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error posting comment:", error);
+    throw error;
+  }
+};
+
+export const postCommentIcon = async (commentId, iconId) => {
+  const accessToken = localStorage.getItem('accessToken');
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.POST_COMMENT_ICON}?commentId=${commentId}&iconId=${iconId}`,
+      {},  // empty body
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error posting comment icon:", error);
+    throw error;
+  }
+};
+
+export const updateComment = async (commentId, content) => {
+  const accessToken = localStorage.getItem('accessToken');
+  const decodedToken = jwtDecode(accessToken);
+  const accountId = decodedToken.accountId;
+
+  try {
+    const response = await axios.put(
+      `${BASE_URL}/Comment/${commentId}?accountId=${accountId}`,
+      { content },
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    throw error;
+  }
+};
+
+export const updateCommentIcon = async (id, iconId) => {
+  const accessToken = localStorage.getItem('accessToken');
+  
+  try {
+    const response = await axios.put(
+      `${BASE_URL}/CommentIcon/${id}`,
+      {
+        "iconId": iconId
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating comment icon:", error);
+    throw error;
+  }
+};
+
+// Thêm API xóa comment icon
+export const deleteCommentIcon = async (id) => {
+  const accessToken = localStorage.getItem('accessToken');
+  
+  try {
+    console.log('Deleting comment icon with ID:', id);
+    const response = await axios.delete(
+      `${BASE_URL}/CommentIcon/${id}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+    console.log('Delete response:', response);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting comment icon:", error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (commentId) => {
+  const accessToken = localStorage.getItem('accessToken');
+  const decodedToken = accessToken ? JSON.parse(atob(accessToken.split('.')[1])) : null;
+  const accountId = decodedToken?.accountId;
+
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}/Comment/${commentId}?accountId=${accountId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    throw error;
+  }
+};

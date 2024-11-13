@@ -47,6 +47,9 @@ const MyGraveDetail = () => {
   const handleBookService = () => {
     // Save martyrId to session storage
     sessionStorage.setItem("selectedMartyrId", martyrId);
+    // Save martyr name to localStorage
+    const martyrName = info.name || info.nickName || "Không có tên";
+    localStorage.setItem("selectedMartyrName", martyrName);
     // Navigate to the service listing page
     navigate("/dichvutheoloai");
   };

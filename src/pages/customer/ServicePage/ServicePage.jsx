@@ -47,7 +47,7 @@ const ServicePage = () => {
       <Header />
       <div className="intro-container">
         <div className="quote-wrapper">
-          <h1 className="title">Dịch vụ của chúng tôi</h1>
+          <h1 className="title">Các loại dịch vụ của chúng tôi</h1>
           <p className="quote">
             "Chăm sóc nơi an nghỉ, gửi gắm yêu thương. Để mỗi khi bạn đến thăm,
             là một hành trình bình yên, nơi ký ức mãi mãi còn trong tim. Chúng

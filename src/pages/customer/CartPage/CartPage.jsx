@@ -123,7 +123,7 @@ const CartPage = () => {
   };
 
   const navigateToServices = () => {
-    navigate('/dichvu'); // Adjust this path if needed
+    navigate('/tim-kiem-mo'); // Adjust this path if needed
   };
 
   // Function to handle closing the alert
@@ -160,7 +160,7 @@ const CartPage = () => {
           <div className="cart-page-empty-message">
             <h1>Giỏ hàng của bạn đang trống</h1>
             <button onClick={navigateToServices} className="cart-page-services-btn">
-              Xem Dịch Vụ
+              Đến trang tìm kiếm mộ
             </button>
           </div>
         ) : (

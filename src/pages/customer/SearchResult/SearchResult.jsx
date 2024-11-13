@@ -153,7 +153,7 @@ const SearchResult = () => {
             >
               <div className="search-result__image-container">
                 <img
-                  src={grave.imageUrls[0].image}
+                  src={grave.imageUrls[0]?.image}
                   alt={`Grave location of ${grave.name}`}
                   className="search-result__image"
                 />

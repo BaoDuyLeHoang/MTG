@@ -295,18 +295,21 @@
 }
 
 .blog-detail__comment {
-  background: #f8f9fa;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
 }
 
 .blog-detail__comment-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.8rem;
-  position: relative;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .blog-detail__comment-content-wrapper {
@@ -318,8 +321,8 @@
 
 .blog-detail__comment-author {
   font-weight: 600;
-  color: #2d3436;
-  font-size: 1.1rem;
+  color: #1a73e8;
+  font-size: 1rem;
 }
 
 .blog-detail__comment-date {
@@ -535,40 +538,28 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem;
-  border: none;
-  background: none;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 20px;
+}
+
+.blog-detail__icon-button img {
+  width: 18px;
+  height: 18px;
 }
 
 .blog-detail__icon-button.active {
-  background-color: #e3f2fd;
-  color: #1a73e8;
+  background-color: #f0f7ff;
+  border-color: #1a73e8;
 }
 
 .blog-detail__icon-button:hover {
   background-color: #f5f5f5;
-}
-
-.blog-detail__icon-button.active:hover {
-  background-color: #d0e8fc;
-}
-
-.blog-detail__icon-button img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
-
-.blog-detail__icon-button span {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.blog-detail__icon-button.active span {
-  color: #1a73e8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .blog-detail__reaction-list {
@@ -688,7 +679,7 @@
 
 .blog-detail__comment-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .blog-detail__delete-button {
@@ -720,4 +711,117 @@
   content: "🗑️";
   font-size: 0.9rem;
   margin-right: 0.3rem;
+}
+
+/* Điều chỉnh phần reactions để nằm ngang */
+.blog-detail__comment-reactions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.blog-detail__icon-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-detail__icon-button img {
+  width: 18px;
+  height: 18px;
+}
+
+.blog-detail__icon-button.active {
+  background-color: #f0f7ff;
+  border-color: #1a73e8;
+}
+
+.blog-detail__icon-button:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Điều chỉnh form comment */
+.blog-detail__comment-form {
+  margin-top: 2rem;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+}
+
+.blog-detail__comment-input {
+  width: 95%;
+  min-height: 100px;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.blog-detail__comment-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.1);
+}
+
+.blog-detail__comment-submit {
+  background: #1a73e8;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-detail__comment-submit:hover {
+  background: #1557b0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(26,115,232,0.2);
+}
+
+.blog-detail__comment-submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Điều chỉnh nút edit và delete */
+.blog-detail__comment-buttons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.blog-detail__edit-button,
+.blog-detail__delete-button {
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Thêm hiệu ứng hover cho các nút */
+.blog-detail__edit-button:hover,
+.blog-detail__delete-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

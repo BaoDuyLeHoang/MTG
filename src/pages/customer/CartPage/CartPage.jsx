@@ -160,11 +160,7 @@ const CartPage = () => {
           <div className="cart-page-empty-message">
             <h1>Giỏ hàng của bạn đang trống</h1>
             <button onClick={navigateToServices} className="cart-page-services-btn">
-
              Đến trang tìm kiếm mộ
-
-              Đến trang tìm kiếm mộ
-
             </button>
           </div>
         ) : (

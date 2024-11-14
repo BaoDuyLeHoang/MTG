@@ -30,6 +30,9 @@ export const API_ENDPOINTS = {
   GET_BLOG_BY_ID: "/Blog/GetBlogById",
   POST_COMMENT: "/Comment",
   POST_COMMENT_ICON: "/CommentIcon",
+  GET_BLOG_CATEGORY_BY_ID: "/BlogCategory",
+  CREATE_FEEDBACK: "/Feedback/Create-Feedback",
+
 };
 
 export const getServices = async () => {
@@ -893,6 +896,52 @@ export const deleteComment = async (commentId) => {
     return response.data;
   } catch (error) {
     console.error("Error deleting comment:", error);
+    throw error;
+  }
+};
+
+
+export const getBlogCategoryById = async (id) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_BLOG_CATEGORY_BY_ID}/${id}`
+    );
+    console.log("Blog Category Detail Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching blog category details:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+
+export const createFeedback = async (feedbackData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Creating feedback:", feedbackData);
+    console.log("API URL:", `${BASE_URL}${API_ENDPOINTS.CREATE_FEEDBACK}`);
+
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.CREATE_FEEDBACK}`,
+      feedbackData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Feedback API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating feedback:",
+      error.response ? error.response.data : error.message
+    );
     throw error;
   }
 };

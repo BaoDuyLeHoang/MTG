@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../../components/Sidebar/sideBar';
-
+import { useAuth } from "../../../context/AuthContext";
 import './StaffManagement.css';
 import { getAllStaff, updateAccountStatus } from '../../../APIcontroller/API';
 import { ToggleLeft, ToggleRight, FileText } from 'lucide-react';
@@ -9,6 +9,7 @@ const StaffManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [staffData, setStaffData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
     const [selectedArea, setSelectedArea] = useState('all');
@@ -19,7 +20,7 @@ const StaffManagement = () => {
 
     const fetchStaffData = async () => {
         try {
-            const data = await getAllStaff(currentPage, pageSize);
+            const data = await getAllStaff(currentPage, pageSize, user.areaId);
             setStaffData(data.staffList);
         } catch (error) {
             console.error('Error fetching staff data:', error);

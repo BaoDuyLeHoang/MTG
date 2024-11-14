@@ -1,5 +1,5 @@
 // ProfileStaff.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Mail,
   MapPin,
@@ -15,24 +15,58 @@ import {
 import "./ProfileStaff.css";
 import placeholder from "../../../assets/images/placeholder.jpg";
 import Sidebar from "../../../components/Sidebar/sideBar";
+import { getProfile, updateProfile } from "../../../services/profile";
+import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const defaultProfile = {
-  fullName: "Nguyen Van A",
+  fullName: "",
   dateOfBirth: new Date().toISOString(),
-  address: "123 Nguyen Van Linh, Q.Tan Phu, TP.HCM",
+  roleName: "",
+  address: "",
   avatarPath: placeholder,
-  emailAddress: "nguyenvana@gmail.com",
-  areaId: 1,
-  phone: "0123456789",
-  employeeId: "NV001",
-  position: "Nhân viên",
-  startDate: new Date(2023, 0, 1).toISOString(),
-  department: "Kinh doanh",
+  emailAddress: "",
+  areaId: null,
+  phoneNumber: "", // note: API uses phoneNumber instead of phone
+  accountId: null,
+  roleId: null,
+  status: true,
+  createAt: null
 };
 
-const ProfileStaff = ({ profileData = defaultProfile, onSave }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState(profileData);
+const ProfileStaff = () => {  // Remove props as we'll use useAuth
+  const [isEditing, setIsEditing] = useState(false); // Changed to boolean
+  const [editedData, setEditedData] = useState(defaultProfile);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        setError("Bạn chưa đăng nhập. Vui lòng đăng nhập để xem thông tin.");
+        navigate("/login");
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        // Use user.accountId from AuthContext
+        const data = await getProfile(user.accountId);
+        console.log("Profile data received:", data);
+        setEditedData(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        setError("Không thể tải thông tin profile. Vui lòng thử lại sau.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [user.accountId, navigate]); // Added proper dependencies
 
   const formatDate = (dateString) => {
     try {
@@ -55,13 +89,41 @@ const ProfileStaff = ({ profileData = defaultProfile, onSave }) => {
     }));
   };
 
-  const handleSave = () => {
-    onSave?.(editedData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      // Prepare the update data according to API requirements
+      const updateData = {
+        fullName: editedData.fullName,
+        dateOfBirth: editedData.dateOfBirth,
+        address: editedData.address,
+        emailAddress: editedData.emailAddress
+      };
+
+      // Show loading state
+      setIsLoading(true);
+
+      // Call update API
+      await updateProfile(user.accountId, updateData);
+
+      // Fetch updated profile data
+      const updatedProfile = await getProfile(user.accountId);
+      setEditedData(updatedProfile);
+
+      // Exit edit mode
+      setIsEditing(false);
+
+      // You might want to show a success message
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
-    setEditedData(profileData);
+    setEditedData(editedData);
     setIsEditing(false);
   };
 
@@ -180,27 +242,17 @@ const ProfileStaff = ({ profileData = defaultProfile, onSave }) => {
 
                 <div className="info-row">
                   <Phone className="icon" />
-                  {isEditing ? (
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={editedData.phone}
-                      onChange={handleInputChange}
-                      className="edit-input"
-                    />
-                  ) : (
-                    <span>{editedData.phone}</span>
-                  )}
+                    <span>{editedData.phoneNumber}</span>
                 </div>
 
                 <div className="info-row">
                   <Badge className="icon" />
-                  <span>Mã nhân viên: {editedData.employeeId}</span>
+                  <span>Mã nhân viên: {editedData.accountId}</span>
                 </div>
 
                 <div className="info-row">
                   <Calendar className="icon" />
-                  <span>Ngày vào làm: {formatDate(editedData.startDate)}</span>
+                  <span>Ngày vào làm: {formatDate(editedData.createAt)}</span>
                 </div>
               </div>
 
@@ -212,12 +264,8 @@ const ProfileStaff = ({ profileData = defaultProfile, onSave }) => {
                     <dd>{editedData.areaId}</dd>
                   </div>
                   <div className="info-item">
-                    <dt>Thâm niên</dt>
-                    <dd>{calculateYearsOfService()} năm</dd>
-                  </div>
-                  <div className="info-item">
                     <dt>Chức vụ</dt>
-                    <dd>{editedData.position}</dd>
+                    <dd>{editedData.roleName}</dd>
                   </div>
                 </dl>
               </div>

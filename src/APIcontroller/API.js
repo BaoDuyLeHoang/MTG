@@ -625,14 +625,14 @@ export const getOrderDetails = async (orderId) => {
 };
 
 // Add this new function to get all staff
-export const getAllStaff = async (page = 1, pageSize = 10) => {
+export const getAllStaff = async (page = 1, pageSize = 10, areaId) => {
   try {
     const token = localStorage.getItem("accessToken");
     console.log("Fetching all staff");
     console.log("API URL:", `${BASE_URL}${API_ENDPOINTS.GET_ALL_STAFF}`);
 
     const response = await axios.get(
-      `${BASE_URL}${API_ENDPOINTS.GET_ALL_STAFF}?page=${page}&pageSize=${pageSize}`,
+      `${BASE_URL}${API_ENDPOINTS.GET_ALL_STAFF}?page=${page}&pageSize=${pageSize}&areaId=${areaId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

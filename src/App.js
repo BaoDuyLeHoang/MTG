@@ -18,6 +18,7 @@ import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveI
 
 // Admin Components
 import Dashboard from "./pages/admin/dashBoard/dashboard";
+import ServiceManagement from './pages/admin/serviceManagement/serviceManagement';
 import PayManagement from "./pages/admin/payManagement/payManagement";
 import AccountManagement from "./pages/admin/accountManagement/accountManagement";
 import TaskDescription from "./pages/admin/taskDescription/TaskDescription";
@@ -62,6 +63,7 @@ import BlogManager from './pages/manager/BlogManager/BlogManager';
 import ScheduleManager from './pages/staff/ScheduleManager/ScheduleManager';
 import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
 import ServiceList from './pages/manager/ServiceList/ServiceList';
+import MaterialManagement from './pages/admin/materialManagement/materialManagement';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -96,8 +98,11 @@ function AppContent() {
           <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
           <Route path="/user-profile" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><UserProfile /></ProtectedRoute>} />
+
           {/* Admin routes */}
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
+          <Route path="/service-management" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><ServiceManagement /></ProtectedRoute>} />
+          <Route path="/material-management" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><MaterialManagement /></ProtectedRoute>} />
           <Route path="/danhsachaccount" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AccountManagement /></ProtectedRoute>} />
           <Route path="/danhsachnhanvien" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><StaffManagement /></ProtectedRoute>} />
           <Route path="/danhsachmo" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveView /></ProtectedRoute>} />

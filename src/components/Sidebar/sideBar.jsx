@@ -44,6 +44,19 @@ const Sidebar = () => {
       text: "Quản lý tài khoản",
       roles: [1],
     },
+    {
+      to: "/service-management",
+      icon: faBuilding,
+      text: "Quản lý dịch vụ",
+      roles: [1],
+    },
+    {
+      to: "/material-management",
+      icon: faListAlt,
+      text: "Quản lý vật liệu",
+      roles: [1],
+    },
+
 
     // Manager Items (Role 2)
     {
@@ -110,7 +123,7 @@ const Sidebar = () => {
       to: "/danhsachthanhtoan",
       icon: faCreditCard,
       text: "Thanh toán",
-      roles: [2],
+      roles: [1,2],
     },
 
     // Staff Items (Role 3)
@@ -139,7 +152,6 @@ const Sidebar = () => {
       roles: [3],
     },
     
-
 
   ];
 
@@ -182,7 +194,7 @@ const Sidebar = () => {
         <div className="logo-container">
           <img src={logo} alt="Logo" className="logo" />
         </div>
-        <h3 className="user-name">Welcome, {user?.accountName || "Guest"}!</h3>
+        <h3 className="user-name">Xin chào, {user?.accountName || "Guest"}!</h3>
         <div className="user-profile">
           <div className="user-avatar">
             {user?.avatarUrl ? (
@@ -203,7 +215,7 @@ const Sidebar = () => {
 
           <div className="user-info">
             <span className="user-role">
-              {user?.role === 1 ? "Admin" : user?.role === 2 ? "Manager" : "Staff"}
+              {user?.role === 1 ? "Quản trị" : user?.role === 2 ? "Quản lý" : "Nhân viên"}
             </span>
           </div>
         </div>
@@ -212,21 +224,21 @@ const Sidebar = () => {
       <nav className="sidebar-nav">
         {user?.role === ROLES.ADMIN && (
           <div className="menu-category">
-            <h3>Admin Dashboard</h3>
+            <h3>Bảng quản trị</h3>
             <MenuItems items={menuCategories.admin} isActiveRoute={isActiveRoute} />
           </div>
         )}
 
         {user?.role === ROLES.MANAGER && (
           <div className="menu-category">
-            <h3>Manager Dashboard</h3>
+            <h3>Bảng quản lý</h3>
             <MenuItems items={menuCategories.manager} isActiveRoute={isActiveRoute} />
           </div>
         )}
 
         {user?.role === ROLES.STAFF && (
           <div className="menu-category">
-            <h3>Staff Dashboard</h3>
+            <h3>Bảng nhân viên</h3>
             <MenuItems items={menuCategories.staff} isActiveRoute={isActiveRoute} />
           </div>
         )}

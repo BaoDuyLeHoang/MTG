@@ -1,0 +1,135 @@
+/* TaskList.css */
+.staff-task-list-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.staff-task-list-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.staff-task-list-page-title {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+.staff-task-list-filter-section {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.staff-task-list-filter-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.staff-task-list-filter-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.staff-task-list-filter-btn.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.staff-task-list-date-range {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.staff-task-list-date-picker {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.staff-task-list-date-picker input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.staff-task-list-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.staff-task-list-table th {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+}
+
+.staff-task-list-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    color: #666;
+}
+
+.staff-task-list-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.staff-task-list-detail-button {
+    padding: 0.5rem 1rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.staff-task-list-detail-button:hover {
+    background-color: #2980b9;
+}
+
+/* DatePicker customization */
+.react-datepicker-wrapper {
+    width: auto;
+}
+
+.react-datepicker__input-container input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.status-badge {
+    display: inline-block;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.status-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

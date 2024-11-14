@@ -1,0 +1,231 @@
+.order-management-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.order-management-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.order-management-content h1 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+.table-container {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.order-table th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.order-table th:hover {
+    background-color: #e9ecef;
+}
+
+.order-table thead {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.order-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.order-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-yellow {
+    background-color: #ffeeba;
+    color: #856404;
+}
+
+.status-green {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-red {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-blue {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.detail-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.detail-button:hover {
+    background-color: #2980b9;
+}
+
+.detail-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.centered {
+    text-align: center;
+}
+
+.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.order-table td ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.order-table td li {
+    padding: 0.25rem 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.order-table td li:last-child {
+    border-bottom: none;
+}
+
+.controls-container {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-wrapper,
+.filter-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-wrapper {
+    flex: 1;
+}
+
+.search-icon,
+.filter-icon {
+    position: absolute;
+    left: 12px;
+    color: #666;
+    font-size: 1rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 12px 12px 40px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+}
+
+.status-filter {
+    padding: 12px 12px 12px 40px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.status-filter:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+/* Hover effects */
+.search-input:hover,
+.status-filter:hover {
+    border-color: #b0b0b0;
+}
+
+/* Make sure Font Awesome icons are loaded in your project */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+.pagination button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination button:hover:not(.active) {
+    background-color: #f0f0f0;
+}

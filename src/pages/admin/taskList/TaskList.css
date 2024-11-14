@@ -1,0 +1,126 @@
+.task-list-container {
+    display: flex;
+    /* Use flexbox for layout */
+
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    width: 250px;
+    /* Set a fixed width for the sidebar */
+    margin-right: 20px;
+    /* Space between sidebar and task content */
+}
+
+.task-content {
+    flex: 1;
+    /* Allow task content to take the remaining space */
+}
+
+.task-list-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.date-filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.date-inputs-1 {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.date-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon input {
+    padding: 8px;
+    padding-right: 30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.calendar-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #666;
+}
+
+.create-task-btn {
+    padding: 10px 20px;
+    background-color: #E3B171;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 35px;
+    width: 70%;
+    margin-top: 10px;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.task-table th,
+.task-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.task-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.status {
+    color: #FFB800;
+}
+
+.detail-btn {
+    padding: 8px 16px;
+    background-color: #E3B171;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Add hover effects */
+.filter-buttons button:hover,
+.create-task-btn:hover,
+.detail-btn:hover {
+    opacity: 0.9;
+}

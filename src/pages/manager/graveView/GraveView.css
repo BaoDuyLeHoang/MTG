@@ -1,0 +1,232 @@
+.no-data {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+/* Loading and Error states */
+.loading, .error {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.gv-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.gv-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.gv-loading,
+.gv-error {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+}
+
+.gv-error {
+  color: #ff0000;
+}
+
+.gv-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.gv-title-container h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+}
+
+.gv-search-filters {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: #666;
+  font-size: 1rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 12px 12px 40px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  outline: none;
+}
+
+.search-input:hover {
+  border-color: #b0b0b0;
+}
+
+.gv-add-button {
+  padding: 12px 24px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: 500;
+}
+
+.gv-add-button:hover {
+  background-color: #2980b9;
+}
+
+.gv-table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.gv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.gv-table th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  padding: 1.2rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.gv-table th:hover {
+  background-color: #e9ecef;
+}
+
+.gv-table thead {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.gv-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.gv-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.gv-grave-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.gv-detail-button {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+}
+
+.gv-detail-button:hover {
+  background-color: #2980b9;
+}
+
+.gv-no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Optional: Add these styles if you want alternating row colors */
+.gv-table-row:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.gv-table-row:nth-child(even):hover {
+  background-color: #f3f4f6;
+}
+
+.gv-pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.gv-page-button {
+  min-width: 32px;
+  height: 32px;
+  padding: 4px 8px;
+  border: 1px solid #d9d9d9;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.gv-page-active {
+  background: #1677ff;
+  color: white;
+  border-color: #1677ff;
+}
+
+.gv-page-button:hover:not(.gv-page-active) {
+  border-color: #1677ff;
+  color: #1677ff;
+}
+
+/* Update the title styles */
+.gv-content h1.gv-title {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}

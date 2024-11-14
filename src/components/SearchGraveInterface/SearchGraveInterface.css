@@ -1,0 +1,99 @@
+.search-grave-interface-container {
+    background-image: url(https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/Searchbackground%2Fimage2.png?alt=media&token=6f601a30-1c8d-47f2-9675-b46eb655df66);
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.title {
+    color: #C4A052;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.search-form {
+    width: 100%;
+}
+
+.main-search {
+    width: 100%;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.search-grave-input {
+    width: 93%;
+    padding: 12px 40px 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.filters input {
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: white;
+    font-size: 14px;
+}
+
+.filter-input-byear,
+.filter-input-dyear {
+    width: 120px;
+}
+
+.filter-input-hometown {
+    flex-grow: 1;
+}
+
+/* Remove spinner arrows from number inputs */
+.filters input[type="number"]::-webkit-inner-spin-button,
+.filters input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.search-button {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: #B39245;
+}

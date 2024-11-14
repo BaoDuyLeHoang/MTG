@@ -1,0 +1,827 @@
+.blog-detail__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.blog-detail__back-button {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-bottom: 2rem;
+  transition: color 0.3s ease;
+}
+
+.blog-detail__back-button:hover {
+  color: #1a73e8;
+}
+
+.blog-detail__article {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.blog-detail__header {
+  padding: 2rem;
+  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+}
+
+.blog-detail__title {
+  font-size: 2.5rem;
+  color: #2d3436;
+  margin-bottom: 1rem;
+}
+
+.blog-detail__meta {
+  display: flex;
+  gap: 2rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.blog-detail__image-container {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.blog-detail__main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blog-detail__content {
+  padding: 2rem;
+}
+
+.blog-detail__description {
+  font-size: 1.2rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.blog-detail__body {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 768px) {
+  .blog-detail__container {
+    padding: 1rem;
+  }
+
+  .blog-detail__title {
+    font-size: 2rem;
+  }
+
+  .blog-detail__meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .blog-detail__image-container {
+    height: 250px;
+  }
+}
+
+/* Related Martyrs Section */
+.blog-detail__related-martyrs {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+}
+
+.blog-detail__related-title {
+  font-size: 1.8rem;
+  color: #2d3436;
+  margin-bottom: 1.5rem;
+}
+
+.blog-detail__martyrs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Khi chỉ có một liệt sĩ */
+.blog-detail__martyrs-grid:only-child {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+.blog-detail__martyr-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blog-detail__martyr-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.blog-detail__martyr-name {
+  font-size: 1.4rem;
+  color: #2d3436;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.blog-detail__martyr-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.blog-detail__martyr-image-container {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.blog-detail__martyr-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.blog-detail__martyr-image:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-detail__martyrs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-detail__martyr-images {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .blog-detail__related-title {
+    font-size: 1.5rem;
+  }
+
+  .blog-detail__martyr-name {
+    font-size: 1.2rem;
+  }
+}
+
+/* Styles cho image slider */
+.blog-detail__martyr-image-slider {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.blog-detail__martyr-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.blog-detail__martyr-image.active {
+  opacity: 1;
+}
+
+.blog-detail__slider-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  z-index: 2;
+}
+
+.blog-detail__slider-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.blog-detail__slider-button--prev {
+  left: 10px;
+}
+
+.blog-detail__slider-button--next {
+  right: 10px;
+}
+
+/* Điều chỉnh link styles */
+.blog-detail__martyr-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.blog-detail__martyr-link:hover .blog-detail__martyr-name {
+  color: #1a73e8;
+}
+
+/* Single image container */
+.blog-detail__martyr-image-container {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.blog-detail__martyr-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-detail__martyr-image-slider,
+  .blog-detail__martyr-image-container {
+    height: 180px;
+  }
+
+  .blog-detail__slider-button {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+}
+
+/* Comments Section */
+.blog-detail__comments-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+}
+
+.blog-detail__comments-title {
+  font-size: 1.8rem;
+  color: #2d3436;
+  margin-bottom: 1.5rem;
+}
+
+.blog-detail__comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.blog-detail__comment {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+}
+
+.blog-detail__comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.blog-detail__comment-content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.blog-detail__comment-author {
+  font-weight: 600;
+  color: #1a73e8;
+  font-size: 1rem;
+}
+
+.blog-detail__comment-date {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.blog-detail__comment-content {
+  flex: 1;
+  color: #2d3436;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.blog-detail__comment-icons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.blog-detail__comment-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.blog-detail__no-comments {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-detail__comments-title {
+    font-size: 1.5rem;
+  }
+
+  .blog-detail__comment {
+    padding: 1rem;
+  }
+
+  .blog-detail__comment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Reactions styling */
+.blog-detail__reactions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+}
+
+.blog-detail__reaction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0f2f5;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.blog-detail__reaction-item:hover {
+  background: #e4e6e9;
+}
+
+.blog-detail__reaction-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.blog-detail__reaction-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-detail__reaction-count {
+  font-weight: 600;
+  color: #2d3436;
+  font-size: 0.9rem;
+}
+
+.blog-detail__reaction-users {
+  font-size: 0.8rem;
+  color: #666;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hover tooltip for full list of users */
+.blog-detail__reaction-users:hover {
+  position: relative;
+}
+
+.blog-detail__reaction-users:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: normal;
+  z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-detail__reactions {
+    flex-wrap: wrap;
+  }
+
+  .blog-detail__reaction-item {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .blog-detail__reaction-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Login Prompt */
+.blog-detail__login-prompt {
+  text-align: center;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.blog-detail__login-link {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.blog-detail__login-link:hover {
+  text-decoration: underline;
+}
+
+/* User Info in Comment Form */
+.blog-detail__comment-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.blog-detail__user-avatar {
+  width: 40px;
+  height: 40px;
+  background: #1a73e8;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.blog-detail__user-name {
+  font-weight: 600;
+  color: #2d3436;
+}
+
+/* Reaction Button States */
+.blog-detail__reaction-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.blog-detail__reaction-button--active {
+  background: #e3f2fd;
+  color: #1a73e8;
+}
+
+/* Comment Form Disabled State */
+.blog-detail__comment-input:disabled {
+  background: #f8f9fa;
+  cursor: not-allowed;
+}
+
+/* Error Message */
+.blog-detail__error-message {
+  color: #dc3545;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.blog-detail__comment-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.blog-detail__icon-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-detail__icon-button img {
+  width: 18px;
+  height: 18px;
+}
+
+.blog-detail__icon-button.active {
+  background-color: #f0f7ff;
+  border-color: #1a73e8;
+}
+
+.blog-detail__icon-button:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.blog-detail__reaction-list {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.blog-detail__reaction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.blog-detail__reaction-item img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.blog-detail__edit-button {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #1a73e8;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.blog-detail__edit-button:hover {
+  background: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.blog-detail__edit-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.blog-detail__edit-button::before {
+  content: "✏️";
+  font-size: 0.9rem;
+}
+
+.blog-detail__edit-form {
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.blog-detail__edit-input {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  background: #fff;
+}
+
+.blog-detail__edit-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+}
+
+.blog-detail__edit-actions {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: flex-end;
+}
+
+.blog-detail__edit-save,
+.blog-detail__edit-cancel {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.blog-detail__edit-save {
+  background: #1a73e8;
+  color: white;
+}
+
+.blog-detail__edit-cancel {
+  background: #f1f3f4;
+  color: #5f6368;
+}
+
+.blog-detail__edit-save:hover {
+  background: #1557b0;
+}
+
+.blog-detail__edit-cancel:hover {
+  background: #e8eaed;
+}
+
+.blog-detail__comment-actions-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.blog-detail__comment-buttons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.blog-detail__delete-button {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #dc3545;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.blog-detail__delete-button:hover {
+  background: #fff5f5;
+  border-color: #dc3545;
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.1);
+  transform: translateY(-1px);
+}
+
+.blog-detail__delete-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
+}
+
+/* Thêm icon cho nút delete */
+.blog-detail__delete-button::before {
+  content: "🗑️";
+  font-size: 0.9rem;
+  margin-right: 0.3rem;
+}
+
+/* Điều chỉnh phần reactions để nằm ngang */
+.blog-detail__comment-reactions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.blog-detail__icon-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-detail__icon-button img {
+  width: 18px;
+  height: 18px;
+}
+
+.blog-detail__icon-button.active {
+  background-color: #f0f7ff;
+  border-color: #1a73e8;
+}
+
+.blog-detail__icon-button:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Điều chỉnh form comment */
+.blog-detail__comment-form {
+  margin-top: 2rem;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+}
+
+.blog-detail__comment-input {
+  width: 95%;
+  min-height: 100px;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.blog-detail__comment-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.1);
+}
+
+.blog-detail__comment-submit {
+  background: #1a73e8;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-detail__comment-submit:hover {
+  background: #1557b0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(26,115,232,0.2);
+}
+
+.blog-detail__comment-submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Điều chỉnh nút edit và delete */
+.blog-detail__comment-buttons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.blog-detail__edit-button,
+.blog-detail__delete-button {
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Thêm hiệu ứng hover cho các nút */
+.blog-detail__edit-button:hover,
+.blog-detail__delete-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

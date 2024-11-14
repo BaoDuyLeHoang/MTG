@@ -1,0 +1,236 @@
+.order-detail-container {
+    display: flex;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.order-admin-full {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.header-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.section-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a2b4b;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.header-icon {
+    color: #2563eb;
+}
+
+.order-badge {
+    background-color: #2563eb;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.order-detail-table {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 25px 0;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.order-detail-table th {
+    background-color: #f8fafc;
+    padding: 18px 24px;
+    font-weight: 600;
+    text-align: left;
+    color: #475569;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-detail-table td {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+.order-detail-table tr:last-child td {
+    border-bottom: none;
+}
+
+.order-detail-table select,
+.order-detail-table input[type="date"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.order-detail-table select:hover,
+.order-detail-table input[type="date"]:hover {
+    border-color: #2563eb;
+}
+
+.order-detail-table select:focus,
+.order-detail-table input[type="date"]:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.deliver-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.deliver-button:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+}
+
+.timeline {
+    position: relative;
+    margin: 40px 0;
+    padding-left: 50px;
+}
+
+.timeline-item {
+    background-color: white;
+    padding: 20px 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -35px;
+    width: 14px;
+    height: 14px;
+    background-color: #2563eb;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -29px;
+    top: 14px;
+    height: calc(100% + 30px);
+    width: 2px;
+    background-color: #e2e8f0;
+}
+
+.price-summary {
+    background-color: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.price-item.total {
+    border-top: 2px solid #e2e8f0;
+    border-bottom: none;
+    padding-top: 20px;
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 1.2em;
+    color: #1a2b4b;
+}
+
+.summary-icon {
+    margin-right: 10px;
+    color: #2563eb;
+}
+
+/* Status colors for Vietnamese text */
+.status-0 { /* Chờ xử lý */
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.status-1 { /* Đang giao */
+    background-color: #e0f2fe;
+    color: #075985;
+    border: 1px solid #7dd3fc;
+}
+
+.status-2 { /* Đã hủy */
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.status-3 { /* Đang thực hiện */
+    background-color: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #93c5fd;
+}
+
+.status-4 { /* Hoàn thành */
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.status-5 { /* Thất bại */
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}

@@ -1,0 +1,113 @@
+.checkout-success-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.success-content {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 600px; /* Increased from 500px */
+  width: 100%;
+}
+
+.success-image {
+  width: 500px; /* Increased from 150px */
+  height: 300px; /* Increased from 150px */
+  object-fit: contain;
+  margin-bottom: 30px; /* Increased from 20px */
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.success-message h1 {
+  font-size: 28px; /* Increased from 24px */
+  color: #4CAF50;
+  margin-right: 10px;
+}
+
+.success-icon {
+  width: 40px; /* Increased from 30px */
+  height: 40px; /* Increased from 30px */
+  object-fit: contain;
+}
+
+.thank-you-message {
+  
+  color: #333;
+  margin-bottom: 40px; /* Increased from 30px */
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Added gap between buttons */
+}
+
+.home-button,
+.history-button {
+  padding: 12px 24px; /* Increased padding */
+  font-size: 18px; /* Increased from 16px */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1; /* Make buttons take equal width */
+  min-width: 200px; /* Set minimum width for buttons */
+  margin-left: 0px;
+}
+
+.home-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.history-button {
+  background-color: #2196F3;
+  color: white;
+}
+
+.home-button:hover,
+.history-button:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+  .success-content {
+    padding: 20px;
+  }
+
+  .success-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .success-message h1 {
+    font-size: 20px;
+  }
+
+  .thank-you-message {
+    font-size: 14px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .home-button,
+  .history-button {
+    width: 100%;
+  }
+}

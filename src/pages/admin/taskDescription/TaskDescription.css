@@ -1,0 +1,130 @@
+/* Main page layout styles */
+.main-container {
+  display: flex;
+  /* Use flexbox for layout */
+}
+
+.sidebar {
+  width: 250px;
+  /* Set width for the sidebar */
+}
+
+.task-detail-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.task-detail-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.task-info-container {
+  display: flex;
+  gap: 40px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.task-info-left,
+.task-info-right {
+  flex: 1;
+}
+
+.info-row {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.info-row label {
+  min-width: 60px;
+  font-weight: bold;
+  margin-right: -70px;
+  margin-left: 0px;
+}
+
+.status-overdue {
+  color: red;
+}
+
+.reason-box {
+  margin-left: -225px;
+}
+
+.description-box,
+.reason-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 100px;
+  flex: 1;
+}
+
+.date-input-container {
+  position: relative;
+  display: inline-block;
+}
+
+.date-input-container input {
+  padding: 5px 25px 5px 5px;
+  border: 1px solid #ccc;
+  width: 100px;
+  margin-left: 0px;
+}
+
+.date-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.calendar-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.exchange-section {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.exchange-info .info-row span {
+  margin-left: -220px;
+}
+
+.exchange-section h2 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* For the description label alignment */
+.description label {
+  margin-top: 5px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .task-info-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .info-row {
+    flex-direction: column;
+  }
+
+  .info-row label {
+    margin-bottom: 5px;
+  }
+}
+
+/* ... existing styles ... */

@@ -1,0 +1,171 @@
+.search-result__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+}
+
+
+.search-result__heading {
+    margin-top: 5%;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 24px;
+    color: #333;
+}
+
+
+.search-result__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 24px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+
+.search-result__card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid #e0e0e0;
+    position: relative;
+    width: 100%;
+}
+
+
+.search-result__card--hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.search-result__image-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+
+.search-result__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.search-result__content {
+    padding: 16px;
+}
+
+
+.search-result__name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.search-result__info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.search-result__info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-result__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    fill: #666;
+}
+
+.search-result__footer {
+    border-top: 1px solid #eee;
+    margin-top: 12px;
+    padding-top: 12px;
+    font-size: 13px;
+    color: #888;
+}
+
+
+.search-result__pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+}
+
+.search-result__page-button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.search-result__page-button:hover:not(:disabled) {
+    background-color: #f0f0f0;
+}
+
+.search-result__page-button--active {
+    background-color: #1a73e8;
+    color: #fff;
+    border-color: #1a73e8;
+}
+
+.search-result__page-button--disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.search-result__page-ellipsis {
+    padding: 8px 4px;
+    color: #666;
+}
+
+.search-result__page-info {
+    font-size: 14px;
+    color: #666;
+    margin: 0 16px;
+}
+
+
+@media (max-width: 1024px) {
+    .search-result__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .search-result__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* If the header is fixed, you might need to add padding to the body */
+

@@ -25,6 +25,9 @@ const ServiceListing = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
 
+  const [martyrName, setMartyrName] = useState("");
+  const [martyrId, setMartyrId] = useState("");
+
   useEffect(() => {
     const layDichVu = async () => {
       try {
@@ -41,6 +44,18 @@ const ServiceListing = () => {
     };
 
     layDichVu();
+  }, []);
+
+  useEffect(() => {
+    // Get martyr ID and name from storage
+    const savedMartyrId = sessionStorage.getItem("selectedMartyrId");
+    const savedMartyrName = localStorage.getItem("selectedMartyrName");
+    if (savedMartyrId) {
+      setMartyrId(savedMartyrId);
+    }
+    if (savedMartyrName) {
+      setMartyrName(savedMartyrName);
+    }
   }, []);
 
   const dichVuDaLoc =
@@ -106,7 +121,7 @@ const ServiceListing = () => {
       } catch (error) {
         console.error("Error adding to cart:", error);
         // Show error alert
-        setAlertMessage("Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.");
+        setAlertMessage("Dịch vụ đã tồn tại trong giỏ hàng hoặc mộ đã bị giới hạn dịch vụ. Người dùng vui lòng đặt dịch vụ khác");
         setAlertSeverity("error");
         setAlertOpen(true);
       }
@@ -136,6 +151,10 @@ const ServiceListing = () => {
     setAlertOpen(false);
   };
 
+  const handleMartyrClick = () => {
+    navigate(`/chitietmo/${martyrId}`);
+  };
+
   if (dangTai) {
     return <div className="sl-loading">Đang tải dịch vụ...</div>;
   }
@@ -151,10 +170,24 @@ const ServiceListing = () => {
         <div className="sl-header">
           <h1>Dịch Vụ</h1>
         </div>
-        <div className="sl-filter-container">
-          <div>
-            <h1>Tên Liệt sĩ</h1>
+        <div className="sl-martyr-info">
+          <div className="martyr-card">
+            <div className="martyr-icon">
+              <i className="fas fa-user-circle"></i>
+            </div>
+            <div className="martyr-details">
+              <span className="martyr-label">Bạn đang đặt dịch vụ cho liệt sĩ:</span>
+              <h2 
+                className="martyr-name clickable"
+                onClick={handleMartyrClick}
+                title="Xem chi tiết"
+              >
+                {martyrName}
+              </h2>
+            </div>
           </div>
+        </div>
+        <div className="sl-filter-container">
           <select
             className="sl-category-select"
             value={danhMucDaChon}

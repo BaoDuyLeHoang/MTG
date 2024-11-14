@@ -62,6 +62,7 @@ import BlogManager from './pages/manager/BlogManager/BlogManager';
 import ScheduleManager from './pages/staff/ScheduleManager/ScheduleManager';
 import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
 import ServiceList from './pages/manager/ServiceList/ServiceList';
+import BlogDetail from './pages/customer/BlogDetailView/BlogDetail';
 function AppContent() {
   const navigate = useNavigate();
 
@@ -86,6 +87,7 @@ function AppContent() {
           <Route path="/relative-grave" element={<RelativeGrave />} />
           
           <Route path="/blog-view" element={<BlogView />} />
+          <Route path="/blog/:blogId" element={<BlogDetail />} />
           <Route path="/create-service" element={<CreateService />} />
           <Route path="/service-list" element={<ServiceList />} />
 

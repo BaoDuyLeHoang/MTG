@@ -45,45 +45,68 @@
 }
 
 .odc-service-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
 }
 
-.odc-service-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.odc-service-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .odc-service-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
 }
 
-.odc-price {
-  font-weight: bold;
-  color: #2c5282;
+.odc-service-header h4 {
+  margin: 0;
+  font-size: 18px;
+  color: #1a1a1a;
 }
 
-.odc-martyr-name {
-  margin: 10px 0;
+.odc-service-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.odc-staff-list {
-  margin-top: 10px;
+.odc-staff-info {
+  margin-top: 8px;
 }
 
 .odc-staff-name {
   display: inline-block;
-  margin-left: 10px;
-  padding: 2px 8px;
-  background-color: #e9ecef;
+  background: #f5f5f5;
+  padding: 4px 8px;
   border-radius: 4px;
+  margin: 0 4px;
+}
+
+.odc-price {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.odc-feedback-btn {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #4ade80;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.odc-feedback-btn:hover {
+  background-color: #22c55e;
 }
 
 .order-total {
@@ -97,27 +120,6 @@
     width: 80%;
     margin: 0 auto;  /* Centers the container horizontally */
     padding: 20px;
-}
-
-.odc-feedback-btn {
-  margin-right: 20px;  /* Changed from margin-left to margin-right */
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  width: 150px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-  display: block;
-  float: right;    /* Changed from left to right */
-  clear: right;    /* Changed from left to right */
-  margin-top: 13%;
-}
-
-.odc-feedback-btn:hover {
-  background-color: #45a049;
 }
 
 /* Add these new status classes */

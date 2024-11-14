@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../../components/Header/header';
-import { getAllBlogs, getBlogCategories } from '../../../APIcontroller/API';
+import { getAllBlogs, getBlogCategories, getBlogCategoryById } from '../../../APIcontroller/API';
 import './BlogView.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const BlogView = () => {
   const [blogs, setBlogs] = useState([]);
@@ -14,6 +14,8 @@ const BlogView = () => {
   const [categoryPage, setCategoryPage] = useState(1);
   const [categoryTotalPages, setCategoryTotalPages] = useState(1);
   const categoryPageSize = 4;
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -45,6 +47,7 @@ const BlogView = () => {
       try {
         const response = await getBlogCategories(categoryPage, categoryPageSize);
         if (response && response.data) {
+          console.log("Categories data:", response.data);
           setCategories(response.data);
           setCategoryTotalPages(response.totalPage);
         }
@@ -66,6 +69,21 @@ const BlogView = () => {
   const handleCategoryPageChange = (newPage) => {
     if (newPage >= 1 && newPage <= categoryTotalPages) {
       setCategoryPage(newPage);
+    }
+  };
+
+  const handleCategoryClick = async (id) => {
+    try {
+      console.log("Clicking category with ID:", id);
+      if (!id) {
+        console.error("Category ID is undefined");
+        return;
+      }
+      const categoryDetail = await getBlogCategoryById(id);
+      setSelectedCategory(categoryDetail);
+      navigate(`/blog-category/${id}`);
+    } catch (error) {
+      console.error("Error fetching category details:", error);
     }
   };
 
@@ -307,7 +325,11 @@ const BlogView = () => {
                   {categories.length > 0 ? (
                     <>
                       {categories.map(category => (
-                        <div key={category.blogCategoryId} className="blog-view__category-item">
+                        <div 
+                          key={category.historyId}
+                          className="blog-view__category-item"
+                          onClick={() => handleCategoryClick(category.historyId)}
+                        >
                           <h3 className="blog-view__category-name">
                             {category.blogCategoryName}
                           </h3>

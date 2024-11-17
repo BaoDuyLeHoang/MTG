@@ -116,7 +116,7 @@ const OrderManagement = () => {
         case 5:
           return "status-red"; // Quá hạn - red
         default:
-          return "";
+          return "status-red";
       }
     }
   };
@@ -188,7 +188,6 @@ const OrderManagement = () => {
                   <th>Giá Dịch Vụ</th>
                   <th>Trạng Thái Đơn Hàng</th>
                   <th>Trạng Thái Công Việc</th>
-                  <th>Nhân Viên</th>
                   <th>Hành Động</th>
                 </tr>
               </thead>
@@ -215,14 +214,6 @@ const OrderManagement = () => {
                       <span className={`status ${getStatusColor(order.statusTask)}`}>
                         {getStatusText(order.statusTask)}
                       </span>
-                    </td>
-                    
-                    <td>
-                      {order.staffs && order.staffs.map((staff, index) => (
-                        <div key={index}>
-                          {staff.staffFullName}
-                        </div>
-                      ))}
                     </td>
                     <td>
                       <button

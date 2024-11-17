@@ -110,10 +110,10 @@ function AppContent() {
 
           {/* Manager routes */}
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
-          <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleStaff /></ProtectedRoute>} />
+          <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
-          <Route path="/profilestaff" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />
+          <Route path="/profileManager" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/creategrave" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><CreateGrave /></ProtectedRoute>} />
           <Route path="/chitietmoquanly/:martyrId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
           <Route path="/blog-manager" element={<BlogManager />} />

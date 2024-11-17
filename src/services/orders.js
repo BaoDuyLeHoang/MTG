@@ -15,7 +15,7 @@ export const getOrdersByManagerArea = async (managerId, page) => {
   };
   export const getOrderDetails = async (detailId, managerId) => {
     try {
-      const response = await axios.get(`${BASE_URL}/Orders/order-detail/${detailId}?managerId=${managerId}`, {
+      const response = await axios.get(`${BASE_URL}/Orders/order-detail/${detailId}?myAccountId=${managerId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },

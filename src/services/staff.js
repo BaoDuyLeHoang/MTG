@@ -17,3 +17,24 @@ export const getStaffByManagerArea = async (areaId) => {
       throw new Error(error.response?.data?.message || 'Failed to fetch staff');
     }
 };
+
+// Add new function for creating staff
+export const createStaff = async (staffData, accountId) => {
+  try {
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.post(
+          `${BASE_URL}/Auth/register-account-martyrGrave?accountId=${accountId}`,
+          staffData,
+          {
+              headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+              }
+          }
+      );
+      return response.data;
+  } catch (error) {
+      console.error('API Error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to create staff');
+  }
+};

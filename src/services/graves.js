@@ -37,3 +37,20 @@ export const getAllGravesForManager = async (page, pageSize, managerId) => {
     throw error;
   }
 };
+
+export const updateGraveDetail = async (graveId, updateData) => {
+  const token = localStorage.getItem('accessToken');
+  
+  const response = await axios.put(
+    `${BASE_URL}/MartyrGrave/update-grave-v2/${graveId}`,
+    updateData,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+  
+  return response.data;
+};

@@ -144,7 +144,7 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                 <div className="profile-avatar">
                   {editedData.avatarPath ? (
                     <img
-                      src={editedData.avatarPath}
+                      src={editedData.avatarPath || placeholder}
                       alt={editedData.fullName}
                       className="avatar-image"
                     />
@@ -157,12 +157,12 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                     <input
                       type="text"
                       name="fullName"
-                      value={editedData.fullName}
+                      value={editedData.fullName || "Không có sẵn"}
                       onChange={handleInputChange}
                       className="edit-input"
                     />
                   ) : (
-                    <h1>{editedData.fullName}</h1>
+                    <h1>{editedData.fullName || "Không có sẵn"}</h1>
                   )}
                 </div>
               </div>
@@ -201,12 +201,12 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                     <input
                       type="email"
                       name="emailAddress"
-                      value={editedData.emailAddress}
+                      value={editedData.emailAddress || "Không có sẵn"}
                       onChange={handleInputChange}
                       className="edit-input"
                     />
                   ) : (
-                    <span>{editedData.emailAddress}</span>
+                    <span>{editedData.emailAddress || "Email Không có sẵn"}</span>
                   )}
                 </div>
 
@@ -216,12 +216,12 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                     <input
                       type="text"
                       name="address"
-                      value={editedData.address}
+                      value={editedData.address || "Không có sẵn"}
                       onChange={handleInputChange}
                       className="edit-input"
                     />
                   ) : (
-                    <span>{editedData.address}</span>
+                    <span>{editedData.address || "Không có sẵn"}</span>
                   )}
                 </div>
 
@@ -231,18 +231,18 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                     <input
                       type="date"
                       name="dateOfBirth"
-                      value={editedData.dateOfBirth.split("T")[0]}
+                      value={editedData.dateOfBirth ? editedData.dateOfBirth.split("T")[0] : "Không có sẵn"}
                       onChange={handleInputChange}
                       className="edit-input"
                     />
                   ) : (
-                    <span>{formatDate(editedData.dateOfBirth)}</span>
+                    <span>{editedData.dateOfBirth ? formatDate(editedData.dateOfBirth) : "Ngày sinh nhật không có sẵn"}</span>
                   )}
                 </div>
 
                 <div className="info-row">
                   <Phone className="icon" />
-                    <span>{editedData.phoneNumber}</span>
+                    <span>{editedData.phoneNumber || "Số điện thoại không có sẵn"}</span>
                 </div>
 
                 <div className="info-row">
@@ -266,6 +266,10 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                   <div className="info-item">
                     <dt>Chức vụ</dt>
                     <dd>{editedData.roleName}</dd>
+                  </div>
+                  <div className="info-item">
+                    <dt>Trạng thái hoạt động</dt>
+                    <dd>{editedData.status == true ? 'Active' : 'Inactive'}</dd>
                   </div>
                 </dl>
               </div>

@@ -25,6 +25,10 @@ import {
 } from '@mui/material';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { createFeedback } from "../../../services/feedback"; // Add this import
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const iconStyle = {
   verticalAlign: "middle",
@@ -51,6 +55,7 @@ const OrderHistory = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -61,7 +66,15 @@ const OrderHistory = () => {
       }
 
       try {
-        const response = await getOrdersByCustomer(user.accountId, null, currentPage);
+        const response = await getOrdersByCustomer(
+          user.accountId,
+          {
+            date: selectedDate ? dayjs(selectedDate).format('YYYY-MM-DD') : null,
+            status: statusFilter,
+            pageIndex: currentPage,
+            pageSize: 5
+          }
+        );
         setOrders(response.orders || []);
         setTotalPages(response.totalPage);
         
@@ -80,7 +93,7 @@ const OrderHistory = () => {
     };
 
     fetchOrders();
-  }, [user, currentPage]);
+  }, [user, currentPage, statusFilter, selectedDate]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -141,15 +154,30 @@ const OrderHistory = () => {
         </div>
 
         <div className="filters">
-          <div className="search-container-order-history">
-            <input
-              type="text"
-              placeholder="Tìm kiếm theo tên liệt sĩ hoặc mã đơn hàng"
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Chọn ngày"
+              value={selectedDate}
+              onChange={(newValue) => setSelectedDate(newValue)}
+              className="date-picker"
+              format="DD/MM/YYYY"
+              slotProps={{
+                textField: {
+                  size: "small",
+                  inputProps: {
+                    readOnly: true
+                  },
+                  sx: { 
+                    backgroundColor: 'white',
+                    width: '200px',
+                    "& .MuiInputBase-input": {
+                      cursor: "pointer"
+                    }
+                  }
+                }
+              }}
             />
-          </div>
+          </LocalizationProvider>
 
           <select
             className="status-select"

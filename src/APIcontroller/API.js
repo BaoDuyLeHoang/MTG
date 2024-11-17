@@ -32,7 +32,8 @@ export const API_ENDPOINTS = {
   POST_COMMENT_ICON: "/CommentIcon",
   GET_BLOG_CATEGORY_BY_ID: "/BlogCategory",
   CREATE_FEEDBACK: "/Feedback/Create-Feedback",
-
+  GET_TRENDING_SERVICES: "/Service/trending-services",
+  GET_MARTYRS_BY_AREA: "/MartyrGrave/area",
 };
 
 export const getServices = async () => {
@@ -942,6 +943,36 @@ export const createFeedback = async (feedbackData) => {
       "Error creating feedback:",
       error.response ? error.response.data : error.message
     );
+    throw error;
+  }
+};
+
+
+export const getTrendingServices = async (topN = 5) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_TRENDING_SERVICES}?topN=${topN}`
+    );
+    console.log("Trending Services API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching trending services:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+
+export const getMartyrsByArea = async (areaId, pageIndex = 1, pageSize = 10) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/MartyrGrave/area/${areaId}?pageIndex=${pageIndex}&pageSize=${pageSize}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching martyrs:', error);
     throw error;
   }
 };

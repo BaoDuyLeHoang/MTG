@@ -63,6 +63,8 @@ import ScheduleManager from './pages/staff/ScheduleManager/ScheduleManager';
 import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
 import ServiceList from './pages/manager/ServiceList/ServiceList';
 import BlogDetail from './pages/customer/BlogDetailView/BlogDetail';
+import BlogCategoryDetail from './pages/customer/BlogCategoryDetail/BlogCategoryDetail';
+
 function AppContent() {
   const navigate = useNavigate();
 
@@ -90,7 +92,7 @@ function AppContent() {
           <Route path="/blog/:blogId" element={<BlogDetail />} />
           <Route path="/create-service" element={<CreateService />} />
           <Route path="/service-list" element={<ServiceList />} />
-
+          <Route path="/blog-category/:id" element={<BlogCategoryDetail />} />
 
           
           {/* Protected routes */}

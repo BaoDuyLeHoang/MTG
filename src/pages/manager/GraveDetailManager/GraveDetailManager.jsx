@@ -19,20 +19,16 @@ const MyGraveDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [graveLocation, setGraveLocation] = useState({
-    area: "Khu A",
-    row: "Hàng 5",
-    number: "23",
-    inCharge: {
-      name: "Lê Văn Quản",
-      phone: "0987654321",
-    },
+    area: "",
+    row: "",
+    number: ""
   });
   const [fakePersonalInfo, setFakePersonalInfo] = useState([
     {
       id: 1,
-      name: "Nguyễn Văn An",
-      phone: "0912345678",
-      email: "nguyenvanan@email.com",
+      name: "",
+      phone: "",
+      email: ""
     },
   ]);
   const [editedLocation, setEditedLocation] = useState(graveLocation);
@@ -51,6 +47,40 @@ const MyGraveDetail = () => {
         const data = await getGraveById(martyrId);
         setMartyrDetails(data);
         setEditedData(data);
+        
+        // Set grave location from API data
+        setGraveLocation({
+          area: `Khu ${data.areaName}`,
+          row: `Hàng ${data.rowNumber}`,
+          number: data.martyrNumber.toString()
+        });
+
+        // Set personal info from API data
+        setFakePersonalInfo([
+          {
+            id: 1,
+            name: data.customerName,
+            phone: data.customerPhone,
+            email: data.customerEmail
+          }
+        ]);
+
+        // Also update the edited states
+        setEditedLocation({
+          area: `Khu ${data.areaName}`,
+          row: `Hàng ${data.rowNumber}`,
+          number: data.martyrNumber.toString()
+        });
+
+        setEditedPersonalInfo([
+          {
+            id: 1,
+            name: data.customerName,
+            phone: data.customerPhone,
+            email: data.customerEmail
+          }
+        ]);
+
       } catch (err) {
         setError("Failed to fetch grave details. Please try again later.");
       } finally {
@@ -287,6 +317,7 @@ const MyGraveDetail = () => {
                 <span>{martyrDetails.martyrNumber}</span>
               )}
             </div>
+            
           </div>
         </div>
         <div className="grave-detail-manager-personal-section">

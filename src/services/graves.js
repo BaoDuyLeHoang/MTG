@@ -17,3 +17,23 @@ export const getMartyrGraveByCustomerId = async (customerId) => {
     throw error;
   }
 };
+
+export const getAllGravesForManager = async (page, pageSize, managerId) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/MartyrGrave/GetAllForManager?managerId=${managerId}&page=${page}&pageSize=${pageSize}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

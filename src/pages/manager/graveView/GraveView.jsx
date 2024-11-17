@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Sidebar/sideBar";
+import { useAuth } from "../../../context/AuthContext";
 import "../graveView/GraveView.css";
 import { Link } from "react-router-dom";
-import { getAllGraves } from "../../../APIcontroller/API";
+import { getAllGravesForManager } from "../../../services/graves";
 
 export default function GraveView() {
   const [graves, setGraves] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(5);
+  const { user } = useAuth();
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,17 +22,17 @@ export default function GraveView() {
   const fetchGraves = async () => {
     try {
       setLoading(true);
-      const response = await getAllGraves(currentPage, pageSize);
+      const response = await getAllGravesForManager(currentPage, pageSize, user.accountId);
       console.log("API Response:", response); // Debug log
-      
-      if (response && response.graveList && Array.isArray(response.graveList)) {
-        console.log("Graves List:", response.graveList); // Log graves list
+
+      if (response && response.martyrGraveList && Array.isArray(response.martyrGraveList)) {
+        console.log("Graves List:", response.martyrGraveList); // Log graves list
         console.log("Total Pages:", response.totalPage); // Log total pages
-        
-        setGraves(response.graveList);
+
+        setGraves(response.martyrGraveList);
         setTotalPages(response.totalPage || 1);
       } else {
-       console.log("Invalid data format received from server");
+        console.log("Invalid data format received from server");
       }
     } catch (error) {
       console.error("Error fetching graves:", error);
@@ -57,8 +59,8 @@ export default function GraveView() {
     const searchLower = searchTerm.toLowerCase();
     return (
       (grave.martyrCode && grave.martyrCode.toLowerCase().includes(searchLower)) ||
-      (grave.name?.[0] && grave.name[0].toLowerCase().includes(searchLower)) ||
-      (grave.areaId && grave.areaId.toString().includes(searchLower))
+      (grave.name && grave.name.toLowerCase().includes(searchLower)) ||
+      (grave.areaDescription && grave.areaDescription.toLowerCase().includes(searchLower))
     );
   });
 
@@ -118,14 +120,14 @@ export default function GraveView() {
             <tbody>
               {filteredGraves.length > 0 ? (
                 filteredGraves.map((grave) => (
-                  <tr key={grave.martyrId} className="gv-table-row">
+                  <tr key={grave.code} className="gv-table-row">
                     <td>{grave.martyrCode || "N/A"}</td>
-                    <td>{grave.name?.[0] || "N/A"}</td>
-                    <td>{`Khu ${grave.areaId || "N/A"}`}</td>
+                    <td>{grave.name || "N/A"}</td>
+                    <td>{grave.areaDescription || "N/A"}</td>
                     <td>
                       <img
-                        src={grave.image}
-                        alt={grave.name?.[0]}
+                        src={grave.graveImage}
+                        alt={grave.name}
                         className="gv-grave-image"
                       />
                     </td>

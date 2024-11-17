@@ -83,7 +83,11 @@ const Header = () => {
                 </button>
               </>
             ) : (
-              <Link to="/login">Đăng nhập</Link>
+              <>
+                <Link to="/cart">Giỏ hàng</Link>
+                <Link to="/login">Đăng nhập</Link>
+              </>
+            
             )}
           </div>
         )}

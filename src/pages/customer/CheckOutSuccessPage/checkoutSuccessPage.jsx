@@ -10,7 +10,7 @@ const CheckoutSuccessPage = () => {
         navigate('/'); // Navigate to the home page
     };
     const handleHistory = () => {
-        navigate('/history'); // Navigate to the history page
+        navigate('/order-history'); // Changed from '/history' to '/order-history'
     };
   return (
     <div className="checkout-success-page">
@@ -25,7 +25,7 @@ const CheckoutSuccessPage = () => {
         </p>
         <div className="action-buttons">
           <button className="home-button" onClick={handleReturnHome}>Trở về trang chủ</button>
-          <button className="history-button">Lịch sử giao dịch</button>
+          <button className="history-button" onClick={handleHistory}>Lịch sử giao dịch</button>
         </div>
       </div>
     </div>

@@ -191,7 +191,7 @@ const BlogDetail = () => {
 
     return (
       <div className="blog-detail__related-martyrs">
-        <h2 className="blog-detail__related-title">Liệt sĩ liên quan</h2>
+        <h2 className="blog-detail__related-title">Các anh hùng liên quan:</h2>
         <div className="blog-detail__martyrs-grid">
           {blog.relatedMartyrDetails.map((martyr, index) => (
             <Link 
@@ -395,11 +395,16 @@ const BlogDetail = () => {
   };
 
   const renderCommentForm = () => {
-    // Chỉ kiểm tra accessToken vì đó là điều kiện đủ
     if (!accessToken) {
       return (
         <div className="blog-detail__login-prompt">
-          <p>Vui lòng <Link to="/login" className="blog-detail__login-link">đăng nhập</Link> để bình luận</p>
+          <p>Vui lòng <Link 
+            to="/login" 
+            state={{ from: `/blog/${blogId}` }} 
+            className="blog-detail__login-link"
+          >
+            đăng nhập
+          </Link> để bình luận</p>
         </div>
       );
     }

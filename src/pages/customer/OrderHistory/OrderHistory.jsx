@@ -48,10 +48,6 @@ const OrderHistory = () => {
   const { user } = useAuth(); // Get user from AuthContext
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [openFeedback, setOpenFeedback] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [rating, setRating] = useState(0);
-  const [feedback, setFeedback] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
@@ -129,50 +125,8 @@ const OrderHistory = () => {
     return matchesSearch && matchesStatus;
   }) || [];
 
-  const handleOpenFeedback = (order) => {
-    setSelectedOrder(order);
-    setOpenFeedback(true);
-  };
-
-  const handleCloseFeedback = () => {
-    setOpenFeedback(false);
-    setRating(0);
-    setFeedback('');
-    setSelectedOrder(null);
-  };
-
   const handleAlertClose = () => {
     setAlertOpen(false);
-  };
-
-  const handleSubmitFeedback = async () => {
-    try {
-      if (!rating) {
-        setAlertMessage('Vui lòng chọn số sao đánh giá!');
-        setAlertSeverity('error');
-        setAlertOpen(true);
-        return;
-      }
-
-      const feedbackData = {
-        accountId: user.accountId,
-        detailId: selectedOrder.orderId,
-        content: feedback,
-        rating: rating
-      };
-      
-      await createFeedback(feedbackData);
-
-      setAlertMessage('Đánh giá đã được gửi thành công!');
-      setAlertSeverity('success');
-      setAlertOpen(true);
-      handleCloseFeedback();
-    } catch (error) {
-      console.error('Error submitting feedback:', error);
-      setAlertMessage('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại!');
-      setAlertSeverity('error');
-      setAlertOpen(true);
-    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -259,22 +213,6 @@ const OrderHistory = () => {
                         >
                           Chi tiết
                         </Button>
-                        {(order.status === 4 || order.status === 2) && (
-                          <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => handleOpenFeedback(order)}
-                            sx={{
-                              backgroundColor: '#f0fdf4',
-                              color: '#166534',
-                              '&:hover': {
-                                backgroundColor: '#dcfce7',
-                              },
-                            }}
-                          >
-                            Đánh giá
-                          </Button>
-                        )}
                       </Box>
                     </StyledTableCell>
                   </TableRow>
@@ -294,100 +232,6 @@ const OrderHistory = () => {
             </button>
           ))}
         </div>
-        {/* Feedback Dialog */}
-        <Dialog 
-          open={openFeedback} 
-          onClose={handleCloseFeedback}
-          PaperProps={{
-            style: {
-              borderRadius: '12px',
-              padding: '16px',
-              maxWidth: '500px',
-              width: '90%'
-            }
-          }}
-        >
-          <DialogTitle sx={{ 
-            fontSize: '24px', 
-            fontWeight: 600,
-            padding: '16px 24px',
-            borderBottom: '1px solid #e0e0e0'
-          }}>
-            Đánh giá đơn hàng #{selectedOrder?.orderId}
-          </DialogTitle>
-          <DialogContent sx={{ padding: '24px' }}>
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: '24px'
-            }}>
-              <div>
-                <p style={{ 
-                  fontSize: '16px', 
-                  marginBottom: '12px',
-                  fontWeight: 500 
-                }}>
-                  Đánh giá của bạn
-                </p>
-                <Rating
-                  value={rating}
-                  onChange={(event, newValue) => setRating(newValue)}
-                  size="large"
-                  sx={{
-                    fontSize: '32px',
-                    '& .MuiRating-iconFilled': {
-                      color: '#faaf00',
-                    },
-                  }}
-                />
-              </div>
-              <TextField
-                label="Nội dung đánh giá"
-                multiline
-                rows={4}
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                fullWidth
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '8px',
-                  },
-                }}
-              />
-            </div>
-          </DialogContent>
-          <DialogActions sx={{ 
-            padding: '16px 24px',
-            borderTop: '1px solid #e0e0e0',
-            gap: '12px'
-          }}>
-            <Button 
-              onClick={handleCloseFeedback}
-              sx={{
-                color: '#666',
-                '&:hover': {
-                  backgroundColor: '#f5f5f5',
-                },
-              }}
-            >
-              Hủy
-            </Button>
-            <Button 
-              onClick={handleSubmitFeedback} 
-              variant="contained" 
-              sx={{
-                backgroundColor: '#1976d2',
-                '&:hover': {
-                  backgroundColor: '#1565c0',
-                },
-                borderRadius: '8px',
-                padding: '8px 16px',
-              }}
-            >
-              Gửi đánh giá
-            </Button>
-          </DialogActions>
-        </Dialog>
         <AlertMessage
           open={alertOpen}
           handleClose={handleAlertClose}

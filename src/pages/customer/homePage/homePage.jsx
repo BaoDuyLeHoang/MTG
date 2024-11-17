@@ -51,7 +51,7 @@ const HomePage = () => {
       {/* Map Section */}
       <section className="home-section section map-section">
         <div className="container">
-          <h1 className="section-title">Bản đồ nghĩa trang An Nhien</h1>
+          <h1 className="section-title">Bản đồ nghĩa trang An Nhiên</h1>
           <div className="map-container">
             <div className="map-wrapper">
               <img

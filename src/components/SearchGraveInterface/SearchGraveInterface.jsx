@@ -18,7 +18,7 @@ const SearchGraveInterface = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     // Trim whitespace and normalize input
-    const normalizedValue = value.trim();
+    const normalizedValue = value;
     setSearchParams((prev) => ({ ...prev, [name]: normalizedValue }));
   };
 

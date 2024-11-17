@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from "../../../components/Header/header";
+import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "./CheckOutPage.css";
 import { FaTrashAlt } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
@@ -17,6 +18,9 @@ const CheckOut = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [completionDate, setCompletionDate] = useState(null);
   const [customerNote, setCustomerNote] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("error");
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -48,19 +52,14 @@ const CheckOut = () => {
 
   const paymentMethods = [
     { 
-      id: "cash", 
-      name: "Thanh toán tiền mặt",
-      icon: "💵"
-    },
-    { 
       id: "VNPay", 
       name: "VNPay",
-      icon: "💳"
+      logo: "https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png"
     },
     { 
       id: "momo", 
       name: "Ví Momo",
-      icon: "📱"
+      logo: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
     },
   ];
 
@@ -76,14 +75,37 @@ const CheckOut = () => {
     return cartItems.reduce((sum, item) => sum + (item.serviceView?.price || 0), 0);
   }, [cartItems]);
 
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  const validateCompletionDate = (date) => {
+    if (!date) {
+      setAlertMessage("Vui lòng chọn ngày hoàn thành");
+      setAlertOpen(true);
+      return false;
+    }
+
+    const today = new Date();
+    const minDate = new Date(today.setDate(today.getDate() + 3));
+    
+    if (date < minDate) {
+      setAlertMessage("Ngày hoàn thành dự kiến phải ít nhất sau 3 ngày kể từ bây giờ");
+      setAlertOpen(true);
+      return false;
+    }
+
+    return true;
+  };
+
   const handlePayment = async () => {
     if (!selectedPaymentMethod) {
-      alert("Vui lòng chọn phương thức thanh toán");
+      setAlertMessage("Vui lòng chọn phương thức thanh toán");
+      setAlertOpen(true);
       return;
     }
 
-    if (!completionDate) {
-      alert("Vui lòng chọn ngày hoàn thành");
+    if (!validateCompletionDate(completionDate)) {
       return;
     }
 
@@ -100,12 +122,15 @@ const CheckOut = () => {
       if (response.paymentUrl) {
         window.location.href = response.paymentUrl;
       } else {
-        alert("Đặt hàng thành công!");
+        setAlertMessage("Đặt hàng thành công!");
+        setAlertSeverity("success");
+        setAlertOpen(true);
         navigate('/order-confirmation', { state: { orderId: response.orderId } });
       }
     } catch (error) {
       console.error("Error creating order:", error);
-      alert("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
+      setAlertMessage("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
+      setAlertOpen(true);
     } finally {
       setIsLoading(false);
     }
@@ -168,7 +193,7 @@ const CheckOut = () => {
                       checked={selectedPaymentMethod === method.id}
                       onChange={() => handlePaymentMethodChange(method.id)}
                     />
-                    <span className="payment-icon">{method.icon}</span>
+                    <img src={method.logo} alt={method.name} className="payment-logo" />
                     <span className="payment-name">{method.name}</span>
                   </label>
                 ))}
@@ -227,6 +252,12 @@ const CheckOut = () => {
           </button>
         </div>
       </div>
+      <AlertMessage
+        open={alertOpen}
+        handleClose={handleAlertClose}
+        severity={alertSeverity}
+        message={alertMessage}
+      />
     </div>
   );
 };

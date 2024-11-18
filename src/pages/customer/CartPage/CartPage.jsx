@@ -23,22 +23,47 @@ const CartPage = () => {
     const fetchCartItems = async () => {
       try {
         setLoading(true);
-        const response = await getCartItemsByCustomerId(user?.accountId);
-        console.log('Cart items response:', response);
+        if (user?.accountId) {
+          const response = await getCartItemsByCustomerId(user.accountId);
+          console.log('Cart items response:', response);
 
-        if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
-          const mappedItems = response.cartItemList.map(item => ({
-            ...item,
-            selected: item.status || false
-          }));
-          setCartItems(mappedItems);
-          console.log('All cart items:', mappedItems);
-        } else if (response && response.message === "No cart items found for this account.") {
-          setCartItems([]);
-          console.log('Cart is empty');
+          if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
+            const mappedItems = response.cartItemList.map(item => ({
+              ...item,
+              selected: item.status || false
+            }));
+            setCartItems(mappedItems);
+            console.log('All cart items:', mappedItems);
+          } else if (response && response.message === "No cart items found for this account.") {
+            setCartItems([]);
+            console.log('Cart is empty');
+          } else {
+            setCartItems([]);
+            console.log('Unexpected response format');
+          }
         } else {
-          setCartItems([]);
-          console.log('Unexpected response format');
+          const savedCartIds = JSON.parse(sessionStorage.getItem('savedCartIds') || '[]');
+          const selectedMartyrId = sessionStorage.getItem('selectedMartyrId');
+          
+          if (savedCartIds.length > 0 && selectedMartyrId) {
+            const mockCartItems = savedCartIds.map((serviceId, index) => ({
+              cartId: `temp-${index}`,
+              selected: false,
+              martyrId: selectedMartyrId,
+              martyrCode: selectedMartyrId,
+              serviceView: {
+                serviceId: serviceId,
+                serviceName: "Loading...",
+                description: "Loading...",
+                price: 0,
+                imagePath: ""
+              }
+            }));
+            
+            setCartItems(mockCartItems);
+          } else {
+            setCartItems([]);
+          }
         }
       } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -48,26 +73,29 @@ const CartPage = () => {
       }
     };
 
-    // Only fetch cart items if we have a user and auth loading is complete
-    if (!isAuthLoading && user?.accountId) {
+    if (!isAuthLoading && (user?.accountId || sessionStorage.getItem('savedCartIds'))) {
       fetchCartItems();
-    } else if (!isAuthLoading && !user) {
-      
+    } else {
       setLoading(false);
     }
   }, [user, isAuthLoading]);
 
   const handleDelete = async (cartId) => {
     try {
-      await deleteCartItem(cartId);
+      if (user?.accountId) {
+        await deleteCartItem(cartId);
+      } else {
+        const savedCartIds = JSON.parse(sessionStorage.getItem('savedCartIds') || '[]');
+        const updatedCartIds = savedCartIds.filter((_, index) => `temp-${index}` !== cartId);
+        sessionStorage.setItem('savedCartIds', JSON.stringify(updatedCartIds));
+      }
+      
       setCartItems(cartItems.filter(item => item.cartId !== cartId));
-      // Show success alert
       setAlertMessage("Sản phẩm đã được xóa khỏi giỏ hàng thành công!");
       setAlertSeverity("success");
       setAlertOpen(true);
     } catch (error) {
       console.error("Error deleting cart item:", error);
-      // Show error alert
       setAlertMessage("Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại sau.");
       setAlertSeverity("error");
       setAlertOpen(true);

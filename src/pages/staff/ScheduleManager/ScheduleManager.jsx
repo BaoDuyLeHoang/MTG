@@ -37,6 +37,7 @@ import { createScheduleDetailForStaff } from '../../../services/scheduleDetail';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { getScheduleDetailForStaff } from '../../../services/scheduleDetail';
 import { useNavigate } from 'react-router-dom';
+import { getSchedulesForStaffFilterDate } from '../../../services/scheduleDetail';
 import { getByScheduleDetailId } from '../../../services/scheduleDetail';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -106,30 +107,7 @@ const ScheduleManager = () => {
   // Get user from context or localStorage
   const { user } = useAuth();
 
-  // Replace the orders useEffect with tasks
-  useEffect(() => {
-    const fetchTasks = async () => {
-      if (!user?.accountId) {
-        setOrderError('Không tìm thấy thông tin quản lý');
-        return;
-      }
 
-      try {
-        setOrderLoading(true);
-        const response = await getTasksByAccountId(user.accountId);
-        if (response && response.tasks) {
-          setOrders(response.tasks); // Update to use tasks array from response
-        }
-      } catch (err) {
-        console.error('Error fetching tasks:', err);
-        setOrderError('Không thể tải danh sách công việc');
-      } finally {
-        setOrderLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, [user?.accountId]);
 
   // Add useEffect to fetch slots with times
   useEffect(() => {
@@ -166,28 +144,33 @@ const ScheduleManager = () => {
         const weekDates = getWeekDates(weekOffset);
         const details = {};
 
-        for (const date of weekDates) {
-          for (const slot of timeSlots) {
-            const formattedDate = date.toISOString().split('T')[0];
-            const response = await getScheduleDetailForStaff(
-              user.accountId,
-              slot.slotId,
-              formattedDate
-            );
+        // Get first and last date of the week
+        const FromDate = weekDates[0].toISOString().split('T')[0];
+        const ToDate = weekDates[6].toISOString().split('T')[0];
 
-            const key = `${formattedDate}-${slot.slotId}`;
-            
-            if (response && Array.isArray(response) && response[0]) {
-              details[key] = response.map(detail => ({
-                id: detail.scheduleDetailId,
-                serviceName: detail.serviceName,
-                martyrCode: detail.martyrCode,
-                timeRange: `${detail.startTime.substring(0, 5)} - ${detail.endTime.substring(0, 5)}`,
-                date: detail.date,
-                slotId: detail.slotId
-              }));
+        // Single API call for the whole week
+        const response = await getSchedulesForStaffFilterDate(
+          user.accountId,
+          FromDate,
+          ToDate
+        );
+
+        // Process the response
+        if (response && Array.isArray(response)) {
+          response.forEach(detail => {
+            const key = `${detail.date}-${detail.slotId}`;
+            if (!details[key]) {
+              details[key] = [];
             }
-          }
+            details[key].push({
+              id: detail.scheduleDetailId,
+              serviceName: detail.serviceName,
+              martyrCode: detail.martyrCode,
+              timeRange: `${detail.startTime.substring(0, 5)} - ${detail.endTime.substring(0, 5)}`,
+              date: detail.date,
+              slotId: detail.slotId
+            });
+          });
         }
 
         console.log('Final details object:', details);
@@ -207,10 +190,36 @@ const ScheduleManager = () => {
     fetchScheduleDetails();
   }, [user?.accountId, timeSlots, weekOffset]);
 
-  const handleOpenOrderDialog = (date, timeSlot) => {
+  const handleOpenOrderDialog = async (date, timeSlot) => {
     setSelectedDate(date);
     setSelectedTimeSlot(timeSlot);
     setOpenOrderDialog(true);
+    
+    // Fetch tasks when dialog opens
+    if (!user?.accountId) {
+      setOrderError('Không tìm thấy thông tin quản lý');
+      return;
+    }
+
+    try {
+      setOrderLoading(true);
+      const response = await getTasksByAccountId(user.accountId);
+      if (response && response.tasks) {
+        // Filter tasks based on status and date if needed
+        const filteredTasks = response.tasks.filter(task => {
+          const taskEndDate = new Date(task.endDate);
+          const selectedDate = date;
+          return (task.status === 1 || task.status === 3) && 
+                 taskEndDate >= selectedDate;
+        });
+        setOrders(filteredTasks);
+      }
+    } catch (err) {
+      console.error('Error fetching tasks:', err);
+      setOrderError('Không thể tải danh sách công việc');
+    } finally {
+      setOrderLoading(false);
+    }
   };
 
   const handleSelectOrder = (task) => {

@@ -25,9 +25,9 @@ const OrderDetail = () => {
   const getStatusText = (statusTask) => {
     switch (statusTask) {
       case 0:
-        return "Chờ xử lý";
-      case 1:
         return "Đang giao";
+      case 1:
+        return "Đã giao";
       case 2:
         return "Đã hủy";
       case 3:
@@ -179,23 +179,27 @@ const OrderDetail = () => {
                   </span>
                 </td>
                 <td>
-                  <select
-                    name="staffName"
-                    onChange={(e) =>
-                      handleStaffSelection(
-                        orderDetail?.detailId,
-                        e.target.value
-                      )
-                    }
-                    value={selectedStaff[orderDetail?.detailId] || ""}
-                  >
-                    <option value="">Chọn nhân viên</option>
-                    {orderDetail?.staffs.map((staff) => (
-                      <option key={staff.accountId} value={staff.accountId}>
-                        {staff.staffFullName}
-                      </option>
-                    ))}
-                  </select>
+                  {orderDetail?.statusTask === 0 ? (
+                    <select
+                      name="staffName"
+                      onChange={(e) =>
+                        handleStaffSelection(
+                          orderDetail?.detailId,
+                          e.target.value
+                        )
+                      }
+                      value={selectedStaff[orderDetail?.detailId] || ""}
+                    >
+                      <option value="">Chọn nhân viên</option>
+                      {orderDetail?.staffs.map((staff) => (
+                        <option key={staff.accountId} value={staff.accountId}>
+                          {staff.staffFullName}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span>{orderDetail?.staffs[0].staffFullName || "Chưa có nhân viên"}</span>
+                  )}
                 </td>
               </tr>
             </tbody>

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import "./GraveDetailManager.css";  
+import "./GraveDetailManager.css";
 import { getGraveById } from "../../../APIcontroller/API";
 import Sidebar from "../../../components/Sidebar/sideBar";
-import { FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 
 // Add this helper function to format date for input
 const formatDateForInput = (dateString) => {
-  return new Date(dateString).toISOString().split('T')[0];
+  return new Date(dateString).toISOString().split("T")[0];
 };
 
 const MyGraveDetail = () => {
@@ -19,24 +19,21 @@ const MyGraveDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [graveLocation, setGraveLocation] = useState({
-    area: "Khu A",
-    row: "Hàng 5",
-    number: "23",
-    inCharge: {
-      name: "Lê Văn Quản",
-      phone: "0987654321"
-    }
+    area: "",
+    row: "",
+    number: ""
   });
   const [fakePersonalInfo, setFakePersonalInfo] = useState([
     {
       id: 1,
-      name: "Nguyễn Văn An",
-      phone: "0912345678",
-      email: "nguyenvanan@email.com"
+      name: "",
+      phone: "",
+      email: ""
     },
   ]);
   const [editedLocation, setEditedLocation] = useState(graveLocation);
-  const [editedPersonalInfo, setEditedPersonalInfo] = useState(fakePersonalInfo);
+  const [editedPersonalInfo, setEditedPersonalInfo] =
+    useState(fakePersonalInfo);
 
   useEffect(() => {
     const fetchGraveDetails = async () => {
@@ -50,6 +47,40 @@ const MyGraveDetail = () => {
         const data = await getGraveById(martyrId);
         setMartyrDetails(data);
         setEditedData(data);
+        
+        // Set grave location from API data
+        setGraveLocation({
+          area: `Khu ${data.areaName}`,
+          row: `Hàng ${data.rowNumber}`,
+          number: data.martyrNumber.toString()
+        });
+
+        // Set personal info from API data
+        setFakePersonalInfo([
+          {
+            id: 1,
+            name: data.customerName,
+            phone: data.customerPhone,
+            email: data.customerEmail
+          }
+        ]);
+
+        // Also update the edited states
+        setEditedLocation({
+          area: `Khu ${data.areaName}`,
+          row: `Hàng ${data.rowNumber}`,
+          number: data.martyrNumber.toString()
+        });
+
+        setEditedPersonalInfo([
+          {
+            id: 1,
+            name: data.customerName,
+            phone: data.customerPhone,
+            email: data.customerEmail
+          }
+        ]);
+
       } catch (err) {
         setError("Failed to fetch grave details. Please try again later.");
       } finally {
@@ -71,14 +102,14 @@ const MyGraveDetail = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setEditedData(prev => ({
+    setEditedData((prev) => ({
       ...prev,
       matyrGraveInformations: [
         {
           ...prev.matyrGraveInformations[0],
-          [field]: value
-        }
-      ]
+          [field]: value,
+        },
+      ],
     }));
   };
 
@@ -115,25 +146,25 @@ const MyGraveDetail = () => {
   );
 
   const handleLocationChange = (field, value) => {
-    setEditedLocation(prev => ({
+    setEditedLocation((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleInChargeChange = (field, value) => {
-    setEditedLocation(prev => ({
+    setEditedLocation((prev) => ({
       ...prev,
       inCharge: {
         ...prev.inCharge,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
   const handlePersonalInfoChange = (id, field, value) => {
-    setEditedPersonalInfo(prev =>
-      prev.map(person =>
+    setEditedPersonalInfo((prev) =>
+      prev.map((person) =>
         person.id === id ? { ...person, [field]: value } : person
       )
     );
@@ -141,7 +172,8 @@ const MyGraveDetail = () => {
 
   if (loading) return <div className="loading-spinner">Loading...</div>;
   if (error) return <div className="error-message">{error}</div>;
-  if (!martyrDetails) return <div className="no-data-message">No grave details found.</div>;
+  if (!martyrDetails)
+    return <div className="no-data-message">No grave details found.</div>;
 
   const info = martyrDetails.matyrGraveInformations[0];
 
@@ -195,11 +227,17 @@ const MyGraveDetail = () => {
                   {isEditing ? (
                     <input
                       type="date"
-                      value={formatDateForInput(editedData.matyrGraveInformations[0].dateOfBirth)}
-                      onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
+                      value={formatDateForInput(
+                        editedData.matyrGraveInformations[0].dateOfBirth
+                      )}
+                      onChange={(e) =>
+                        handleInputChange("dateOfBirth", e.target.value)
+                      }
                     />
                   ) : (
-                    <span>{new Date(info.dateOfBirth).toLocaleDateString()}</span>
+                    <span>
+                      {new Date(info.dateOfBirth).toLocaleDateString()}
+                    </span>
                   )}
                 </div>
                 <div className="grave-detail-manager-info-item">
@@ -207,19 +245,27 @@ const MyGraveDetail = () => {
                   {isEditing ? (
                     <input
                       type="date"
-                      value={formatDateForInput(editedData.matyrGraveInformations[0].dateOfSacrifice)}
-                      onChange={(e) => handleInputChange('dateOfSacrifice', e.target.value)}
+                      value={formatDateForInput(
+                        editedData.matyrGraveInformations[0].dateOfSacrifice
+                      )}
+                      onChange={(e) =>
+                        handleInputChange("dateOfSacrifice", e.target.value)
+                      }
                     />
                   ) : (
-                    <span>{new Date(info.dateOfSacrifice).toLocaleDateString()}</span>
+                    <span>
+                      {new Date(info.dateOfSacrifice).toLocaleDateString()}
+                    </span>
                   )}
                 </div>
                 <div className="grave-detail-manager-inscription">
                   <h3>Huân chương/ Chiến công</h3>
                   {isEditing ? (
                     <textarea
-                      value={editedData.matyrGraveInformations[0].medal || ''}
-                      onChange={(e) => handleInputChange('medal', e.target.value)}
+                      value={editedData.matyrGraveInformations[0].medal || ""}
+                      onChange={(e) =>
+                        handleInputChange("medal", e.target.value)
+                      }
                       rows="4"
                     />
                   ) : (
@@ -229,8 +275,6 @@ const MyGraveDetail = () => {
               </div>
             </div>
           </div>
-
-          
         </div>
         <div className="grave-detail-manager-location-section">
           <h2>Vị trí mộ</h2>
@@ -240,11 +284,11 @@ const MyGraveDetail = () => {
               {isEditing ? (
                 <input
                   type="text"
-                  value={editedLocation.area}
-                  onChange={(e) => handleLocationChange('area', e.target.value)}
+                  value={martyrDetails.areaId}
+                  onChange={(e) => handleLocationChange("area", e.target.value)}
                 />
               ) : (
-                <span>{graveLocation.area}</span>
+                <span>{martyrDetails.areaId}</span>
               )}
             </div>
             <div className="grave-detail-manager-location-item">
@@ -252,11 +296,11 @@ const MyGraveDetail = () => {
               {isEditing ? (
                 <input
                   type="text"
-                  value={editedLocation.row}
-                  onChange={(e) => handleLocationChange('row', e.target.value)}
+                  value={martyrDetails.rowNumber}
+                  onChange={(e) => handleLocationChange("row", e.target.value)}
                 />
               ) : (
-                <span>{graveLocation.row}</span>
+                <span>{martyrDetails.rowNumber}</span>
               )}
             </div>
             <div className="grave-detail-manager-location-item">
@@ -264,97 +308,97 @@ const MyGraveDetail = () => {
               {isEditing ? (
                 <input
                   type="text"
-                  value={editedLocation.number}
-                  onChange={(e) => handleLocationChange('number', e.target.value)}
+                  value={martyrDetails.martyrNumber}
+                  onChange={(e) =>
+                    handleLocationChange("number", e.target.value)
+                  }
                 />
               ) : (
-                <span>{graveLocation.number}</span>
+                <span>{martyrDetails.martyrNumber}</span>
               )}
             </div>
-            <div className="grave-detail-manager-location-manager">
-              <label>Người phụ trách:</label>
-              <div className="grave-detail-manager-location-manager-info">
-                {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      value={editedLocation.inCharge.name}
-                      onChange={(e) => handleInChargeChange('name', e.target.value)}
-                      placeholder="Tên người phụ trách"
-                    />
-                    <input
-                      type="text"
-                      value={editedLocation.inCharge.phone}
-                      onChange={(e) => handleInChargeChange('phone', e.target.value)}
-                      placeholder="Số điện thoại"
-                    />
-                  </>
-                ) : (
-                  <div className="manager-info-card">
-                    <div className="manager-name">
-                      <span className="manager-label">Họ và tên:</span>
-                      <span className="manager-value">{graveLocation.inCharge.name}</span>
-                    </div>
-                    <div className="manager-phone">
-                      <span className="manager-label">SĐT:</span>
-                      <span className="manager-value">{graveLocation.inCharge.phone}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            
           </div>
         </div>
         <div className="grave-detail-manager-personal-section">
           <h2>Thông tin thân nhân</h2>
           <div className="grave-detail-manager-personal-list">
-            {(isEditing ? editedPersonalInfo : fakePersonalInfo).map((person) => (
-              <div key={person.id} className="grave-detail-manager-personal-item">
-                {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      value={person.name}
-                      onChange={(e) => handlePersonalInfoChange(person.id, 'name', e.target.value)}
-                      placeholder="Tên thân nhân"
-                      className="grave-detail-manager-personal-input"
-                    />
-                    <div className="grave-detail-manager-personal-contact">
+            {(isEditing ? editedPersonalInfo : fakePersonalInfo).map(
+              (person) => (
+                <div
+                  key={person.id}
+                  className="grave-detail-manager-personal-item"
+                >
+                  {isEditing ? (
+                    <>
                       <input
                         type="text"
-                        value={person.phone}
-                        onChange={(e) => handlePersonalInfoChange(person.id, 'phone', e.target.value)}
-                        placeholder="Số điện thoại"
+                        value={person.name}
+                        onChange={(e) =>
+                          handlePersonalInfoChange(
+                            person.id,
+                            "name",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Tên thân nhân"
+                        className="grave-detail-manager-personal-input"
                       />
-                      <input
-                        type="email"
-                        value={person.email}
-                        onChange={(e) => handlePersonalInfoChange(person.id, 'email', e.target.value)}
-                        placeholder="Email"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="grave-detail-manager-personal-name">
-                      {person.name}
-                    </div>
-                    <div className="grave-detail-manager-personal-contact">
-                      <span>SĐT: {person.phone}</span>
-                      <span>Email: {person.email}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
+                      <div className="grave-detail-manager-personal-contact">
+                        <input
+                          type="text"
+                          value={person.phone}
+                          onChange={(e) =>
+                            handlePersonalInfoChange(
+                              person.id,
+                              "phone",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Số điện thoại"
+                        />
+                        <input
+                          type="email"
+                          value={person.email}
+                          onChange={(e) =>
+                            handlePersonalInfoChange(
+                              person.id,
+                              "email",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Email"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="grave-detail-manager-personal-name">
+                        {person.name}
+                      </div>
+                      <div className="grave-detail-manager-personal-contact">
+                        <span>SĐT: {person.phone}</span>
+                        <span>Email: {person.email}</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )
+            )}
           </div>
         </div>
 
         {selectedImage && (
-          <div className="grave-detail-manager-modal-overlay" onClick={closeModal}>
+          <div
+            className="grave-detail-manager-modal-overlay"
+            onClick={closeModal}
+          >
             <div className="grave-detail-manager-modal-content">
               <img src={selectedImage} alt="Memorial - Large view" />
-              <button className="grave-detail-manager-modal-close" onClick={closeModal}>
+              <button
+                className="grave-detail-manager-modal-close"
+                onClick={closeModal}
+              >
                 ×
               </button>
             </div>

@@ -65,7 +65,7 @@ export default function Login() {
         // Kiểm tra xem có đường dẫn redirect không
         const from = location.state?.from;
         
-        if (from) {
+        if (from && result.user.roleId === 4) {
           // Nếu có đường dẫn redirect, navigate đến đó
           navigate(from);
         } else {
@@ -129,7 +129,7 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <div className="login-page">
       <Header />
       <div className="login-container">
         <AlertMessage

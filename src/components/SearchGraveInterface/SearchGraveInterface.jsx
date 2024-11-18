@@ -80,32 +80,29 @@ const SearchGraveInterface = () => {
                 maxLength={100}
               />
             </div>
-            <div className="filters">
+            <div className="filter-inputs">
               <input
                 type="number"
                 name="birthYear"
-                className="filter-input-byear"
+                className="filter-input"
                 placeholder="Năm sinh"
                 value={searchParams.birthYear}
                 onChange={handleInputChange}
-              
                 max={new Date().getFullYear()}
-                aria-label="Năm sinh"
               />
               <input
                 type="number"
                 name="deathYear"
-                className="filter-input-dyear"
+                className="filter-input"
                 placeholder="Năm mất"
                 value={searchParams.deathYear}
                 onChange={handleInputChange}
-               
                 max={new Date().getFullYear()}
               />
               <input
                 type="text"
                 name="hometown"
-                className="filter-input-hometown"
+                className="filter-input"
                 placeholder="Quê quán"
                 value={searchParams.hometown}
                 onChange={handleInputChange}

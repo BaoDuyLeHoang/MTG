@@ -118,13 +118,24 @@ const OrderDetailCus = () => {
   return (
     <div className="odc-container">
       <Header />
-      <h2 style={{textAlign: 'center'}}>Chi tiết đơn hàng #{orderData.orderId}</h2>
+      <h2 className="odc-title">Chi tiết đơn hàng #{orderData.orderId}</h2>
       <div className="odc-info-container">
         <div className="odc-info">
           <div className="odc-info-group">
-            <p><strong>Ngày đặt:</strong> {formatDate(orderData.orderDate)}</p>
-            <p><strong>Thời gian thực hiện:</strong> {formatDate(orderData.orderDate)} - {formatDate(orderData.expectedCompletionDate)}</p>
-            <p><strong>Trạng thái đơn hàng:</strong> <span className={`odc-status odc-status-${orderData.status}`}>{getStatusLabel(orderData.status)}</span></p>
+            <p>
+              <strong>Ngày đặt:</strong>
+              <span>{formatDate(orderData.orderDate)}</span>
+            </p>
+            <p>
+              <strong>Thời gian thực hiện:</strong>
+              <span>{formatDate(orderData.orderDate)} - {formatDate(orderData.expectedCompletionDate)}</span>
+            </p>
+            <p>
+              <strong>Trạng thái đơn hàng:</strong>
+              <span className={`odc-status odc-status-${orderData.status}`}>
+                {getStatusLabel(orderData.status)}
+              </span>
+            </p>
           </div>
         </div>
         

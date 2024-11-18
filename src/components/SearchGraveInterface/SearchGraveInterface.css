@@ -26,6 +26,10 @@
 
 .search-form {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }
 
 .main-search {
@@ -51,39 +55,40 @@
     cursor: pointer;
 }
 
-.filters {
+.filter-inputs {
     display: flex;
     gap: 10px;
+    width: 93%;
     margin: 10px 0;
 }
 
-.filters input {
-    padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 20px;
-    background: white;
+.filter-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
     font-size: 14px;
+    background-color: white;
 }
 
-.filter-input-byear,
-.filter-input-dyear {
-    width: 120px;
+.filter-input::placeholder {
+    color: rgba(0, 0, 0, 0.7);
 }
 
-.filter-input-hometown {
-    flex-grow: 1;
+.filter-input:focus {
+    outline: none;
+    border-color: #C4A052;
 }
 
 /* Remove spinner arrows from number inputs */
-.filters input[type="number"]::-webkit-inner-spin-button,
-.filters input[type="number"]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-
 .search-button {
-    width: 100%;
+    width: 93%;
     padding: 12px 40px 12px 15px;
     background-color: #C4A052;
     color: white;
@@ -92,6 +97,7 @@
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 10px;
 }
 
 .search-button:hover {

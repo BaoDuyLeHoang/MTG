@@ -33,7 +33,10 @@ import ProfileStaff from "./pages/manager/ProfileStaff/ProfileStaff";
 import CreateGrave from "./pages/manager/CreateGrave/CreateGrave";
 import GraveDetailManager from "./pages/manager/GraveDetailManager/GraveDetailManager";
 import AttendanceManager from "./pages/manager/AttendanceManager/AttendanceManager";
+import AttendanceList from "./pages/manager/AttendanceList/AttendanceList";
+import AttendanceDetail from "./pages/manager/AttendanceDetail/AttendanceDetail";
 import CreateService from "./pages/manager/CreateService/CreateService";
+import ScheduleAttendanceManager from "./pages/manager/ScheduleAttendanceManager/ScheduleAttendanceManager";
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
   import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
@@ -110,7 +113,9 @@ function AppContent() {
 
           {/* Manager routes */}
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
-          <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleManager /></ProtectedRoute>} />
+          <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleAttendanceManager /></ProtectedRoute>} />
+          <Route path="/attendance-list/:slotId/:date" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AttendanceList /></ProtectedRoute>} />
+          <Route path="/attendance-detail/:attendanceId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AttendanceDetail /></ProtectedRoute>} />
           <Route path="/danhsachdonhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
           <Route path="/profileManager" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />

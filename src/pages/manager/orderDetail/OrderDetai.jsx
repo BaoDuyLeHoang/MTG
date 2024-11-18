@@ -179,7 +179,7 @@ const OrderDetail = () => {
                   </span>
                 </td>
                 <td>
-                  {orderDetail?.statusTask === 1 ? (
+                  {orderDetail?.statusTask === 1 || orderDetail?.statusTask === 3 || orderDetail?.statusTask === 4 || orderDetail?.statusTask === 5 ? (
                     // When statusTask is 1, display staff name
                     <span>{orderDetail?.staffs[0]?.staffFullName || 'Chưa có nhân viên'}</span>
                   ) : (
@@ -206,7 +206,7 @@ const OrderDetail = () => {
               </tr>
             </tbody>
           </table>
-          {orderDetail?.statusTask === 1 ? (
+          {orderDetail?.statusTask === 1 || orderDetail?.statusTask === 3 || orderDetail?.statusTask === 4 || orderDetail?.statusTask === 5 ? (
             // When statusTask is 1, don't show anything
             null
           ) : (

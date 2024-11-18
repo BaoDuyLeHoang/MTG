@@ -343,3 +343,82 @@
 .mgmt-task-list__item:active::after {
     opacity: 1;
 }
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 24px;
+    background-color: #f5f5f5;
+  }
+  
+  .mgmt-dashboard {
+    background-color: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mgmt-dashboard__title {
+    font-size: 24px;
+    margin-bottom: 24px;
+    color: #333;
+  }
+  
+  .mgmt-dashboard__controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .mgmt-dashboard__header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Table styles */
+  .MuiTableCell-root {
+    padding: 16px;
+  }
+  
+  .MuiTableRow-root:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Button styles */
+  .MuiButton-contained {
+    text-transform: none;
+  }
+  
+  /* Loading state */
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+
+  .square {
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 8px; /* Rounded corners */
+    padding: 16px; /* Padding inside the square */
+    display: inline-block; /* Allow squares to sit next to each other */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+    text-align: center; /* Center text inside the square */
+  }
+  
+  .square:hover {
+    background-color: #f0f0f0; /* Light background on hover */
+    transform: scale(1.05); /* Slightly enlarge the square on hover */
+  }
+  
+  .square-content {
+    font-size: 14px; /* Font size for the content */
+    color: #333; /* Text color */
+  }

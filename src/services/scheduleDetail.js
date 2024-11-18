@@ -80,3 +80,20 @@ export const getSchedulesForStaffFilterDate = async (accountId, FromDate, ToDate
   }
 };
   
+export const deleteScheduleDetail = async (scheduleDetailId, accountId) => {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}/ScheduleDetail/DeleteScheduleDetail/${scheduleDetailId}`,
+      {
+        params: { accountId },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+  

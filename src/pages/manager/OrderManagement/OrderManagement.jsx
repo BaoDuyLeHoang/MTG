@@ -16,6 +16,7 @@ const OrderManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 8;
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(""); // Set default to today's date
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -33,25 +34,38 @@ const OrderManagement = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await getOrdersByManagerArea(user.accountId, currentPage);
+        
+        // Prepare parameters for the API call
+        const params = {
+            accountId: user.accountId,
+            pageIndex: currentPage, // Use currentPage as pageIndex
+            pageSize: 5, // Set the number of orders per page
+        };
+        // Include selectedDate only if it has a value
+        if (selectedDate) {
+          params.date = selectedDate;
+      }
+
+        const response = await getOrdersByManagerArea(params.accountId, params.pageIndex, params.pageSize, params.date);
         console.log("Fetched orders:", response);
+        
         if (response && response.orderDetails && Array.isArray(response.orderDetails)) {
-          setOrders(response.orderDetails);
-          setTotalPages(response.totalPage);
+            setOrders(response.orderDetails);
+            setTotalPages(response.totalPage);
         } else {
-          setError("Không có đơn hàng nào được tìm thấy hoặc dữ liệu không hợp lệ.");
+            setError("Không có đơn hàng nào được tìm thấy hoặc dữ liệu không hợp lệ.");
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching orders:", error);
         setError(`Không thể tải danh sách đơn hàng. Lỗi: ${error.message}`);
         setOrders([]);
-      } finally {
+    } finally {
         setLoading(false);
-      }
+    }
     };
 
     fetchOrders();
-  }, [navigate, user.accountId, currentPage]);
+  }, [navigate, user.accountId, currentPage, selectedDate]);
 
   const getStatusText = (status, isOrderStatus = false) => {
     if (isOrderStatus) {
@@ -130,7 +144,7 @@ const OrderManagement = () => {
       <Sidebar />
       <div className="order-management-content">
         <h1>Quản Lý Đơn Hàng</h1>
-        
+
         <div className="controls-container">
           <div className="search-wrapper">
             <i className="fas fa-search search-icon"></i>
@@ -140,6 +154,14 @@ const OrderManagement = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
+            />
+          </div>
+          <div className="date-filter-wrapper">
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="date-filter-input"
             />
           </div>
           <div className="filter-wrapper">
@@ -218,7 +240,7 @@ const OrderManagement = () => {
                     <td>
                       <button
                         className="detail-button"
-                        onClick={() => handleViewDetails(order.detailId,user.accountId)}
+                        onClick={() => handleViewDetails(order.detailId, user.accountId)}
                         disabled={!order.detailId}
                       >
                         Chi tiết

@@ -37,6 +37,8 @@ import AttendanceList from "./pages/manager/AttendanceList/AttendanceList";
 import AttendanceDetail from "./pages/manager/AttendanceDetail/AttendanceDetail";
 import CreateService from "./pages/manager/CreateService/CreateService";
 import ScheduleAttendanceManager from "./pages/manager/ScheduleAttendanceManager/ScheduleAttendanceManager";
+import BlogManager from './pages/manager/BlogManager/BlogManager';
+import BlogDetailManager from './pages/manager/BlogDetail/BlogDetailManager';
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
   import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
@@ -61,7 +63,6 @@ import OrderDetailCus from './pages/customer/OrderDetailCus/OrderDetailCus';
 import UserProfile from './pages/customer/UserProfile/UserProfile';
 import BlogView from './pages/customer/BlogView/BlogView';
 import BlogManagement from './pages/staff/BlogManagement/BlogManagement';
-import BlogManager from './pages/manager/BlogManager/BlogManager';
 import ScheduleManager from './pages/staff/ScheduleManager/ScheduleManager';
 import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
 import ServiceList from './pages/manager/ServiceList/ServiceList';
@@ -121,7 +122,8 @@ function AppContent() {
           <Route path="/profileManager" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/creategrave" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><CreateGrave /></ProtectedRoute>} />
           <Route path="/chitietmoquanly/:martyrId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
-          <Route path="/blog-manager" element={<BlogManager />} />
+          <Route path="/blog-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><BlogManager /></ProtectedRoute>} />
+          <Route path="/blog-detail-manager/:blogId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><BlogDetailManager /></ProtectedRoute>} />
           <Route path="/attendance-manager" element={<AttendanceManager />} />
           
           {/* Staff routes */}

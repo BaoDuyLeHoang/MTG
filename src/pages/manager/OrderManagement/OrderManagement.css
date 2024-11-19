@@ -1,3 +1,4 @@
+/* Main container */
 .order-management-container {
     display: flex;
     min-height: 100vh;
@@ -9,6 +10,7 @@
     padding: 2rem;
 }
 
+/* Header */
 .order-management-content h1 {
     color: #2c3e50;
     margin-bottom: 2rem;
@@ -17,6 +19,7 @@
     padding-bottom: 0.5rem;
 }
 
+/* Table styles */
 .table-container {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -57,6 +60,7 @@
     background-color: #f8f9fa;
 }
 
+/* Status labels */
 .status {
     padding: 0.5rem 1rem;
     border-radius: 20px;
@@ -84,6 +88,7 @@
     color: #004085;
 }
 
+/* Buttons */
 .detail-button {
     background-color: #3498db;
     color: white;
@@ -103,10 +108,12 @@
     cursor: not-allowed;
 }
 
+/* Centered content */
 .centered {
     text-align: center;
 }
 
+/* Error messages */
 .error {
     color: #721c24;
     background-color: #f8d7da;
@@ -115,6 +122,7 @@
     margin: 1rem 0;
 }
 
+/* List items inside table */
 .order-table td ul {
     list-style: none;
     padding: 0;
@@ -130,6 +138,7 @@
     border-bottom: none;
 }
 
+/* Controls container */
 .controls-container {
     display: flex;
     gap: 1.5rem;
@@ -140,14 +149,13 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Search and filter inputs */
 .search-wrapper,
-.filter-wrapper {
+.filter-wrapper,
+.date-filter-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-}
-
-.search-wrapper {
     flex: 1;
 }
 
@@ -159,7 +167,9 @@
     font-size: 1rem;
 }
 
-.search-input {
+.search-input,
+.status-filter,
+.date-filter-input {
     flex: 1;
     padding: 12px 12px 12px 40px;
     border: 2px solid #e0e0e0;
@@ -169,41 +179,26 @@
     transition: all 0.3s ease;
 }
 
-.search-input:focus {
+.search-input:focus,
+.status-filter:focus,
+.date-filter-input:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     outline: none;
 }
 
-.status-filter {
-    padding: 12px 12px 12px 40px;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: white;
-    cursor: pointer;
-    min-width: 200px;
-    transition: all 0.3s ease;
-}
-
-.status-filter:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-    outline: none;
-}
-
-.search-input::placeholder {
+.search-input::placeholder,
+.date-filter-input::placeholder {
     color: #999;
 }
 
-/* Hover effects */
 .search-input:hover,
-.status-filter:hover {
+.status-filter:hover,
+.date-filter-input:hover {
     border-color: #b0b0b0;
 }
 
-/* Make sure Font Awesome icons are loaded in your project */
-
+/* Pagination */
 .pagination {
     display: flex;
     justify-content: center;

@@ -12,6 +12,8 @@ const MyGraveDetail = () => {
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const defaultImage = "https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072";
+
   useEffect(() => {
     const fetchGraveDetails = async () => {
       if (!martyrId) {
@@ -96,8 +98,7 @@ const MyGraveDetail = () => {
               <div className="memorial-image">
                 <img
                   src={
-                    martyrDetails.images[0]?.urlPath ||
-                    "/api/placeholder/400/300"
+                    martyrDetails?.images?.[0]?.urlPath || defaultImage
                   }
                   alt="Bia tưởng niệm"
                   onClick={handleImageClick}
@@ -170,10 +171,11 @@ const MyGraveDetail = () => {
         {selectedImage && (
           <div className="modal-overlay" onClick={closeModal}>
             <div className="modal-content">
-              <img src={selectedImage} alt="Memorial - Large view" />
-              <button className="modal-close" onClick={closeModal}>
-                ×
-              </button>
+              <img 
+                src={selectedImage === martyrDetails?.images?.[0]?.urlPath ? selectedImage : defaultImage} 
+                alt="Memorial - Large view" 
+              />
+              <button className="modal-close" onClick={closeModal}>×</button>
             </div>
           </div>
         )}

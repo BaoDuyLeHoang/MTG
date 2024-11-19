@@ -34,6 +34,9 @@ export const API_ENDPOINTS = {
   CREATE_FEEDBACK: "/Feedback/Create-Feedback",
   GET_TRENDING_SERVICES: "/Service/trending-services",
   GET_MARTYRS_BY_AREA: "/MartyrGrave/area",
+  GET_PROFILE: "/Account/getProfile",
+  UPDATE_PROFILE: "/Customer/update-profile",
+  CHANGE_PASSWORD: "/Customer/change-password-customer",
 };
 
 export const getServices = async () => {
@@ -973,6 +976,93 @@ export const getMartyrsByArea = async (areaId, pageIndex = 1, pageSize = 10) => 
     return response.data;
   } catch (error) {
     console.error('Error fetching martyrs:', error);
+    throw error;
+  }
+};
+
+export const getProfile = async (accountId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching profile for account ID: ${accountId}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_PROFILE}/${accountId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Profile API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching profile:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const updateProfile = async (accountId, profileData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Updating profile for account ID: ${accountId}`);
+    console.log("Profile update data:", profileData);
+    
+    const response = await axios.put(
+      `${BASE_URL}${API_ENDPOINTS.UPDATE_PROFILE}/${accountId}`,
+      {
+        fullName: profileData.fullName,
+        dateOfBirth: profileData.dateOfBirth,
+        address: profileData.address,
+        avatarPath: profileData.avatarPath,
+        emailAddress: profileData.emailAddress
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Profile update response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error updating profile:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+
+export const changePassword = async (passwordData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Changing password with data:", passwordData);
+    
+    const response = await axios.put(
+      `${BASE_URL}${API_ENDPOINTS.CHANGE_PASSWORD}`,
+      passwordData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Change password response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error changing password:",
+      error.response ? error.response.data : error.message
+    );
     throw error;
   }
 };

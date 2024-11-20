@@ -29,7 +29,13 @@ body {
 
 .login-image {
     text-align: center;
-    margin-bottom: 20px; /* Reduced from margin-top: 5% */
+    margin-bottom: 20px;
+    margin-top: 10%;
+    width: 400px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 26%;
 }
 
 .login-box {
@@ -156,4 +162,10 @@ body {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
+}
+
+
+.login-page{
+    height: 100vh;
+    overflow: hidden;
 }

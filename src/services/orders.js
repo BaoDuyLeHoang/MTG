@@ -26,22 +26,26 @@ export const getOrdersByManagerArea = async (accountId, pageIndex, pageSize, dat
       throw new Error(error.response?.data?.message || 'Failed to fetch order details');
     }
   };
-  export const getOrdersByCustomer = async (customerId, date = null, pageIndex = 1, pageSize = 5) => {
-    try {
-      let url = `${BASE_URL}/Orders/account/${customerId}?pageIndex=${pageIndex}&pageSize=${pageSize}`;
-      
-      // Add date parameter if provided
-      if (date) {
-        url += `&date=${date}`;
-      }
+  export const getOrdersByCustomer = async (accountId, params = {}) => {
+    const { date, status, pageIndex = 1, pageSize = 5 } = params;
+    const queryParams = new URLSearchParams({
+      ...(date && { date }),
+      ...(status && status !== "all" && { status }),
+      pageIndex,
+      pageSize
+    });
 
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-      });
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/Orders/account/${accountId}?${queryParams}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        }
+      );
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch customer orders');
+      throw new Error(error.response?.data?.message || 'Failed to fetch orders');
     }
   };

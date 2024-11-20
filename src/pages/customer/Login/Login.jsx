@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../../components/Header/header";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "../Login/Login.css";
@@ -18,6 +18,7 @@ export default function Login() {
   const { loginWithCredentials } = useAuth();
   const [openAlert, setOpenAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const location = useLocation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -61,23 +62,31 @@ export default function Login() {
           }
         }
 
-        // If no pending items or after adding to cart, proceed with normal navigation
-        switch (result.user.role) {
-          case ROLES.ADMIN:
-            navigate("/admin");
-            break;
-          case ROLES.MANAGER:
-            navigate("/manager");
-            break;
-          case ROLES.STAFF:
-            navigate("/staff");
-            break;
-          case ROLES.CUSTOMER:
-            navigate("/user");
-            break;
-          default:
-            console.error("Unknown user role:", result.user.role);
-            setError(`Unknown user role: ${result.user.role}`);
+        // Kiểm tra xem có đường dẫn redirect không
+        const from = location.state?.from;
+        
+        if (from && result.user.roleId === 4) {
+          // Nếu có đường dẫn redirect, navigate đến đó
+          navigate(from);
+        } else {
+          // Nếu không có, xử lý redirect theo role như cũ
+          switch (result.user.role) {
+            case ROLES.ADMIN:
+              navigate("/admin");
+              break;
+            case ROLES.MANAGER:
+              navigate("/manager");
+              break;
+            case ROLES.STAFF:
+              navigate("/staff");
+              break;
+            case ROLES.CUSTOMER:
+              navigate("/user");
+              break;
+            default:
+              console.error("Unknown user role:", result.user.role);
+              setError(`Unknown user role: ${result.user.role}`);
+          }
         }
       } else {
         console.error("Đăng nhập thất bại:", result);
@@ -103,7 +112,7 @@ export default function Login() {
         "Đăng nhập thất bại. Vui lòng thử lại.",
       "Invalid credentials": "Thông tin đăng nhập không hợp lệ",
       "User not found": "Không tìm thấy người dùng",
-      "Incorrect password": "Mật khẩu không chính x��c",
+      "Incorrect password": "Mật khẩu không chính xác",
       "Account is locked": "Tài khoản đã bị khóa",
       "Too many failed attempts":
         "Quá nhiều lần đăng nhập thất bại. Vui lòng thử lại sau.",
@@ -120,7 +129,7 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <div className="login-page">
       <Header />
       <div className="login-container">
         <AlertMessage

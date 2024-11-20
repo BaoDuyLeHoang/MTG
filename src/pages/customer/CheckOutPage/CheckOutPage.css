@@ -62,8 +62,15 @@
   flex: 1;
   background: #fff;
   border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.checkout-form-right h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
 }
 
 /* Product List Styling */
@@ -133,16 +140,14 @@
 .payment-methods {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 12px;
 }
 
 .payment-method {
-  position: relative;
   display: flex;
   align-items: center;
-  padding: 1.2rem 1.5rem;
-  border: 2px solid #e0e0e0;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -150,36 +155,49 @@
 }
 
 .payment-method:hover {
-  border-color: #4CAF50;
-  background-color: #f8fff8;
-}
-
-.payment-method input[type="radio"] {
-  margin-right: 1rem;
-  width: 20px;
-  height: 20px;
-  accent-color: #4CAF50;
+  border-color: #2196F3;
+  background-color: #f5f9ff;
 }
 
 .payment-method.selected {
-  border-color: #4CAF50;
-  background-color: #f8fff8;
+  border-color: #2196F3;
+  background-color: #f5f9ff;
+}
+
+.payment-method input[type="radio"] {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  accent-color: #2196F3;
+}
+
+.payment-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  margin-right: 12px;
 }
 
 .payment-name {
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 500;
   color: #333;
 }
 
-/* Optional: Add payment method icons */
-.payment-icon {
-  margin-right: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
+/* Checkout Form Right Section */
+.checkout-form-right {
+  flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.checkout-form-right h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
 }
 
 .checkout-button {

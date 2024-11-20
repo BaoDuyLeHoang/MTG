@@ -25,6 +25,9 @@ const ServiceListing = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
 
+  const [martyrName, setMartyrName] = useState("");
+  const [martyrId, setMartyrId] = useState("");
+
   useEffect(() => {
     const layDichVu = async () => {
       try {
@@ -41,6 +44,18 @@ const ServiceListing = () => {
     };
 
     layDichVu();
+  }, []);
+
+  useEffect(() => {
+    // Get martyr ID and name from storage
+    const savedMartyrId = sessionStorage.getItem("selectedMartyrId");
+    const savedMartyrName = localStorage.getItem("selectedMartyrName");
+    if (savedMartyrId) {
+      setMartyrId(savedMartyrId);
+    }
+    if (savedMartyrName) {
+      setMartyrName(savedMartyrName);
+    }
   }, []);
 
   const dichVuDaLoc =
@@ -62,66 +77,46 @@ const ServiceListing = () => {
   }, [danhMucDaChon]);
 
   const themVaoGioHang = async (dichVu) => {
-    if (!checkSession()) {
-      console.log("Session expired, redirecting to login");
-      sessionStorage.setItem("pendingServiceId", dichVu.serviceId);
-      console.log("Saved pendingServiceId to session storage:", dichVu.serviceId);
-      navigate("/login");
-      return;
-    }
+    try {
+      // Check if user is logged in
+      if (!user) {
+        setAlertMessage("Vui lòng đăng nhập để thêm dịch vụ vào giỏ hàng");
+        setAlertSeverity("warning");
+        setAlertOpen(true);
+        navigate('/login');
+        return;
+      }
 
-    const token = localStorage.getItem("accessToken");
-    const martyrId = sessionStorage.getItem("selectedMartyrId");
-    const accountId = user ? user.accountId : null;
-    console.log("Token:", token);
-    console.log("AccountId:", accountId);
+      // Prepare the request body with all required parameters
+      const cartData = {
+        accountId: user.accountId,
+        serviceId: dichVu.serviceId,
+        martyrId: sessionStorage.getItem("selectedMartyrId")
+      };
 
-    if (token && accountId) {
-      try {
-        const cartItem = {
-          serviceId: dichVu.serviceId,
-          accountId: accountId,
-          martyrId: martyrId,
-        };
-        console.log("Adding to cart:", cartItem);
-        await addToCart(cartItem, token);
-        setGioHang([...gioHang, dichVu]);
-        console.log("Successfully added to cart");
-
-        // Show success alert
+      // Call API to add to cart with the required data
+      const response = await addToCart(cartData);
+      
+      // Save the serviceId to session storage
+      const savedCartIds = JSON.parse(sessionStorage.getItem("savedCartIds") || "[]");
+      if (!savedCartIds.includes(dichVu.serviceId)) {
+        savedCartIds.push(dichVu.serviceId);
+        sessionStorage.setItem("savedCartIds", JSON.stringify(savedCartIds));
+        console.log("Updated savedCartIds in session storage:", savedCartIds);
         setAlertMessage("Dịch vụ đã được thêm vào giỏ hàng thành công!");
         setAlertSeverity("success");
         setAlertOpen(true);
-
-        // Save the serviceId to session storage
-        const savedCartIds = JSON.parse(sessionStorage.getItem("savedCartIds") || "[]");
-        if (!savedCartIds.includes(dichVu.serviceId)) {
-          savedCartIds.push(dichVu.serviceId);
-          sessionStorage.setItem("savedCartIds", JSON.stringify(savedCartIds));
-          console.log("Updated savedCartIds in session storage:", savedCartIds);
-        } else {
-          console.log("ServiceId already in savedCartIds:", dichVu.serviceId);
-        }
-
-      } catch (error) {
-        console.error("Error adding to cart:", error);
-        // Show error alert
-        setAlertMessage("Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.");
-        setAlertSeverity("error");
-        setAlertOpen(true);
+      } else {
+        console.log("ServiceId already in savedCartIds:", dichVu.serviceId);
+        setAlertMessage("Bạn đã đặt dịch vụ này trước đó. Vui lòng chọn dịch vụ khác");
+      setAlertSeverity("error");
+      setAlertOpen(true);
       }
-    } else {
-      console.log("User not logged in or accountId not available");
-      if (!token) {
-        console.log("No token found, redirecting to login");
-        sessionStorage.setItem("pendingServiceId", dichVu.serviceId);
-        console.log("Saved pendingServiceId to session storage:", dichVu.serviceId);
-        navigate("/login");
-      } else if (!accountId) {
-        console.log("No accountId found, but token exists");
-        // Handle the case where the token exists but accountId is missing
-        // You might want to refresh the user data or redirect to a profile completion page
-      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      setAlertMessage("Dịch vụ đã tồn tại trong giỏ hàng hoặc mộ đã bị giới hạn dịch vụ. Người dùng vui lòng đặt dịch vụ khác");
+      setAlertSeverity("error");
+      setAlertOpen(true);
     }
   };
 
@@ -134,6 +129,10 @@ const ServiceListing = () => {
       return;
     }
     setAlertOpen(false);
+  };
+
+  const handleMartyrClick = () => {
+    navigate(`/chitietmo/${martyrId}`);
   };
 
   if (dangTai) {
@@ -151,10 +150,24 @@ const ServiceListing = () => {
         <div className="sl-header">
           <h1>Dịch Vụ</h1>
         </div>
-        <div className="sl-filter-container">
-          <div>
-            <h1>Tên Liệt sĩ</h1>
+        <div className="sl-martyr-info">
+          <div className="martyr-card">
+            <div className="martyr-icon">
+              <i className="fas fa-user-circle"></i>
+            </div>
+            <div className="martyr-details">
+              <span className="martyr-label">Bạn đang đặt dịch vụ cho liệt sĩ:</span>
+              <h2 
+                className="martyr-name clickable"
+                onClick={handleMartyrClick}
+                title="Xem chi tiết"
+              >
+                {martyrName}
+              </h2>
+            </div>
           </div>
+        </div>
+        <div className="sl-filter-container">
           <select
             className="sl-category-select"
             value={danhMucDaChon}

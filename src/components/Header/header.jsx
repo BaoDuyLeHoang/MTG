@@ -55,14 +55,39 @@ const Header = () => {
           <div className="settings-dropdown">
             {user ? (
               <>
-                <Link to="/user-profile">Hồ sơ</Link>
-                 <Link to="/relative-grave">Mộ người thân</Link>  
-                <Link to="/cart">Giỏ hàng</Link>
-                <Link to="/order-history">Lịch sử đơn hàng</Link>
-                <Link onClick={handleLogout}>Đăng xuất</Link>
+                {user.role === 4 && (
+                  <>
+                    <Link to="/user-profile">Hồ sơ</Link>
+                    <Link to="/relative-grave">Mộ người thân</Link>
+                    <Link to="/cart">Giỏ hàng</Link>
+                    <Link to="/order-history">Lịch sử đơn hàng</Link>
+                  </>
+                )}
+                {user.role === 2 && (
+                  <>
+                    <Link to="/manager">Về Quản lý</Link>
+                  </>
+                )}
+                {user.role === 1 && (
+                  <>
+                    <Link to="/admin">Về Admin</Link>
+                  </>
+                )}
+                {user.role === 3 && (
+                  <>
+                    <Link to="/staff">Về Nhân viên</Link>
+                  </>
+                )}
+                <button onClick={handleLogout} className="logout-link">
+                  Đăng xuất
+                </button>
               </>
             ) : (
-              <Link to="/login">Đăng nhập</Link>
+              <>
+                <Link to="/cart">Giỏ hàng</Link>
+                <Link to="/login">Đăng nhập</Link>
+              </>
+            
             )}
           </div>
         )}

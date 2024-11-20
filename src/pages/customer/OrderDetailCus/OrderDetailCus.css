@@ -1,120 +1,205 @@
 .odc-container {
   margin: 0 auto;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
 }
 
-.odc-info {
-  margin: 20px 0;
-  padding: 20px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-}
-
-.odc-info-group {
-  line-height: 1.8;
+.odc-title {
   color: #1a202c;
-}
-
-.odc-status {
-  padding: 6px 12px;
-  border-radius: 6px;
+  text-align: center;
+  font-size: 20px;
   font-weight: 600;
-  display: inline-block;
-  color: #ffffff;
-}
-
-/* Status colors with better contrast */
-.odc-status-1 { background-color: #f59e0b; } /* Pending - Orange */
-.odc-status-2 { background-color: #3b82f6; } /* Confirmed - Blue */
-.odc-status-3 { background-color: #10b981; } /* In Progress - Green */
-.odc-status-4 { background-color: #059669; } /* Completed - Dark Green */
-.odc-status-5 { background-color: #ef4444; } /* Cancelled - Red */
-
-.odc-services-list {
-  margin: 24px 0;
-}
-
-.odc-services-list h3 {
-  color: #1a202c;
-  margin-bottom: 16px;
-  font-size: 1.25rem;
-}
-
-.odc-service-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 16px;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
-}
-
-.odc-service-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.odc-service-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.odc-price {
-  font-weight: bold;
-  color: #2c5282;
-}
-
-.odc-martyr-name {
-  margin: 10px 0;
-}
-
-.odc-staff-list {
-  margin-top: 10px;
-}
-
-.odc-staff-name {
-  display: inline-block;
-  margin-left: 10px;
-  padding: 2px 8px;
-  background-color: #e9ecef;
-  border-radius: 4px;
-}
-
-.order-total {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 2px solid #dee2e6;
-  text-align: right;
+  padding: 16px 0;
+  margin: 0;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .odc-info-container {
-    width: 80%;
-    margin: 0 auto;  /* Centers the container horizontally */
-    padding: 20px;
+  width: 80%; /* Giảm từ 95% xuống 80% */
+  max-width: 1200px; /* Thêm max-width để giới hạn độ rộng tối đa */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.odc-info {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.odc-info-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+ 
+  padding: 10px;
+}
+
+.odc-info-group p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.odc-info-group strong {
+  min-width: 150px;
+  color: #4a5568;
+}
+
+.odc-services-list {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.odc-services-list h3 {
+  margin: 0;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 16px;
+  color: #1a202c;
+}
+
+.odc-service-card {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 16px;
+  margin: 0;
+  border-radius: 0;
+}
+
+.odc-service-card:last-child {
+  border-bottom: none;
+}
+
+.odc-service-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.odc-service-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  
+  padding: 10px 0;
+  align-items: center;
+}
+
+.odc-service-details p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.odc-service-details strong {
+  color: #4a5568;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.odc-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.odc-staff-info {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.odc-staff-name {
+  background: #f3f4f6;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.odc-price {
+  text-align: right;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.odc-order-total {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  margin-top: 16px;
+  background: #f8fafc;
+}
+
+.odc-order-total h3 {
+  margin: 0;
+  padding: 12px 16px;
+  text-align: right;
+  font-size: 16px;
 }
 
 .odc-feedback-btn {
-  margin-right: 20px;  /* Changed from margin-left to margin-right */
-  padding: 10px 20px;
-  background-color: #4CAF50;
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #4F46E5;
   color: white;
   border: none;
-  width: 150px;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-  display: block;
-  float: right;    /* Changed from left to right */
-  clear: right;    /* Changed from left to right */
-  margin-top: 13%;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .odc-feedback-btn:hover {
-  background-color: #45a049;
+  background-color: #8176f0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.odc-feedback-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Status colors */
+.status-waiting {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.status-transferring {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.status-rejected {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-in-progress {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.status-completed {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.status-failed {
+  background-color: #fee2e2;
+  color: #b91c1c;
 }

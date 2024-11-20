@@ -25,9 +25,9 @@ const OrderDetail = () => {
   const getStatusText = (statusTask) => {
     switch (statusTask) {
       case 0:
-        return "Chờ xử lý";
-      case 1:
         return "Đang giao";
+      case 1:
+        return "Đã giao";
       case 2:
         return "Đã hủy";
       case 3:
@@ -179,11 +179,15 @@ const OrderDetail = () => {
                   </span>
                 </td>
                 <td>
+
                   {orderDetail?.statusTask === 1 || orderDetail?.statusTask === 3 || orderDetail?.statusTask === 4 || orderDetail?.statusTask === 5 ? (
                     // When statusTask is 1, display staff name
                     <span>{orderDetail?.staffs[0]?.staffFullName || 'Chưa có nhân viên'}</span>
                   ) : (
                     // For other status, show staff selection dropdown
+
+                  {orderDetail?.statusTask === 0 ? (
+
                     <select
                       name="staffName"
                       onChange={(e) =>
@@ -201,6 +205,10 @@ const OrderDetail = () => {
                         </option>
                       ))}
                     </select>
+
+                  ) : (
+                    <span>{orderDetail?.staffs[0].staffFullName || "Chưa có nhân viên"}</span>
+
                   )}
                 </td>
               </tr>

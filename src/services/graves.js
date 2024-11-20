@@ -37,3 +37,66 @@ export const getAllGravesForManager = async (page, pageSize, managerId) => {
     throw error;
   }
 };
+
+export const updateGraveDetail = async (graveId, updateData) => {
+  const token = localStorage.getItem('accessToken');
+
+  const response = await axios.put(
+    `${BASE_URL}/MartyrGrave/update-grave-v2/${graveId}`,
+    updateData,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  return response.data;
+};
+
+export const getGraveServices = async (martyrId) => {
+  const response = await axios.get(`${BASE_URL}/GraveService/grave-services?martyrId=${martyrId}`);
+  return response.data;
+};
+
+export const createGraveService = async (managerId, data) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    const response = await fetch(`${BASE_URL}/GraveService?managerId=${managerId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    });
+
+
+    return await response.data; // Return the response data
+  } catch (error) {
+      console.error('API Error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to create graveService');
+  }
+
+};
+
+export const deleteGraveService = async (managerId, graveServiceId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    const response = await fetch(`${BASE_URL}/GraveService?graveServiceId=${graveServiceId}&managerId=${managerId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+
+    return await response.data; // Return the response data
+  } catch (error) {
+      console.error('API Error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to delete graveService');
+  }
+
+};

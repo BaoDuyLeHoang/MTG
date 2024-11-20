@@ -93,20 +93,23 @@
 }
 
 .blog-manager-status-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.blog-manager-status-pending {
-  background-color: #ffd700;
-  color: #856404;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem; /* Slightly larger for better readability */
+  font-weight: 600;
+  text-align: center;
+  min-width: 80px; /* Ensure consistent width for the badge */
+  color: white; /* Default text color for badges */
 }
 
 .blog-manager-status-approved {
-  background-color: #28a745;
-  color: white;
+  background-color: #28a745; /* Green for approved */
+}
+
+.blog-manager-status-pending {
+  background-color: #ffc107; /* Yellow for pending */
+  color: #212529; /* Dark text for contrast with yellow */
 }
 
 .blog-manager-status-rejected {
@@ -176,3 +179,44 @@ tr:hover {
     transform: rotate(360deg);
   }
 }
+
+/* Pagination Controls */
+.blog-manager-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.blog-manager-pagination button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: white;
+  color: #495057;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.blog-manager-pagination button:disabled {
+  cursor: not-allowed;
+  background-color: #e9ecef;
+  color: #adb5bd;
+}
+
+.blog-manager-pagination button:not(:disabled):hover {
+  background-color: #3498db;
+  color: white;
+}
+
+.blog-manager-pagination span {
+  font-size: 0.9rem;
+  color: #495057;
+}
+

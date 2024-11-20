@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Eye, Check, X } from 'lucide-react';
 import './BlogManager.css';
 import Sidebar from '../../../components/Sidebar/sideBar';
-import { getAllBlogsManager } from '../../../services/blog';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
+import { getAllBlogsManager, updateBlogStatus } from '../../../services/blog'; // Import the updateBlogStatus function
+import { useAuth } from "../../../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const BlogApprovalDashboard = () => {
   const [posts, setPosts] = useState([]);
@@ -11,6 +13,7 @@ const BlogApprovalDashboard = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
+  const { user } = useAuth();
 
   const [filters, setFilters] = useState({
     search: '',
@@ -18,27 +21,32 @@ const BlogApprovalDashboard = () => {
     status: 'all'
   });
 
-  // Fetch blogs when component mounts
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [totalPages, setTotalPages] = useState(1); // Total pages state
+  const pageSize = 5; // Set the number of items per page
+
+  // Fetch blogs when component mounts or currentPage changes
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [currentPage]);
 
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const response = await getAllBlogsManager();
+      const response = await getAllBlogsManager(user.accountId, currentPage, pageSize); // Pass currentPage and pageSize
       // Transform the API response to match your table structure
-      const transformedPosts = response.map(blog => ({
+      const transformedPosts = response.blogs.map(blog => ({
         id: blog.blogId,
         title: blog.blogName,
         author: blog.fullName || 'Unknown Author',
-        department: blog.historyEventName || 'Unknown Event',
+        department: blog.blogCategoryName || 'Unknown Event',
         status: blog.status ? 'approved' : 'pending',
         createdAt: new Date(blog.createDate).toLocaleDateString('vi-VN'),
         updatedAt: new Date(blog.updateDate).toLocaleDateString('vi-VN'),
         summary: blog.blogDescription
       }));
       setPosts(transformedPosts);
+      setTotalPages(response.totalPage); // Set total pages from response
     } catch (error) {
       setAlertSeverity('error');
       setAlertMessage(error.message || 'Có lỗi xảy ra khi tải danh sách bài viết');
@@ -52,43 +60,49 @@ const BlogApprovalDashboard = () => {
     setAlertOpen(false);
   };
 
+  // Function to update blog status
+  const handleUpdateStatus = async (postId, currentStatus) => {
+    const newStatus = !currentStatus; // Toggle the status
+    try {
+      await updateBlogStatus(postId, newStatus); // Call the updateBlogStatus function
+      // Update the local state
+      setPosts(posts.map(post =>
+        post.id === postId ? { ...post, status: newStatus ? 'approved' : 'pending' } : post
+      ));
+      setAlertSeverity('success');
+      setAlertMessage('Trạng thái bài viết đã được cập nhật thành công.');
+      setAlertOpen(true);
+    } catch (error) {
+      setAlertSeverity('error');
+      setAlertMessage(error.message || 'Có lỗi xảy ra khi cập nhật trạng thái bài viết');
+      setAlertOpen(true);
+    }
+  };
+
   // Get unique departments for filter dropdown
   const departments = [...new Set(posts.map(post => post.department))];
 
   // Filter posts based on current filters
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-                         post.author.toLowerCase().includes(filters.search.toLowerCase());
+      post.author.toLowerCase().includes(filters.search.toLowerCase());
     const matchesDepartment = filters.department === 'all' || post.department === filters.department;
     const matchesStatus = filters.status === 'all' || post.status === filters.status;
-    
+
     return matchesSearch && matchesDepartment && matchesStatus;
   });
 
-  const handleApprove = (postId) => {
-    setPosts(posts.map(post =>
-      post.id === postId ? { ...post, status: 'approved' } : post
-    ));
+  // Pagination controls
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
-  const handleReject = (postId) => {
-    setPosts(posts.map(post =>
-      post.id === postId ? { ...post, status: 'rejected' } : post
-    ));
-  };
-
-  const getStatusBadge = (status) => {
-    const statusText = {
-      pending: 'Chờ duyệt',
-      approved: 'Đã duyệt',
-      rejected: 'Từ chối'
-    };
-
-    return (
-      <span className={`blog-manager-status-badge blog-manager-status-${status}`}>
-        {statusText[status]}
-      </span>
-    );
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   return (
@@ -177,22 +191,13 @@ const BlogApprovalDashboard = () => {
                     </td>
                     <td>
                       <div className="blog-manager-button-group">
-                        <button className="blog-manager-button">
+                        <Link to={`/blog-detail-manager/${post.id}`} className="blog-manager-button">
                           <Eye size={16} />
                           Xem
+                        </Link>
+                        <button className="blog-manager-button" onClick={() => handleUpdateStatus(post.id, post.status === 'approved')}>
+                          {post.status === 'approved' ? 'Vô hiệu hóa' : 'Kích hoạt'}
                         </button>
-                        {post.status === 'pending' && (
-                          <>
-                            <button className="blog-manager-button blog-manager-button-approve">
-                              <Check size={16} />
-                              Duyệt
-                            </button>
-                            <button className="blog-manager-button blog-manager-button-reject">
-                              <X size={16} />
-                              Từ chối
-                            </button>
-                          </>
-                        )}
                       </div>
                     </td>
                   </tr>
@@ -200,6 +205,17 @@ const BlogApprovalDashboard = () => {
               </tbody>
             </table>
           )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="blog-manager-pagination">
+          <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <span>Page {currentPage} of {totalPages}</span>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+            Next
+          </button>
         </div>
       </div>
     </div>

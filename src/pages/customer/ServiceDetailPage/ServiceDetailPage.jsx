@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { getServiceDetails, getServicesByCategory } from "../../../APIcontroller/API";
 import "./ServiceDetailPage.css";
 import Header from "../../../components/Header/header";
+import Loading from '../../../components/Loading/Loading';
 
 const ServiceDetailPage = () => {
   const [service, setService] = useState(null);
@@ -48,15 +49,40 @@ const ServiceDetailPage = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <Header />
+        <div style={{ position: 'relative', minHeight: 'calc(100vh - 64px)' }}> {/* Adjust 64px based on your header height */}
+          <Loading 
+            text="Đang tải thông tin dịch vụ..." 
+            color="#4F46E5"
+            size={64}
+          />
+        </div>
+      </>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <>
+        <Header />
+        <div className="error-container">
+          <div className="error-message">{error}</div>
+        </div>
+      </>
+    );
   }
 
   if (!service) {
-    return <div>No service details found.</div>;
+    return (
+      <>
+        <Header />
+        <div className="error-container">
+          <div className="error-message">Không tìm thấy thông tin dịch vụ.</div>
+        </div>
+      </>
+    );
   }
 
   return (

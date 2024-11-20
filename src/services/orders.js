@@ -1,18 +1,19 @@
 import axios from 'axios';
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-export const getOrdersByManagerArea = async (managerId, page) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/Orders/orders/area/${managerId}?pageIndex=${page}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch orders');
-    }
-  };
+export const getOrdersByManagerArea = async (accountId, pageIndex, pageSize, date) => {
+  const response = await axios.get(`${BASE_URL}/Orders/orders/area/${accountId}`, {
+      params: {
+          Date: date,
+          pageIndex: pageIndex,
+          pageSize: pageSize,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      }
+  });
+  return response.data;
+};
   export const getOrderDetails = async (detailId, managerId) => {
     try {
       const response = await axios.get(`${BASE_URL}/Orders/order-detail/${detailId}?myAccountId=${managerId}`, {

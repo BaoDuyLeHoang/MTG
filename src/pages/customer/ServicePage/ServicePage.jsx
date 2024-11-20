@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import Header from "../../../components/Header/header";
 import ServiceCard from "../../../components/ServiceCard/ServiceCard";
 import SellServiceCard from "../../../components/SellServiceCard/SellServiceCard";
+import Loading from "../../../components/Loading/Loading";
 import "./ServicePage.css";
 import { getServices, getServicesByCategory } from "../../../APIcontroller/API";
 
 const ServicePage = () => {
   const [services, setServices] = useState([]);
   const [categoryServices, setCategoryServices] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   // Add scroll handler function
   const scrollToCategory = (categoryName) => {
@@ -20,6 +22,7 @@ const ServicePage = () => {
 
   useEffect(() => {
     const fetchServices = async () => {
+      setIsLoading(true);
       try {
         const servicesData = await getServices();
         setServices(servicesData);
@@ -36,6 +39,8 @@ const ServicePage = () => {
         console.log(categoryServicesData);
       } catch (error) {
         console.error("Failed to fetch services:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -60,9 +65,9 @@ const ServicePage = () => {
             <div
               onClick={() => scrollToCategory(service.categoryName)}
               style={{ cursor: "pointer" }}
+              key={index}
             >
               <ServiceCard
-                key={index}
                 categoryName={service.categoryName}
                 description={service.description}
                 urlImageCategory={service.urlImageCategory}
@@ -71,34 +76,42 @@ const ServicePage = () => {
           ))}
         </div>
       </div>
-      <div className="service-container">
+      <div className="service-container" style={{ position: 'relative', minHeight: '400px' }}>
         <h1>Dịch vụ đang có sẵn</h1>
-        {services.map((category, index) => (
-          <div
-            key={index}
-            className="change-planner-service"
-            id={`category-${category.categoryName}`}
-          >
-            <h2>{category.categoryName}</h2>
-            <div className="sell-service-grid">
-              {categoryServices[category.categoryId]?.map(
-                (service, serviceIndex) => (
-                  <Link
-                    key={serviceIndex}
-                    to={`/chitietdichvu/${service.serviceId}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <SellServiceCard
-                      imagePath={service.imagePath}
-                      serviceName={service.serviceName}
-                      price={service.price}
-                    />
-                  </Link>
-                )
-              )}
+        {isLoading ? (
+          <Loading 
+            text="Đang tải thông tin dịch vụ..." 
+            color="#4F46E5"
+            size={64}
+          />
+        ) : (
+          services.map((category, index) => (
+            <div
+              key={index}
+              className="change-planner-service"
+              id={`category-${category.categoryName}`}
+            >
+              <h2>{category.categoryName}</h2>
+              <div className="sell-service-grid">
+                {categoryServices[category.categoryId]?.map(
+                  (service, serviceIndex) => (
+                    <Link
+                      key={serviceIndex}
+                      to={`/chitietdichvu/${service.serviceId}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <SellServiceCard
+                        imagePath={service.imagePath}
+                        serviceName={service.serviceName}
+                        price={service.price}
+                      />
+                    </Link>
+                  )
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

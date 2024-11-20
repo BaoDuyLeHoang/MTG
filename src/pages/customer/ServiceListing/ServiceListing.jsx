@@ -78,10 +78,25 @@ const ServiceListing = () => {
 
   const themVaoGioHang = async (dichVu) => {
     try {
-      // Check if there's already a pending service
+      // Check if user is logged in
+      if (!user) {
+        setAlertMessage("Vui lòng đăng nhập để thêm dịch vụ vào giỏ hàng");
+        setAlertSeverity("warning");
+        setAlertOpen(true);
+        navigate('/login');
+        return;
+      }
+
+      // Prepare the request body with all required parameters
+      const cartData = {
+        accountId: user.accountId,
+        serviceId: dichVu.serviceId,
+        martyrId: sessionStorage.getItem("selectedMartyrId")
+      };
+
+      // Call API to add to cart with the required data
+      const response = await addToCart(cartData);
       
-
-
       // Save the serviceId to session storage
       const savedCartIds = JSON.parse(sessionStorage.getItem("savedCartIds") || "[]");
       if (!savedCartIds.includes(dichVu.serviceId)) {

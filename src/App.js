@@ -33,7 +33,12 @@ import ProfileStaff from "./pages/manager/ProfileStaff/ProfileStaff";
 import CreateGrave from "./pages/manager/CreateGrave/CreateGrave";
 import GraveDetailManager from "./pages/manager/GraveDetailManager/GraveDetailManager";
 import AttendanceManager from "./pages/manager/AttendanceManager/AttendanceManager";
+import AttendanceList from "./pages/manager/AttendanceList/AttendanceList";
+import AttendanceDetail from "./pages/manager/AttendanceDetail/AttendanceDetail";
 import CreateService from "./pages/manager/CreateService/CreateService";
+import ScheduleAttendanceManager from "./pages/manager/ScheduleAttendanceManager/ScheduleAttendanceManager";
+import BlogManager from './pages/manager/BlogManager/BlogManager';
+import BlogDetailManager from './pages/manager/BlogDetail/BlogDetailManager';
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
   import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
@@ -58,7 +63,6 @@ import OrderDetailCus from './pages/customer/OrderDetailCus/OrderDetailCus';
 import UserProfile from './pages/customer/UserProfile/UserProfile';
 import BlogView from './pages/customer/BlogView/BlogView';
 import BlogManagement from './pages/staff/BlogManagement/BlogManagement';
-import BlogManager from './pages/manager/BlogManager/BlogManager';
 import ScheduleManager from './pages/staff/ScheduleManager/ScheduleManager';
 import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
 import ServiceList from './pages/manager/ServiceList/ServiceList';
@@ -114,13 +118,16 @@ function AppContent() {
 
           {/* Manager routes */}
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
-          <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleStaff /></ProtectedRoute>} />
+          <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleAttendanceManager /></ProtectedRoute>} />
+          <Route path="/attendance-list/:slotId/:date" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AttendanceList /></ProtectedRoute>} />
+          <Route path="/attendance-detail/:attendanceId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AttendanceDetail /></ProtectedRoute>} />
           <Route path="/danhsachdonhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang/:orderId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderDetail /></ProtectedRoute>} />
-          <Route path="/profilestaff" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />
+          <Route path="/profileManager" element={<ProtectedRoute requiredRole={[ROLES.MANAGER]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/creategrave" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><CreateGrave /></ProtectedRoute>} />
           <Route path="/chitietmoquanly/:martyrId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
-          <Route path="/blog-manager" element={<BlogManager />} />
+          <Route path="/blog-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><BlogManager /></ProtectedRoute>} />
+          <Route path="/blog-detail-manager/:blogId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><BlogDetailManager /></ProtectedRoute>} />
           <Route path="/attendance-manager" element={<AttendanceManager />} />
           
           {/* Staff routes */}

@@ -60,16 +60,10 @@ const Sidebar = () => {
 
     // Manager Items (Role 2)
     {
-      to: "/profilestaff",
+      to: "/profileManager",
       icon: faUserTie,
       text: "Hồ sơ nhân viên",
       roles: [2],
-    },
-    { 
-      to: "/", 
-      icon: faChartLine, 
-      text: "Thống kê", 
-      roles: [1, 2] 
     },
     {
       to: "/schedule-manager",
@@ -96,18 +90,6 @@ const Sidebar = () => {
       roles: [2] 
     },
     {
-      to: "/danhsachphannhoikhachhang",
-      icon: faCommentDots,
-      text: "Phản hồi khách hàng",
-      roles: [2],
-    },
-    {
-      to: "/chitietdonhang",
-      icon: faClipboardList,
-      text: "Giao việc",
-      roles: [2],
-    },
-    {
       to: "/blog-manager",
       icon: faFileAlt,
       text: "Quản lý bài viết",
@@ -116,7 +98,7 @@ const Sidebar = () => {
     {
       to: "/attendance-manager",
       icon: faUserClock,
-      text: "Quản lý chấm công",
+      text: "Quản lý công việc",
       roles: [2],
     },
     {

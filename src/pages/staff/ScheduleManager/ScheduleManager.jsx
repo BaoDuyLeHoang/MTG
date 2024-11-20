@@ -39,6 +39,7 @@ import { getScheduleDetailForStaff } from '../../../services/scheduleDetail';
 import { useNavigate } from 'react-router-dom';
 import { getSchedulesForStaffFilterDate } from '../../../services/scheduleDetail';
 import { getByScheduleDetailId } from '../../../services/scheduleDetail';
+import { deleteScheduleDetail } from '../../../services/scheduleDetail';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -232,44 +233,55 @@ const ScheduleManager = () => {
   const handleConfirmSelect = async () => {
     try {
       const task = confirmDialog.task;
-      const key = `${selectedDate.toISOString()}-${selectedTimeSlot.slotName}`;
+      const key = `${selectedDate.toISOString().split('T')[0]}-${selectedTimeSlot.slotId}`;
 
-      console.log('Selected Time Slot:', selectedTimeSlot);
-
-      // Create schedule detail array directly
+      // Create schedule detail array
       const scheduleDetails = [{
         taskId: task.taskId,
         slotId: selectedTimeSlot.slotId,
-        date: selectedDate.toISOString(),
+        date: selectedDate.toISOString().split('T')[0],
         description: `${task.serviceName} - ${task.graveLocation}`
       }];
 
-      console.log('Schedule Details:', scheduleDetails);
+      // Call the API
+      const response = await createScheduleDetailForStaff(user.accountId, scheduleDetails);
 
-      // Call the API with the array directly
-      await createScheduleDetailForStaff(user.accountId, scheduleDetails);
+      // Fetch updated schedule data for the week
+      const weekDates = getWeekDates(weekOffset);
+      const FromDate = weekDates[0].toISOString().split('T')[0];
+      const ToDate = weekDates[6].toISOString().split('T')[0];
 
-      // Update local state after successful API call
-      setSchedule((prev) => ({
-        ...prev,
-        [key]: [
-          ...(prev[key] || []),
-          {
-            task: `${task.serviceName} - ${task.graveLocation}`,
-            id: Date.now(),
-            taskId: task.taskId,
-            dueDate: new Date(task.endDate).toLocaleDateString('vi-VN'),
-            timeSlot: selectedTimeSlot.slotName,
-            assignedDate: selectedDate.toISOString(),
-          },
-        ],
-      }));
+      const updatedSchedule = await getSchedulesForStaffFilterDate(
+        user.accountId,
+        FromDate,
+        ToDate
+      );
+
+      // Process and update the schedule state
+      const details = {};
+      if (updatedSchedule && Array.isArray(updatedSchedule)) {
+        updatedSchedule.forEach(detail => {
+          const key = `${detail.date}-${detail.slotId}`;
+          if (!details[key]) {
+            details[key] = [];
+          }
+          details[key].push({
+            id: detail.scheduleDetailId,
+            serviceName: detail.serviceName,
+            martyrCode: detail.martyrCode,
+            timeRange: `${detail.startTime.substring(0, 5)} - ${detail.endTime.substring(0, 5)}`,
+            date: detail.date,
+            slotId: detail.slotId
+          });
+        });
+      }
+      setSchedule(details);
 
       // Show success message
       setAlert({
         open: true,
         severity: 'success',
-        message: 'Tạo lịch thành công!'
+        message: response.message || 'Tạo lịch thành công!'
       });
 
       // Close dialogs
@@ -281,16 +293,40 @@ const ScheduleManager = () => {
       setAlert({
         open: true,
         severity: 'error',
-        message: 'Không thể thêm công việc. Vui lòng thử lại sau.'
+        message: error.response?.data?.message || 'Không thể thêm công việc. Vui lòng thử lại sau.'
       });
     }
   };
 
-  const handleRemoveTask = (key, taskId) => {
-    setSchedule((prev) => ({
-      ...prev,
-      [key]: prev[key].filter((task) => task.id !== taskId),
-    }));
+  const handleRemoveTask = async (key, scheduleDetailId) => {
+    try {
+      // Call the API to delete the schedule detail
+      const response = await deleteScheduleDetail(scheduleDetailId, user.accountId);
+      console.log('Delete response:', response); // Log the response
+
+      // Update local state after successful deletion
+      setSchedule((prev) => ({
+        ...prev,
+        [key]: prev[key].filter((task) => task.id !== scheduleDetailId),
+      }));
+
+      // Show success message from API response
+      setAlert({
+        open: true,
+        severity: 'success',
+        message: response.message || 'Đã xóa công việc thành công!' // Use API message if available
+      });
+
+    } catch (error) {
+      console.error('Error deleting schedule detail:', error);
+      // Show error message from API response if available
+      const errorMessage = error.response?.data?.messaege || 'Không thể xóa công việc. Vui lòng thử lại sau.';
+      setAlert({
+        open: true,
+        severity: 'error',
+        message: errorMessage
+      });
+    }
   };
 
   // Calculate summary data
@@ -475,8 +511,13 @@ const ScheduleManager = () => {
                                     <div
                                       key={assignment.id}
                                       className="mgmt-task-list__item"
-                                      onClick={() => handleTaskClick(assignment.id)}
+                                      onClick={(e) => {
+                                        if (!e.defaultPrevented) {
+                                          handleTaskClick(assignment.id);
+                                        }
+                                      }}
                                       sx={{
+                                        position: 'relative',
                                         backgroundColor: '#f8f9fa',
                                         borderRadius: '8px',
                                         p: 1,
@@ -524,7 +565,8 @@ const ScheduleManager = () => {
                                           top: 8,
                                           '&:hover': {
                                             color: 'error.main',
-                                          }
+                                          },
+                                          zIndex: 2
                                         }}
                                       >
                                         <CloseIcon fontSize="small" />

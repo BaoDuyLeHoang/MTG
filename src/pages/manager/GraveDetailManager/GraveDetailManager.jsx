@@ -355,124 +355,39 @@ const MyGraveDetail = () => {
                 <label>Số:</label>
                 <span>{graveLocation.number}</span>
               </div>
-
-        <div className="grave-detail-manager-location-section">
-          <h2>Vị trí mộ</h2>
-          <div className="grave-detail-manager-location-grid">
-            <div className="grave-detail-manager-location-item">
-              <label>Khu vực:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={martyrDetails.areaId}
-                  onChange={(e) => handleLocationChange("area", e.target.value)}
-                />
-              ) : (
-                <span>{martyrDetails.areaId}</span>
-              )}
-            </div>
-            <div className="grave-detail-manager-location-item">
-              <label>Hàng:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={martyrDetails.rowNumber}
-                  onChange={(e) => handleLocationChange("row", e.target.value)}
-                />
-              ) : (
-                <span>{martyrDetails.rowNumber}</span>
-              )}
-            </div>
-            <div className="grave-detail-manager-location-item">
-              <label>Số:</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={martyrDetails.martyrNumber}
-                  onChange={(e) =>
-                    handleLocationChange("number", e.target.value)
-                  }
-                />
-              ) : (
-                <span>{martyrDetails.martyrNumber}</span>
-              )}
-
             </div>
           </div>
 
         )}
 
-        {/* Render Services if the Services tab is active */}
-        {activeTab === 'services' && (
-          <div className="grave-detail-manager-services-section">
-            <div className="grave-detail-manager-create-service">
-              <h2>Thêm dịch vụ mới</h2>
-              <select onChange={(e) => setSelectedServiceId(Number(e.target.value))}>
-                <option value="">Chọn dịch vụ</option>
-                {availableServices.map(service => (
-                  <option key={service.serviceId} value={service.serviceId}>
-                    {service.serviceName}
-                  </option>
-                ))}
-              </select>
-              <button onClick={handleCreateService}>Thêm dịch vụ</button>
-            </div>
-            {renderServices()} {/* Render services here */}
+            {/* Render Services if the Services tab is active */}
+            {activeTab === 'services' && (
+              <div className="grave-detail-manager-services-section">
+                <div className="grave-detail-manager-create-service">
+                  <h2>Thêm dịch vụ mới</h2>
+                  <select onChange={(e) => setSelectedServiceId(Number(e.target.value))}>
+                    <option value="">Chọn dịch vụ</option>
+                    {availableServices.map(service => (
+                      <option key={service.serviceId} value={service.serviceId}>
+                        {service.serviceName}
+                      </option>
+                    ))}
+                  </select>
+                  <button onClick={handleCreateService}>Thêm dịch vụ</button>
+                </div>
+                {renderServices()} {/* Render services here */}
+              </div>
 
-        </div>
-        <div className="grave-detail-manager-personal-section">
-          <h2>Thông tin thân nhân</h2>
-          <div className="grave-detail-manager-personal-list">
-            {(isEditing ? editedPersonalInfo : fakePersonalInfo).map(
-              (person) => (
-                <div
-                  key={person.id}
-                  className="grave-detail-manager-personal-item"
-                >
-                  {isEditing ? (
-                    <>
-                      <input
-                        type="text"
-                        value={person.name}
-                        onChange={(e) =>
-                          handlePersonalInfoChange(
-                            person.id,
-                            "name",
-                            e.target.value
-                          )
-                        }
-                        placeholder="Tên thân nhân"
-                        className="grave-detail-manager-personal-input"
-                      />
-                      <div className="grave-detail-manager-personal-contact">
-                        <input
-                          type="text"
-                          value={person.phone}
-                          onChange={(e) =>
-                            handlePersonalInfoChange(
-                              person.id,
-                              "phone",
-                              e.target.value
-                            )
-                          }
-                          placeholder="Số điện thoại"
-                        />
-                        <input
-                          type="email"
-                          value={person.email}
-                          onChange={(e) =>
-                            handlePersonalInfoChange(
-                              person.id,
-                              "email",
-                              e.target.value
-                            )
-                          }
-                          placeholder="Email"
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <>
+
+            )}
+
+
+            {activeTab === 'details' && (
+              <div className="grave-detail-manager-personal-section">
+                <h2>Thông tin thân nhân</h2>
+                <div className="grave-detail-manager-personal-list">
+                  {(isEditing ? editedPersonalInfo : fakePersonalInfo).map((person) => (
+                    <div key={person.id} className="grave-detail-manager-personal-item">
                       <div className="grave-detail-manager-personal-name">
                         {person.name}
                       </div>
@@ -480,54 +395,31 @@ const MyGraveDetail = () => {
                         <span>SĐT: {person.phone}</span>
                         <span>Email: {person.email}</span>
                       </div>
-                    </>
-                  )}
+                    </div>
+                  ))}
                 </div>
-              )
+              </div>
             )}
 
-          </div>
-        )}
-
-
-        {activeTab === 'details' && (
-          <div className="grave-detail-manager-personal-section">
-            <h2>Thông tin thân nhân</h2>
-            <div className="grave-detail-manager-personal-list">
-              {(isEditing ? editedPersonalInfo : fakePersonalInfo).map((person) => (
-                <div key={person.id} className="grave-detail-manager-personal-item">
-                  <div className="grave-detail-manager-personal-name">
-                    {person.name}
-                  </div>
-                  <div className="grave-detail-manager-personal-contact">
-                    <span>SĐT: {person.phone}</span>
-                    <span>Email: {person.email}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {selectedImage && (
-          <div
-            className="grave-detail-manager-modal-overlay"
-            onClick={closeModal}
-          >
-            <div className="grave-detail-manager-modal-content">
-              <img src={selectedImage} alt="Memorial - Large view" />
-              <button
-                className="grave-detail-manager-modal-close"
+            {selectedImage && (
+              <div
+                className="grave-detail-manager-modal-overlay"
                 onClick={closeModal}
               >
-                ×
-              </button>
-            </div>
+                <div className="grave-detail-manager-modal-content">
+                  <img src={selectedImage} alt="Memorial - Large view" />
+                  <button
+                    className="grave-detail-manager-modal-close"
+                    onClick={closeModal}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
     </div>
-  );
+      );
 };
 
-export default MyGraveDetail;
+      export default MyGraveDetail;

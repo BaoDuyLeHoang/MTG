@@ -10,6 +10,7 @@ import { MapPin } from 'lucide-react';
 import { getTrendingServices, getMartyrsByArea } from "../../../APIcontroller/API";
 import { formatCurrency } from '../../../components/Format/formatCurrency';
 import { Link, useNavigate } from 'react-router-dom';
+import Loading from '../../../components/Loading/Loading';
 
 const HomePage = () => {
   const images = [image1, image2, image3];
@@ -30,16 +31,20 @@ const HomePage = () => {
   ];
 
   const [trendingServices, setTrendingServices] = useState([]);
+  const [isLoadingTrending, setIsLoadingTrending] = useState(true);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrendingServices = async () => {
+      setIsLoadingTrending(true);
       try {
         const data = await getTrendingServices(5);
         setTrendingServices(data);
       } catch (error) {
         console.error('Error fetching trending services:', error);
+      } finally {
+        setIsLoadingTrending(false);
       }
     };
 
@@ -260,38 +265,48 @@ const HomePage = () => {
           <h1 className="section-title">
             <span>Dịch vụ xu hướng</span>
           </h1>
-          <div className="trending-container">
-            <button 
-              className="slide-nav-button prev-button" 
-              onClick={() => scrollTrendingServices('left')}
-            >
-              ←
-            </button>
-            <button 
-              className="slide-nav-button next-button" 
-              onClick={() => scrollTrendingServices('right')}
-            >
-              →
-            </button>
-            <div className="trending-grid">
-              {trendingServices.map((service) => (
-                <Link 
-                  to={`/chitietdichvu/${service.serviceId}`} 
-                  className="trending-service-card" 
-                  key={service.serviceId}
+          <div className="trending-container" style={{ position: 'relative', minHeight: '300px' }}>
+            {isLoadingTrending ? (
+              <Loading 
+                text="Đang tải dịch vụ xu hướng..." 
+                color="#4F46E5"
+                size={56}
+              />
+            ) : (
+              <>
+                <button 
+                  className="slide-nav-button prev-button" 
+                  onClick={() => scrollTrendingServices('left')}
                 >
-                  <div className="service-image">
-                    <img src={service.imagePath} alt={service.serviceName} />
-                  </div>
-                  <div className="service-content">
-                    <h3 className="service-title">{service.serviceName}</h3>
-                    <div className="service-price">
-                      {formatCurrency(service.price)}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                  ←
+                </button>
+                <button 
+                  className="slide-nav-button next-button" 
+                  onClick={() => scrollTrendingServices('right')}
+                >
+                  →
+                </button>
+                <div className="trending-grid">
+                  {trendingServices.map((service) => (
+                    <Link 
+                      to={`/chitietdichvu/${service.serviceId}`} 
+                      className="trending-service-card" 
+                      key={service.serviceId}
+                    >
+                      <div className="service-image">
+                        <img src={service.imagePath} alt={service.serviceName} />
+                      </div>
+                      <div className="service-content">
+                        <h3 className="service-title">{service.serviceName}</h3>
+                        <div className="service-price">
+                          {formatCurrency(service.price)}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>

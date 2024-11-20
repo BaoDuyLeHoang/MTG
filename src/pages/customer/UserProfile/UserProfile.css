@@ -1,20 +1,22 @@
 .profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2.5rem;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .profile-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .profile-header h1 {
-  color: #333;
-  margin-bottom: 1.5rem;
+  color: #1a1a1a;
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
 }
 
 .avatar-section {
@@ -23,9 +25,12 @@
 
 .avatar-container {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   margin: 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ffffff, #f3f3f3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .avatar-image {
@@ -33,22 +38,25 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #e0e0e0;
+  border: 4px solid #ffffff;
+  transition: transform 0.3s ease;
 }
 
 .avatar-upload {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: #007bff;
+  bottom: 5px;
+  right: 5px;
+  background: #4F46E5;
   border-radius: 50%;
-  padding: 8px;
+  padding: 10px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
 }
 
 .avatar-upload:hover {
-  background-color: #0056b3;
+  background: #4338CA;
+  transform: scale(1.1);
 }
 
 .avatar-upload-input {
@@ -57,9 +65,10 @@
 
 .tabs {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #e0e0e0;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
 }
 
 .tab-button {
@@ -68,22 +77,25 @@
   background: none;
   color: #666;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .tab-button.active {
-  color: #007bff;
+  color: #4F46E5;
 }
 
 .tab-button.active::after {
   content: '';
   position: absolute;
-  bottom: -1px;
+  bottom: -0.5rem;
   left: 0;
   width: 100%;
-  height: 2px;
-  background-color: #007bff;
+  height: 3px;
+  background-color: #4F46E5;
+  border-radius: 3px;
 }
 
 .tab-content {
@@ -96,43 +108,103 @@
 
 .form-group {
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #333;
   font-weight: 500;
+  color: #374151;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
   font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
+/* Style cho input khi có lỗi */
+.form-group input.error {
+  border-color: #d1d5db;
+  background-color: white;
+}
+
+.form-group input.error:focus {
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Style cho error message */
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-message::before {
+  content: "⚠️";
+  font-size: 0.875rem;
+}
+
+/* Animation cho error message */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-message {
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Focus styles */
 .form-group input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Placeholder styles */
+.form-group input::placeholder {
+  color: #9ca3af;
 }
 
 .submit-button {
   width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
+  padding: 1rem;
+  background: linear-gradient(145deg, #4F46E5, #4338CA);
   color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+}
+
+.submit-button:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .alert {
@@ -152,4 +224,109 @@
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
+}
+
+/* Thêm styles cho toast */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1000;
+}
+
+.toast {
+  min-width: 320px;
+  margin-bottom: 12px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.4s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+}
+
+.toast.success {
+  background: rgba(16, 185, 129, 0.95);
+  color: white;
+}
+
+.toast.error {
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  padding: 4px;
+  margin-left: 16px;
+}
+
+.toast-close:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 64px);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .profile-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .profile-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .tabs {
+    gap: 1rem;
+  }
+
+  .tab-button {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .toast {
+    min-width: calc(100vw - 48px);
+    margin: 0 24px;
+  }
 }

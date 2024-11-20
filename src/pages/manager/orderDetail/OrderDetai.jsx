@@ -81,7 +81,7 @@ const OrderDetail = () => {
   const handleBanGiao = async () => {
     try {
       console.log("Starting task assignment process...");
-      
+
       // Validate staff selection
       if (!selectedStaff[orderDetail.detailId]) {
         throw new Error("Please select a staff member");
@@ -95,19 +95,19 @@ const OrderDetail = () => {
       }];
 
       console.log("Sending task data:", taskData);
-      
+
       const result = await createTask(taskData);
       console.log("Task creation result:", result);
-      
+
       setAlertSeverity("success");
       setAlertMessage("Task assigned successfully!");
       setAlertOpen(true);
-      
+
       // Optional: Add a slight delay before reloading
       setTimeout(() => {
         window.location.reload();
       }, 2000);
-      
+
     } catch (error) {
       console.error("Failed to assign task:", error);
       setAlertSeverity("error");
@@ -122,7 +122,7 @@ const OrderDetail = () => {
 
   return (
     <div className="order-detail-container">
-      <AlertMessage 
+      <AlertMessage
         open={alertOpen}
         handleClose={handleAlertClose}
         severity={alertSeverity}
@@ -165,12 +165,12 @@ const OrderDetail = () => {
                 <td>
                   {orderDetail?.expectedCompletionDate
                     ? new Date(
-                        orderDetail.expectedCompletionDate
-                      ).toLocaleString("vi-VN", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })
+                      orderDetail.expectedCompletionDate
+                    ).toLocaleString("vi-VN", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })
                     : "Không có ngày"}
                 </td>
                 <td>
@@ -179,7 +179,15 @@ const OrderDetail = () => {
                   </span>
                 </td>
                 <td>
+
+                  {orderDetail?.statusTask === 1 || orderDetail?.statusTask === 3 || orderDetail?.statusTask === 4 || orderDetail?.statusTask === 5 ? (
+                    // When statusTask is 1, display staff name
+                    <span>{orderDetail?.staffs[0]?.staffFullName || 'Chưa có nhân viên'}</span>
+                  ) : (
+                    // For other status, show staff selection dropdown
+
                   {orderDetail?.statusTask === 0 ? (
+
                     <select
                       name="staffName"
                       onChange={(e) =>
@@ -197,18 +205,26 @@ const OrderDetail = () => {
                         </option>
                       ))}
                     </select>
+
                   ) : (
                     <span>{orderDetail?.staffs[0].staffFullName || "Chưa có nhân viên"}</span>
+
                   )}
                 </td>
               </tr>
             </tbody>
           </table>
-          <div className="action">
-            <button className="deliver-button" onClick={handleBanGiao}>
-              Bàn giao
-            </button>
-          </div>
+          {orderDetail?.statusTask === 1 || orderDetail?.statusTask === 3 || orderDetail?.statusTask === 4 || orderDetail?.statusTask === 5 ? (
+            // When statusTask is 1, don't show anything
+            null
+          ) : (
+            // For other status, show the Bàn giao button
+            <div className="action-buttons">
+              <button className="deliver-button" onClick={handleBanGiao}>
+                Bàn giao
+              </button>
+            </div>
+          )}
         </div>
         <div className="order-summary">
           <div className="order-summary-detail">
@@ -224,15 +240,15 @@ const OrderDetail = () => {
                     Đơn hàng đã được tạo (
                     {orderDetail?.orderDate
                       ? new Date(orderDetail.orderDate).toLocaleString(
-                          "vi-VN",
-                          {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                          }
-                        )
+                        "vi-VN",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        }
+                      )
                       : "Không có ngày"}
                     )
                   </p>

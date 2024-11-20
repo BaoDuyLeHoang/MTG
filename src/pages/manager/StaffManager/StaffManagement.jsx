@@ -3,7 +3,9 @@ import Sidebar from '../../../components/Sidebar/sideBar';
 import { useAuth } from "../../../context/AuthContext";
 import './StaffManagement.css';
 import { getAllStaff, updateAccountStatus } from '../../../APIcontroller/API';
-import { ToggleLeft, ToggleRight, FileText } from 'lucide-react';
+import { createStaff } from '../../../services/staff';
+import { ToggleLeft, ToggleRight, FileText, UserPlus } from 'lucide-react';
+import axios from 'axios';
 
 const StaffManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -13,6 +15,18 @@ const StaffManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
     const [selectedArea, setSelectedArea] = useState('all');
+    const [showModal, setShowModal] = useState(false);
+    const [newStaff, setNewStaff] = useState({
+        phoneNumber: '',
+        password: '',
+        confirmPassword: '',
+        fullName: '',
+        emailAddress: '',
+        address: '',
+        dateOfBirth: '',
+        roleId: 3, // Default role for staff
+        areaId: user.areaId
+    });
 
     useEffect(() => {
         fetchStaffData();
@@ -56,12 +70,96 @@ const StaffManagement = () => {
         console.log(`Creating report for staff ID: ${staffId}`);
     };
 
+    // Add this new function
+    const handleCreateStaff = async (e) => {
+        e.preventDefault();
+        try {
+            await createStaff(newStaff, user.accountId);
+            setShowModal(false);
+            fetchStaffData(); // Refresh the list
+            setNewStaff({ // Reset form
+                phoneNumber: '',
+                password: '',
+                confirmPassword: '',
+                fullName: '',
+                emailAddress: '',
+                address: '',
+                dateOfBirth: '',
+                roleId: 3,
+                areaId: user.areaId
+            });
+        } catch (error) {
+            console.error('Error creating staff:', error);
+            alert('Failed to create staff member. Please check your input and try again.');
+        }
+    };
+
     return (
         <div className="staff-management-container">
             <Sidebar />
             <div className="staff-management-content">
-                <h1>Quản Lý Nhân Viên</h1>
-                
+                <div className="header-container">
+                    <h1>Quản Lý Nhân Viên</h1>
+                    <button className="create-staff-btn" onClick={() => setShowModal(true)}>
+                        <UserPlus size={20} />
+                        Thêm Nhân Viên
+                    </button>
+                </div>
+                {/* Add this modal component */}
+                {showModal && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h2>Thêm Nhân Viên Mới</h2>
+                            <form onSubmit={handleCreateStaff}>
+                                <input
+                                    type="text"
+                                    placeholder="Số điện thoại"
+                                    value={newStaff.phoneNumber}
+                                    onChange={(e) => setNewStaff({ ...newStaff, phoneNumber: e.target.value })}
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="Mật khẩu"
+                                    value={newStaff.password}
+                                    onChange={(e) => setNewStaff({ ...newStaff, password: e.target.value })}
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="Xác nhận mật khẩu"
+                                    value={newStaff.confirmPassword}
+                                    onChange={(e) => setNewStaff({ ...newStaff, confirmPassword: e.target.value })}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Họ và tên"
+                                    value={newStaff.fullName}
+                                    onChange={(e) => setNewStaff({ ...newStaff, fullName: e.target.value })}
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    value={newStaff.emailAddress}
+                                    onChange={(e) => setNewStaff({ ...newStaff, emailAddress: e.target.value })}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Địa chỉ"
+                                    value={newStaff.address}
+                                    onChange={(e) => setNewStaff({ ...newStaff, address: e.target.value })}
+                                />
+                                <input
+                                    type="date"
+                                    value={newStaff.dateOfBirth}
+                                    onChange={(e) => setNewStaff({ ...newStaff, dateOfBirth: e.target.value })}
+                                />
+                                <div className="modal-buttons">
+                                    <button type="submit" onClick={handleCreateStaff}>Tạo</button>
+                                    <button type="button" onClick={() => setShowModal(false)}>Hủy</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
                 {loading ? (
                     <div className="centered">
                         <div className="loading-spinner"></div>
@@ -93,13 +191,13 @@ const StaffManagement = () => {
                                         })}</td>
                                         <td>
                                             <span className={`status ${staff.status ? 'status-green' : 'status-red'}`}>
-                                                {staff.status ? 'Hoạt động' : 'Không hoạt động'}
+                                                {staff.status ? 'Active' : 'Inactive'}
                                             </span>
                                         </td>
                                         <td>{staff.areaId}</td>
-                                        <td>{staff.email}</td>
+                                        <td>{staff.emailAddress}</td>
                                         <td>
-                                            <button 
+                                            <button
                                                 className="icon-button"
                                                 onClick={() => handleAction(staff.accountId, staff.status)}
                                                 title={staff.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
@@ -110,7 +208,7 @@ const StaffManagement = () => {
                                                     <ToggleLeft className="toggle-inactive" size={28} />
                                                 )}
                                             </button>
-                                            <button 
+                                            <button
                                                 className="clipboard-pen"
                                                 onClick={() => handleCreateReport(staff.accountId)}
                                                 title="Tạo báo cáo"

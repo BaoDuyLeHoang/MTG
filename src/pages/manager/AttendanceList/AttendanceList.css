@@ -1,0 +1,103 @@
+.layout-container-attendanceList {
+    display: flex;
+    background-color: #eaeff3; /* Subtle background for the entire layout */
+}
+
+.main-content-attendance-list {
+    flex: 1;
+    padding: 30px;
+    background-color: #ffffff; /* White background for the main content */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for better elevation */
+    margin: 20px;
+    min-height: calc(100vh - 40px); /* Account for padding */
+}
+
+.attendance-title-attendanceList {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333; /* Darker text for contrast */
+    text-align: center; /* Center-align title */
+    border-bottom: 2px solid #007bff; /* Underline for visual focus */
+    padding-bottom: 10px;
+}
+
+.date-time-container-attendanceList {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Align items vertically */
+    padding: 10px;
+    background-color: #f8f9fa; /* Light gray container */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-bottom: 20px;
+}
+
+.date-time-text-attendanceList {
+    font-weight: bold;
+    color: #555; /* Softer text color */
+}
+
+.table-container-attendanceList {
+    margin-top: 20px;
+    border-radius: 10px; /* Rounded corners for the table */
+    overflow: hidden; /* Keep table content neat */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Elevation for table container */
+}
+
+table {
+    width: 100%; /* Full width table */
+    border-collapse: collapse; /* Neater table look */
+    background-color: #fff; /* White background */
+}
+
+thead {
+    background-color: #007bff; /* Blue header for table */
+    color: #fff; /* White text in header */
+}
+
+th, td {
+    padding: 12px 15px; /* Comfortable cell padding */
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Subtle border for rows */
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}
+
+.buttons-container-attendanceList {
+    display: flex;
+    justify-content: flex-start; /* Align buttons to the left */
+    gap: 20px; /* Comfortable space between buttons */
+    margin-top: 30px;
+}
+
+.save-button-attendanceList, .back-button-attendanceList {
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.save-button-attendanceList {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-button-attendanceList:hover {
+    background-color: #218838;
+    transform: translateY(-2px); /* Lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-button-attendanceList {
+    background-color: #007bff;
+    color: white;
+}
+
+.back-button-attendanceList:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

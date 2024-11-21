@@ -179,36 +179,32 @@ const OrderDetail = () => {
                   </span>
                 </td>
                 <td>
-
                   {orderDetail?.statusTask === 1 || orderDetail?.statusTask === 3 || orderDetail?.statusTask === 4 || orderDetail?.statusTask === 5 ? (
                     // When statusTask is 1, display staff name
                     <span>{orderDetail?.staffs[0]?.staffFullName || 'Chưa có nhân viên'}</span>
                   ) : (
                     // For other status, show staff selection dropdown
-
-                  {orderDetail?.statusTask === 0 ? (
-
-                    <select
-                      name="staffName"
-                      onChange={(e) =>
-                        handleStaffSelection(
-                          orderDetail?.detailId,
-                          e.target.value
-                        )
-                      }
-                      value={selectedStaff[orderDetail?.detailId] || ""}
-                    >
-                      <option value="">Chọn nhân viên</option>
-                      {orderDetail?.staffs.map((staff) => (
-                        <option key={staff.accountId} value={staff.accountId}>
-                          {staff.staffFullName}
-                        </option>
-                      ))}
-                    </select>
-
-                  ) : (
-                    <span>{orderDetail?.staffs[0].staffFullName || "Chưa có nhân viên"}</span>
-
+                    orderDetail?.statusTask === 0 || orderDetail?.statusTask === 2 ? (
+                      <select
+                        name="staffName"
+                        onChange={(e) =>
+                          handleStaffSelection(
+                            orderDetail?.detailId,
+                            e.target.value
+                          )
+                        }
+                        value={selectedStaff[orderDetail?.detailId] || ""}
+                      >
+                        <option value="">Chọn nhân viên</option>
+                        {orderDetail?.staffs.map((staff) => (
+                          <option key={staff.accountId} value={staff.accountId}>
+                            {staff.staffFullName}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span>{orderDetail?.staffs[0].staffFullName || "Chưa có nhân viên"}</span>
+                    )
                   )}
                 </td>
               </tr>

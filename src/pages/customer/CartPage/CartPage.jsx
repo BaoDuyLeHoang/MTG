@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Header from '../../../components/Header/header';
 import './CartPage.css';
 import deleteIcon from '../../../assets/images/delete.png';
-import { getCartItemsByCustomerId, updateItemStatus, deleteCartItem } from "../../../APIcontroller/API";
+import { getCartItemsByCustomerId, updateItemStatus, deleteCartItem, getServiceById } from "../../../APIcontroller/API";
 import { useAuth } from "../../../context/AuthContext";
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 
@@ -42,27 +42,26 @@ const CartPage = () => {
             console.log('Unexpected response format');
           }
         } else {
-          const savedCartIds = JSON.parse(sessionStorage.getItem('savedCartIds') || '[]');
-          const selectedMartyrId = sessionStorage.getItem('selectedMartyrId');
+          const savedCartItems = JSON.parse(sessionStorage.getItem('savedCartItems') || '[]');
+          console.log('Loaded from session:', savedCartItems);
           
-          if (savedCartIds.length > 0 && selectedMartyrId) {
-            const mockCartItems = savedCartIds.map((serviceId, index) => ({
+          if (savedCartItems.length > 0) {
+            const mockItems = savedCartItems.map((item, index) => ({
               cartId: `temp-${index}`,
               selected: false,
-              martyrId: selectedMartyrId,
-              martyrCode: selectedMartyrId,
+              martyrId: item.martyrId,
+              martyrCode: item.martyrId,
               serviceView: {
-                serviceId: serviceId,
-                serviceName: "Loading...",
-                description: "Loading...",
-                price: 0,
-                imagePath: ""
+                serviceId: item.serviceId,
+                serviceName: `Dịch vụ ${item.serviceId}`,
+                description: "Mô tả sẽ được cập nhật sau",
+                price: 100000,
+                imagePath: "https://via.placeholder.com/150"
               }
             }));
             
-            setCartItems(mockCartItems);
-          } else {
-            setCartItems([]);
+            console.log('Created mock items:', mockItems);
+            setCartItems(mockItems);
           }
         }
       } catch (error) {
@@ -73,10 +72,8 @@ const CartPage = () => {
       }
     };
 
-    if (!isAuthLoading && (user?.accountId || sessionStorage.getItem('savedCartIds'))) {
+    if (!isAuthLoading) {
       fetchCartItems();
-    } else {
-      setLoading(false);
     }
   }, [user, isAuthLoading]);
 
@@ -85,9 +82,9 @@ const CartPage = () => {
       if (user?.accountId) {
         await deleteCartItem(cartId);
       } else {
-        const savedCartIds = JSON.parse(sessionStorage.getItem('savedCartIds') || '[]');
-        const updatedCartIds = savedCartIds.filter((_, index) => `temp-${index}` !== cartId);
-        sessionStorage.setItem('savedCartIds', JSON.stringify(updatedCartIds));
+        const savedCartItems = JSON.parse(sessionStorage.getItem('savedCartItems') || '[]');
+        const updatedCartItems = savedCartItems.filter((_, index) => `temp-${index}` !== cartId);
+        sessionStorage.setItem('savedCartItems', JSON.stringify(updatedCartItems));
       }
       
       setCartItems(cartItems.filter(item => item.cartId !== cartId));
@@ -141,12 +138,27 @@ const CartPage = () => {
 
   const handlePayment = () => {
     const selectedItems = cartItems.filter(item => item.selected);
+    
+    // Check if there are selected items
     if (selectedItems.length === 0) {
       setAlertMessage("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
       setAlertSeverity("warning");
       setAlertOpen(true);
       return;
     }
+
+    // Check if user is logged in
+    if (!user?.accountId) {
+      setAlertMessage("Bạn chưa đăng nhập. Vui lòng đăng nhập để tiếp tục thanh toán.");
+      setAlertSeverity("warning");
+      setAlertOpen(true);
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000); // Navigate after 2 seconds so user can see the message
+      return;
+    }
+
+    // If user is logged in, proceed with normal checkout
     navigate('/checkout', { state: { accountId: user.accountId } });
   };
 
@@ -184,11 +196,11 @@ const CartPage = () => {
           </div>
         ) : error ? (
           <div>{error}</div>
-        ) : cartItems.length === 0 ? (
+        ) : (cartItems.length === 0) ? (
           <div className="cart-page-empty-message">
             <h1>Giỏ hàng của bạn đang trống</h1>
             <button onClick={navigateToServices} className="cart-page-services-btn">
-             Đến trang tìm kiếm mộ
+              Đến trang tìm kiếm mộ
             </button>
           </div>
         ) : (

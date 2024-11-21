@@ -499,23 +499,21 @@
 }
 
 .modal-content {
-  background: white;
-  padding: 0.8rem;
-  border-radius: 8px;
-  max-width: 200px;
-  width: 50%;
-  max-height: 30vh;
+  background: #f8fafc;  /* Màu nền nhẹ nhàng */
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 900px;
+  width: 35%;
+  max-height: 85vh;
   overflow-y: auto;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .modal-content h2 {
   color: #1a365d;
-  font-size: 1.1rem;
-  margin-bottom: 0.8rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid #4a90e2;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid #4a90e2;
   text-align: center;
   font-weight: 600;
 }
@@ -553,15 +551,21 @@
 }
 
 .martyr-card {
-  padding: 0.6rem;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
   transition: all 0.3s ease;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
-  cursor: pointer;
+}
+
+.martyr-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .martyr-card::before {
@@ -612,50 +616,97 @@
 }
 
 .martyr-card h3 {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   color: #1a365d;
-  margin-bottom: 0.4rem;
+  margin-bottom: 1rem;
   font-weight: 600;
-  padding-left: 0.4rem;
+  padding-left: 0;
+  border-bottom: 1px dashed #e5e7eb;
+  padding-bottom: 0.5rem;
 }
 
 .martyr-info-grid {
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.4rem;
-  padding-left: 0.4rem;
+  gap: 1.2rem;
+  background: transparent;
+  padding: 0;
 }
 
 .info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
+  background: #f8fafc;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #4a90e2;
+  opacity: 0.5;
 }
 
 .info-label {
-  font-size: 0.65rem;
-  color: #6b7280;
-  font-weight: 500;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
 }
 
 .info-value {
-  font-size: 0.8rem;
-  color: #1f2937;
+  font-size: 1.1rem;
+  color: #1e293b;
   font-weight: 500;
 }
 
-/* Medal styling */
+/* Style đặc biệt cho phần tên */
+.name-item {
+  grid-column: 1 / -1;
+  background: #1a365d;
+  color: white;
+  padding: 1.2rem;
+  border: none;
+}
+
+.name-item .info-label {
+  color: #94a3b8;
+}
+
+.name-item .info-value {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.name-item::before {
+  background: #60a5fa;
+}
+
+/* Style cho huân chương */
 .medal-info {
   grid-column: 1 / -1;
-  margin-top: 0.3rem;
-  padding: 0.4rem;
-  background: #f8fafc;
-  border-radius: 4px;
-  border: 1px dashed #cbd5e1;
+  background: #fffbeb;
+  border: 2px dashed #f59e0b;
+  padding: 1.2rem;
 }
 
 .medal-info .info-label {
-  color: #4a90e2;
+  color: #d97706;
+}
+
+.medal-info .info-value {
+  color: #92400e;
+  font-weight: 600;
 }
 
 /* Pagination styling */
@@ -729,30 +780,42 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .modal-content {
+    padding: 1.5rem;
     width: 95%;
-    padding: 0.6rem;
   }
 
   .martyr-info-grid {
-    gap: 0.3rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .martyr-card {
-    padding: 0.5rem;
+  .info-item {
+    padding: 1rem;
   }
 
   .info-value {
-    font-size: 0.75rem;
+    font-size: 1rem;
   }
 
-  .info-label {
-    font-size: 0.6rem;
+  .name-item .info-value {
+    font-size: 1.2rem;
   }
+}
 
-  .pagination button {
-    padding: 0.2rem 0.4rem;
-    font-size: 0.7rem;
+/* Animation cho card */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.martyr-card {
+  animation: fadeInUp 0.3s ease forwards;
 }

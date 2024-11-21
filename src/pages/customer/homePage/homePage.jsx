@@ -325,26 +325,29 @@ const HomePage = () => {
                   className="martyr-card"
                   onClick={() => handleMartyrClick(martyr.martyrId)}
                 >
-                  <h3>{martyr.matyrGraveInformations[0]?.name}</h3>
                   <div className="martyr-info-grid">
+                    <div className="info-item name-item">
+                      <span className="info-label">Họ và tên</span>
+                      <span className="info-value">{martyr.matyrGraveInformations[0]?.name}</span>
+                    </div>
                     <div className="info-item">
                       <span className="info-label">Mã</span>
                       <span className="info-value">{martyr.martyrCode}</span>
                     </div>
                     <div className="info-item">
-                      <span className="info-label">Vị trí</span>
+                      <span className="info-label">Vị trí: </span>
                       <span className="info-value">{martyr.locationDescription}</span>
                     </div>
                     <div className="info-item">
-                      <span className="info-label">Chức vụ</span>
+                      <span className="info-label">Chức vụ: </span>
                       <span className="info-value">{martyr.matyrGraveInformations[0]?.position}</span>
                     </div>
                     <div className="info-item">
-                      <span className="info-label">Quê quán</span>
+                      <span className="info-label">Quê quán: </span>
                       <span className="info-value">{martyr.matyrGraveInformations[0]?.homeTown}</span>
                     </div>
                     <div className="medal-info">
-                      <span className="info-label">Huân chương</span>
+                      <span className="info-label">Huân chương: </span>
                       <span className="info-value">{martyr.matyrGraveInformations[0]?.medal}</span>
                     </div>
                   </div>

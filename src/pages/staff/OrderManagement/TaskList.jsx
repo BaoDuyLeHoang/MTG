@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getTasksByAccountId, updateTaskStatus } from '../../../APIcontroller/API';
+import { updateTaskStatus } from '../../../APIcontroller/API';
+import { getTasksByAccountId } from '../../../services/task';
 import { useAuth } from '../../../context/AuthContext';
 import { ROLES } from '../../../utils/auth';
 import DatePicker from 'react-datepicker';
@@ -17,23 +18,43 @@ const TaskList = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchTasks();
-    }, [user]);
+        if (user?.accountId) {
+            fetchTasks();
+        }
+    }, [user?.accountId, startDate, endDate, filter]);
+    
 
     const fetchTasks = async () => {
         if (user && user.accountId && user.role === ROLES.STAFF) {
             try {
-                const tasksData = await getTasksByAccountId(user.accountId);
-                setTasks(tasksData);
+                const response = await getTasksByAccountId(user.accountId);
+                const transformed = response.data.map(tasks => ({
+                    id: tasks.taskId,
+                    title: tasks.blogName,
+                    excerpt: tasks.blogDescription,
+                    createdAt: tasks.createDate,
+                    status: tasks.status ? 'published' : 'hidden',
+                    author: tasks.fullName,
+                    category: tasks.historyEventName,
+                    image: tasks.historicalImages?.[0] || null
+                  }));
+                setTasks(transformed);
+            
             } catch (error) {
-                console.error('Failed to fetch tasks:', error);
-                // Handle the error (e.g., show an error message to the user)
+                console.error('Error fetching tasks:', error);
             }
         } else {
             console.log('User is not logged in or is not a staff member');
-            // Handle accordingly (e.g., redirect to login page)
         }
     };
+    const filteredTasks =  tasks.filter(task => {
+        if (filter === 'all') return true;
+        if (filter === 'completed') return task.status === 4;
+        if (filter === 'pending') return [0, 1, 3].includes(task.status);
+
+        return true;
+    });
+    
 
     const handleConfirm = async (taskId) => {
         try {
@@ -64,7 +85,7 @@ const TaskList = () => {
             fetchTasks();
         } catch (error) {
             console.error('Failed to complete task:', error);
-            // Handle the error (e.g., show an error message to the user)
+            // Handle the error (e.g., show an error message to the usser)
         }
     };
 
@@ -80,15 +101,18 @@ const TaskList = () => {
         }
     };
 
-    const filteredTasks = Array.isArray(tasks) ? tasks.filter(task => {
-        if (filter === 'all') return true;
-        if (filter === 'completed') return task.status === 4;
-        if (filter === 'pending') return task.status === 0 || task.status === 1 || task.status === 3;
-        return true;
-    }) : [];
+    
 
     const handleViewDetails = (taskId) => {
         navigate(`/task-detail/${taskId}`);
+    };
+
+    const handleDateChange = (date, setDate) => {
+        if (date instanceof Date && !isNaN(date)) {
+            setDate(date);
+        } else {
+            console.error('Invalid date selected');
+        }
     };
 
     return (
@@ -105,11 +129,19 @@ const TaskList = () => {
                     <span>Công việc:</span>
                     <div className="staff-task-list-date-picker">
                         <span>Từ ngày:</span>
-                        <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
+                        <DatePicker 
+                            selected={startDate} 
+                            onChange={date => handleDateChange(date, setStartDate)}
+                            maxDate={endDate}
+                        />
                     </div>
                     <div className="staff-task-list-date-picker">
                         <span>Đến ngày:</span>
-                        <DatePicker selected={endDate} onChange={date => setEndDate(date)} />
+                        <DatePicker 
+                            selected={endDate} 
+                            onChange={date => handleDateChange(date, setEndDate)}
+                            minDate={startDate}
+                        />
                     </div>
                 </div>
                 <table className="staff-task-list-table">
@@ -123,6 +155,7 @@ const TaskList = () => {
                             <th>Hành động</th>
                         </tr>
                     </thead>
+                    
                     <tbody>
                         {filteredTasks.map(task => (
                             <tr key={task.taskId}>
@@ -151,6 +184,16 @@ const TaskList = () => {
                         ))}
                     </tbody>
                 </table>
+                {filteredTasks.length === 0 ? (
+                    tasks.length === 0 ? (
+                        <p>No tasks available.</p>
+                    ) : (
+                            <p>No tasks match the selected filter.</p>
+                     )
+                ) : (
+                    <p>Number of tasks: {filteredTasks.length}</p>
+                )}
+
             </div>
         </div>
     );

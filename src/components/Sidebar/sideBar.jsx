@@ -118,13 +118,13 @@ const Sidebar = () => {
     { 
       to: "/schedule-staff", 
       icon: faBriefcase, 
-      text: "Công việc", 
+      text: "Lịch làm việc", 
       roles: [3] 
     },
     { 
       to: "/danhsachdonhang-staff", 
       icon: faClipboardList, 
-      text: "Đơn hàng", 
+      text: "Công việc", 
       roles: [3] 
     },
     {

@@ -8,36 +8,48 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './TaskList.css'; // You'll need to create this CSS file
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { useNavigate } from 'react-router-dom';
+import { FaTimes } from 'react-icons/fa';
 
 const TaskList = () => {
+    // Calculate initial start date (2 days before current date)
+    const initialStartDate = new Date();
+    initialStartDate.setDate(initialStartDate.getDate() - 3);
+
     const [tasks, setTasks] = useState([]);
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(initialStartDate);
     const [endDate, setEndDate] = useState(new Date());
     const [filter, setFilter] = useState('all'); // 'all', 'completed', 'pending'
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false);
+    const [rejectReason, setRejectReason] = useState('');
 
     useEffect(() => {
         if (user?.accountId) {
+            console.log('fetching tasks');
             fetchTasks();
         }
     }, [user?.accountId, startDate, endDate, filter]);
     
-
+ 
     const fetchTasks = async () => {
         if (user && user.accountId && user.role === ROLES.STAFF) {
             try {
                 const response = await getTasksByAccountId(user.accountId);
-                const transformed = response.data.map(tasks => ({
+                console.log('response', response); 
+                const transformed = response.tasks.map(tasks => ({
                     id: tasks.taskId,
-                    title: tasks.blogName,
-                    excerpt: tasks.blogDescription,
-                    createdAt: tasks.createDate,
-                    status: tasks.status ? 'published' : 'hidden',
-                    author: tasks.fullName,
-                    category: tasks.historyEventName,
-                    image: tasks.historicalImages?.[0] || null
+                    serviceName: tasks.serviceName,
+                    serviceDescription: tasks.serviceDescription,
+                    graveLocation: tasks.graveLocation,
+                    startDate: tasks.startDate,
+                    endDate: tasks.endDate,
+                    status: tasks.status,
+                 
                   }));
+
                 setTasks(transformed);
             
             } catch (error) {
@@ -48,33 +60,40 @@ const TaskList = () => {
         }
     };
     const filteredTasks =  tasks.filter(task => {
-        if (filter === 'all') return true;
-        if (filter === 'completed') return task.status === 4;
-        if (filter === 'pending') return [0, 1, 3].includes(task.status);
+        // First check the status filter
+        const statusFilter = 
+            filter === 'all' ? true :
+            filter === 'completed' ? task.status === 4 :
+            filter === 'pending' ? [0, 1, 3].includes(task.status) :
+            true;
 
-        return true;
+        // Then check the date range
+        const taskDate = new Date(task.startDate);
+        const isWithinDateRange = taskDate >= startDate && taskDate <= endDate;
+
+        // Return true only if both conditions are met
+        return statusFilter && isWithinDateRange;
     });
     
 
     const handleConfirm = async (taskId) => {
-        try {
-            await updateTaskStatus(taskId, 3); // 3 is the status for "Đang thực hiện"
-            // Refresh the task list
-            fetchTasks();
-        } catch (error) {
-            console.error('Failed to confirm task:', error);
-            // Handle the error (e.g., show an error message to the user)
-        }
+        navigate(`/schedule-staff`);
     };
 
     const handleReject = async (taskId) => {
+        if (!rejectReason.trim()) {
+            alert('Vui lòng nhập lý do từ chối');
+            return;
+        }
+        
         try {
-            await updateTaskStatus(taskId, 2); // 2 is the status for "Từ chối"
-            // Refresh the task list
+            await updateTaskStatus(taskId, 2, rejectReason); // Thêm rejectReason vào API call
+            setIsPopupOpen(false);
+            setIsRejectPopupOpen(false);
+            setRejectReason('');
             fetchTasks();
         } catch (error) {
             console.error('Failed to reject task:', error);
-            // Handle the error (e.g., show an error message to the user)
         }
     };
 
@@ -103,8 +122,9 @@ const TaskList = () => {
 
     
 
-    const handleViewDetails = (taskId) => {
-        navigate(`/task-detail/${taskId}`);
+    const handleViewDetails = (task) => {
+        setSelectedTask(task);
+        setIsPopupOpen(true);
     };
 
     const handleDateChange = (date, setDate) => {
@@ -176,7 +196,10 @@ const TaskList = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    <button className="staff-task-list-detail-button" onClick={() => handleViewDetails(task.taskId)}>
+                                    <button 
+                                        className="staff-task-list-detail-button" 
+                                        onClick={() => handleViewDetails(task)}
+                                    >
                                         Chi tiết
                                     </button>
                                 </td>
@@ -184,17 +207,130 @@ const TaskList = () => {
                         ))}
                     </tbody>
                 </table>
-                {filteredTasks.length === 0 ? (
-                    tasks.length === 0 ? (
-                        <p>No tasks available.</p>
-                    ) : (
-                            <p>No tasks match the selected filter.</p>
-                     )
-                ) : (
-                    <p>Number of tasks: {filteredTasks.length}</p>
+                {isPopupOpen && selectedTask && (
+                    <div className="popup-overlay">
+                        <div className="popup-content">
+                            <div className="popup-header">
+                                <h2>Chi Tiết Công Việc</h2>
+                                <button 
+                                    className="close-button"
+                                    onClick={() => setIsPopupOpen(false)}
+                                >
+                                    <FaTimes />
+                                </button>
+                            </div>
+                            <div className="popup-body">
+                                <div className="detail-row">
+                                    <label>Công việc:</label>
+                                    <span>{selectedTask.serviceName}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <label>Mô tả:</label>
+                                    <span>{selectedTask.serviceDescription}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <label>Vị trí:</label>
+                                    <span>{selectedTask.graveLocation}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <label>Thời gian:</label>
+                                    <span>{new Date(selectedTask.startDate).toLocaleDateString()}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <label>Thời hạn:</label>
+                                    <span>{new Date(selectedTask.endDate).toLocaleDateString()}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <label>Trạng thái:</label>
+                                    <span className="status-badge" style={{
+                                        backgroundColor: getStatusText(selectedTask.status).color,
+                                        color: 'white',
+                                        padding: '6px 12px',
+                                        borderRadius: '12px'
+                                    }}>
+                                        {getStatusText(selectedTask.status).text}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="popup-footer">
+                                {(selectedTask.status === 0 || selectedTask.status === 1) && (
+                                    <div className="action-buttons">
+                                        <button 
+                                            className="accept-button"
+                                            onClick={() => {
+                                                handleConfirm(selectedTask.id);
+                                                setIsPopupOpen(false);
+                                            }}
+                                        >
+                                            Chấp nhận
+                                        </button>
+                                        <button 
+                                            className="reject-button"
+                                            onClick={() => {
+                                                setIsRejectPopupOpen(true);
+                                            }}
+                                        >
+                                            Từ chối
+                                        </button>
+                                    </div>
+                                )}
+                                <button 
+                                    className="close-popup-button"
+                                    onClick={() => setIsPopupOpen(false)}
+                                >
+                                    Đóng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 )}
 
+                {isRejectPopupOpen && (
+                    <div className="popup-overlay">
+                        <div className="popup-content reject-reason-popup">
+                            <div className="popup-header">
+                                <h2>Lý Do Từ Chối</h2>
+                                <button 
+                                    className="close-button"
+                                    onClick={() => {
+                                        setIsRejectPopupOpen(false);
+                                        setRejectReason('');
+                                    }}
+                                >
+                                    <FaTimes />
+                                </button>
+                            </div>
+                            <div className="popup-body">
+                                <textarea
+                                    className="reject-reason-input"
+                                    value={rejectReason}
+                                    onChange={(e) => setRejectReason(e.target.value)}
+                                    placeholder="Nhập lý do từ chối..."
+                                    rows={4}
+                                />
+                            </div>
+                            <div className="popup-footer">
+                                <button 
+                                    className="reject-button"
+                                    onClick={() => handleReject(selectedTask.id)}
+                                >
+                                    Xác nhận từ chối
+                                </button>
+                                <button 
+                                    className="close-popup-button"
+                                    onClick={() => {
+                                        setIsRejectPopupOpen(false);
+                                        setRejectReason('');
+                                    }}
+                                >
+                                    Hủy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
+            
         </div>
     );
 };

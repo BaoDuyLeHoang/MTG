@@ -45,7 +45,7 @@ export const getTasksByAccountId = async (accountId, date, pageIndex = 1, pageSi
                 },
             }
         );
-        return response.data;
+        return response.data; 
     } catch (error) {
         throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
     }
@@ -65,5 +65,34 @@ export const addTaskImages = async (scheduleDetailId, urlImages) => {
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.message || 'Failed to add images to task');
+    }
+};
+export const getBlogComment = async (blogId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/Comment/${blogId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to fetch tasks');
+    }
+};
+
+export const updateCommentStatus = async (commentId, status) => {
+    try {
+        const response = await axios.put(
+            `${BASE_URL}/Comment/status/${commentId}/${status}`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to update comment status');
     }
 };

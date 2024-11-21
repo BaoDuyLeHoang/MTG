@@ -11,10 +11,13 @@ import {
   faFilter,
   faCalendarAlt,
   faUser,
-  faTag
+  faTag,
+  faToggleOn,
+  faToggleOff
 } from '@fortawesome/free-solid-svg-icons';
 import './BlogManagement.css';
-import { getBlogByAccountId } from '../../../services/blog';
+import { getBlogByAccountId, getBlogById } from '../../../services/blog';
+import { getBlogComment, updateCommentStatus } from '../../../services/task';
 import { useAuth } from '../../../context/AuthContext';
 const BlogManagement = () => {
   const navigate = useNavigate();
@@ -23,6 +26,10 @@ const BlogManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const { user } = useAuth();
+  const [selectedBlog, setSelectedBlog] = useState(null);
+  const [selectedBlogDetails, setSelectedBlogDetails] = useState(null);
+  const [selectedBlogComments, setSelectedBlogComments] = useState([]);
+
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -74,6 +81,59 @@ const BlogManagement = () => {
     return matchesSearch && matchesStatus;
   });
 
+  const handleBlogCardClick = async (blog) => {
+    try {
+      const blogResponse = await getBlogById(blog.id);
+      setSelectedBlog(blog);
+
+      const commentsResponse = await getBlogComment(blog.id);
+      console.log('response', commentsResponse);
+
+      const transformed = commentsResponse?.data?.map(comment => ({
+        id: comment.commentId,
+        accountName: comment.accountName,
+        content: comment.content,
+        createdDate: comment.createdDate,
+        commentIcons: comment.commentIcons,
+        status: comment.status,
+      })) || [];
+
+      setSelectedBlogComments(transformed);
+
+    } catch (error) {
+      console.error('Error fetching blog details:', error);
+      setSelectedBlogComments([]);
+      if (error.response?.status === 401) {
+        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+      } else {
+        alert('Không thể tải thông tin bài viết. Vui lòng thử lại sau.');
+      }
+    }
+  };
+
+  const handleClosePopup = () => {
+    setSelectedBlog(null);
+  };
+
+  const handleToggleComment = async (commentId, currentStatus) => {
+    try {
+      const newStatus = !currentStatus;
+      await updateCommentStatus(commentId, newStatus);
+      
+      // Cập nhật state của comments
+      setSelectedBlogComments(prevComments => 
+        prevComments.map(comment => 
+          comment.id === commentId 
+            ? { ...comment, status: newStatus }
+            : comment
+        )
+      );
+    } catch (error) {
+      console.error('Error toggling comment status:', error);
+      alert('Không thể thay đổi trạng thái bình luận. Vui lòng thử lại sau.');
+    }
+  };
+
   return (
     <div className="blog-mgmt-layout">
       <Sidebar />
@@ -110,7 +170,11 @@ const BlogManagement = () => {
 
           <div className="blog-mgmt-list">
             {filteredBlogs.map(blog => (
-              <div key={blog.id} className="blog-mgmt-card">
+              <div 
+                key={blog.id} 
+                className="blog-mgmt-card"
+                onClick={() => handleBlogCardClick(blog)}
+              >
                 {blog.image && (
                   <div className="blog-mgmt-card-image">
                     <img src={blog.image} alt={blog.title} />
@@ -160,6 +224,80 @@ const BlogManagement = () => {
           </div>
         </div>
       </div>
+
+      {selectedBlog && (
+        <div className="blog-detail-popup-overlay" onClick={handleClosePopup}>
+          <div className="blog-detail-popup" onClick={e => e.stopPropagation()}>
+            <button className="blog-detail-close" onClick={handleClosePopup}>&times;</button>
+            {selectedBlog.image && (
+              <div className="blog-detail-image">
+                <img src={selectedBlog.image} alt={selectedBlog.title} />
+              </div>
+            )}
+            <h2>{selectedBlog.title}</h2>
+            <div className="blog-detail-meta">
+              <span><FontAwesomeIcon icon={faUser} /> {selectedBlog.author}</span>
+              <span><FontAwesomeIcon icon={faTag} /> {selectedBlog.category}</span>
+              <span><FontAwesomeIcon icon={faCalendarAlt} /> {new Date(selectedBlog.createdAt).toLocaleDateString('vi-VN')}</span>
+            </div>
+            <p className="blog-detail-content">{selectedBlog.excerpt}</p>
+            <div className="blog-detail-status">
+              <span className={`blog-mgmt-status-badge blog-mgmt-${selectedBlog.status}`}>
+                {selectedBlog.status === 'published' ? 'Đã xuất bản' : 'Bản nháp'}
+              </span>
+            </div>
+
+            <div className="blog-detail-comments">
+              <h3>Bình luận ({selectedBlogComments.length})</h3>
+              {selectedBlogComments.length === 0 ? (
+                <p>Chưa có bình luận nào</p>
+              ) : (
+                <div className="blog-detail-comments-list">
+                  {selectedBlogComments.map(comment => (
+                    <div key={comment.id} className="blog-detail-comment">
+                      <div className="blog-detail-comment-header">
+                        <div className="blog-detail-comment-info">
+                          <span className="blog-detail-comment-author">{comment.accountName}</span>
+                          <span className="blog-detail-comment-date">
+                            {new Date(comment.createdDate).toLocaleDateString('vi-VN')}
+                          </span>
+                          {!comment.status && (
+                            <span className="comment-hidden-status">
+                              Đã ẩn bình luận
+                            </span>
+                          )}
+                        </div>
+                        <button 
+                          className="comment-toggle-button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleComment(comment.id, comment.status);
+                          }}
+                          title={comment.status ? "Ẩn bình luận" : "Hiện bình luận"}
+                        >
+                          <FontAwesomeIcon 
+                            icon={comment.status ? faToggleOn : faToggleOff} 
+                            className={comment.status ? "comment-visible" : "comment-hidden"}
+                          />
+                        </button>
+                      </div>
+                      <p className="blog-detail-comment-content">{comment.content}</p>
+                      <div className="blog-detail-comment-reactions">
+                        <span>
+                          👍 {comment.commentIcons?.filter(icon => icon.iconId === 1).length || 0}
+                        </span>
+                        <span>
+                          👎 {comment.commentIcons?.filter(icon => icon.iconId === 2).length || 0}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

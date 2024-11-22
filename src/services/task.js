@@ -96,3 +96,20 @@ export const updateCommentStatus = async (commentId, status) => {
         throw new Error(error.response?.data?.message || 'Failed to update comment status');
     }
 };
+
+export const updateTaskImage = async (taskId, urlImages) => {
+    try {
+        const response = await axios.put(
+            `${BASE_URL}/Task/tasks/${taskId}/images`,
+            { urlImages },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to add images to task');
+    }
+};

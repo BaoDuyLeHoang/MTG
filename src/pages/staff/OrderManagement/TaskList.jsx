@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { updateTaskStatus } from '../../../APIcontroller/API';
-import { getTasksByAccountId } from '../../../services/task';
+import { getTasksByAccountId , updateTaskImage} from '../../../services/task';
 import { useAuth } from '../../../context/AuthContext';
 import { ROLES } from '../../../utils/auth';
 import DatePicker from 'react-datepicker';
@@ -9,6 +9,10 @@ import './TaskList.css'; // You'll need to create this CSS file
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { useNavigate } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
+import { Upload, X } from "lucide-react";
+import { storage } from "../../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { addTaskImages } from "../../../services/task";
 
 const TaskList = () => {
     // Calculate initial start date (2 days before current date)
@@ -25,6 +29,10 @@ const TaskList = () => {
     const [selectedTask, setSelectedTask] = useState(null);
     const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false);
     const [rejectReason, setRejectReason] = useState('');
+    const [images, setImages] = useState([]);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
+    const [taskImages, setTaskImages] = useState([]);
 
     useEffect(() => {
         if (user?.accountId) {
@@ -47,6 +55,9 @@ const TaskList = () => {
                     startDate: tasks.startDate,
                     endDate: tasks.endDate,
                     status: tasks.status,
+                    imagePath1: tasks.imagePath1,
+                    imagePath2: tasks.imagePath2,
+                    imagePath3: tasks.imagePath3    
                  
                   }));
 
@@ -122,8 +133,24 @@ const TaskList = () => {
 
     
 
-    const handleViewDetails = (task) => {
+    const handleViewDetails = async (task) => {
         setSelectedTask(task);
+        if (task.status === 4) {
+            // Transform existing image paths into the format we need
+            const existingImages = [
+                task.imagePath1,
+                task.imagePath2,
+                task.imagePath3
+            ]
+            .filter(path => path) // Remove null/empty paths
+            .map((url, index) => ({
+                id: index + 1,
+                url: url
+            }));
+            setTaskImages(existingImages);
+        } else {
+            setTaskImages([]);
+        }
         setIsPopupOpen(true);
     };
 
@@ -132,6 +159,59 @@ const TaskList = () => {
             setDate(date);
         } else {
             console.error('Invalid date selected');
+        }
+    };
+
+    const uploadImageToFirebase = async (file) => {
+        const storageRef = ref(storage, `task_images/${selectedTask.id}/${file.name}`);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+    };
+
+    const handleFileUpload = async (files) => {
+        if (images.length + files.length > 3) {
+            alert('Chỉ được phép tải lên tối đa 3 ảnh');
+            return;
+        }
+
+        setUploading(true);
+        for (let file of files) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`File ${file.name} quá lớn. Kích thước tối đa là 5MB.`);
+                continue;
+            }
+            if (!["image/jpeg", "image/png", "image/heic"].includes(file.type)) {
+                alert(`File ${file.name} không được hỗ trợ. Vui lòng sử dụng JPG, PNG, hoặc HEIC.`);
+                continue;
+            }
+            try {
+                const downloadURL = await uploadImageToFirebase(file);
+                setImages(prevImages => [...prevImages, { id: Date.now(), url: downloadURL }]);
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                alert(`Không thể tải lên ${file.name}. Lỗi: ${error.message}`);
+            }
+        }
+        setUploading(false);
+    };
+
+    const removeImage = (id) => {
+        setImages(prevImages => prevImages.filter(img => img.id !== id));
+    };
+
+    const handleSaveImages = async () => {
+        try {
+            setUploading(true);
+            const imageUrls = images.map(img => img.url);
+            await updateTaskImage(selectedTask.id, imageUrls);
+            alert('Lưu ảnh thành công!');
+            setIsPopupOpen(false);
+            fetchTasks();
+        } catch (error) {
+            console.error("Error saving images:", error);
+            alert("Không thể lưu ảnh. Vui lòng thử lại.");
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -214,7 +294,11 @@ const TaskList = () => {
                                 <h2>Chi Tiết Công Việc</h2>
                                 <button 
                                     className="close-button"
-                                    onClick={() => setIsPopupOpen(false)}
+                                    onClick={() => {
+                                        setIsPopupOpen(false);
+                                        setTaskImages([]);
+                                        setImages([]);
+                                    }}
                                 >
                                     <FaTimes />
                                 </button>
@@ -251,6 +335,75 @@ const TaskList = () => {
                                         {getStatusText(selectedTask.status).text}
                                     </span>
                                 </div>
+                                {selectedTask.status === 4 && taskImages.length > 0 && (
+                                    <div className="completed-task-images">
+                                        <h3>Hình ảnh đã tải lên</h3>
+                                        <div className="image-preview-grid">
+                                            {taskImages.map(image => (
+                                                <div key={image.id} className="image-preview-item">
+                                                    <img 
+                                                        src={image.url} 
+                                                        alt={`Tài liệu ${image.id}`}
+                                                        onClick={() => window.open(image.url, '_blank')}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {selectedTask.status === 3 && (
+                                    <div className="upload-section">
+                                        <h3>Ảnh tài liệu ({images.length}/3)</h3>
+                                        {images.length < 3 && (
+                                            <div
+                                                className="upload-area"
+                                                onClick={() => fileInputRef.current.click()}
+                                            >
+                                                <input
+                                                    type="file"
+                                                    ref={fileInputRef}
+                                                    style={{ display: 'none' }}
+                                                    onChange={(e) => handleFileUpload(Array.from(e.target.files))}
+                                                    multiple
+                                                    accept="image/jpeg,image/png,image/heic"
+                                                />
+                                                <Upload className="upload-icon" />
+                                                <p className="upload-text">
+                                                    {uploading ? "Đang tải lên..." : "Nhấp để tải lên ảnh"}
+                                                </p>
+                                                <p className="upload-note">
+                                                    JPG, PNG hoặc HEIC (tối đa 5MB)
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <div className="image-preview-grid">
+                                            {images.map(image => (
+                                                <div key={image.id} className="image-preview-item">
+                                                    <img src={image.url} alt="Tài liệu" />
+                                                    <button
+                                                        className="remove-image-btn"
+                                                        onClick={() => removeImage(image.id)}
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {images.length > 0 && (
+                                            <div className="upload-actions">
+                                                <button
+                                                    className="save-images-btn"
+                                                    onClick={handleSaveImages}
+                                                    disabled={uploading}
+                                                >
+                                                    {uploading ? "Đang tải..." : "Check-in"}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                             <div className="popup-footer">
                                 {(selectedTask.status === 0 || selectedTask.status === 1) && (
@@ -274,12 +427,7 @@ const TaskList = () => {
                                         </button>
                                     </div>
                                 )}
-                                <button 
-                                    className="close-popup-button"
-                                    onClick={() => setIsPopupOpen(false)}
-                                >
-                                    Đóng
-                                </button>
+                                
                             </div>
                         </div>
                     </div>

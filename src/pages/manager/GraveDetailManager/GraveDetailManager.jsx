@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./GraveDetailManager.css";
-
 import { getGraveById } from "../../../APIcontroller/API"; // Adjust import to include getGraveServices
 import { updateGraveDetail, getGraveServices, createGraveService, deleteGraveService } from '../../../services/graves';
 import { getAvailableServices } from '../../../services/service';
@@ -9,10 +8,9 @@ import Sidebar from "../../../components/Sidebar/sideBar";
 import { FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import { useAuth } from "../../../context/AuthContext";
 
-
 // Add this helper function to format date for input
 const formatDateForInput = (dateString) => {
-  return new Date(dateString).toISOString().split("T")[0];
+  return new Date(dateString).toISOString().split('T')[0];
 };
 
 const MyGraveDetail = () => {
@@ -38,13 +36,11 @@ const MyGraveDetail = () => {
     },
   ]);
   const [editedLocation, setEditedLocation] = useState(graveLocation);
-
   const [editedPersonalInfo, setEditedPersonalInfo] = useState(fakePersonalInfo);
   const [services, setServices] = useState([]); // State for services
   const [activeTab, setActiveTab] = useState('details'); // State to manage active tab
   const [availableServices, setAvailableServices] = useState([]); // State for available services
   const [selectedServiceId, setSelectedServiceId] = useState(null); // State for selected service
-
 
   useEffect(() => {
     const fetchGraveDetails = async () => {
@@ -103,14 +99,14 @@ const MyGraveDetail = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setEditedData((prev) => ({
+    setEditedData(prev => ({
       ...prev,
       matyrGraveInformations: [
         {
           ...prev.matyrGraveInformations[0],
-          [field]: value,
-        },
-      ],
+          [field]: value
+        }
+      ]
     }));
   };
 
@@ -159,7 +155,6 @@ const MyGraveDetail = () => {
     </div>
   );
 
-
   const handleCreateService = async () => {
     if (selectedServiceId) {
       const newServiceData = {
@@ -182,12 +177,10 @@ const MyGraveDetail = () => {
     } else {
       alert('Vui lòng chọn dịch vụ.');
     }
-
   };
   // Function to delete a grave service
   const handleDeleteService = async (graveServiceId) => {
     const managerId = user.accountId; // Assuming you have the managerId from the user context
-
 
     try {
       await deleteGraveService(managerId, graveServiceId);
@@ -217,13 +210,11 @@ const MyGraveDetail = () => {
       </div>
     ) : (
       <p>Không có dịch vụ nào liên quan.</p>
-
     );
   };
 
   if (error) return <div className="error-message">{error}</div>;
-  if (!martyrDetails)
-    return <div className="no-data-message">No grave details found.</div>;
+  if (!martyrDetails) return <div className="no-data-message">No grave details found.</div>;
 
   const info = martyrDetails.matyrGraveInformations[0];
 
@@ -288,17 +279,11 @@ const MyGraveDetail = () => {
                   {isEditing ? (
                     <input
                       type="date"
-                      value={formatDateForInput(
-                        editedData.matyrGraveInformations[0].dateOfBirth
-                      )}
-                      onChange={(e) =>
-                        handleInputChange("dateOfBirth", e.target.value)
-                      }
+                      value={formatDateForInput(editedData.matyrGraveInformations[0].dateOfBirth)}
+                      onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                     />
                   ) : (
-                    <span>
-                      {new Date(info.dateOfBirth).toLocaleDateString()}
-                    </span>
+                    <span>{new Date(info.dateOfBirth).toLocaleDateString()}</span>
                   )}
                 </div>
                 <div className="grave-detail-manager-info-item">
@@ -306,27 +291,19 @@ const MyGraveDetail = () => {
                   {isEditing ? (
                     <input
                       type="date"
-                      value={formatDateForInput(
-                        editedData.matyrGraveInformations[0].dateOfSacrifice
-                      )}
-                      onChange={(e) =>
-                        handleInputChange("dateOfSacrifice", e.target.value)
-                      }
+                      value={formatDateForInput(editedData.matyrGraveInformations[0].dateOfSacrifice)}
+                      onChange={(e) => handleInputChange('dateOfSacrifice', e.target.value)}
                     />
                   ) : (
-                    <span>
-                      {new Date(info.dateOfSacrifice).toLocaleDateString()}
-                    </span>
+                    <span>{new Date(info.dateOfSacrifice).toLocaleDateString()}</span>
                   )}
                 </div>
                 <div className="grave-detail-manager-inscription">
                   <h3>Huân chương/ Chiến công</h3>
                   {isEditing ? (
                     <textarea
-                      value={editedData.matyrGraveInformations[0].medal || ""}
-                      onChange={(e) =>
-                        handleInputChange("medal", e.target.value)
-                      }
+                      value={editedData.matyrGraveInformations[0].medal || ''}
+                      onChange={(e) => handleInputChange('medal', e.target.value)}
                       rows="4"
                     />
                   ) : (
@@ -337,7 +314,6 @@ const MyGraveDetail = () => {
             </div>
           </div>
         </div>
-
         {/* Render Location Information in the Details Tab */}
         {activeTab === 'details' && (
           <div className="grave-detail-manager-location-section">
@@ -357,69 +333,60 @@ const MyGraveDetail = () => {
               </div>
             </div>
           </div>
-
         )}
 
-            {/* Render Services if the Services tab is active */}
-            {activeTab === 'services' && (
-              <div className="grave-detail-manager-services-section">
-                <div className="grave-detail-manager-create-service">
-                  <h2>Thêm dịch vụ mới</h2>
-                  <select onChange={(e) => setSelectedServiceId(Number(e.target.value))}>
-                    <option value="">Chọn dịch vụ</option>
-                    {availableServices.map(service => (
-                      <option key={service.serviceId} value={service.serviceId}>
-                        {service.serviceName}
-                      </option>
-                    ))}
-                  </select>
-                  <button onClick={handleCreateService}>Thêm dịch vụ</button>
-                </div>
-                {renderServices()} {/* Render services here */}
-              </div>
-
-
-            )}
-
-
-            {activeTab === 'details' && (
-              <div className="grave-detail-manager-personal-section">
-                <h2>Thông tin thân nhân</h2>
-                <div className="grave-detail-manager-personal-list">
-                  {(isEditing ? editedPersonalInfo : fakePersonalInfo).map((person) => (
-                    <div key={person.id} className="grave-detail-manager-personal-item">
-                      <div className="grave-detail-manager-personal-name">
-                        {person.name}
-                      </div>
-                      <div className="grave-detail-manager-personal-contact">
-                        <span>SĐT: {person.phone}</span>
-                        <span>Email: {person.email}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {selectedImage && (
-              <div
-                className="grave-detail-manager-modal-overlay"
-                onClick={closeModal}
-              >
-                <div className="grave-detail-manager-modal-content">
-                  <img src={selectedImage} alt="Memorial - Large view" />
-                  <button
-                    className="grave-detail-manager-modal-close"
-                    onClick={closeModal}
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-            )}
+        {/* Render Services if the Services tab is active */}
+        {activeTab === 'services' && (
+          <div className="grave-detail-manager-services-section">
+            <div className="grave-detail-manager-create-service">
+              <h2>Thêm dịch vụ mới</h2>
+              <select onChange={(e) => setSelectedServiceId(Number(e.target.value))}>
+                <option value="">Chọn dịch vụ</option>
+                {availableServices.map(service => (
+                  <option key={service.serviceId} value={service.serviceId}>
+                    {service.serviceName}
+                  </option>
+                ))}
+              </select>
+              <button onClick={handleCreateService}>Thêm dịch vụ</button>
+            </div>
+            {renderServices()} {/* Render services here */}
           </div>
+        )}
+
+
+        {activeTab === 'details' && (
+          <div className="grave-detail-manager-personal-section">
+            <h2>Thông tin thân nhân</h2>
+            <div className="grave-detail-manager-personal-list">
+              {(isEditing ? editedPersonalInfo : fakePersonalInfo).map((person) => (
+                <div key={person.id} className="grave-detail-manager-personal-item">
+                  <div className="grave-detail-manager-personal-name">
+                    {person.name}
+                  </div>
+                  <div className="grave-detail-manager-personal-contact">
+                    <span>SĐT: {person.phone}</span>
+                    <span>Email: {person.email}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedImage && (
+          <div className="grave-detail-manager-modal-overlay" onClick={closeModal}>
+            <div className="grave-detail-manager-modal-content">
+              <img src={selectedImage} alt="Memorial - Large view" />
+              <button className="grave-detail-manager-modal-close" onClick={closeModal}>
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-      );
+  );
 };
 
-      export default MyGraveDetail;
+export default MyGraveDetail;

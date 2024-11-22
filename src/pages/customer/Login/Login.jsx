@@ -6,7 +6,7 @@ import "../Login/Login.css";
 import lk from "../../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useAuth } from "../../../context/AuthContext";
 import { ROLES } from "../../../utils/auth";
-import { addToCart } from "../../../APIcontroller/API";
+import { addToCart } from "../../../services/cart";
 import { Link } from "react-router-dom";
 
 export default function Login() {
@@ -34,14 +34,14 @@ export default function Login() {
 
         // Check for pending cart items
         const selectedMartyrId = sessionStorage.getItem("selectedMartyrId");
-        const pendingServiceId = sessionStorage.getItem("pendingServiceId");
+        const savedCartIds = sessionStorage.getItem("savedCartIds");
 
-        if (selectedMartyrId && pendingServiceId && result.user.accountId) {
+        if (selectedMartyrId && savedCartIds && result.user.accountId) {
           try {
             console.log("Adding pending item to cart");
             await addToCart(
               {
-                serviceId: pendingServiceId,
+                serviceId: savedCartIds,
                 accountId: result.user.accountId,
                 martyrId: selectedMartyrId,
               },
@@ -51,7 +51,7 @@ export default function Login() {
 
             // Clear the pending items from session storage
             sessionStorage.removeItem("selectedMartyrId");
-            sessionStorage.removeItem("pendingServiceId");
+            sessionStorage.removeItem("savedCartIds");
 
             // Redirect to cart page
             navigate("/cart");

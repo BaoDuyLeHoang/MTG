@@ -78,40 +78,44 @@ const ServiceListing = () => {
 
   const themVaoGioHang = async (dichVu) => {
     try {
-      // Check if user is logged in
-      if (!user) {
-        setAlertMessage("Vui lòng đăng nhập để thêm dịch vụ vào giỏ hàng");
-        setAlertSeverity("warning");
+      // Get saved cart items with martyrId mapping
+      const savedCartItems = JSON.parse(sessionStorage.getItem("savedCartItems") || "[]");
+      
+      // Check if service is already in cart for this specific martyr
+      const isServiceExist = savedCartItems.some(item => 
+        item.serviceId === dichVu.serviceId && 
+        item.martyrId === martyrId
+      );
+      
+      if (isServiceExist) {
+        setAlertMessage("Bạn đã đặt dịch vụ này cho liệt sĩ này rồi. Vui lòng chọn dịch vụ khác");
+        setAlertSeverity("error");
         setAlertOpen(true);
-        navigate('/login');
         return;
       }
 
-      // Prepare the request body with all required parameters
-      const cartData = {
-        accountId: user.accountId,
-        serviceId: dichVu.serviceId,
-        martyrId: sessionStorage.getItem("selectedMartyrId")
-      };
+      // If user is logged in, use API
+      if (user) {
+        const cartData = {
+          accountId: user.accountId,
+          serviceId: dichVu.serviceId,
+          martyrId: martyrId
+        };
 
-      // Call API to add to cart with the required data
-      const response = await addToCart(cartData);
-      
-      // Save the serviceId to session storage
-      const savedCartIds = JSON.parse(sessionStorage.getItem("savedCartIds") || "[]");
-      if (!savedCartIds.includes(dichVu.serviceId)) {
-        savedCartIds.push(dichVu.serviceId);
-        sessionStorage.setItem("savedCartIds", JSON.stringify(savedCartIds));
-        console.log("Updated savedCartIds in session storage:", savedCartIds);
-        setAlertMessage("Dịch vụ đã được thêm vào giỏ hàng thành công!");
-        setAlertSeverity("success");
-        setAlertOpen(true);
-      } else {
-        console.log("ServiceId already in savedCartIds:", dichVu.serviceId);
-        setAlertMessage("Bạn đã đặt dịch vụ này trước đó. Vui lòng chọn dịch vụ khác");
-      setAlertSeverity("error");
-      setAlertOpen(true);
+        await addToCart(cartData);
       }
+
+      // Save to session storage with martyrId mapping
+      savedCartItems.push({
+        serviceId: dichVu.serviceId,
+        martyrId: martyrId
+      });
+      sessionStorage.setItem("savedCartItems", JSON.stringify(savedCartItems));
+      
+      setAlertMessage("Dịch vụ đã được thêm vào giỏ hàng thành công!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
+
     } catch (error) {
       console.error("Error adding to cart:", error);
       setAlertMessage("Dịch vụ đã tồn tại trong giỏ hàng hoặc mộ đã bị giới hạn dịch vụ. Người dùng vui lòng đặt dịch vụ khác");
@@ -121,7 +125,11 @@ const ServiceListing = () => {
   };
 
   const coTrongGioHang = (serviceId) => {
-    return gioHang.some((item) => item.serviceId === serviceId);
+    const savedCartItems = JSON.parse(sessionStorage.getItem("savedCartItems") || "[]");
+    return savedCartItems.some(item => 
+      item.serviceId === serviceId && 
+      item.martyrId === martyrId
+    );
   };
 
   const handleAlertClose = (event, reason) => {

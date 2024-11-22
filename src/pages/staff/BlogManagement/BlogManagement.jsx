@@ -13,11 +13,13 @@ import {
   faUser,
   faTag,
   faToggleOn,
-  faToggleOff
+  faToggleOff,
+  faBan
 } from '@fortawesome/free-solid-svg-icons';
 import './BlogManagement.css';
 import { getBlogByAccountId, getBlogById } from '../../../services/blog';
 import { getBlogComment, updateCommentStatus } from '../../../services/task';
+import { banAccountCustomer } from '../../../services/staff';
 import { useAuth } from '../../../context/AuthContext';
 const BlogManagement = () => {
   const navigate = useNavigate();
@@ -29,6 +31,9 @@ const BlogManagement = () => {
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [selectedBlogDetails, setSelectedBlogDetails] = useState(null);
   const [selectedBlogComments, setSelectedBlogComments] = useState([]);
+  const [showBanConfirm, setShowBanConfirm] = useState(false);
+  const [selectedAccountId, 
+    setSelectedAccountId] = useState(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -87,17 +92,21 @@ const BlogManagement = () => {
       setSelectedBlog(blog);
 
       const commentsResponse = await getBlogComment(blog.id);
-      console.log('response', commentsResponse);
+      console.log('Comments response:', commentsResponse);
 
       const transformed = commentsResponse?.data?.map(comment => ({
         id: comment.commentId,
+        accountId: comment.accountId,
         accountName: comment.accountName,
+        accountStatus: comment.accountStatus,
+        accountAvatar: comment.accountAvatar,
         content: comment.content,
         createdDate: comment.createdDate,
         commentIcons: comment.commentIcons,
         status: comment.status,
       })) || [];
 
+      console.log('Transformed comments:', transformed);
       setSelectedBlogComments(transformed);
 
     } catch (error) {
@@ -131,6 +140,35 @@ const BlogManagement = () => {
     } catch (error) {
       console.error('Error toggling comment status:', error);
       alert('Không thể thay đổi trạng thái bình luận. Vui lòng thử lại sau.');
+    }
+  };
+
+  const handleBanAccount = async () => {
+    try {
+      await banAccountCustomer(selectedAccountId, user.accountId);
+      alert('Đã chặn tài khoản thành công');
+      setShowBanConfirm(false);
+      
+      // Refresh comments after banning
+      if (selectedBlog) {
+        const commentsResponse = await getBlogComment(selectedBlog.id);
+        const transformed = commentsResponse?.data?.map(comment => ({
+          id: comment.commentId,
+          accountId: comment.accountId,
+          accountName: comment.accountName,
+          accountStatus: comment.accountStatus,
+          accountAvatar: comment.accountAvatar,
+          content: comment.content,
+          createdDate: comment.createdDate,
+          commentIcons: comment.commentIcons,
+          status: comment.status,
+        })) || [];
+        
+        setSelectedBlogComments(transformed);
+      }
+    } catch (error) {
+      console.error('Error banning account:', error);
+      alert('Không thể chặn tài khoản. Vui lòng thử lại sau.');
     }
   };
 
@@ -254,9 +292,16 @@ const BlogManagement = () => {
               ) : (
                 <div className="blog-detail-comments-list">
                   {selectedBlogComments.map(comment => (
-                    <div key={comment.id} className="blog-detail-comment">
+                    <div key={comment.id} className="blog-detail-comment" 
+                      style={{ opacity: comment.accountStatus ? 1 : 0.5 }}
+                    >
                       <div className="blog-detail-comment-header">
                         <div className="blog-detail-comment-info">
+                          <img 
+                            src={comment.accountAvatar || '/default-avatar.png'} 
+                            alt={`${comment.accountName}'s avatar`}
+                            className="comment-avatar"
+                          />
                           <span className="blog-detail-comment-author">{comment.accountName}</span>
                           <span className="blog-detail-comment-date">
                             {new Date(comment.createdDate).toLocaleDateString('vi-VN')}
@@ -267,19 +312,34 @@ const BlogManagement = () => {
                             </span>
                           )}
                         </div>
-                        <button 
-                          className="comment-toggle-button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleComment(comment.id, comment.status);
-                          }}
-                          title={comment.status ? "Ẩn bình luận" : "Hiện bình luận"}
-                        >
-                          <FontAwesomeIcon 
-                            icon={comment.status ? faToggleOn : faToggleOff} 
-                            className={comment.status ? "comment-visible" : "comment-hidden"}
-                          />
-                        </button>
+                        <div className="comment-actions">
+                          <button 
+                            className="comment-toggle-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleComment(comment.id, comment.status);
+                            }}
+                            title={comment.status ? "Ẩn bình luận" : "Hiện bình luận"}
+                          >
+                            <FontAwesomeIcon 
+                              icon={comment.status ? faToggleOn : faToggleOff} 
+                              className={comment.status ? "comment-visible" : "comment-hidden"}
+                            />
+                          </button>
+                          {!comment.status && (
+                            <button 
+                              className="ban-account-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedAccountId(comment.accountId);
+                                setShowBanConfirm(true);
+                              }}
+                              title="Chặn tài khoản"
+                            >
+                              <FontAwesomeIcon icon={faBan} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                       <p className="blog-detail-comment-content">{comment.content}</p>
                       <div className="blog-detail-comment-reactions">
@@ -294,6 +354,19 @@ const BlogManagement = () => {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showBanConfirm && (
+        <div className="ban-confirm-overlay">
+          <div className="ban-confirm-popup">
+            <h3>Xác nhận chặn tài khoản</h3>
+            <p>Bạn có chắc chắn muốn chặn tài khoản này không?</p>
+            <div className="ban-confirm-actions">
+              <button onClick={handleBanAccount}>Xác nhận</button>
+              <button onClick={() => setShowBanConfirm(false)}>Hủy</button>
             </div>
           </div>
         </div>

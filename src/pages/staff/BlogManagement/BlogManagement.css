@@ -470,3 +470,122 @@
   justify-content: space-between;
   margin-bottom: 8px;
 }
+
+.commenter-profile-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.commenter-profile-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.commenter-profile-close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.commenter-profile-content {
+  margin-top: 20px;
+}
+
+.commenter-profile-content p {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ban-account-button {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.ban-account-button:hover {
+  color: #c82333;
+}
+
+.ban-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.ban-confirm-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  text-align: center;
+}
+
+.ban-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.ban-confirm-actions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ban-confirm-actions button:first-child {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.ban-confirm-actions button:last-child {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.blog-detail-comment-info {
+  display: flex;
+  align-items: center;
+}

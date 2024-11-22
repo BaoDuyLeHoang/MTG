@@ -665,13 +665,13 @@ export const getAllStaff = async (page = 1, pageSize = 10, areaId) => {
 };
 
 // Add this new function
-export const updateAccountStatus = async (accountId) => {
+export const updateAccountStatus = async (banAccountId, userAccountId) => {
     try {
         const token = localStorage.getItem("accessToken");
-        console.log(`Updating status for account ID: ${accountId}`);
+        console.log(`Updating status for account ID: ${banAccountId}`);
         
         const response = await axios.put(
-            `${BASE_URL}${API_ENDPOINTS.UPDATE_ACCOUNT_STATUS}/${accountId}`,
+            `${BASE_URL}${API_ENDPOINTS.UPDATE_ACCOUNT_STATUS}/${banAccountId}?userAccountId=${userAccountId}`,
             null,
             {
                 headers: {

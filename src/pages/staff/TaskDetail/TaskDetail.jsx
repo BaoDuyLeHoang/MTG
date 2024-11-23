@@ -45,6 +45,13 @@ const TaskDetails = () => {
   const checkInPhotoRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [attendance, setAttendance] = useState(null);
+  const [checkInPhotos, setCheckInPhotos] = useState([]);
+  const [checkInPhotosPreviews, setCheckInPhotosPreviews] = useState([]);
+  const [showEditAttendance, setShowEditAttendance] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [currentPhotos, setCurrentPhotos] = useState([]);
+  const [newPhotos, setNewPhotos] = useState([]);
+  const [newPhotosPreviews, setNewPhotosPreviews] = useState([]);
 
   useEffect(() => {
     const fetchTaskDetails = async () => {
@@ -60,6 +67,10 @@ const TaskDetails = () => {
         setTask(response.scheduleDetail);
         setAttendance(response.attendanceStaff);
 
+        if (response.scheduleDetail.status === 1 || response.attendanceStaff?.imagePath1) {
+          setIsCheckedIn(true);
+        }
+
         const taskImages = [
           response.scheduleDetail.imagePath1,
           response.scheduleDetail.imagePath2,
@@ -68,6 +79,15 @@ const TaskDetails = () => {
           .filter(Boolean)
           .map((path, index) => ({ id: index + 1, url: path }));
         setImages(taskImages);
+
+        if (response.attendanceStaff) {
+          const existingPhotos = [
+            response.attendanceStaff.imagePath1,
+            response.attendanceStaff.imagePath2,
+            response.attendanceStaff.imagePath3
+          ].filter(Boolean);
+          setCurrentPhotos(existingPhotos);
+        }
       } catch (error) {
         console.error("Error fetching task details:", error);
         setError("Không thể tải thông tin công việc. Vui lòng thử lại sau.");
@@ -95,33 +115,41 @@ const TaskDetails = () => {
   };
 
   const handleFileUpload = async (files) => {
-    setUploading(true);
-    for (let file of files) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`File ${file.name} is too large. Maximum size is 5MB.`);
-        continue;
-      }
-      if (!["image/jpeg", "image/png", "image/heic"].includes(file.type)) {
-        alert(
-          `File ${file.name} is not a supported image type. Please use JPG, PNG, or HEIC.`
-        );
-        continue;
-      }
-      try {
-        console.log(`Attempting to upload file: ${file.name}`);
-        const downloadURL = await uploadImageToFirebase(file);
-        console.log(`File uploaded successfully. Download URL: ${downloadURL}`);
-        setImages((prevImages) => [
-          ...prevImages,
-          { id: Date.now(), url: downloadURL },
-        ]);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        console.error("Error details:", error.message);
-        alert(`Failed to upload ${file.name}. Error: ${error.message}`);
-      }
+    if (images.length + files.length > 3) {
+      setAlertMessage("Chỉ được phép tải lên tối đa 3 ảnh");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+      return;
     }
-    setUploading(false);
+
+    setUploading(true);
+    try {
+      for (let file of files) {
+        if (file.size > 5 * 1024 * 1024) {
+          setAlertMessage(`File ${file.name} quá lớn. Kích thước tối đa là 5MB.`);
+          setAlertSeverity("error");
+          setAlertOpen(true);
+          continue;
+        }
+        if (!["image/jpeg", "image/png", "image/heic"].includes(file.type)) {
+          setAlertMessage(`File ${file.name} không đúng định dạng. Vui lòng sử dụng JPG, PNG, hoặc HEIC.`);
+          setAlertSeverity("error");
+          setAlertOpen(true);
+          continue;
+        }
+        try {
+          const downloadURL = await uploadImageToFirebase(file);
+          setImages((prevImages) => [...prevImages, { id: Date.now(), url: downloadURL }]);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setAlertMessage(`Không thể tải lên ${file.name}. Lỗi: ${error.message}`);
+          setAlertSeverity("error");
+          setAlertOpen(true);
+        }
+      }
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleDrop = (e) => {
@@ -212,8 +240,16 @@ const TaskDetails = () => {
   };
 
   const handleCheckInPhoto = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    
+    if (checkInPhotos.length + files.length > 3) {
+      setAlertMessage("Chỉ được phép tải ln tối đa 3 ảnh");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+      return;
+    }
+
+    files.forEach(file => {
       if (file.size > 5 * 1024 * 1024) {
         setAlertMessage("Ảnh không được vượt quá 5MB");
         setAlertSeverity("error");
@@ -226,69 +262,66 @@ const TaskDetails = () => {
         setAlertOpen(true);
         return;
       }
-      setCheckInPhoto(file);
+
+      setCheckInPhotos(prev => [...prev, file]);
       const previewUrl = URL.createObjectURL(file);
-      setCheckInPhotoPreview(previewUrl);
-    }
+      setCheckInPhotosPreviews(prev => [...prev, previewUrl]);
+    });
   };
 
   const handleCheckIn = async () => {
-    if (!checkInPhoto) {
-      setAlertMessage("Vui lòng chụp ảnh xác nhận vị trí của bạn");
+    if (checkInPhotos.length === 0) {
+      setAlertMessage("Vui lòng chụp ít nhất 1 ảnh xác nhận vị trí của bạn");
       setAlertSeverity("error");
       setAlertOpen(true);
       return;
     }
 
     try {
-      // Upload check-in photo
-      const storageRef = ref(
-        storage,
-        `attendance_photos/${attendance.attendanceId}/${Date.now()}_${checkInPhoto.name}`
-      );
-      await uploadBytes(storageRef, checkInPhoto);
-      const photoUrl = await getDownloadURL(storageRef);
+      const photoUrls = await Promise.all(checkInPhotos.map(async (photo, index) => {
+        const storageRef = ref(
+          storage,
+          `attendance_photos/${attendance.attendanceId}/${Date.now()}_${index}_${photo.name}`
+        );
+        await uploadBytes(storageRef, photo);
+        return await getDownloadURL(storageRef);
+      }));
 
-      // Add attendance check API call with photo URL
-      try {
-        const attendanceData = {
-          attendanceId: attendance.attendanceId,
-          imagePath1: photoUrl,
-          imagePath2: "",
-          imagePath3: ""
-        };
-        
-        // Use attendance.accountId for the staffId query parameter
-        await checkAttendanceForStaff(attendance.accountId, attendanceData);
-        setIsCheckedIn(true);
-        const now = new Date();
-        setCheckInTime(now);
-        setAlertMessage("Check-in thành công! Bạn có thể xem chi tiết nhiệm vụ.");
-        setAlertSeverity("success");
-        setAlertOpen(true);
+      const attendanceData = {
+        attendanceId: attendance.attendanceId,
+        attendanceStatus: attendance.attendanceStatus,
+        imagePath1: photoUrls[0] || "",
+        imagePath2: photoUrls[1] || "",
+        imagePath3: photoUrls[2] || ""
+      };
 
-        // Add debug logging
-        console.log('Attendance data:', {
-          staffId: attendance.accountId,
-          attendanceData: attendanceData
-        });
-
-      } catch (attendanceError) {
-        console.error("Error checking attendance:", attendanceError);
-        // Get the error message from the server response
-        const errorMessage = attendanceError.response?.data?.message || 
-                            "Không thể xác nhận điểm danh. Vui lòng thử lại.";
-        setAlertMessage(errorMessage);
-        setAlertSeverity("error");
-        setAlertOpen(true);
-        return;
-      }
+      // Add attendance check API call with photo URLs
+      await checkAttendanceForStaff(attendance.accountId, attendanceData);
+      
+      // Reload dữ liệu mới
+      const response = await getByScheduleDetailId(accountId, scheduleDetailId);
+      setAttendance(response.attendanceStaff);
+      setIsCheckedIn(true);
+      
+      // Reset states
+      setCheckInPhotos([]);
+      setCheckInPhotosPreviews([]);
+      
+      // Hiển thị thông báo thành công
+      setAlertMessage("Check-in thành công!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
     } catch (error) {
       console.error("Error during check-in:", error);
       setAlertMessage("Đã xảy ra lỗi khi tải ảnh lên. Vui lòng thử lại.");
       setAlertSeverity("error");
       setAlertOpen(true);
     }
+  };
+
+  const removeCheckInPhoto = (index) => {
+    setCheckInPhotos(prev => prev.filter((_, i) => i !== index));
+    setCheckInPhotosPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   // Add this helper function for formatting date and time together
@@ -303,6 +336,88 @@ const TaskDetails = () => {
     });
   };
 
+  const handleEditAttendance = async () => {
+    setShowEditAttendance(true);
+    // Khởi tạo state cho ảnh hiện tại
+    const currentImages = [
+      attendance?.imagePath1,
+      attendance?.imagePath2,
+      attendance?.imagePath3
+    ].filter(Boolean);
+    setCurrentPhotos(currentImages);
+  };
+
+  const handleConfirmEdit = async () => {
+    try {
+      // Upload ảnh mới (nếu có)
+      const photoUrls = [...currentPhotos];
+      
+      // Cập nhật attendance data
+      const attendanceData = {
+        attendanceId: attendance.attendanceId,
+        attendanceStatus: attendance.attendanceStatus,
+        imagePath1: photoUrls[0] || "",
+        imagePath2: photoUrls[1] || "",
+        imagePath3: photoUrls[2] || ""
+      };
+
+      await checkAttendanceForStaff(attendance.accountId, attendanceData);
+      
+      // Reload dữ liệu mới
+      const response = await getByScheduleDetailId(accountId, scheduleDetailId);
+      setAttendance(response.attendanceStaff);
+      
+      setShowEditAttendance(false);
+      setAlertMessage("Cập nhật điểm danh thành công!");
+      setAlertSeverity("success");
+      setAlertOpen(true);
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+      setAlertMessage("Không thể cập nhật điểm danh. Vui lòng thử lại.");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+    }
+  };
+
+  const handleAddPhoto = async (e) => {
+    const files = Array.from(e.target.files);
+    
+    if (currentPhotos.length + files.length > 3) {
+      setAlertMessage("Chỉ được phép tải lên tối đa 3 ảnh");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+      return;
+    }
+
+    try {
+      for (const file of files) {
+        if (file.size > 5 * 1024 * 1024) {
+          setAlertMessage("Ảnh không được vượt quá 5MB");
+          setAlertSeverity("error");
+          setAlertOpen(true);
+          return;
+        }
+
+        const storageRef = ref(
+          storage,
+          `attendance_photos/${attendance.attendanceId}/${Date.now()}_${file.name}`
+        );
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+        setCurrentPhotos(prev => [...prev, downloadURL]);
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setAlertMessage("Không thể tải ảnh lên. Vui lòng thử lại.");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+    }
+  };
+
+  const handleRemovePhoto = (index) => {
+    setCurrentPhotos(prev => prev.filter((_, i) => i !== index));
+  };
+
   if (error) return <div className="error-message">{error}</div>;
   if (loading) return <div className="loading-message">Đang tải...</div>;
   if (!task)
@@ -315,7 +430,7 @@ const TaskDetails = () => {
       <Sidebar />
       <div className="td-main-content">
         <div className="td-container">
-          {!isCheckedIn && task.status === 3 ? (
+          {!isCheckedIn && task.status === 3 && !attendance?.imagePath1 ? (
             <div className="td-checkin-card">
               <div className="td-checkin-header">
                 <AlertCircle size={24} className="td-checkin-alert" />
@@ -353,7 +468,7 @@ const TaskDetails = () => {
                     <div className="td-step-number">1</div>
                     <div className="td-step-content">
                       <p className="td-step-text">
-                        Đảm bảo bạn đã đến đúng địa điểm làm việc
+                        Đảm bảo bạn đã đn đúng địa điểm làm việc
                       </p>
                     </div>
                   </div>
@@ -382,10 +497,11 @@ const TaskDetails = () => {
                     className="td-checkin-photo-input"
                     accept="image/jpeg,image/png,image/heic"
                     onChange={handleCheckInPhoto}
+                    multiple
                     style={{ display: "none" }}
                   />
 
-                  {!checkInPhotoPreview ? (
+                  {checkInPhotosPreviews.length === 0 ? (
                     <div
                       className="td-checkin-photo-upload"
                       onClick={() => checkInPhotoRef.current.click()}
@@ -393,21 +509,31 @@ const TaskDetails = () => {
                       <Camera size={32} />
                       <p className="td-upload-text">Chụp ảnh xác nhận vị trí</p>
                       <span className="td-upload-hint">
-                        Nhấn để chụp ảnh hoặc chọn từ thư viện
+                        Nhấn để chụp ảnh hoặc chọn từ thư viện (tối đa 3 ảnh)
                       </span>
                     </div>
                   ) : (
-                    <div className="td-checkin-photo-preview">
-                      <img src={checkInPhotoPreview} alt="Ảnh check-in" />
-                      <button
-                        className="td-photo-remove"
-                        onClick={() => {
-                          setCheckInPhoto(null);
-                          setCheckInPhotoPreview(null);
-                        }}
-                      >
-                        <X size={16} />
-                      </button>
+                    <div className="td-checkin-photos-grid">
+                      {checkInPhotosPreviews.map((preview, index) => (
+                        <div key={index} className="td-checkin-photo-preview">
+                          <img src={preview} alt={`Ảnh check-in ${index + 1}`} />
+                          <button
+                            className="td-photo-remove"
+                            onClick={() => removeCheckInPhoto(index)}
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ))}
+                      {checkInPhotosPreviews.length < 3 && (
+                        <div
+                          className="td-checkin-photo-upload-more"
+                          onClick={() => checkInPhotoRef.current.click()}
+                        >
+                          <Camera size={24} />
+                          <span>Thêm ảnh</span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -416,7 +542,7 @@ const TaskDetails = () => {
                   <button
                     className="td-btn td-btn-checkin"
                     onClick={handleCheckIn}
-                    disabled={!checkInPhoto}
+                    disabled={checkInPhotos.length === 0}
                   >
                     <CheckCircle size={20} />
                     Check-in ngay
@@ -539,125 +665,103 @@ const TaskDetails = () => {
               ) : (
                 task.status !== 1 &&
                 task.status !== 5 && (
-                  <div className="td-upload-section">
-                    <h3>Ảnh tài liệu</h3>
-
-                    <div
-                      className="td-upload-area"
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={handleDrop}
-                      onClick={() => fileInputRef.current.click()}
-                    >
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        style={{ display: "none" }}
-                        onChange={handleFileInput}
-                        multiple
-                        accept="image/jpeg,image/png,image/heic"
-                      />
-                      <Upload className="td-upload-icon" />
-                      <p className="td-upload-text">
-                        {uploading
-                          ? "Đang tải lên..."
-                          : "Nhấp đ tải lên hoặc kéo v thả"}
-                      </p>
-                      <p className="td-upload-note">
-                        JPG, PNG hoặc HEIC (tối đa 5MB)
-                      </p>
-                    </div>
-
-                    <div className="td-image-grid">
-                      {images.map((image) => (
-                        <div key={image.id} className="td-image-item">
-                          <img src={image.url} alt="Tài liu" />
-                          <button
-                            onClick={() => removeImage(image.id)}
-                            className="td-remove-btn"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="td-upload-sections">
+         
                   </div>
                 )
               )}
 
-              <div className="td-actions">
-                {task.status === 1 && (
-                  <>
-                    <button className="td-btn td-btn-accept">
-                      <CheckCircle size={20} />
-                      Chấp nhận nhiệm vụ
-                    </button>
-                    <button className="td-btn td-btn-reject">
-                      <X size={20} />
-                      Từ chối nhiệm vụ
-                    </button>
-                  </>
-                )}
-                {task.status === 2 && (
-                  <button className="td-btn td-btn-primary">Thất bại</button>
-                )}
-                {task.status === 3 && (
-                  <>
-                    <button
-                      className="td-btn td-btn-complete"
-                      onClick={async () => {
-                        try {
-                          setUploading(true);
-                          setAlertMessage("Đang cập nhật trạng thái...");
-                          setAlertSeverity("info");
-                          setAlertOpen(true);
-
-                          // Check if there are any images
-                          if (images.length === 0) {
-                            setAlertMessage(
-                              "Vui lòng tải lên ít nhất một ảnh trước khi hoàn thành nhiệm vụ"
-                            );
-                            setAlertSeverity("error");
-                            setAlertOpen(true);
-                            return;
-                          }
-
-                          // Get array of image URLs
-                          const imageUrls = images.map((img) => img.url);
-
-                          // Add images to task using taskId from task object
-                          await addTaskImages(task.taskId, imageUrls);
-
-                          // Update task status
-
-                          // Refresh task data
-                          const updatedTask = await getByScheduleDetailId(
-                            accountId,
-                            scheduleDetailId
-                          );
-                          setTask(updatedTask);
-
-                          setAlertMessage("Nhiệm vụ đã hoàn thành thành công");
-                          setAlertSeverity("success");
-                          setAlertOpen(true);
-                        } catch (error) {
-                          console.error("Error completing task:", error);
-                          setAlertMessage(
-                            "Không thể hoàn thành nhiệm vụ. Vui lòng thử lại."
-                          );
-                          setAlertSeverity("error");
-                          setAlertOpen(true);
-                        } finally {
-                          setUploading(false);
-                        }
-                      }}
-                      disabled={uploading}
+              {isCheckedIn && (
+                <div className="td-attendance-sections">
+                  <div className="td-attendance-photos">
+                    <h3>Ảnh điểm danh</h3>
+                    <div className="td-image-grid">
+                      {(showEditAttendance ? currentPhotos : [attendance?.imagePath1, attendance?.imagePath2, attendance?.imagePath3])
+                        .filter(Boolean)
+                        .map((imageUrl, index) => (
+                          <div key={index} className="td-image-item">
+                            <img src={imageUrl} alt={`Ảnh điểm danh ${index + 1}`} />
+                            {showEditAttendance && (
+                              <button
+                                className="td-photo-remove"
+                                onClick={() => handleRemovePhoto(index)}
+                              >
+                                <X size={16} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                        
+                      {/* Nút thêm ảnh khi đang edit và chưa đủ 3 ảnh */}
+                      {showEditAttendance && currentPhotos.length < 3 && (
+                        <div 
+                          className="td-image-item td-image-add"
+                          onClick={() => document.getElementById('add-photo-input').click()}
+                        >
+                          <Camera size={24} />
+                          <span>Thêm ảnh</span>
+                          <input
+                            id="add-photo-input"
+                            type="file"
+                            accept="image/jpeg,image/png,image/heic"
+                            onChange={handleAddPhoto}
+                            style={{ display: 'none' }}
+                            multiple
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {!showEditAttendance ? (
+                    <button 
+                      className="td-btn td-btn-edit" 
+                      onClick={handleEditAttendance}
                     >
-                      <CheckCircle size={20} />
-                      {uploading ? "Đang xử lý..." : "Hoàn thành nhiệm vụ"}
+                      Sửa điểm danh
                     </button>
-                  </>
-                )}
-              </div>
+                  ) : (
+                    <div className="td-edit-actions">
+                      <button 
+                        className="td-btn td-btn-confirm" 
+                        onClick={handleConfirmEdit}
+                      >
+                        Xác nhận
+                      </button>
+                      <button 
+                        className="td-btn td-btn-cancel" 
+                        onClick={() => setShowEditAttendance(false)}
+                      >
+                        Hủy
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Add confirmation dialog */}
+              {confirmDialogOpen && (
+                <div className="td-confirm-dialog">
+                  <div className="td-confirm-content">
+                    <h3>Xác nhận cập nhật</h3>
+                    <p>Bạn có chắc chắn muốn cập nhật ảnh điểm danh?</p>
+                    <div className="td-confirm-actions">
+                      <button 
+                        className="td-btn td-btn-confirm" 
+                        onClick={handleConfirmEdit}
+                      >
+                        Xác nhận
+                      </button>
+                      <button 
+                        className="td-btn td-btn-cancel" 
+                        onClick={() => setConfirmDialogOpen(false)}
+                      >
+                        Hủy
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>

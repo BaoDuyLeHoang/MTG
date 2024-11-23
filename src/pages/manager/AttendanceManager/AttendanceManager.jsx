@@ -143,7 +143,7 @@ const AttendanceManager = () => {
       >
         <Container maxWidth="lg" className="dashboard-container">
           <div className="blog-manager-header">
-            <h1 className="blog-manager-title">Quản lý Điểm danh</h1>
+            <h1 className="blog-manager-title">Công việc của nhân viên</h1>
           </div>
           <Box className="dashboard-header"
             sx={{

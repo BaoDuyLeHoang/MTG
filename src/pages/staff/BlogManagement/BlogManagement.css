@@ -110,16 +110,14 @@
 }
 
 .blog-mgmt-card {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  border: 1px solid #e2e8f0;
-  max-width: 400px;
-  margin: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s;
+  position: relative;
+  border: 2px solid transparent;
+  padding: 15px;
+  margin-bottom: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
 .blog-mgmt-card:hover {
@@ -588,4 +586,242 @@
 .blog-detail-comment-info {
   display: flex;
   align-items: center;
+}
+
+.comment-report-info {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fff4f4;
+  border-radius: 4px;
+}
+
+.report-title {
+  color: #ff4444;
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.report-content, .report-description {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.blog-detail-comment {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.blog-detail-comment:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.blog-mgmt-stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+}
+
+.blog-mgmt-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.blog-mgmt-stat-reported {
+  color: #ff4444;
+  font-weight: 500;
+}
+
+.report-reporter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.report-reporter-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.report-reporter-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.report-reporter-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.report-date {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.blog-mgmt-card.has-reports::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  background-color: #ff4444;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.blog-mgmt-card.has-reported-comments {
+  border-color: #ff4444;
+  position: relative;
+}
+
+.blog-mgmt-card.has-reported-comments::before {
+  content: '!';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  background-color: #ff4444;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  animation: pulse 2s infinite;
+  z-index: 1;
+}
+
+.blog-mgmt-stat-reported {
+  color: #ff4444;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.blog-mgmt-stat-reported i {
+  color: #ff4444;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.delete-report-btn {
+  background-color: transparent;
+  border: none;
+  color: #ff4444;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.delete-report-btn:hover {
+  background-color: #ffeeee;
+  color: #cc0000;
+}
+
+.delete-report-btn svg {
+  font-size: 16px;
+}
+
+.comment-report-info {
+  margin-top: 10px;
+  padding: 15px;
+  background-color: #fff4f4;
+  border-radius: 8px;
+  border: 1px solid #ffdddd;
+}
+
+.report-title {
+  color: #ff4444;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Animation for report removal */
+.comment-report-info {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation for report deletion */
+.comment-report-info.deleting {
+  animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }

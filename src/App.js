@@ -47,7 +47,7 @@ import TaskDetails from './pages/staff/TaskDetail/TaskDetail';
 // Customer Components
 import HomePage from "./pages/customer/homePage/homePage";
 import MyGraveDetail from "./pages/customer/MyGraveDetail/MyGraveDetail";
-    import ServicePage from "./pages/customer/ServicePage/ServicePage";
+import ServicePage from "./pages/customer/ServicePage/ServicePage";
 import CheckOut from "./pages/customer/CheckOutPage/CheckOut";
 import CartPage from "./pages/customer/CartPage/CartPage";
 import ServiceDetailPage from "./pages/customer/ServiceDetailPage/ServiceDetailPage";
@@ -68,6 +68,7 @@ import ScheduleStaff from './pages/manager/ScheduleStaff/ScheduleStaff';
 import ServiceList from './pages/manager/ServiceList/ServiceList';
 import BlogDetail from './pages/customer/BlogDetailView/BlogDetail';
 import BlogCategoryDetail from './pages/customer/BlogCategoryDetail/BlogCategoryDetail';
+import Notifications from './pages/customer/NotificationList/NotificationList';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -97,6 +98,7 @@ function AppContent() {
           <Route path="/create-service" element={<CreateService />} />
           <Route path="/service-list" element={<ServiceList />} />
           <Route path="/blog-category/:id" element={<BlogCategoryDetail />} />
+          <Route path="/notifications" element={<Notifications />} />
 
           
           {/* Protected routes */}

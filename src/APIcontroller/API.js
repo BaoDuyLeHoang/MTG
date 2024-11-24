@@ -37,6 +37,7 @@ export const API_ENDPOINTS = {
   GET_PROFILE: "/Account/getProfile",
   UPDATE_PROFILE: "/Customer/update-profile",
   CHANGE_PASSWORD: "/Customer/change-password-customer",
+  GET_MY_NOTIFICATIONS: "/Notification/my-notifications",
 };
 
 export const getServices = async () => {
@@ -1063,6 +1064,25 @@ export const changePassword = async (passwordData) => {
       "Error changing password:",
       error.response ? error.response.data : error.message
     );
+    throw error;
+  }
+};
+
+
+export const getMyNotifications = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_MY_NOTIFICATIONS}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
     throw error;
   }
 };

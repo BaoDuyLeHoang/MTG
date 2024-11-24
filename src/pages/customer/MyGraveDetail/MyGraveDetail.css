@@ -25,12 +25,12 @@
     margin-bottom: 2rem;
     display: flex;
     justify-content: center;
+    width: 50%;
   }
   
   .memorial-image {
     width: 100%;
-    max-width: 800px;
-    max-height: 400px;
+    aspect-ratio: 4/3;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -88,8 +88,8 @@
   }
   
   .detail-section {
-    margin-bottom: 3rem;
-    flex: 1;
+    width: 50%;
+    margin-bottom: 2rem;
   }
   
   .detail-section h2 {
@@ -209,6 +209,20 @@
       top: 10px;
       right: 10px;
     }
+  
+    .grave-info-container {
+      flex-direction: column;
+    }
+  
+    .image-section,
+    .detail-section {
+      width: 100%;
+    }
+  
+    .memorial-image {
+      aspect-ratio: 3/2;
+    }
+
   }
 
   .service-button-container {
@@ -236,4 +250,5 @@
   .grave-info-container{
     display: flex;
     gap: 2rem;
+    align-items: flex-start;
   }

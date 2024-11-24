@@ -65,6 +65,8 @@ const ScheduleManager = () => {
   const getWeekDates = (weekOffset = 0) => {
     const dates = [];
     const now = new Date();
+    now.setHours(7, 0, 0, 0);
+    
     const firstDay = new Date(now);
     firstDay.setDate(now.getDate() - now.getDay() + weekOffset * 7);
 
@@ -145,9 +147,13 @@ const ScheduleManager = () => {
         const weekDates = getWeekDates(weekOffset);
         const details = {};
 
-        // Get first and last date of the week
-        const FromDate = weekDates[0].toISOString().split('T')[0];
-        const ToDate = weekDates[6].toISOString().split('T')[0];
+        const fromDate = new Date(weekDates[0]);
+        fromDate.setHours(7, 0, 0, 0);
+        const toDate = new Date(weekDates[6]);
+        toDate.setHours(7, 0, 0, 0);
+
+        const FromDate = fromDate.toISOString().split('T')[0];
+        const ToDate = toDate.toISOString().split('T')[0];
 
         // Single API call for the whole week
         const response = await getSchedulesForStaffFilterDate(
@@ -404,11 +410,14 @@ const ScheduleManager = () => {
   };
 
   const formatDate = (date) => {
-    return date.toLocaleDateString("vi-VN", {
+    const options = {
       weekday: "short",
       month: "numeric",
       day: "numeric",
-    });
+      timeZone: 'Asia/Ho_Chi_Minh'
+    };
+    
+    return date.toLocaleDateString("vi-VN", options);
   };
 
   const summary = calculateSummary();

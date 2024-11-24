@@ -103,6 +103,17 @@ export const updateTaskImage = async (taskId, urlImages) => {
         const response = await axios.put(
             `${BASE_URL}/Task/tasks/${taskId}/images`,
             { urlImages },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to update task image');
+    }
+};
 
 export const getTasksByManagerId = async (managerId, date, pageIndex, pageSize = 5) => {
     try {

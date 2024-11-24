@@ -538,20 +538,7 @@ const ScheduleManager = () => {
                                         >
                                           {assignment.serviceName}
                                         </Typography>
-                                        <Typography 
-                                          variant="caption" 
-                                          color="text.secondary"
-                                          display="block"
-                                        >
-                                          Mã liệt sĩ: {assignment.martyrCode}
-                                        </Typography>
-                                        <Typography 
-                                          variant="caption" 
-                                          color="text.secondary"
-                                          display="block"
-                                        >
-                                          Thời gian: {assignment.timeRange}
-                                        </Typography>
+                                        
                                       </div>
                                       <IconButton
                                         size="small"
@@ -561,15 +548,18 @@ const ScheduleManager = () => {
                                         }}
                                         sx={{
                                           position: 'absolute',
-                                          right: 8,
-                                          top: 8,
+                                          right: 2,
+                                          top: 2,
                                           '&:hover': {
                                             color: 'error.main',
+                                          },
+                                          '& .MuiSvgIcon-root': {
+                                            fontSize: '0.8rem',
                                           },
                                           zIndex: 2
                                         }}
                                       >
-                                        <CloseIcon fontSize="small" />
+                                        <CloseIcon fontSize="inherit" />
                                       </IconButton>
                                     </div>
                                   ))}

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getOrderDetails, createFeedback } from '../../../APIcontroller/API';
+import { getFeedbackWithDetailId } from '../../../services/feedback';
 import './OrderDetailCus.css';
 import Header from '../../../components/Header/header';
 import FeedbackModal from '../../../components/FeedbackModal/FeedbackModal';
 import { useAuth } from '../../../context/AuthContext';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
+import { FaStar } from 'react-icons/fa';
 
 const OrderDetailCus = () => {
   const [orderData, setOrderData] = useState(null);
@@ -16,6 +18,7 @@ const OrderDetailCus = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
+  const [feedbacks, setFeedbacks] = useState({});
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -24,8 +27,21 @@ const OrderDetailCus = () => {
           console.error('User information not available');
           return;
         }
-        const data = await getOrderDetails(orderId, user.accountId); // Pass accountId
+        const data = await getOrderDetails(orderId, user.accountId);
         setOrderData(data);
+        
+        // Fetch feedback for each detail
+        const feedbackPromises = data.orderDetails.map(detail =>
+          getFeedbackWithDetailId(detail.detailId)
+        );
+        const feedbackResults = await Promise.all(feedbackPromises);
+        
+        // Create an object with detailId as key and feedback as value
+        const feedbackMap = {};
+        data.orderDetails.forEach((detail, index) => {
+          feedbackMap[detail.detailId] = feedbackResults[index];
+        });
+        setFeedbacks(feedbackMap);
       } catch (error) {
         console.error('Error fetching order details:', error);
       }
@@ -79,6 +95,18 @@ const OrderDetailCus = () => {
     return statusClassMap[statusTask] || '';
   };
 
+  const RatingStars = ({ rating }) => {
+    return (
+      <div className="rating-stars">
+        {[...Array(5)].map((_, index) => (
+          <FaStar
+            key={index}
+            className={index < rating ? 'star-filled' : 'star-empty'}
+          />
+        ))}
+      </div>
+    );
+  };
 
   const handleFeedbackSubmit = async (feedbackData) => {
     try {
@@ -188,17 +216,45 @@ const OrderDetailCus = () => {
                 ))}
               </div>
 
-              {orderData.status === 4 && !detail.hasFeedback && (
+              {orderData.status === 4 && (
                 <div className="odc-feedback-container">
-                  <button 
-                    className="odc-feedback-btn"
-                    onClick={() => {
-                      setSelectedService(detail);
-                      setShowFeedbackModal(true);
-                    }}
-                  >
-                    Đánh giá dịch vụ
-                  </button>
+                  {feedbacks[detail.detailId] ? (
+                    <div className="odc-feedback-display">
+                      <div className="odc-feedback-header">
+                        <div className="odc-feedback-rating">
+                          <RatingStars rating={feedbacks[detail.detailId].rating} />
+                          <span className="rating-text">
+                            {feedbacks[detail.detailId].rating}/5
+                          </span>
+                        </div>
+                        <div className="odc-feedback-date">
+                          {formatDate(feedbacks[detail.detailId].createdAt)}
+                        </div>
+                      </div>
+                      <div className="odc-feedback-content">
+                        <p className="feedback-label">Đánh giá của bạn:</p>
+                        <p className="feedback-text">{feedbacks[detail.detailId].content}</p>
+                      </div>
+                      {feedbacks[detail.detailId].responseContent && (
+                        <div className="odc-feedback-response">
+                          <p className="response-label">Phản hồi từ nhân viên:</p>
+                          <p className="response-text">
+                            {feedbacks[detail.detailId].responseContent}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <button 
+                      className="odc-feedback-btn"
+                      onClick={() => {
+                        setSelectedService(detail);
+                        setShowFeedbackModal(true);
+                      }}
+                    >
+                      Đánh giá dịch vụ
+                    </button>
+                  )}
                 </div>
               )}
             </div>

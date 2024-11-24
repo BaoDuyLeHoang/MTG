@@ -29,11 +29,30 @@ import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import "./sideBar.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { getProfile } from "../../services/profile";
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [avatarPath, setAvatarPath] = React.useState(null);
+  const [fullName, setFullName] = React.useState("");
+
+  // Add useEffect to fetch profile data
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      if (user?.accountId) {
+        try {
+          const profileData = await getProfile(user.accountId);
+          setAvatarPath(profileData.avatarPath);
+          setFullName(profileData.fullName);
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+        }
+      }
+    };
+    fetchProfile();
+  }, [user?.accountId]);
 
   // Moved menuItems inside component to access user context
   const menuItems = [
@@ -176,16 +195,20 @@ const Sidebar = () => {
         <div className="logo-container">
           <img src={logo} alt="Logo" className="logo" />
         </div>
-        <h3 className="user-name">Xin chào, {user?.accountName || "Guest"}!</h3>
+        <h3 className="user-name">Xin chào, {fullName || "Guest"}!</h3>
         <div className="user-profile">
           <div className="user-avatar">
-            {user?.avatarUrl ? (
+            {avatarPath ? (
               <img
-                src={user.avatarUrl}
+                src={`${avatarPath}`}
                 alt={user?.accountName || "User"}
                 onError={(e) => {
-                  e.target.style.display = "none";
-                  e.target.nextElementSibling.style.display = "flex";
+                  if (e.target) {
+                    e.target.style.display = "none";
+                    if (e.target.nextElementSibling) {
+                      e.target.nextElementSibling.style.display = "flex";
+                    }
+                  }
                 }}
               />
             ) : (

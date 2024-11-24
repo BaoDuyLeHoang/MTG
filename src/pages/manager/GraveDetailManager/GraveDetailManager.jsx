@@ -335,6 +335,65 @@ const MyGraveDetail = () => {
           </div>
         )}
 
+
+            {/* Render Services if the Services tab is active */}
+            {activeTab === 'services' && (
+              <div className="grave-detail-manager-services-section">
+                <div className="grave-detail-manager-create-service">
+                  <h2>Thêm dịch vụ mới</h2>
+                  <select onChange={(e) => setSelectedServiceId(Number(e.target.value))}>
+                    <option value="">Chọn dịch vụ</option>
+                    {availableServices.map(service => (
+                      <option key={service.serviceId} value={service.serviceId}>
+                        {service.serviceName}
+                      </option>
+                    ))}
+                  </select>
+                  <button onClick={handleCreateService}>Thêm dịch vụ</button>
+                </div>
+                {renderServices()} {/* Render services here */}
+              </div>
+
+
+            )}
+
+
+            {activeTab === 'details' && (
+              <div className="grave-detail-manager-personal-section">
+                <h2>Thông tin thân nhân</h2>
+                <div className="grave-detail-manager-personal-list">
+                  {(isEditing ? editedPersonalInfo : fakePersonalInfo).map((person) => (
+                    <div key={person.id} className="grave-detail-manager-personal-item">
+                      <div className="grave-detail-manager-personal-name">
+                        {person.name}
+                      </div>
+                      <div className="grave-detail-manager-personal-contact">
+                        <span>SĐT: {person.phone}</span>
+                        <span>Email: {person.email}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedImage && (
+              <div
+                className="grave-detail-manager-modal-overlay"
+                onClick={closeModal}
+              >
+                <div className="grave-detail-manager-modal-content">
+                  <img src={selectedImage} alt="Memorial - Large view" />
+                  <button
+                    className="grave-detail-manager-modal-close"
+                    onClick={closeModal}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
+
         {/* Render Services if the Services tab is active */}
         {activeTab === 'services' && (
           <div className="grave-detail-manager-services-section">
@@ -382,11 +441,10 @@ const MyGraveDetail = () => {
                 ×
               </button>
             </div>
+
           </div>
-        )}
-      </div>
     </div>
-  );
+      );
 };
 
-export default MyGraveDetail;
+      export default MyGraveDetail;

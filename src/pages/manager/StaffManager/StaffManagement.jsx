@@ -54,9 +54,9 @@ const StaffManagement = () => {
     });
 
     // Move handleAction inside the component
-    const handleAction = async (id, currentStatus) => {
+    const handleAction = async (id) => {
         try {
-            await updateAccountStatus(id);
+            await updateAccountStatus(id, user.accountId);
             // Refresh the staff list after successful update
             fetchStaffData();
         } catch (error) {
@@ -199,7 +199,7 @@ const StaffManagement = () => {
                                         <td>
                                             <button
                                                 className="icon-button"
-                                                onClick={() => handleAction(staff.accountId, staff.status)}
+                                                onClick={() => handleAction(staff.accountId)}
                                                 title={staff.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
                                             >
                                                 {staff.status ? (

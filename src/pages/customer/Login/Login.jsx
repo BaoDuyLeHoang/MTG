@@ -33,32 +33,37 @@ export default function Login() {
         console.log("Login successful, user:", result.user);
 
         // Check for pending cart items
-        const selectedMartyrId = sessionStorage.getItem("selectedMartyrId");
-        const savedCartIds = sessionStorage.getItem("savedCartIds");
+        const savedCartItems = JSON.parse(sessionStorage.getItem("savedCartItems") || "[]");
+        console.log("Saved cart items:", savedCartItems);
 
-        if (selectedMartyrId && savedCartIds && result.user.accountId) {
+        if (savedCartItems.length > 0 && result.user.accountId) {
           try {
-            console.log("Adding pending item to cart");
-            await addToCart(
-              {
-                serviceId: savedCartIds,
+            console.log("Adding pending items to cart");
+            
+            // Format the items into the expected structure
+            for (let i = 0; i < savedCartItems.length; i++) {
+              const formattedItem = [{
                 accountId: result.user.accountId,
-                martyrId: selectedMartyrId,
-              },
-              result.user.token
-            );
-            console.log("Successfully added pending item to cart");
+                serviceId: savedCartItems[i].serviceId,
+                martyrId: savedCartItems[i].martyrId.toString()
+              }];
+              
+              console.log("Adding item to cart:", formattedItem);
+              await addToCart(formattedItem);
+            }
+            
+            console.log("Successfully added all items to cart");
 
-            // Clear the pending items from session storage
-            sessionStorage.removeItem("selectedMartyrId");
-            sessionStorage.removeItem("savedCartIds");
+            // Clear the pending items
+            sessionStorage.removeItem("savedCartItems");
 
             // Redirect to cart page
             navigate("/cart");
-            return; // Exit the function early
+            return;
           } catch (error) {
-            console.error("Error adding pending item to cart:", error);
-            // You might want to show an error message to the user here
+            console.error("Error adding items to cart:", error);
+            setAlertMessage("Có lỗi xảy ra khi thêm vào giỏ hàng");
+            setOpenAlert(true);
           }
         }
 

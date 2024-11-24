@@ -48,6 +48,11 @@ const ServiceDetailPage = () => {
     return array;
   };
 
+  // Add this helper function at the top of your component
+  const formatCurrency = (amount) => {
+    return amount?.toLocaleString('vi-VN') + ' đ';
+  };
+
   if (loading) {
     return (
       <>
@@ -89,6 +94,8 @@ const ServiceDetailPage = () => {
     <>
       <Header />
       <div className="container">
+       
+
         <img src={service.imagePath} alt={service.serviceName} className="header-image" />
         <h1 className="service-title">{service.serviceName}</h1>
         <p className="description">{service.description}</p>
@@ -107,7 +114,7 @@ const ServiceDetailPage = () => {
               <tr key={index}>
                 <td>{item.materialName}</td>
                 <td>{item.description}</td>
-                <td>{item.price} đ</td>
+                <td className="price-cell">{formatCurrency(item.price)}</td>
               </tr>
             ))}
             <tr className="separator-row">
@@ -115,15 +122,30 @@ const ServiceDetailPage = () => {
             </tr>
             <tr className="total-row">
               <td colSpan={2}>Tiền công</td>
-              <td>{service.wage} đ</td>
+              <td className="price-cell">{formatCurrency(service.wage)}</td>
             </tr>
-            <tr>
+            <tr className="final-total-row">
               <td colSpan={2}>Tổng giá tiền</td>
-              <td>{service.price} đ</td>
+              <td className="price-cell">{formatCurrency(service.price)}</td>
             </tr>
           </tbody>
         </table>
-      
+        <div className="important-notice">
+          <h3>Lưu ý quan trọng:</h3>
+          <p>
+            Kính thưa Quý khách,
+          </p>
+          <p>
+            Để tiến hành đặt dịch vụ, Quý khách vui lòng hoàn tất bước tìm kiếm mộ phần . 
+            Sau khi phần mộ được xác định, các dịch vụ tương ứng sẽ được hiển thị và sẵn sàng để Quý khách lựa chọn.
+          </p>
+          <p>
+            Chúng tôi trân trọng cảm ơn Quý khách đã quan tâm và sử dụng dịch vụ của chúng tôi.
+          </p>
+          <Link to="/tim-kiem-mo" className="search-grave-button">
+            Tìm kiếm mộ phần
+          </Link>
+        </div>
 
         <h2 className="section-title">Dịch vụ khác</h2>
         <div className="other-services">

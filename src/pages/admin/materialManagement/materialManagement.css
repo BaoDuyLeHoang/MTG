@@ -505,10 +505,7 @@
     opacity: 0.5;
 }
 
-/* Đảm bảo tất cả elements đều có box-sizing đúng */
-* {
-    box-sizing: border-box;
-}
+
 
 .price-preview {
     margin-top: 0.5rem;

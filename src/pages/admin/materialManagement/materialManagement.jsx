@@ -173,6 +173,14 @@ const MaterialManagement = () => {
         setCurrentPage(pageNumber);
     };
 
+    // Thêm hàm format giá
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(price).replace('₫', 'đ');
+    };
+
     return (
         <div className="material-management-container">
             <Sidebar />
@@ -258,8 +266,13 @@ const MaterialManagement = () => {
                                         value={newMaterial.price}
                                         onChange={handleNewMaterialChange}
                                         required
-                                        placeholder="Nhập giá"
+                                        placeholder="Nhập giá (VD: 100000)"
                                     />
+                                    {newMaterial.price && (
+                                        <div className="price-preview">
+                                            {formatPrice(newMaterial.price)}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="form-actions">
                                     
@@ -327,13 +340,13 @@ const MaterialManagement = () => {
                                         <td>
                                             {editRowId === material.materialId ? (
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     name="price"
                                                     value={editValues.price}
                                                     onChange={handleInputChange}
                                                 />
                                             ) : (
-                                                material.price
+                                                formatPrice(material.price)
                                             )}
                                         </td>
                                         <td>

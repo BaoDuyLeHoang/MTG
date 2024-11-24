@@ -196,7 +196,6 @@ const ScheduleManager = () => {
     setSelectedTimeSlot(timeSlot);
     setOpenOrderDialog(true);
     
-    // Fetch tasks when dialog opens
     if (!user?.accountId) {
       setOrderError('Không tìm thấy thông tin quản lý');
       return;
@@ -206,13 +205,30 @@ const ScheduleManager = () => {
       setOrderLoading(true);
       const response = await getTasksByAccountId(user.accountId);
       if (response && response.tasks) {
-        // Filter tasks based on status and date if needed
+        // Tạo map để đếm số lần xuất hiện của mỗi taskId trong lịch
+        const taskOccurrences = {};
+        Object.values(schedule).forEach(assignments => {
+          assignments.forEach(assignment => {
+            if (!taskOccurrences[assignment.serviceName]) {
+              taskOccurrences[assignment.serviceName] = 1;
+            } else {
+              taskOccurrences[assignment.serviceName]++;
+            }
+          });
+        });
+
+        // Lọc tasks dựa trên status, date và số lần xuất hiện
         const filteredTasks = response.tasks.filter(task => {
           const taskEndDate = new Date(task.endDate);
           const selectedDate = date;
-          return (task.status === 1 || task.status === 3) && 
-                 taskEndDate >= selectedDate;
+          const isValidStatus = (task.status === 1 || task.status === 3);
+          const isValidDate = taskEndDate >= selectedDate;
+          const currentOccurrences = taskOccurrences[task.serviceName] || 0;
+          const isUnderLimit = currentOccurrences < 2; // Giới hạn 2 lần xuất hiện
+
+          return isValidStatus && isValidDate && isUnderLimit;
         });
+
         setOrders(filteredTasks);
       }
     } catch (err) {
@@ -435,6 +451,19 @@ const ScheduleManager = () => {
     }
   };
 
+  // Thêm hàm kiểm tra số lần xuất hiện của task
+  const getTaskOccurrences = (serviceName) => {
+    let count = 0;
+    Object.values(schedule).forEach(assignments => {
+      assignments.forEach(assignment => {
+        if (assignment.serviceName === serviceName) {
+          count++;
+        }
+      });
+    });
+    return count;
+  };
+
   return (
     <div className="layout-container">
       <Sidebar />
@@ -652,58 +681,73 @@ const ScheduleManager = () => {
             ) : (
               <>
                 <List sx={{ py: 2 }}>
-                  {getPaginatedOrders().map((task) => (
-                    <Fade in key={task.taskId} timeout={500}>
-                      <StyledListItem 
-                        sx={{
-                          border: '1px solid',
-                          borderColor: 'divider',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          '&:hover': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-                          }
-                        }}
-                      >
-                        <Box sx={{ flex: 1, p: 1 }}>
-                          <Typography 
-                            variant="h6" 
-                            sx={{ 
-                              fontSize: '1.1rem',
-                              fontWeight: 500,
-                              mb: 0.5
-                            }}
-                          >
-                            {task.serviceName} - {task.graveLocation}
-                          </Typography>
-                          <Typography 
-                            variant="body2" 
-                            color="text.secondary"
-                            sx={{ 
-                              display: 'flex', 
-                              alignItems: 'center',
-                              gap: 1
-                            }}
-                          >
-                            <span>Hạn:</span>
-                            <span style={{ fontWeight: 500 }}>
-                              {new Date(task.endDate).toLocaleDateString('vi-VN')}
-                            </span>
-                          </Typography>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          size="small"
-                          onClick={() => handleSelectOrder(task)}
-                          sx={{ minWidth: '100px' }}
+                  {getPaginatedOrders().map((task) => {
+                    const occurrences = getTaskOccurrences(task.serviceName);
+                    const isDisabled = occurrences >= 2;
+
+                    return (
+                      <Fade in key={task.taskId} timeout={500}>
+                        <StyledListItem 
+                          sx={{
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            opacity: isDisabled ? 0.5 : 1,
+                            '&:hover': {
+                              backgroundColor: isDisabled ? 'inherit' : 'rgba(0, 0, 0, 0.04)',
+                              transform: isDisabled ? 'none' : 'translateY(-2px)',
+                              boxShadow: isDisabled ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.05)',
+                            }
+                          }}
                         >
-                          Thêm Công Việc
-                        </Button>
-                      </StyledListItem>
-                    </Fade>
-                  ))}
+                          <Box sx={{ flex: 1, p: 1 }}>
+                            <Typography 
+                              variant="h6" 
+                              sx={{ 
+                                fontSize: '1.1rem',
+                                fontWeight: 500,
+                                mb: 0.5
+                              }}
+                            >
+                              {task.serviceName} - {task.graveLocation}
+                              {isDisabled && (
+                                <Typography 
+                                  component="span" 
+                                  color="error" 
+                                  sx={{ ml: 1, fontSize: '0.9rem' }}
+                                >
+                                  (Đã đạt giới hạn 2 lần)
+                                </Typography>
+                              )}
+                            </Typography>
+                            <Typography 
+                              variant="body2" 
+                              color="text.secondary"
+                              sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center',
+                                gap: 1
+                              }}
+                            >
+                              <span>Hạn:</span>
+                              <span style={{ fontWeight: 500 }}>
+                                {new Date(task.endDate).toLocaleDateString('vi-VN')}
+                              </span>
+                            </Typography>
+                          </Box>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleSelectOrder(task)}
+                            sx={{ minWidth: '100px' }}
+                          >
+                            Thêm Công Việc
+                          </Button>
+                        </StyledListItem>
+                      </Fade>
+                    );
+                  })}
                 </List>
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                   <Pagination 

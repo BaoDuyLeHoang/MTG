@@ -4,6 +4,7 @@ import Sidebar from '../../../components/Sidebar/sideBar';
 import './accountManagement.css';
 import { getAllManagers} from '../../../services/admin';
 import { updateAccountStatus } from '../../../APIcontroller/API';
+import { jwtDecode } from "jwt-decode";
 
 import { ToggleLeft, ToggleRight, FileText } from 'lucide-react';
 // src/pages/admin/accountManagement/mockData.js
@@ -41,16 +42,24 @@ const ManagerManagement = () => {
         return matchesSearch && matchesArea;
     });
 
-    const handleAction = async (id, currentStatus) => {
-      try {
-          await updateAccountStatus(id);
-          // Refresh the staff list after successful update
-          fetchManagerData();
-      } catch (error) {
-          console.error('Error updating status:', error);
-          // You might want to add some error handling UI here
-      }
-  };
+    const handleAction = async (banAccountId) => {
+        try {
+            // Lấy accountId từ token hoặc context/redux store
+            const token = localStorage.getItem('accessToken');
+            const decodedToken = jwtDecode(token);
+            const accountId = decodedToken.accountId;
+
+            // Gọi API với banAccountId (account bị chặn) và accountId (người thực hiện)
+            await updateAccountStatus(banAccountId, accountId);
+            
+            // Sau khi update thành công, fetch lại data mới
+            await fetchManagerData();
+        } catch (error) {
+            console.error('Error updating status:', error);
+            // Thêm thông báo lỗi cho người dùng
+            alert('Không thể cập nhật trạng thái tài khoản. Vui lòng thử lại!');
+        }
+    };
 
     const handleCreateReport = (managerId) => {
         console.log(`Creating report for manager ID: ${managerId}`);
@@ -60,7 +69,7 @@ const ManagerManagement = () => {
         <div className="manager-management-container">
             <Sidebar />
             <div className="manager-management-content">
-                <h1>Quản Lý Quản</h1>
+                <h1>Quản Lý</h1>
                 
                 {loading ? (
                     <div className="centered">
@@ -99,7 +108,7 @@ const ManagerManagement = () => {
                                         <td>
                                             <button 
                                                 className="icon-button"
-                                                onClick={() => handleAction(manager.accountId, manager.status)}
+                                                onClick={() => handleAction(manager.accountId)}
                                                 title={manager.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
                                             >
                                                 {manager.status ? (

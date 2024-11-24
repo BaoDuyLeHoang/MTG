@@ -335,3 +335,89 @@
 .odc-feedback-btn:hover {
   background-color: #45a049;
 }
+
+.odc-feedback-display {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  margin-top: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.odc-feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.odc-feedback-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star-filled {
+  color: #ffc107;
+  font-size: 18px;
+}
+
+.star-empty {
+  color: #e4e5e9;
+  font-size: 18px;
+}
+
+.rating-text {
+  color: #6c757d;
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+.odc-feedback-date {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.odc-feedback-content {
+  margin-bottom: 15px;
+}
+
+.feedback-label, .response-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.feedback-text, .response-text {
+  color: #212529;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.odc-feedback-response {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.odc-feedback-btn {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.odc-feedback-btn:hover {
+  background-color: #0b5ed7;
+}

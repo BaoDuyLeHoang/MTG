@@ -63,50 +63,101 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <Sidebar />
       <div className="dashboard">
+        
         <main className="main-content">
-          <h2>Tổng quan</h2>
           <div className="dashboard-widgets">
             <div className="widget">
-              <FontAwesomeIcon icon={faUsers} className="widget-icon" />
-              <h3>Nhân viên</h3>
-              <p className="widget-value">1,234</p>
+              <div className="widget-content">
+                <div className="widget-icon-wrapper">
+                  <FontAwesomeIcon icon={faUsers} className="widget-icon" />
+                </div>
+                <div className="widget-info">
+                  <p className="widget-label">Nhân viên</p>
+                  <h3 className="widget-value">1,234</h3>
+                  <p className="widget-change">+12% so với tháng trước</p>
+                </div>
+              </div>
             </div>
             <div className="widget">
-              <FontAwesomeIcon icon={faBoxes} className="widget-icon" />
-              <h3>Khách hàng</h3>
-              <p className="widget-value">567</p>
+              <div className="widget-content">
+                <div className="widget-icon-wrapper">
+                  <FontAwesomeIcon icon={faBoxes} className="widget-icon" />
+                </div>
+                <div className="widget-info">
+                  <p className="widget-label">Khách hàng</p>
+                  <h3 className="widget-value">567</h3>
+                  <p className="widget-change">+8% so với tháng trước</p>
+                </div>
+              </div>
             </div>
             <div className="widget">
-              <FontAwesomeIcon icon={faShoppingCart} className="widget-icon" />
-              <h3>Đơn hàng</h3>
-              <p className="widget-value">89</p>
+              <div className="widget-content">
+                <div className="widget-icon-wrapper">
+                  <FontAwesomeIcon icon={faShoppingCart} className="widget-icon" />
+                </div>
+                <div className="widget-info">
+                  <p className="widget-label">Đơn hàng</p>
+                  <h3 className="widget-value">89</h3>
+                  <p className="widget-change">+15% so với tháng trước</p>
+                </div>
+              </div>
             </div>
             <div className="widget">
-              <FontAwesomeIcon icon={faDollarSign} className="widget-icon" />
-              <h3>Doanh thu</h3>
-              <p className="widget-value">$12,345</p>
+              <div className="widget-content">
+                <div className="widget-icon-wrapper">
+                  <FontAwesomeIcon icon={faDollarSign} className="widget-icon" />
+                </div>
+                <div className="widget-info">
+                  <p className="widget-label">Doanh thu</p>
+                  <h3 className="widget-value">$12,345</h3>
+                  <p className="widget-change">+20% so với tháng trước</p>
+                </div>
+              </div>
             </div>
           </div>
           <div className="dashboard-charts">
-            <div className="chart-container">
-              <h3>Trạng thái đơn hàng</h3>
+            <div className="chart-card">
+              <div className="chart-header">
+                <h3>Trạng thái đơn hàng</h3>
+                <select className="chart-period">
+                  <option>7 ngày qua</option>
+                  <option>30 ngày qua</option>
+                  <option>3 tháng qua</option>
+                </select>
+              </div>
               <Pie
                 data={pieData}
                 options={{
                   responsive: true,
                   maintainAspectRatio: true,
-                  aspectRatio: 2, // Adjust this value to control the size
+                  aspectRatio: 1.5,
+                  plugins: {
+                    legend: {
+                      position: 'bottom'
+                    }
+                  }
                 }}
               />
             </div>
-            <div className="chart-container">
-              <h3>Doanh thu theo tháng</h3>
+            <div className="chart-card">
+              <div className="chart-header">
+                <h3>Doanh thu theo tháng</h3>
+                <select className="chart-period">
+                  <option>2024</option>
+                  <option>2023</option>
+                </select>
+              </div>
               <Line
                 data={lineData}
                 options={{
                   responsive: true,
                   maintainAspectRatio: true,
-                  aspectRatio: 2, // Adjust this value to control the size
+                  aspectRatio: 1.5,
+                  plugins: {
+                    legend: {
+                      position: 'bottom'
+                    }
+                  }
                 }}
               />
             </div>

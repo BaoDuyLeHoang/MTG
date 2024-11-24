@@ -594,7 +594,7 @@ const TaskList = () => {
                                                 setIsPopupOpen(false);
                                             }}
                                         >
-                                            Chấp nhận
+                                            Xếp lịch làm việc
                                         </button>
                                         <button 
                                             className="reject-button"

@@ -51,6 +51,30 @@ export const getTasksByAccountId = async (accountId, date, pageIndex = 1, pageSi
     }
 };
 
+export const getTasksNotSchedulingByAccountId = async (accountId, date, pageIndex = 1, pageSize = 5) => {
+    try {
+        const params = new URLSearchParams({
+            pageIndex: pageIndex,
+            pageSize: pageSize
+        });
+        if (date) {
+            params.append('date', date);
+        }
+
+        const response = await axios.get(
+            `${BASE_URL}/Task/tasksNotScheduling/account/${accountId}?${params}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        return response.data; 
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
+    }
+};
+
 export const addTaskImages = async (scheduleDetailId, urlImages) => {
     try {
         const response = await axios.put(

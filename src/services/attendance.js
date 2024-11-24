@@ -111,3 +111,21 @@ export const updateAttendanceStatus = async (attendanceId, status, note, manager
       throw new Error('Failed to update attendance status.'); // Throw error for handling in the component
   }
 };
+
+export const getAttendanceByAttendanceId = async (attendanceId) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/Attendance/GetAttendanceByAttendanceId/${attendanceId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching attendance by ID:', error);
+    throw error;
+  }
+};

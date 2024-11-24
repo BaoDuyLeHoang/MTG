@@ -97,6 +97,13 @@ export const updateCommentStatus = async (commentId, status) => {
     }
 };
 
+
+export const updateTaskImage = async (taskId, urlImages) => {
+    try {
+        const response = await axios.put(
+            `${BASE_URL}/Task/tasks/${taskId}/images`,
+            { urlImages },
+
 export const getTasksByManagerId = async (managerId, date, pageIndex, pageSize = 5) => {
     try {
         const params = new URLSearchParams({
@@ -109,6 +116,7 @@ export const getTasksByManagerId = async (managerId, date, pageIndex, pageSize =
 
         const response = await axios.get(
             `${BASE_URL}/Task/tasks/manager/${managerId}?${params}`,
+
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -117,6 +125,10 @@ export const getTasksByManagerId = async (managerId, date, pageIndex, pageSize =
         );
         return response.data;
     } catch (error) {
+
+        throw new Error(error.response?.data?.message || 'Failed to add images to task');
+
         throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
+
     }
 };

@@ -17,6 +17,7 @@ import SessionCheck from "./components/SessionCheck";
 import SearchGraveInterface from './components/SearchGraveInterface/SearchGraveInterface';
 
 // Admin Components
+import MaterialManagement from './pages/admin/materialManagement/materialManagement';
 import Dashboard from "./pages/admin/dashBoard/dashboard";
 import PayManagement from "./pages/admin/payManagement/payManagement";
 import AccountManagement from "./pages/admin/accountManagement/accountManagement";
@@ -26,7 +27,7 @@ import AddTask from "./pages/admin/addTask/AddTask";
 // Manager Components
 import OrderManagementManager from "./pages/manager/OrderManagement/OrderManagement";
 import OrderDetail from "./pages/manager/orderDetail/OrderDetai";
-  import GraveView from "./pages/manager/graveView/GraveView";
+import GraveView from "./pages/manager/graveView/GraveView";
 import FeedbackManagement from "./pages/manager/feedbackManagement/FeedbackManagement";
 import StaffManagement from "./pages/manager/StaffManager/StaffManagement";
 import ProfileStaff from "./pages/manager/ProfileStaff/ProfileStaff";
@@ -107,6 +108,7 @@ function AppContent() {
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
           <Route path="/user-profile" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><UserProfile /></ProtectedRoute>} />
           {/* Admin routes */}
+          <Route path="/material-management" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><MaterialManagement /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
           <Route path="/danhsachaccount" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AccountManagement /></ProtectedRoute>} />
           <Route path="/danhsachnhanvien" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><StaffManagement /></ProtectedRoute>} />

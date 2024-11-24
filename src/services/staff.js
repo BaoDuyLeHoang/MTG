@@ -38,3 +38,24 @@ export const createStaff = async (staffData, accountId) => {
       throw new Error(error.response?.data?.message || 'Failed to create staff');
   }
 };
+
+export const banAccountCustomer = async (customerAccountId, userAccountId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    const response = await axios.put(
+      `${BASE_URL}/updateStatus/${customerAccountId}`,
+      null,
+      {
+        params: { userAccountId }, 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to update account status');
+  }
+};

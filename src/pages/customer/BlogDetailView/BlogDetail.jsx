@@ -313,7 +313,14 @@ const BlogDetail = () => {
             return (
               <div key={comment.commentId} className="blog-detail__comment">
                 <div className="blog-detail__comment-header">
-                  <span className="blog-detail__comment-author">{comment.accountName}</span>
+                  <div className="blog-detail__comment-author-info">
+                    <img 
+                      src={comment.accountAvatar || '/default-avatar.jpg'} 
+                      alt={`${comment.accountName}'s avatar`}
+                      className="blog-detail__comment-avatar"
+                    />
+                    <span className="blog-detail__comment-author">{comment.accountName}</span>
+                  </div>
                   <div className="blog-detail__comment-actions-wrapper">
                     <span className="blog-detail__comment-date">
                       {new Date(comment.createdDate).toLocaleDateString('vi-VN')}

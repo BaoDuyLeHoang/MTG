@@ -145,8 +145,12 @@ const OrderDetailCus = () => {
             <div key={detail.detailId} className="odc-service-card">
               <div className="odc-service-info">
                 <div className="odc-service-header">
-                  <h4>{detail.serviceName}</h4>
-                  <span className="odc-price">{formatPrice(detail.orderPrice)} VNĐ</span>
+                  <div className="odc-service-title-price">
+                    <h4>{detail.serviceName}</h4>
+                    <div className="odc-price-tag">
+                      <span className="odc-price">{formatPrice(detail.orderPrice)} VNĐ</span>
+                    </div>
+                  </div>
                 </div>
                 <div className="odc-service-details">
                   <p><strong>Liệt sĩ:</strong> {detail.martyrName}</p>
@@ -170,16 +174,32 @@ const OrderDetailCus = () => {
                   </div>
                 </div>
               </div>
-              {orderData.status === 4 && (
-                <button 
-                  className="odc-feedback-btn"
-                  onClick={() => {
-                    setSelectedService(detail);
-                    setShowFeedbackModal(true);
-                  }}
-                >
-                  Đánh giá dịch vụ
-                </button>
+              
+              <div className="odc-service-images">
+                {[detail.imagePath1, detail.imagePath2, detail.imagePath3]
+                  .filter(path => path) // Remove empty paths
+                  .map((imagePath, index) => (
+                    <img 
+                      key={index}
+                      src={imagePath}
+                      alt={`Task image ${index + 1}`}
+                      className="odc-service-image"
+                    />
+                ))}
+              </div>
+
+              {orderData.status === 4 && !detail.hasFeedback && (
+                <div className="odc-feedback-container">
+                  <button 
+                    className="odc-feedback-btn"
+                    onClick={() => {
+                      setSelectedService(detail);
+                      setShowFeedbackModal(true);
+                    }}
+                  >
+                    Đánh giá dịch vụ
+                  </button>
+                </div>
               )}
             </div>
           ))}

@@ -825,3 +825,16 @@
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.blog-detail__comment-author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.blog-detail__comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}

@@ -1,28 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../../components/Sidebar/sideBar';
 import DateFilter from '../../../components/DateFilter/dateFilter';
+import { getPayments } from '../../../services/payment'; // Import the getPayments function
+import PaymentDetailModal from './PaymentDetailModal'; // Import the modal component
 import '../payManagement/payManagement.css';
 
 const PayManagement = () => {
   const [payments, setPayments] = useState([]);
-  const handleDateFilterChange = (startDate, endDate) => {
-    console.log('Start Date:', startDate);
-    console.log('End Date:', endDate);
+  const [selectedPayment, setSelectedPayment] = useState(null); // State to hold the selected payment
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  
+  const handleDateFilterChange = (dateRange) => {
+    const { startDate, endDate } = dateRange;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      console.error('Invalid date values:', startDate, endDate);
+      return; // Exit if dates are invalid
+    }
+
+    const formattedStartDate = start.toISOString().split('T')[0];
+    const formattedEndDate = end.toISOString().split('T')[0];
+
+    fetchPayments(formattedStartDate, formattedEndDate);
   };
+
+  const fetchPayments = async (startDate, endDate) => {
+    try {
+      const fetchedPayments = await getPayments(startDate, endDate);
+      const formattedPayments = fetchedPayments.map(payment => ({
+        id: payment.orderId.toString(),
+        customerName: payment.customerName,
+        paymentDate: new Date(payment.payDate).toLocaleDateString('vi-VN'),
+        status: payment.status === 0 ? 'Hoàn thành' : 'Thất bại',
+        amount: payment.paymentAmount,
+        paymentMethod: payment.paymentMethod,
+        bankCode: payment.bankCode,
+        cardType: payment.cardType
+      }));
+      setPayments(formattedPayments);
+    } catch (error) {
+      console.error('Error fetching payments:', error);
+    }
+  };
+
   useEffect(() => {
-    // Fetch payment data from your API
-    // This is just example data
-    const fetchedPayments = [
-      { id: 'DH001', customerName: 'Nguyễn Văn A', paymentDate: '2023-05-01', status: 'Hoàn thành', amount: 1000000 },
-      { id: 'DH002', customerName: 'Trần Thị B', paymentDate: '2023-05-02', status: 'Đang xử lý', amount: 1500000 },
-      { id: 'DH003', customerName: 'Lê Văn C', paymentDate: '2023-05-03', status: 'Thất bại', amount: 2000000 },
-    ];
-    setPayments(fetchedPayments);
+    fetchPayments();
   }, []);
 
-  const handleDetailClick = (orderId) => {
-    // Handle the detail button click
-    console.log(`Showing details for order ${orderId}`);
+  const handleDetailClick = (payment) => {
+    setSelectedPayment(payment); // Set the selected payment
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
+    setSelectedPayment(null); // Clear the selected payment
   };
 
   const getStatusClass = (status) => {
@@ -70,7 +105,7 @@ const PayManagement = () => {
                 <td className={getStatusClass(payment.status)}>{payment.status}</td>
                 <td>{payment.amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                 <td>
-                  <button className="detail-button" onClick={() => handleDetailClick(payment.id)}>
+                  <button className="detail-button" onClick={() => handleDetailClick(payment)}>
                     Chi tiết
                   </button>
                 </td>
@@ -78,8 +113,10 @@ const PayManagement = () => {
             ))}
           </tbody>
         </table>
-      </div>
 
+        {/* Render the modal */}
+        {isModalOpen && <PaymentDetailModal payment={selectedPayment} onClose={closeModal} />}
+      </div>
     </div>
   );
 };

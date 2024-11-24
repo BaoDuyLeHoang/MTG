@@ -168,3 +168,26 @@ h2 {
     max-width: 500px;
     width: 100%;
 }
+
+.important-notice {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.important-notice h3 {
+  color: #856404;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.important-notice p {
+  color: #856404;
+  margin-bottom: 0.5rem;
+}
+
+.important-notice p:last-child {
+  margin-bottom: 0;
+}

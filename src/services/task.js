@@ -166,3 +166,15 @@ export const getTasksByManagerId = async (managerId, date, pageIndex, pageSize =
 
     }
 };
+export const reassignTask = async (detailId, accountId) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/Task/tasks/${detailId}/reassign/${accountId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to reassign task');
+    }
+};

@@ -100,24 +100,26 @@ const ScheduleManager = () => {
           {/* Week Navigation */}
           <div className="mgmt-dashboard__header">
             <div className="mgmt-dashboard__controls">
-              <Button
-                variant="contained"
-                onClick={() => handleWeekChange(-1)}
-              >
-                Tuần Trước
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => setWeekOffset(0)}
-              >
-                Tuần Hiện Tại
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => handleWeekChange(1)}
-              >
-                Tuần Sau
-              </Button>
+              <div className="mgmt-dashboard__week-nav">
+                <Button
+                  variant="contained"
+                  onClick={() => handleWeekChange(-1)}
+                >
+                  Tuần Trước
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => setWeekOffset(0)}
+                >
+                  Tuần Hiện Tại
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleWeekChange(1)}
+                >
+                  Tuần Sau
+                </Button>
+              </div>
             </div>
           </div>
 

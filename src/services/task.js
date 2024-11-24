@@ -38,7 +38,7 @@ export const getTasksByAccountId = async (accountId, date, pageIndex = 1, pageSi
         }
 
         const response = await axios.get(
-            `${BASE_URL}/Task/tasksNotScheduling/account/${accountId}?${params}`,
+            `${BASE_URL}/Task/tasks/account/${accountId}?${params}`,
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

@@ -12,11 +12,11 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import Sidebar from "../../../components/Sidebar/sideBar";
-import "./ScheduleAttendanceManager.css";
-import { useAuth } from '../../../context/AuthContext';
-import AlertMessage from '../../../components/AlertMessage/AlertMessage';
-import { fetchWeeklySlots } from '../../../services/attendance';
+import Sidebar from "../../../components/Sidebar/sideBar"; // Keep Sidebar styles as-is
+import "./ScheduleAttendanceManager.css"; // Keep your CSS intact
+import { useAuth } from "../../../context/AuthContext";
+import AlertMessage from "../../../components/AlertMessage/AlertMessage";
+import { fetchWeeklySlots } from '../../../services/attendance'; // Updated API import
 
 const ScheduleManager = () => {
   const [weeklySlots, setWeeklySlots] = useState([]);
@@ -25,8 +25,8 @@ const ScheduleManager = () => {
   const [weekOffset, setWeekOffset] = useState(0);
   const [alert, setAlert] = useState({
     open: false,
-    severity: 'success',
-    message: ''
+    severity: "success",
+    message: "",
   });
 
   // Fetch weekly slots
@@ -34,17 +34,17 @@ const ScheduleManager = () => {
     const fetchSlots = async () => {
       try {
         setLoading(true);
-        const now = new Date();
-        const startDate = new Date(now.setDate(now.getDate() - now.getDay() + weekOffset * 7)).toISOString().split('T')[0];
-        const endDate = new Date(now.setDate(now.getDate() - now.getDay() + weekOffset * 7 + 6)).toISOString().split('T')[0];
+
+        const { startDate, endDate } = calculateWeekDates(weekOffset);
         const slots = await fetchWeeklySlots(startDate, endDate, user.accountId);
+
         setWeeklySlots(slots);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
         setAlert({
           open: true,
-          severity: 'error',
-          message: 'Không thể tải lịch làm việc'
+          severity: "error",
+          message: "Không thể tải lịch làm việc",
         });
       } finally {
         setLoading(false);
@@ -56,39 +56,59 @@ const ScheduleManager = () => {
     }
   }, [weekOffset, user?.accountId]);
 
+
   const handleCloseAlert = () => {
-    setAlert(prev => ({
+    setAlert((prev) => ({
       ...prev,
-      open: false
+      open: false,
     }));
   };
 
   const handleWeekChange = (offset) => {
-    setWeekOffset(prev => prev + offset);
+    setWeekOffset((prev) => prev + offset);
   };
 
   // Organize slots by date
   const organizedSlots = {};
-  weeklySlots.forEach(slot => {
+  weeklySlots.forEach((slot) => {
     if (!organizedSlots[slot.date]) {
       organizedSlots[slot.date] = [];
     }
     organizedSlots[slot.date].push(slot);
   });
 
+  const calculateWeekDates = (offset) => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+    const firstDayOfWeek = new Date(
+      today.setDate(today.getDate() - dayOfWeek + offset * 7)
+    );
+    const lastDayOfWeek = new Date(
+      firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000
+    );
+
+    return {
+      startDate: firstDayOfWeek.toISOString().split("T")[0],
+      endDate: lastDayOfWeek.toISOString().split("T")[0],
+    };
+  };
+
+
   // Get the current week's dates
   const getWeekDates = () => {
+    const { startDate } = calculateWeekDates(weekOffset);
     const dates = [];
-    const now = new Date();
+
     for (let i = 0; i < 7; i++) {
-      const date = new Date(now.setDate(now.getDate() - now.getDay() + weekOffset * 7 + i));
-      dates.push(date.toISOString().split('T')[0]);
+      const date = new Date(new Date(startDate).getTime() + i * 24 * 60 * 60 * 1000);
+      dates.push(date.toISOString().split("T")[0]);
     }
+
     return dates;
   };
 
-  const weekDates = getWeekDates();
 
+  const weekDates = getWeekDates();
 
   return (
     <div className="layout-container">
@@ -101,22 +121,13 @@ const ScheduleManager = () => {
           <div className="mgmt-dashboard__header">
             <div className="mgmt-dashboard__controls">
               <div className="mgmt-dashboard__week-nav">
-                <Button
-                  variant="contained"
-                  onClick={() => handleWeekChange(-1)}
-                >
+                <Button variant="contained" onClick={() => handleWeekChange(-1)}>
                   Tuần Trước
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => setWeekOffset(0)}
-                >
+                <Button variant="contained" onClick={() => setWeekOffset(0)}>
                   Tuần Hiện Tại
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => handleWeekChange(1)}
-                >
+                <Button variant="contained" onClick={() => handleWeekChange(1)}>
                   Tuần Sau
                 </Button>
               </div>
@@ -126,7 +137,7 @@ const ScheduleManager = () => {
           {/* Schedule Table */}
           <TableContainer component={Paper} sx={{ mb: 4 }}>
             {loading ? (
-              <Box sx={{ p: 3, textAlign: 'center' }}>
+              <Box sx={{ p: 3, textAlign: "center" }}>
                 <Typography>Đang tải lịch làm việc...</Typography>
               </Box>
             ) : (
@@ -134,13 +145,12 @@ const ScheduleManager = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Thời Gian</TableCell>
-                    {weekDates.map(date => (
+                    {weekDates.map((date) => (
                       <TableCell key={date} align="center">
-                        {new Date(date).toLocaleDateString('vi-VN', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
+                        {new Date(date).toLocaleDateString("vi-VN", {
+                          day: "2-digit",   // Display day with two digits (e.g., "17")
+                          month: "2-digit", // Display month with two digits (e.g., "11")
+                          year: "numeric",  // Include the full year (e.g., "2024")
                         })}
                       </TableCell>
                     ))}
@@ -154,19 +164,28 @@ const ScheduleManager = () => {
                         <TableCell component="th" scope="row">
                           {timeSlot}
                         </TableCell>
-                        {weekDates.map(date => {
-                          const slotsForDate = organizedSlots[date]?.filter(slot => slot.slotName === timeSlot) || [];
+                        {weekDates.map((date) => {
+                          const slotsForDate =
+                            organizedSlots[date]?.filter(
+                              (slot) => slot.slotName === timeSlot
+                            ) || [];
                           return (
                             <TableCell key={date} align="center">
                               {slotsForDate.length > 0 ? (
                                 <Link
                                   to={`/attendance-list/${slotsForDate[0].slotId}/${slotsForDate[0].date}`}
-                                  style={{ textDecoration: 'none' }} // Optional: Remove underline
+                                  style={{ textDecoration: "none" }}
                                 >
                                   <div className="square">
-                                    {slotsForDate.map(slot => (
-                                      <Typography key={slot.slotId} className="square-content">
-                                        {`Thời gian: ${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}`}
+                                    {slotsForDate.map((slot) => (
+                                      <Typography
+                                        key={slot.slotId}
+                                        className="square-content"
+                                      >
+                                        {`${slot.startTime.substring(
+                                          0,
+                                          5
+                                        )} - ${slot.endTime.substring(0, 5)}`}
                                       </Typography>
                                     ))}
                                   </div>

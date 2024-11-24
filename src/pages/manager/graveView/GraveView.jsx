@@ -102,9 +102,6 @@ export default function GraveView() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Link to="/creategrave">
-            <button type="button" className="gv-add-button">Thêm mộ</button>
-          </Link>
         </div>
         <div className="gv-table-container">
           <table className="gv-table">

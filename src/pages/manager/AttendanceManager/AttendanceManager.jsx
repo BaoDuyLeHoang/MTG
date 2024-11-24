@@ -36,7 +36,6 @@ const AttendanceManager = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [taskAssignments, setTaskAssignments] = useState([]); // State to hold tasks
   const { user } = useAuth();
-  const managerId = user.accountId; // Replace with the actual manager ID as needed
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,7 +46,7 @@ const AttendanceManager = () => {
     const fetchTasks = async () => {
       try {
         const dateFormatted = format(selectedDate, 'yyyy-MM-dd'); // Format date for API
-        const response = await getTasksByManagerId(managerId, dateFormatted, 1); // Fetch tasks
+        const response = await getTasksByManagerId(user.accountId, dateFormatted, 1); // Fetch tasks
         // Set taskAssignments to the tasks array from the response
         setTaskAssignments(response.tasks || []); // Update state with fetched tasks
       } catch (error) {
@@ -56,7 +55,7 @@ const AttendanceManager = () => {
     };
 
     fetchTasks();
-  }, [selectedDate, managerId]); // Fetch tasks when selectedDate changes
+  }, [selectedDate]); // Fetch tasks when selectedDate changes
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -264,7 +263,7 @@ const AttendanceManager = () => {
                   >
                     <Box className="task-main-info">
                       <Avatar
-                        src={task.imagePath1} // Assuming imagePath1 is the avatar
+                        src={task.serviceImage} // Assuming imagePath1 is the avatar
                         alt={task.fullname}
                         sx={{ width: 50, height: 50 }}
                       >

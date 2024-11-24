@@ -7,10 +7,6 @@ import Loading from "../../../components/Loading/Loading";
 import "./ServicePage.css";
 import { getServices, getServicesByCategory } from "../../../APIcontroller/API";
 
-const formatCurrency = (amount) => {
-  return amount?.toLocaleString('vi-VN');
-};
-
 const ServicePage = () => {
   const [services, setServices] = useState([]);
   const [categoryServices, setCategoryServices] = useState({});
@@ -107,7 +103,7 @@ const ServicePage = () => {
                       <SellServiceCard
                         imagePath={service.imagePath}
                         serviceName={service.serviceName}
-                        price={formatCurrency(service.price)}
+                        price={service.price}
                       />
                     </Link>
                   )

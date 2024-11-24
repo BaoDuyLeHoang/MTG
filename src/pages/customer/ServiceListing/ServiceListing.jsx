@@ -96,11 +96,11 @@ const ServiceListing = () => {
 
       // If user is logged in, use API
       if (user) {
-        const cartData = [{
+        const cartData = {
           accountId: user.accountId,
           serviceId: dichVu.serviceId,
           martyrId: martyrId
-        }];
+        };
 
         await addToCart(cartData);
       }
@@ -118,7 +118,7 @@ const ServiceListing = () => {
 
     } catch (error) {
       console.error("Error adding to cart:", error);
-      setAlertMessage(error.message);
+      setAlertMessage("Dịch vụ đã tồn tại trong giỏ hàng hoặc mộ đã bị giới hạn dịch vụ. Người dùng vui lòng đặt dịch vụ khác");
       setAlertSeverity("error");
       setAlertOpen(true);
     }

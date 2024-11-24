@@ -1,23 +1,26 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import {
-  Box,
-  Card,
+// AttendanceManager.jsx
+import React, { useState, useMemo } from 'react';
+import { 
+  Box, 
+  Card, 
   CardContent,
-  Typography,
+  Typography, 
   Avatar,
   Chip,
   Container,
   Grid,
+  IconButton,
   TextField,
   Select,
   MenuItem,
-  FormControl,
-  Button
+  FormControl
 } from '@mui/material';
 import {
+  CalendarToday,
+  Yard,
+  Person,
   Assignment,
-  CheckCircle,
-  Person
+  CheckCircle
 } from '@mui/icons-material';
 import './AttendanceManager.css';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -25,50 +28,89 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Sidebar from '../../../components/Sidebar/sideBar';
 import SearchIcon from '@mui/icons-material/Search';
-import { format } from 'date-fns';
+import { format, parse, isEqual, startOfDay } from 'date-fns';
 import viLocale from 'date-fns/locale/vi'; // For Vietnamese localization
-import { getTasksByManagerId } from '../../../services/task'; // Import the API function
-import { useAuth } from "../../../context/AuthContext";
 
 const AttendanceManager = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [taskAssignments, setTaskAssignments] = useState([]); // State to hold tasks
-  const { user } = useAuth();
-  const managerId = user.accountId; // Replace with the actual manager ID as needed
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Set the number of items per page
-
-  // Fetch tasks when the component mounts or when the selected date changes
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const dateFormatted = format(selectedDate, 'yyyy-MM-dd'); // Format date for API
-        const response = await getTasksByManagerId(managerId, dateFormatted, 1); // Fetch tasks
-        // Set taskAssignments to the tasks array from the response
-        setTaskAssignments(response.tasks || []); // Update state with fetched tasks
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
+  const taskAssignments = [
+    {
+      id: 1,
+      taskName: 'Bảo trì Vườn Tưởng niệm',
+      category: 'Cảnh quan',
+      location: 'Khu B, Lô 15-30',
+      assignedTo: 'Hoang Vi Công',
+      status: 'completed',
+      startTime: '07:00',
+      endTime: '10:30',
+      avatar: '/path/to/avatar1.jpg',
+      attendance: {
+        checkIn: '06:55',
+        checkOut: '10:35',
+        status: 'on-time' // on-time, late, early-leave, absent
       }
-    };
-
-    fetchTasks();
-  }, [selectedDate, managerId]); // Fetch tasks when selectedDate changes
+    },
+    {
+      id: 2,
+      taskName: 'Chuẩn bị Lễ Tang',
+      category: 'Dịch vụ tang lễ',
+      location: 'Khu A, Lô 45',
+      assignedTo: 'Nguyen Van A',
+      status: 'in-progress',
+      startTime: '09:00',
+      endTime: '-',
+      avatar: '/path/to/avatar2.jpg',
+      attendance: {
+        checkIn: '08:50',
+        checkOut: '10:30',
+        status: 'late'
+      }
+    },
+    {
+      id: 3,
+      taskName: 'Cài đặt đánh dấu đá',
+      category: 'Cài đặt đánh dấu',
+      location: 'Khu C, Lô 12',
+      assignedTo: 'Nguyen Van B',
+      status: 'pending',
+      startTime: 'Scheduled 2:00 PM',
+      endTime: '-',
+      avatar: '/path/to/avatar3.jpg',
+      attendance: {
+        checkIn: '01:55',
+        checkOut: '10:30',
+        status: 'early-leave'
+      }
+    },
+    {
+      id: 4,
+      taskName: 'Bảo trì đất',
+      category: 'Bảo trì đất',
+      location: 'Khu D, Lô 1-10',
+      assignedTo: 'Nguyen Van C',
+      status: 'completed',
+      startTime: '06:30',
+      endTime: '11:45',
+      avatar: '/path/to/avatar4.jpg',
+      attendance: {
+        checkIn: '06:30',
+        checkOut: '11:45',
+        status: 'on-time'
+      }
+    }
+  ];
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 4:
+      case 'completed':
         return 'success';
-      case 3:
+      case 'in-progress':
         return 'primary';
-      case 1:
+      case 'pending':
         return 'warning';
-      case 2:
-      case 5:
-        return 'error'; // Red for rejected and failed
       default:
         return 'default';
     }
@@ -76,18 +118,31 @@ const AttendanceManager = () => {
 
   const getStatusText = (status) => {
     switch (status) {
-      case 4:
+      case 'completed':
         return 'Hoàn thành';
-      case 3:
+      case 'in-progress':
         return 'Đang thực hiện';
-      case 1:
+      case 'pending':
         return 'Chờ xử lý';
-      case 5:
-        return 'Thất bại';
-      case 2:
-        return 'Đã từ chối công việc';
       default:
-        return 'Không xác định';
+        return status;
+    }
+  };
+
+  const getAttendanceStatus = (attendance) => {
+    if (!attendance) return { color: 'default', text: 'Chưa điểm danh' };
+    
+    switch (attendance.status) {
+      case 'on-time':
+        return { color: 'success', text: 'Đúng giờ' };
+      case 'late':
+        return { color: 'warning', text: 'Đi muộn' };
+      case 'early-leave':
+        return { color: 'error', text: 'Về sớm' };
+      case 'absent':
+        return { color: 'error', text: 'Vắng mặt' };
+      default:
+        return { color: 'default', text: 'Không xác định' };
     }
   };
 
@@ -96,15 +151,15 @@ const AttendanceManager = () => {
     return taskAssignments.filter(task => {
       // Search filter - check task name, location, and assignedTo
       const searchLower = searchQuery.toLowerCase();
-      const matchesSearch =
-        task.serviceName.toLowerCase().includes(searchLower) ||
-        task.graveLocation.toLowerCase().includes(searchLower) ||
-        task.fullname.toLowerCase().includes(searchLower);
+      const matchesSearch = 
+        task.taskName.toLowerCase().includes(searchLower) ||
+        task.location.toLowerCase().includes(searchLower) ||
+        task.assignedTo.toLowerCase().includes(searchLower);
 
       // Date filter
-      const taskStartDate = format(new Date(task.startDate), 'dd/MM/yyyy');
       const today = format(selectedDate, 'dd/MM/yyyy');
-      const matchesDate = taskStartDate === today;
+      const taskDate = format(new Date(), 'dd/MM/yyyy'); // You'll need to add date to your task data
+      const matchesDate = today === taskDate;
 
       // Status filter
       const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
@@ -113,40 +168,24 @@ const AttendanceManager = () => {
     });
   }, [taskAssignments, searchQuery, selectedDate, statusFilter]);
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
-  const currentTasks = filteredTasks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(prevPage => prevPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(prevPage => prevPage - 1);
-    }
-  };
-
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
-      <Box
+      <Box 
         className="dashboard-main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
+        sx={{ 
+          flexGrow: 1, 
+          p: 3, 
           background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%)',
           minHeight: '100vh'
         }}
       >
         <Container maxWidth="lg" className="dashboard-container">
-          <div className="blog-manager-header">
-            <h1 className="blog-manager-title">Công việc của nhân viên</h1>
+        <div className="blog-manager-header">
+            <h1 className="blog-manager-title">Quản lý Điểm danh</h1>
           </div>
-          <Box className="dashboard-header"
-            sx={{
+          <Box className="dashboard-header" 
+            sx={{ 
               mb: 4,
               background: 'rgba(255, 255, 255, 0.9)',
               borderRadius: '15px',
@@ -162,7 +201,7 @@ const AttendanceManager = () => {
               placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
               variant="outlined"
               size="small"
-              sx={{
+              sx={{ 
                 flex: 1,
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '8px',
@@ -180,7 +219,7 @@ const AttendanceManager = () => {
                 value={selectedDate}
                 onChange={(newValue) => setSelectedDate(newValue)}
                 format="dd/MM/yyyy"
-                sx={{
+                sx={{ 
                   width: '200px',
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
@@ -199,29 +238,82 @@ const AttendanceManager = () => {
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 displayEmpty
-                sx={{
+                sx={{ 
                   borderRadius: '8px',
                   height: '40px' // Match height with other components
                 }}
               >
                 <MenuItem value="all">Tất cả trạng thái</MenuItem>
-                <MenuItem value={4}>Hoàn thành</MenuItem>
-                <MenuItem value={3}>Đang thực hiện</MenuItem>
-                <MenuItem value={1}>Chờ xử lý</MenuItem>
-                <MenuItem value={2}>Từ chối</MenuItem>
-                <MenuItem value={5}>Thất bại</MenuItem>
+                <MenuItem value="completed">Hoàn thành</MenuItem>
+                <MenuItem value="in-progress">Đang thực hiện</MenuItem>
+                <MenuItem value="pending">Chờ xử lý</MenuItem>
               </Select>
             </FormControl>
           </Box>
 
           <Grid container spacing={3} className="stats-container">
-            {/* Your stats rendering logic remains unchanged */}
+            {[
+              { 
+                title: 'Tổng công việc',
+                value: filteredTasks.length,
+                icon: Assignment,
+                gradient: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)'
+              },
+              {
+                title: 'Đã hoàn thành',
+                value: filteredTasks.filter(task => task.status === 'completed').length,
+                icon: CheckCircle,
+                gradient: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)'
+              },
+              {
+                title: 'Đi làm đúng giờ',
+                value: filteredTasks.filter(task => task.attendance?.status === 'on-time').length,
+                icon: CheckCircle,
+                gradient: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)'
+              },
+              {
+                title: 'Đi muộn/Về sớm',
+                value: filteredTasks.filter(task => 
+                  task.attendance?.status === 'late' || task.attendance?.status === 'early-leave'
+                ).length,
+                icon: Person,
+                gradient: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)'
+              }
+            ].map((stat, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Card 
+                  className="stats-card animate-in"
+                  sx={{ 
+                    background: stat.gradient,
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      boxShadow: '0 12px 20px rgba(0, 0, 0, 0.15)'
+                    }
+                  }}
+                >
+                  <CardContent className="stats-content">
+                    <Box className="stats-info">
+                      <Typography color="white" variant="body2">
+                        {stat.title}
+                      </Typography>
+                      <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'white' }}>
+                        {stat.value}
+                      </Typography>
+                    </Box>
+                    <stat.icon sx={{ fontSize: 48, color: 'rgba(255, 255, 255, 0.8)' }} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
 
-          <Card
+          <Card 
             className="tasks-card"
-            sx={{
-              mt: 4,
+            sx={{ 
+              mt: 4, 
               borderRadius: '16px',
               boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
               background: 'rgba(255, 255, 255, 0.9)',
@@ -229,10 +321,10 @@ const AttendanceManager = () => {
             }}
           >
             <CardContent>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 3,
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  mb: 3, 
                   fontWeight: 'bold',
                   color: '#1a237e',
                   display: 'flex',
@@ -244,9 +336,9 @@ const AttendanceManager = () => {
                 Danh sách Công việc
               </Typography>
               <Box className="tasks-list">
-                {currentTasks.map((task, index) => (
-                  <Box
-                    key={task.taskId}
+                {filteredTasks.map((task, index) => (
+                  <Box 
+                    key={task.id}
                     className="task-item animate-in"
                     sx={{
                       p: 2.5,
@@ -263,33 +355,44 @@ const AttendanceManager = () => {
                     }}
                   >
                     <Box className="task-main-info">
-                      <Avatar
-                        src={task.imagePath1} // Assuming imagePath1 is the avatar
-                        alt={task.fullname}
+                      <Avatar 
+                        src={task.avatar} 
+                        alt={task.assignedTo}
                         sx={{ width: 50, height: 50 }}
                       >
-                        {task.fullname.split(' ').map(n => n[0]).join('')}
+                        {task.assignedTo.split(' ').map(n => n[0]).join('')}
                       </Avatar>
                       <Box className="task-details" sx={{ ml: 2 }}>
                         <Box className="task-title-row">
                           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            {task.serviceName}
+                            {task.taskName}
                           </Typography>
                           <Chip
-                            label={task.categoryName}
+                            label={task.category}
                             size="small"
                             variant="outlined"
                             sx={{ ml: 1 }}
                           />
                         </Box>
                         <Typography variant="body2" color="textSecondary" className="task-location">
-                          {task.graveLocation} • {format(new Date(task.startDate), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
+                          {task.location} • {task.startTime} - {task.endTime}
                         </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                          <Typography variant="body2" color="textSecondary">
+                            Điểm danh: {task.attendance ? `${task.attendance.checkIn} - ${task.attendance.checkOut}` : 'N/A'}
+                          </Typography>
+                          <Chip
+                            label={getAttendanceStatus(task.attendance).text}
+                            size="small"
+                            color={getAttendanceStatus(task.attendance).color}
+                            sx={{ ml: 1 }}
+                          />
+                        </Box>
                       </Box>
                     </Box>
                     <Box className="task-status">
                       <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                        {task.fullname}
+                        {task.assignedTo}
                       </Typography>
                       <Chip
                         label={getStatusText(task.status)}
@@ -303,19 +406,6 @@ const AttendanceManager = () => {
               </Box>
             </CardContent>
           </Card>
-
-          {/* Pagination Controls */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-              Previous
-            </Button>
-            <Typography>
-              Page {currentPage} of {totalPages}
-            </Typography>
-            <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-              Next
-            </Button>
-          </Box>
         </Container>
       </Box>
     </Box>

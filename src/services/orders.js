@@ -49,24 +49,3 @@ export const getOrdersByManagerArea = async (accountId, pageIndex, pageSize, dat
       throw new Error(error.response?.data?.message || 'Failed to fetch orders');
     }
   };
-
-export const createOrder = async (customerId, paymentMethod, orderData) => {
-  try {
-    const response = await axios.post(
-      `${BASE_URL}/Orders`, 
-      orderData,
-      {
-        params: {
-          customerId,
-          paymentMethod
-        },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to create order');
-  }
-};

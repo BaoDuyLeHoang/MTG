@@ -6,6 +6,7 @@ import deleteIcon from '../../../assets/images/delete.png';
 import { getCartItemsByCustomerId, updateItemStatus, deleteCartItem, getServiceById } from "../../../APIcontroller/API";
 import { useAuth } from "../../../context/AuthContext";
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
+import { addToAnonymousCart } from '../../../services/cart';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -46,22 +47,39 @@ const CartPage = () => {
           console.log('Loaded from session:', savedCartItems);
           
           if (savedCartItems.length > 0) {
-            const mockItems = savedCartItems.map((item, index) => ({
-              cartId: `temp-${index}`,
-              selected: false,
-              martyrId: item.martyrId,
-              martyrCode: item.martyrId,
-              serviceView: {
+            try {
+              // Transform the items into the required format
+              const itemsForApi = savedCartItems.map(item => ({
                 serviceId: item.serviceId,
-                serviceName: `Dịch vụ ${item.serviceId}`,
-                description: "Mô tả sẽ được cập nhật sau",
-                price: 100000,
-                imagePath: "https://via.placeholder.com/150"
+                martyrId: item.martyrId
+              }));
+              
+              const response = await addToAnonymousCart(itemsForApi);
+              
+              if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
+                const mappedItems = response.cartItemList.map(item => ({
+                  cartId: `temp-${item.martyrId}`,
+                  selected: item.status || false,
+                  martyrId: item.martyrId,
+                  martyrCode: item.martyrCode,
+                  serviceView: {
+                    serviceId: item.serviceView.serviceId,
+                    serviceName: item.serviceView.serviceName,
+                    description: item.serviceView.description,
+                    price: item.serviceView.price,
+                    imagePath: item.serviceView.imagePath
+                  }
+                }));
+                
+                console.log('Mapped items from API:', mappedItems);
+                setCartItems(mappedItems);
               }
-            }));
-            
-            console.log('Created mock items:', mockItems);
-            setCartItems(mockItems);
+            } catch (error) {
+              console.error("Error sending items to anonymous cart:", error);
+              setAlertMessage("Có lỗi xảy ra khi đồng bộ giỏ hàng. Vui lòng thử lại sau.");
+              setAlertSeverity("error");
+              setAlertOpen(true);
+            }
           }
         }
       } catch (error) {
@@ -197,11 +215,24 @@ const CartPage = () => {
         ) : error ? (
           <div>{error}</div>
         ) : (cartItems.length === 0) ? (
-          <div className="cart-page-empty-message">
-            <h1>Giỏ hàng của bạn đang trống</h1>
-            <button onClick={navigateToServices} className="cart-page-services-btn">
-              Đến trang tìm kiếm mộ
-            </button>
+          <div className="cart-page-empty">
+            <div className="cart-page-empty-message">
+              <i className="fas fa-shopping-cart cart-icon"></i>
+              <h2>Giỏ hàng của bạn đang trống</h2>
+              <p>Hãy thêm sản phẩm vào giỏ hàng của bạn</p>
+              <div className="cart-page-empty-buttons">
+                <button onClick={navigateToServices} className="cart-page-button primary">
+                  <i className="fas fa-search"></i>
+                  Đến trang tìm kiếm mộ
+                </button>
+                {user?.accountId && (
+                  <button onClick={() => navigate('/relative-grave')} className="cart-page-button secondary">
+                    <i className="fas fa-heart"></i>
+                    Đến mộ thân nhân
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         ) : (
           <table className="cart-page-table">

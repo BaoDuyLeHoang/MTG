@@ -5,7 +5,8 @@ import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "./CheckOutPage.css";
 import { FaTrashAlt } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
-import { createOrder, getCheckoutItemsByCustomerId } from "../../../APIcontroller/API";
+import {getCheckoutItemsByCustomerId } from "../../../APIcontroller/API";
+import { createOrder } from "../../../services/orders";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -112,11 +113,15 @@ const CheckOut = () => {
     setIsLoading(true);
 
     try {
+      const orderData = {
+        expectedCompletionDate: completionDate.toISOString(),
+        note: customerNote || ""
+      };
+
       const response = await createOrder(
-        user.accountId, 
-        selectedPaymentMethod, 
-        completionDate,
-        customerNote
+        user.accountId,
+        selectedPaymentMethod,
+        orderData
       );
 
       if (response.paymentUrl) {

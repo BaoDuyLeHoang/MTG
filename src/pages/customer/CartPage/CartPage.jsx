@@ -30,10 +30,11 @@ const CartPage = () => {
           if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
             const mappedItems = response.cartItemList.map(item => ({
               ...item,
+              martyrName: item.martyrName || 'Không có tên',
               selected: item.status || false
             }));
             setCartItems(mappedItems);
-            console.log('All cart items:', mappedItems);
+            console.log('Mapped cart items:', mappedItems);
           } else if (response && response.message === "No cart items found for this account.") {
             setCartItems([]);
             console.log('Cart is empty');
@@ -50,7 +51,7 @@ const CartPage = () => {
               cartId: `temp-${index}`,
               selected: false,
               martyrId: item.martyrId,
-              martyrCode: item.martyrId,
+              martyrName: item.martyrName,
               serviceView: {
                 serviceId: item.serviceId,
                 serviceName: `Dịch vụ ${item.serviceId}`,
@@ -218,7 +219,7 @@ const CartPage = () => {
                 <th>Tên dịch vụ</th>
                 <th>Mô tả</th>
                 <th>Giá</th>
-                <th>Mã mộ</th>
+                <th>Tên liệt sĩ</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -242,7 +243,9 @@ const CartPage = () => {
                   <td>{item.serviceView.description}</td>
                   <td className='cart-page-price'>{item.serviceView.price.toLocaleString('vi-VN')} đ</td>
                   <td>
-                    <Link to={`/chitietmo/${item.martyrId}`} className="cart-page-martyr-link">{item.martyrCode}</Link>
+                    <Link to={`/chitietmo/${item.martyrId}`} className="cart-page-martyr-link">
+                      {item.martyrName}
+                    </Link>
                   </td>
                   <td>
                     <button onClick={() => handleDelete(item.cartId)} className="cart-page-delete-btn">

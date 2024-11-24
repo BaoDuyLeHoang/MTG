@@ -3,7 +3,7 @@ import Sidebar from '../../../components/Sidebar/sideBar';
 
 import './materialManagement.css';
 import { getMaterial, updateStatusMaterial, updateMaterial, createMaterial } from '../../../services/admin';
-import { ToggleLeft, ToggleRight, Search } from 'lucide-react';
+import { ToggleLeft, ToggleRight, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MaterialManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +20,8 @@ const MaterialManagement = () => {
         price: ''
     });
     const [statusFilter, setStatusFilter] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5); // Số item trên mỗi trang
 
     useEffect(() => {
         fetchMaterialData();
@@ -161,6 +163,16 @@ const MaterialManagement = () => {
         return matchesSearch && matchesStatus;
     });
 
+    // Thêm logic phân trang
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredMaterials.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <div className="material-management-container">
             <Sidebar />
@@ -285,7 +297,7 @@ const MaterialManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredMaterials.map((material) => (
+                                {currentItems.map((material) => (
                                     <tr key={material.materialId}>
                                         <td>#{material.materialId}</td>
                                         <td>
@@ -362,6 +374,34 @@ const MaterialManagement = () => {
                                 ))}
                             </tbody>
                         </table>
+
+                        <div className="pagination">
+                            <button 
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="pagination-button"
+                            >
+                                <ChevronLeft size={20} />
+                            </button>
+                            
+                            {[...Array(totalPages)].map((_, index) => (
+                                <button
+                                    key={index + 1}
+                                    onClick={() => handlePageChange(index + 1)}
+                                    className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                            
+                            <button 
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="pagination-button"
+                            >
+                                <ChevronRight size={20} />
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

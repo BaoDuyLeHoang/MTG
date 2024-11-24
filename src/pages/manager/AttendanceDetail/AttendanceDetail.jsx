@@ -19,7 +19,7 @@ import Sidebar from '../../../components/Sidebar/sideBar';
 import './AttendanceDetail.css';
 import { useAuth } from '../../../context/AuthContext';
 
-const defaultImage = 'path/to/default/image.png';
+const defaultImage = require('../../../assets/images/image3.png'); // Use require for image import
 
 const AttendanceDetail = () => {
     const { attendanceId } = useParams();

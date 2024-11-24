@@ -5,6 +5,7 @@ import AlertMessage from "../../../components/AlertMessage/AlertMessage"; // Add
 
 import "./ServiceListing.css";
 import { getAllServices, addToCart } from "../../../APIcontroller/API";
+import { getGraveServices } from "../../../services/graves";
 import Header from "../../../components/Header/header"; // Import the Header component
 import { login } from "../../../APIcontroller/LoginController";
 
@@ -32,7 +33,7 @@ const ServiceListing = () => {
     const layDichVu = async () => {
       try {
         setDangTai(true);
-        const dichVuDaLay = await getAllServices();
+        const dichVuDaLay = await getGraveServices(sessionStorage.getItem("selectedMartyrId"));
         setDichVu(dichVuDaLay);
         setLoiTai(null);
       } catch (err) {
@@ -156,7 +157,7 @@ const ServiceListing = () => {
       <Header />
       <div className="sl-container">
         <div className="sl-header">
-          <h1>Dịch Vụ</h1>
+          <h1>Dịch Vụ Có Sẵn Của Mộ Phần</h1>
         </div>
         <div className="sl-martyr-info">
           <div className="martyr-card">

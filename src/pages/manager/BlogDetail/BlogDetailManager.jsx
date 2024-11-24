@@ -58,6 +58,12 @@ const BlogDetail = () => {
                     &#8592; Quay lại
                 </button>
                 <h1 className="blog-title">{blog.blogName}</h1>
+                {/* Display current status */}
+                <div className="status-display-container"> {/* New container for centering */}
+                    <div className={`status-display ${statusClass}`}>
+                        <strong>{statusText}</strong>
+                    </div>
+                </div>
                 <p className="blog-author"><strong>Tác giả:</strong> {blog.fullName}</p>
                 <p className="blog-category"><strong>Sự kiện:</strong> {blog.blogCategoryName}</p>
                 <p className="blog-description"><strong>Mô tả:</strong> {blog.blogDescription}</p>
@@ -77,19 +83,15 @@ const BlogDetail = () => {
                         {blog.relatedMartyrDetails && blog.relatedMartyrDetails.map((martyr) => (
                             <div key={martyr.martyrGraveId} className="martyr-detail">
                                 <h4>{martyr.name}</h4>
-                                {martyr.images && martyr.images.map((img, index) => (
-                                    <img key={index} src={img} alt={`Martyr Image ${index + 1}`} className="martyr-image" />
-                                ))}
+                                {martyr.images && martyr.images.length > 0 && ( // Kiểm tra nếu có hình ảnh
+                                    <img src={martyr.images[0]} alt={`Martyr Image 1`} className="martyr-image" /> // Chỉ lấy hình đầu tiên
+                                )}
                             </div>
                         ))}
                     </div>
                 </div>
                 {/* Status Update Button */}
                 <div className="status-button-container">
-                    {/* Display current status */}
-                    <div className={`status-display ${statusClass}`}>
-                        <strong>{statusText}</strong>
-                    </div>
                     <button className="status-button" onClick={handleUpdateStatus}>
                         {blog.status ? 'Vô hiệu hóa' : 'Kích hoạt'}
                     </button>

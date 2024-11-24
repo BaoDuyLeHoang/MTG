@@ -23,7 +23,7 @@ import PayManagement from "./pages/admin/payManagement/payManagement";
 import AccountManagement from "./pages/admin/accountManagement/accountManagement";
 import TaskDescription from "./pages/admin/taskDescription/TaskDescription";
 import AddTask from "./pages/admin/addTask/AddTask";
-
+import ServiceManagement from "./pages/admin/serviceManagement/serviceManagement";
 // Manager Components
 import OrderManagementManager from "./pages/manager/OrderManagement/OrderManagement";
 import OrderDetail from "./pages/manager/orderDetail/OrderDetai";
@@ -100,6 +100,7 @@ function AppContent() {
           <Route path="/service-list" element={<ServiceList />} />
           <Route path="/blog-category/:id" element={<BlogCategoryDetail />} />
           <Route path="/notifications" element={<Notifications />} />
+          
 
           
           {/* Protected routes */}
@@ -118,7 +119,7 @@ function AppContent() {
           <Route path="/danhsachphannhoikhachhang" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><FeedbackManagement /></ProtectedRoute>} />
           <Route path="/chitietcongviec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><TaskDescription /></ProtectedRoute>} />
           <Route path="/taoCongViec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AddTask /></ProtectedRoute>} />
-          
+          <Route path="/service-management" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><ServiceManagement /></ProtectedRoute>} />
 
           {/* Manager routes */}
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />

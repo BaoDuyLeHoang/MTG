@@ -220,6 +220,7 @@ const OrderHistory = () => {
                   <StyledTableCell>Ngày đặt</StyledTableCell>
                   <StyledTableCell>Hạn hoàn thành</StyledTableCell>
                   <StyledTableCell>Dịch vụ</StyledTableCell>
+                  <StyledTableCell>Tên Liệt sĩ</StyledTableCell>
                   <StyledTableCell>Tổng tiền</StyledTableCell>
                   <StyledTableCell>Trạng thái</StyledTableCell>
                   <StyledTableCell className="action-cell">Thao tác</StyledTableCell>
@@ -234,7 +235,15 @@ const OrderHistory = () => {
                     <StyledTableCell>
                       {order.orderDetails.map((detail, index) => (
                         <div key={index} className="service-item">
-                          <div>{detail.serviceName}: {detail.martyrName}</div>
+                          <div>{detail.serviceName}</div>
+                        
+                        </div>
+                      ))}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {order.orderDetails.map((detail, index) => (
+                        <div key={index} className="service-item">
+                          <div>{detail.martyrName}</div>
                         
                         </div>
                       ))}

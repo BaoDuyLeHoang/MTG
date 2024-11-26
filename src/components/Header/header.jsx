@@ -43,7 +43,7 @@ const Header = () => {
   }, [user]);
 
   useEffect(() => {
-    fetchCartItems();
+    //fetchCartItems();
 
     const handleClick = () => {
       // Delay fetching cart items by 1 second after a click
@@ -58,6 +58,7 @@ const Header = () => {
     // Cleanup
     return () => {
       document.removeEventListener('click', handleClick);
+      
     };
   }, [fetchCartItems]);
 

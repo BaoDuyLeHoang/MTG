@@ -1,5 +1,7 @@
 import axios from "axios";
+const API_URL = 'https://localhost:7006';
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 
 export const createFeedback = async (feedbackData) => {
   try {
@@ -24,27 +26,28 @@ export const createFeedback = async (feedbackData) => {
   }
 };
 
-export const createFeedbackResponse = async (feedbackData) => {
+export const createFeedbackResponse = async (feedbackId, responseContent) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/Feedback/Create-Feedback-Response`,
+      `${API_URL}/api/Feedback/Create-Feedback-Response`,
       {
-        feedbackId: feedbackData.feedbackId,
-        staffId: feedbackData.staffId,
-        responseContent: feedbackData.responseContent,
+        feedbackId: feedbackId,
+        responseContent: responseContent
       },
       {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       }
     );
     return response.data;
   } catch (error) {
+    console.error('Error creating feedback response:', error);
     throw error;
   }
 };
+
 
 export const getAllFeedback = async (page = 1, pageSize = 10) => {
   try {
@@ -69,14 +72,10 @@ export const getAllFeedback = async (page = 1, pageSize = 10) => {
 
 export const getFeedbackWithDetailId = async (detailId) => {
   try {
-    const response = await axios.get(`${BASE_URL}/Feedback/getFeedbackWithDetailId/${detailId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-    });
-    return response.data;
+      const response = await axios.get(`${API_URL}/api/Feedback/getFeedbackWithDetailId/${detailId}`);
+      return response.data;
   } catch (error) {
-    console.error('Error fetching feedback:', error);
-    return null;
+      console.error('Error fetching feedback:', error);
+      throw error;
   }
 };

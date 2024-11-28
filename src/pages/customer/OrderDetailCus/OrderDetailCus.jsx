@@ -7,7 +7,7 @@ import Header from '../../../components/Header/header';
 import FeedbackModal from '../../../components/FeedbackModal/FeedbackModal';
 import { useAuth } from '../../../context/AuthContext';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaRegClock, FaComment, FaReply } from 'react-icons/fa';
 
 const OrderDetailCus = () => {
   const [orderData, setOrderData] = useState(null);
@@ -54,7 +54,15 @@ const OrderDetailCus = () => {
 
   // Add simple formatting functions
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('vi-VN');
+    const date = new Date(dateString);
+    return date.toLocaleString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false // Sử dụng định dạng 24 giờ
+    });
   };
 
   const formatPrice = (price) => {
@@ -141,6 +149,16 @@ const OrderDetailCus = () => {
     setAlertOpen(false);
   };
 
+  // Thêm hàm formatDateOnly để chỉ hiển thị ngày tháng năm
+  const formatDateOnly = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
+
   if (!orderData) return <div>Loading...</div>;
 
   return (
@@ -156,7 +174,7 @@ const OrderDetailCus = () => {
             </p>
             <p>
               <strong>Thời gian thực hiện:</strong>
-              <span>{formatDate(orderData.orderDate)} - {formatDate(orderData.expectedCompletionDate)}</span>
+              <span>{formatDateOnly(orderData.orderDate)} - {formatDateOnly(orderData.expectedCompletionDate)}</span>
             </p>
             <p>
               <strong>Trạng thái đơn hàng:</strong>
@@ -228,19 +246,34 @@ const OrderDetailCus = () => {
                           </span>
                         </div>
                         <div className="odc-feedback-date">
+                          <FaRegClock style={{ marginRight: '4px' }} />
                           {formatDate(feedbacks[detail.detailId].createdAt)}
                         </div>
                       </div>
                       <div className="odc-feedback-content">
-                        <p className="feedback-label">Đánh giá của bạn:</p>
+                        <p className="feedback-label">
+                          <FaComment style={{ marginRight: '8px' }} />
+                          Đánh giá của bạn:
+                        </p>
                         <p className="feedback-text">{feedbacks[detail.detailId].content}</p>
                       </div>
                       {feedbacks[detail.detailId].responseContent && (
-                        <div className="odc-feedback-response">
-                          <p className="response-label">Phản hồi từ nhân viên:</p>
-                          <p className="response-text">
-                            {feedbacks[detail.detailId].responseContent}
-                          </p>
+                        <div className="odc-feedback-response-wrapper">
+                          <div className="response-header">
+                            <div className="response-date">
+                              <FaRegClock style={{ marginRight: '4px' }} />
+                              {formatDate(feedbacks[detail.detailId].updatedAt)}
+                            </div>
+                          </div>
+                          <div className="odc-feedback-response">
+                            <p className="response-label">
+                              <FaReply style={{ marginRight: '8px' }} />
+                              Phản hồi từ nhân viên:
+                            </p>
+                            <p className="response-text">
+                              {feedbacks[detail.detailId].responseContent}
+                            </p>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -252,6 +285,7 @@ const OrderDetailCus = () => {
                         setShowFeedbackModal(true);
                       }}
                     >
+                      <FaComment />
                       Đánh giá dịch vụ
                     </button>
                   )}

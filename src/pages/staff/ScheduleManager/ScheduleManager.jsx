@@ -30,7 +30,7 @@ import {
 import Sidebar from "../../../components/Sidebar/sideBar";
 import "./ScheduleManager.css";
 import { useAuth } from '../../../context/AuthContext';
-import { getNotSchedulingTasksByAccountId } from '../../../services/task';
+import { getTasksNotSchedulingByAccountId } from '../../../services/task';
 import { getSlot } from '../../../services/slot';
 import CloseIcon from '@mui/icons-material/Close';
 import { createScheduleDetailForStaff } from '../../../services/scheduleDetail';
@@ -209,7 +209,7 @@ const ScheduleManager = () => {
 
     try {
       setOrderLoading(true);
-      const response = await getNotSchedulingTasksByAccountId(user.accountId);
+      const response = await getTasksNotSchedulingByAccountId(user.accountId);
       if (response && response.tasks) {
         // Tạo map để đếm số lần xuất hiện của mỗi taskId trong lịch
         const taskOccurrences = {};

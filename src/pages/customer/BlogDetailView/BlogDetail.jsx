@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../../../components/Header/header';
 import { getBlogById, postComment, postCommentIcon, updateComment, updateCommentIcon, deleteCommentIcon, deleteComment } from '../../../APIcontroller/API';
+import { createCommentReport } from '../../../services/blog';
 import './BlogDetail.css';
 
 const BlogDetail = () => {
@@ -18,6 +19,9 @@ const BlogDetail = () => {
   });
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editContent, setEditContent] = useState('');
+  const [reportContent, setReportContent] = useState('');
+  const [reportingCommentId, setReportingCommentId] = useState(null);
+  const [reportTitle, setReportTitle] = useState('');
 
   // Lấy thông tin user và token
   const accessToken = localStorage.getItem('accessToken');
@@ -61,6 +65,13 @@ const BlogDetail = () => {
     }
   }, [blogId]);
 
+  const REPORT_TYPES = [
+    'Phát hiện nội dung độc hại trong phần bình luận',
+    'Bình luận xấu: Phân loại và đề xuất xử lý',
+    'Bình luận vi phạm tiêu chuẩn cộng đồng',
+    'Báo cáo bình luận không phù hợp',
+    'Khác'
+  ];
   const handlePrevImage = (e, martyrId, images) => {
     e.preventDefault();
     setCurrentImageIndices(prev => ({
@@ -184,6 +195,36 @@ const BlogDetail = () => {
     }
   };
 
+  const handleReport = async (commentId) => {
+    if (!accessToken) {
+      alert('Vui lòng đăng nhập để báo cáo bình luận');
+      navigate('/login', { state: { from: `/blog/${blogId}` } });
+      return;
+    }
+
+    if (!reportTitle.trim() || !reportContent.trim()) {
+      alert('Vui lòng nhập đầy đủ tiêu đề và nội dung báo cáo');
+      return;
+    }
+
+    try {
+      const reportData = {
+        commentId: commentId,
+        title: reportTitle,
+        content: reportContent
+      };
+
+      await createCommentReport(reportData);
+      alert('Báo cáo đã được gửi thành công');
+      setReportTitle('');
+      setReportContent('');
+      setReportingCommentId(null);
+    } catch (error) {
+      console.error('Error reporting comment:', error);
+      alert('Không thể gửi báo cáo. Vui lòng thử lại sau.');
+    }
+  };
+
   const renderRelatedMartyrs = () => {
     if (!blog.relatedMartyrDetails || blog.relatedMartyrDetails.length === 0) {
       return null;
@@ -261,9 +302,14 @@ const BlogDetail = () => {
       }
     }, []);
 
+    // Đếm số lượng bình luận
+    const commentCount = blog.comments.length;
+
     return (
       <div className="blog-detail__comments-section">
-        <h2 className="blog-detail__comments-title">Bình luận</h2>
+        <h2 className="blog-detail__comments-title">
+          Bình luận ({commentCount})
+        </h2>
         <div className="blog-detail__comments-list">
           {uniqueComments.map((comment) => {
             const isEditing = editingCommentId === comment.commentId;
@@ -325,51 +371,111 @@ const BlogDetail = () => {
                     <span className="blog-detail__comment-date">
                       {new Date(comment.createdDate).toLocaleDateString('vi-VN')}
                     </span>
-                    {isOwnComment && (
-                      <div className="blog-detail__comment-buttons">
+                    {/* Menu actions cho comment */}
+                    <div className="blog-detail__comment-menu">
+                      {isOwnComment ? (
+                        <>
+                          <button 
+                            onClick={() => handleEditClick(comment)}
+                            className="blog-detail__action-button"
+                          >
+                            <i className="fas fa-edit"></i> Chỉnh sửa
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteComment(comment.commentId)}
+                            className="blog-detail__action-button blog-detail__action-button--delete"
+                          >
+                            <i className="fas fa-trash"></i> Xóa
+                          </button>
+                        </>
+                      ) : (
                         <button 
-                          onClick={() => handleEditClick(comment)}
-                          className="blog-detail__edit-button"
+                          onClick={() => setReportingCommentId(comment.commentId)}
+                          className="blog-detail__action-button blog-detail__action-button--report"
                         >
-                          Chỉnh sửa
+                          <i className="fas fa-flag"></i> Báo cáo
                         </button>
-                        <button 
-                          onClick={() => handleDeleteComment(comment.commentId)}
-                          className="blog-detail__delete-button"
-                        >
-                          Xóa
-                        </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {isEditing ? (
-                  <div className="blog-detail__edit-form">
-                    <textarea
-                      value={editContent}
-                      onChange={(e) => setEditContent(e.target.value)}
-                      className="blog-detail__edit-input"
-                    />
-                    <div className="blog-detail__edit-actions">
-                      <button 
-                        onClick={() => handleUpdateComment(comment.commentId)}
-                        className="blog-detail__edit-save"
-                      >
-                        Lưu
-                      </button>
-                      <button 
-                        onClick={handleCancelEdit}
-                        className="blog-detail__edit-cancel"
-                      >
-                        Hủy
-                      </button>
+                {/* Nội dung comment */}
+                <div className="blog-detail__comment-content">
+                  {isEditing ? (
+                    <div className="blog-detail__edit-form">
+                      <textarea
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        className="blog-detail__edit-input"
+                      />
+                      <div className="blog-detail__edit-actions">
+                        <button onClick={() => handleUpdateComment(comment.commentId)}>
+                          Lưu
+                        </button>
+                        <button onClick={handleCancelEdit}>
+                          Hủy
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p>{comment.content}</p>
+                  )}
+                </div>
+
+                {/* Form báo cáo */}
+                {reportingCommentId === comment.commentId && (
+                  <div className="blog-detail__report-overlay">
+                    <div className="blog-detail__report-modal">
+                      <h3>Báo cáo bình luận</h3>
+                      <div className="blog-detail__report-field">
+                        <label>Loại báo cáo:</label>
+                        <select
+                          value={reportTitle}
+                          onChange={(e) => setReportTitle(e.target.value)}
+                          className="blog-detail__report-select"
+                        >
+                          <option value="">-- Chọn loại báo cáo --</option>
+                          {REPORT_TYPES.map((type) => (
+                            <option key={type} value={type}>
+                              {type}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="blog-detail__report-field">
+                        <label>Chi tiết báo cáo:</label>
+                        <textarea
+                          value={reportContent}
+                          onChange={(e) => setReportContent(e.target.value)}
+                          placeholder="Vui lòng mô tả chi tiết lý do báo cáo..."
+                          className="blog-detail__report-textarea"
+                        />
+                      </div>
+                      <div className="blog-detail__report-actions">
+                        <button 
+                          onClick={() => handleReport(comment.commentId)}
+                          className="blog-detail__report-submit"
+                          disabled={!reportTitle || !reportContent.trim()}
+                        >
+                          Gửi báo cáo
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setReportingCommentId(null);
+                            setReportTitle('');
+                            setReportContent('');
+                          }}
+                          className="blog-detail__report-cancel"
+                        >
+                          Hủy
+                        </button>
+                      </div>
                     </div>
                   </div>
-                ) : (
-                  <p className="blog-detail__comment-content">{comment.content}</p>
                 )}
 
+                {/* Phần reactions */}
                 <div className="blog-detail__comment-reactions">
                   <button 
                     className={`blog-detail__icon-button ${hasLiked ? 'active' : ''}`}
@@ -449,13 +555,6 @@ const BlogDetail = () => {
     <>
       <Header />
       <div className="blog-detail__container">
-        <button 
-          className="blog-detail__back-button"
-          onClick={() => navigate(-1)}
-        >
-          ← Quay lại
-        </button>
-        
         <article className="blog-detail__article">
           <header className="blog-detail__header">
             <h1 className="blog-detail__title">{blog.blogName}</h1>

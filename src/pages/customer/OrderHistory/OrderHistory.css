@@ -3,17 +3,19 @@
     margin: 0 auto;
     padding: 32px 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 8px;
   }
 
-  .page-header {
-    margin-bottom: 32px;
-  }
 
-  .page-title {
+
+  .order-history-title {
     font-size: 32px;
     font-weight: bold;
     color: #1a1a1a;
-    margin: 0 0 12px 0;
+    margin: 0 0 20px 0;
+    text-align: center;
+    font-size: 35px;
   }
 
   .page-description {
@@ -26,9 +28,10 @@
     gap: 16px;
     margin-bottom: 24px;
     align-items: center;
-    background-color: #f8fafc;
+    background-color: #ffffff;
     padding: 16px;
     border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     justify-content: flex-end;
   }
 
@@ -38,12 +41,12 @@
   }
 
   .status-select {
-    min-width: 150px;
-    padding: 8px 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    width: 200px;
+    transition: border-color 0.2s;
   }
 
   .status-select:focus {
@@ -83,10 +86,11 @@
   }
 
   .status-badge {
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 20px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
+    display: inline-block;
   }
 
   .status-completed {
@@ -263,6 +267,7 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow-x: auto;
+    margin-top: 20px;
   }
 
   .order-table {
@@ -324,9 +329,9 @@
   }
 
   .action-button {
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     border: none;
@@ -386,4 +391,26 @@
     .status-select {
       width: 100%;
     }
+  }
+
+  .date-picker-field {
+    background-color: white;
+    width: 200px;
+  }
+
+  .date-picker-field .MuiInputBase-input {
+    cursor: pointer;
+  }
+
+  .detail-button {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    min-width: 100px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+  }
+
+  .detail-button:hover {
+    background-color: #bae6fd;
   }

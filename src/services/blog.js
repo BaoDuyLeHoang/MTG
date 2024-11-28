@@ -163,7 +163,7 @@ export const createCommentReport = async (reportData) => {
       throw new Error('No authentication token found');
     }
 
-    const response = await axios.post(`${BASE_URL}/api/CommentReport`, reportData, {
+    const response = await axios.post(`${BASE_URL}/CommentReport`, reportData, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'

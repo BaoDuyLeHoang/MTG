@@ -30,11 +30,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-const iconStyle = {
-  verticalAlign: "middle",
-  marginRight: "8px",
-};
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'center',
   padding: '16px',
@@ -56,6 +51,8 @@ const OrderHistory = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
   const [selectedDate, setSelectedDate] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -66,16 +63,34 @@ const OrderHistory = () => {
       }
 
       try {
+        // Đảm bảo startDate và endDate là đầu ngày và cuối ngày
+        const formattedStartDate = startDate ? 
+          dayjs(startDate).startOf('day').format('YYYY-MM-DD HH:mm:ss') : null;
+        const formattedEndDate = endDate ? 
+          dayjs(endDate).endOf('day').format('YYYY-MM-DD HH:mm:ss') : null;
+
         const response = await getOrdersByCustomer(
           user.accountId,
           {
-            date: selectedDate ? dayjs(selectedDate).format('YYYY-MM-DD') : null,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
             status: statusFilter,
             pageIndex: currentPage,
-            pageSize: 5
+            pageSize: 5,
+            dateField: 'orderDate'
           }
         );
-        setOrders(response.orders || []);
+        
+        // Lọc thêm một lần nữa ở frontend để đảm bảo
+        const filteredOrders = response.orders.filter(order => {
+          if (!startDate && !endDate) return true;
+          const orderDate = dayjs(order.orderDate);
+          const isAfterStart = !startDate || orderDate.isAfter(dayjs(startDate).startOf('day'));
+          const isBeforeEnd = !endDate || orderDate.isBefore(dayjs(endDate).endOf('day'));
+          return isAfterStart && isBeforeEnd;
+        });
+
+        setOrders(filteredOrders || []);
         setTotalPages(response.totalPage);
         
         if (currentPage > response.totalPage) {
@@ -93,7 +108,7 @@ const OrderHistory = () => {
     };
 
     fetchOrders();
-  }, [user, currentPage, statusFilter, selectedDate]);
+  }, [user, currentPage, statusFilter, startDate, endDate]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -149,47 +164,53 @@ const OrderHistory = () => {
     <div className="order-history-page">
       <Header />
       <div className="order-history">
-        <div className="page-header">
-          <h1 className="page-title">Lịch Sử Đơn Hàng</h1>
+        <div className="order-history-header">
+          <h1 className="order-history-title">Lịch Sử Đơn Hàng</h1>
         </div>
 
-        <div className="filters">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Chọn ngày"
-              value={selectedDate}
-              onChange={(newValue) => setSelectedDate(newValue)}
-              className="date-picker"
-              format="DD/MM/YYYY"
-              slotProps={{
-                textField: {
-                  size: "small",
-                  inputProps: {
-                    readOnly: true
-                  },
-                  sx: { 
-                    backgroundColor: 'white',
-                    width: '200px',
-                    "& .MuiInputBase-input": {
-                      cursor: "pointer"
-                    }
+        <Paper sx={{ p: 2, mb: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Từ ngày"
+                value={startDate}
+                onChange={(newValue) => setStartDate(newValue)}
+                format="DD/MM/YYYY"
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    inputProps: { readOnly: true },
+                    sx: { className: 'date-picker-field' }
                   }
-                }
-              }}
-            />
-          </LocalizationProvider>
+                }}
+              />
+              <DatePicker
+                label="Đến ngày"
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+                format="DD/MM/YYYY"
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    inputProps: { readOnly: true },
+                    sx: { className: 'date-picker-field' }
+                  }
+                }}
+              />
+            </LocalizationProvider>
 
-          <select
-            className="status-select"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="1">Đã thanh toán</option>
-            <option value="2">Thất bại</option>
-            <option value="4">Hoàn thành</option>
-          </select>
-        </div>
+            <select
+              className="status-select"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Tất cả trạng thái</option>
+              <option value="1">Đã thanh toán</option>
+              <option value="2">Thất bại</option>
+              <option value="4">Hoàn thành</option>
+            </select>
+          </Box>
+        </Paper>
 
         <div className="table-container">
             <Table>
@@ -197,8 +218,9 @@ const OrderHistory = () => {
                 <TableRow>
                   <StyledTableCell>Mã đơn hàng</StyledTableCell>
                   <StyledTableCell>Ngày đặt</StyledTableCell>
-                  <StyledTableCell>Ngày hoàn thành</StyledTableCell>
+                  <StyledTableCell>Hạn hoàn thành</StyledTableCell>
                   <StyledTableCell>Dịch vụ</StyledTableCell>
+                  <StyledTableCell>Tên Liệt sĩ</StyledTableCell>
                   <StyledTableCell>Tổng tiền</StyledTableCell>
                   <StyledTableCell>Trạng thái</StyledTableCell>
                   <StyledTableCell className="action-cell">Thao tác</StyledTableCell>
@@ -214,6 +236,15 @@ const OrderHistory = () => {
                       {order.orderDetails.map((detail, index) => (
                         <div key={index} className="service-item">
                           <div>{detail.serviceName}</div>
+                        
+                        </div>
+                      ))}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {order.orderDetails.map((detail, index) => (
+                        <div key={index} className="service-item">
+                          <div>{detail.martyrName}</div>
+                        
                         </div>
                       ))}
                     </StyledTableCell>
@@ -230,14 +261,7 @@ const OrderHistory = () => {
                           size="small"
                           component={Link}
                           to={`/order-detail-cus/${order.orderId}`}
-                          sx={{
-                            backgroundColor: '#e0f2fe',
-                            color: '#0369a1',
-                            '&:hover': {
-                              backgroundColor: '#bae6fd',
-                            },
-                            minWidth: '80px',
-                          }}
+                          className="detail-button"
                         >
                           Chi tiết
                         </Button>

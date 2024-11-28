@@ -57,7 +57,7 @@
 }
 
 .blog-detail__content {
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .blog-detail__description {
@@ -283,9 +283,9 @@
 }
 
 .blog-detail__comments-title {
-  font-size: 1.8rem;
-  color: #2d3436;
-  margin-bottom: 1.5rem;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 .blog-detail__comments-list {
@@ -298,7 +298,7 @@
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin-bottom: 1rem;
 }
@@ -837,4 +837,279 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.blog-detail__report-button {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 0.9em;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.blog-detail__report-button:hover {
+  color: #dc3545;
+}
+
+/* Modal báo cáo */
+.blog-detail__report-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.blog-detail__report-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.blog-detail__report-modal h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+}
+
+.blog-detail__report-input,
+.blog-detail__report-textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.blog-detail__report-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.blog-detail__report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.blog-detail__report-submit,
+.blog-detail__report-cancel {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.blog-detail__report-submit {
+  background-color: #dc3545;
+  color: white;
+}
+
+.blog-detail__report-submit:disabled {
+  background-color: #e9acb3;
+  cursor: not-allowed;
+}
+
+.blog-detail__report-cancel {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.blog-detail__report-submit:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.blog-detail__report-cancel:hover {
+  background-color: #dde2e6;
+}
+
+.blog-detail__report-title-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Comment actions */
+.blog-detail__comment-menu {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.blog-detail__action-button {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-size: 0.9em;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 4px;
+}
+
+.blog-detail__action-button:hover {
+  background-color: #f0f0f0;
+}
+
+.blog-detail__action-button--delete:hover {
+  color: #dc3545;
+}
+
+.blog-detail__action-button--report:hover {
+  color: #ffc107;
+}
+
+/* Report modal */
+.blog-detail__report-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.blog-detail__report-modal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.blog-detail__report-header {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.blog-detail__report-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.blog-detail__report-close {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.blog-detail__report-body {
+  padding: 16px;
+}
+
+.blog-detail__report-field {
+  margin-bottom: 16px;
+}
+
+.blog-detail__report-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.blog-detail__report-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+  background-color: white;
+  cursor: pointer;
+}
+
+.blog-detail__report-select:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.1);
+}
+
+.blog-detail__report-select option {
+  padding: 8px;
+}
+
+/* Điều chỉnh style cho textarea để phù hợp với select */
+.blog-detail__report-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+  resize: vertical;
+  margin-top: 4px;
+}
+
+.blog-detail__report-textarea:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.1);
+}
+
+.blog-detail__report-footer {
+  padding: 16px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.blog-detail__report-submit,
+.blog-detail__report-cancel {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.blog-detail__report-submit {
+  background-color: #dc3545;
+  color: white;
+}
+
+.blog-detail__report-submit:disabled {
+  background-color: #e9acb3;
+  cursor: not-allowed;
+}
+
+.blog-detail__report-cancel {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.blog-detail__report-submit:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.blog-detail__report-cancel:hover {
+  background-color: #dde2e6;
 }

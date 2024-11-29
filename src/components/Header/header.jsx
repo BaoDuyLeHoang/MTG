@@ -143,6 +143,7 @@ const Header = () => {
                       <Link to="/relative-grave">Mộ người thân</Link>
                       <Link to="/cart">Giỏ hàng</Link>
                       <Link to="/order-history">Lịch sử đơn hàng</Link>
+                      <Link to="/wallet">Ví của tôi</Link>
                       <Link to="/notifications">Thông báo</Link>
                     </>
                   )}

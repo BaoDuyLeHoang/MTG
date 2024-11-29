@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { getMartyrGraveByCustomerId } from "../../../services/graves";
 
+const DEFAULT_GRAVE_IMAGE = "https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072";
+
 const RelativeGrave = () => {
   const [graves, setGraves] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,9 +89,12 @@ const RelativeGrave = () => {
             <div key={grave.martyrId} className="relative-grave-card">
               <div className="relative-grave-image-wrapper">
                 <img
-                  src={imageUrl}
+                  src={imageUrl || DEFAULT_GRAVE_IMAGE}
                   alt={info.name}
                   className="relative-grave-image"
+                  onError={(e) => {
+                    e.target.src = DEFAULT_GRAVE_IMAGE;
+                  }}
                 />
               </div>
               

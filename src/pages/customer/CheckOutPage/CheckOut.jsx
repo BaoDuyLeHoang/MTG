@@ -3,13 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Header from "../../../components/Header/header";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "./CheckOutPage.css";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt, FaWallet } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 import {getCheckoutItemsByCustomerId } from "../../../APIcontroller/API";
 import { createOrder } from "../../../services/orders";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const CheckOut = () => {
   const location = useLocation();
@@ -66,7 +65,7 @@ const CheckOut = () => {
     {
       id: "balance",
       name: "Số dư tài khoản",
-      logo: <AccountBalanceWalletIcon sx={{ fontSize: 40, color: '#1976d2' }} />
+      icon: <FaWallet size={24} color="#4F46E5" />
     }
   ];
 
@@ -220,7 +219,9 @@ const CheckOut = () => {
                       checked={selectedPaymentMethod === method.id}
                       onChange={() => handlePaymentMethodChange(method.id)}
                     />
-                    <img src={method.logo} alt={method.name} className="payment-logo" />
+                    {method.logo ? (
+                      <img src={method.logo} alt={method.name} className="payment-logo" />
+                    ) : method.icon}
                     <span className="payment-name">{method.name}</span>
                   </label>
                 ))}

@@ -180,7 +180,7 @@ const Wallet = () => {
           </div>
 
           <div className="transaction-history">
-            <h3>Lịch sử giao dịch</h3>
+            <h3>Biến động số dư:</h3>
             <div className="date-filters">
               <input
                 type="date"

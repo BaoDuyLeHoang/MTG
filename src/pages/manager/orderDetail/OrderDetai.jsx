@@ -25,13 +25,30 @@ const OrderDetail = () => {
   const getStatusText = (statusTask) => {
     switch (statusTask) {
       case 0:
-        return "Đang giao";
+        return "Đang chờ";
       case 1:
         return "Đã giao";
       case 2:
         return "Đã từ chối";
       case 3:
-        return "Đang thực hiện";
+          return "Đang làm";
+      case 4:
+        return "Hoàn thành";
+      case 5:
+        return "Thất bại";
+      default:
+        return "Không xác định";
+    }
+  };
+
+  const getStatusOrderText = (statusOrder) => {
+    switch (statusOrder) {
+      case 0:
+        return "Đang chờ";
+      case 1:
+        return "Đã thanh toán";
+      case 2:
+        return "Đã hủy";
       case 4:
         return "Hoàn thành";
       case 5:
@@ -114,6 +131,8 @@ const OrderDetail = () => {
 
       console.log("Sending task data:", taskData);
 
+
+      // Check if statusTask is 2
       if (orderDetail.statusTask === 2) {
         // Call the reassign API using the service
         const result = await reassignTask(orderDetail.detailId, selectedStaff[orderDetail.detailId]);

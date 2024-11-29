@@ -9,6 +9,7 @@ import {getCheckoutItemsByCustomerId } from "../../../APIcontroller/API";
 import { createOrder } from "../../../services/orders";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const CheckOut = () => {
   const location = useLocation();
@@ -62,6 +63,11 @@ const CheckOut = () => {
       name: "Ví Momo",
       logo: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
     },
+    {
+      id: "balance",
+      name: "Số dư tài khoản",
+      logo: <AccountBalanceWalletIcon sx={{ fontSize: 40, color: '#1976d2' }} />
+    }
   ];
 
   const handlePaymentMethodChange = (methodId) => {
@@ -124,17 +130,33 @@ const CheckOut = () => {
         orderData
       );
 
-      if (response.paymentUrl) {
+      if (selectedPaymentMethod === "balance") {
+        if (response.message && response.message.includes("thành công")) {
+          setAlertMessage("Đặt hàng thành công!");
+          setAlertSeverity("success");
+          setAlertOpen(true);
+          
+          setTimeout(() => {
+            navigate('/checkout-success');
+          }, 1500);
+        } else {
+          setAlertMessage(response.message || "Số dư tài khoản không đủ để thực hiện giao dịch");
+          setAlertSeverity("error");
+          setAlertOpen(true);
+        }
+      } else if (response.paymentUrl) {
         window.location.href = response.paymentUrl;
-      } else {
-        setAlertMessage("Đặt hàng thành công!");
-        setAlertSeverity("success");
-        setAlertOpen(true);
-        navigate('/order-confirmation', { state: { orderId: response.orderId } });
       }
     } catch (error) {
       console.error("Error creating order:", error);
-      setAlertMessage("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
+      
+      if (error.response?.status === 400) {
+        setAlertMessage(error.response.data);
+      } else {
+        setAlertMessage("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
+      }
+      
+      setAlertSeverity("error");
       setAlertOpen(true);
     } finally {
       setIsLoading(false);

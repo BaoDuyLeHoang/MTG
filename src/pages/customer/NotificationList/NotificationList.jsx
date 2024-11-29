@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getMyNotifications } from '../../../APIcontroller/API';
 import Header from '../../../components/Header/header';
 import './NotificationList.css';
-import { Bell, Calendar, ArrowLeft, AlertCircle, RefreshCcw } from 'lucide-react';
+import { Bell, Calendar, ArrowLeft, AlertCircle, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import Loading from '../../../components/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,21 +11,29 @@ const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const data = await getMyNotifications();
-        setNotifications(data);
-      } catch (err) {
-        setError('Không thể tải thông báo. Vui lòng thử lại sau.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchNotifications();
-  }, []);
+  }, [currentPage]);
+
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const data = await getMyNotifications(currentPage, 5);
+      setNotifications(data.notifications);
+      setTotalPages(data.totalPage);
+    } catch (err) {
+      setError('Không thể tải thông báo. Vui lòng thử lại sau.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   if (loading) return <Loading text="Đang tải thông báo..." />;
   if (error) return (
@@ -74,28 +82,54 @@ const NotificationList = () => {
               <p>Chưa có thông báo nào</p>
             </div>
           ) : (
-            <div className="notification-list">
-              {notifications.map((notification) => (
-                <div key={notification.notificationId} className="notification-card">
-                  <div className="notification-icon">
-                    <Calendar size={24} />
+            <>
+              <div className="notification-list">
+                {notifications.map((notification) => (
+                  <div key={notification.notificationId} className="notification-card">
+                    <div className="notification-icon">
+                      <Calendar size={24} />
+                    </div>
+                    <div className="notification-content">
+                      <h3>{notification.title}</h3>
+                      <p>{notification.description}</p>
+                      <span className="notification-date">
+                        {new Date(notification.createdDate).toLocaleDateString('vi-VN', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
                   </div>
-                  <div className="notification-content">
-                    <h3>{notification.title}</h3>
-                    <p>{notification.description}</p>
-                    <span className="notification-date">
-                      {new Date(notification.createdDate).toLocaleDateString('vi-VN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
-                  </div>
+                ))}
+              </div>
+              
+              <div className="pagination">
+                <button 
+                  className="pagination-button"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft size={20} />
+                  Trước
+                </button>
+                
+                <div className="pagination-info">
+                  Trang {currentPage}/{totalPages}
                 </div>
-              ))}
-            </div>
+                
+                <button 
+                  className="pagination-button"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Sau
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>

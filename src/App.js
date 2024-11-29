@@ -71,6 +71,7 @@ import ServiceList from './pages/manager/ServiceList/ServiceList';
 import BlogDetail from './pages/customer/BlogDetailView/BlogDetail';
 import BlogCategoryDetail from './pages/customer/BlogCategoryDetail/BlogCategoryDetail';
 import Notifications from './pages/customer/NotificationList/NotificationList';
+import Wallet from './pages/customer/Wallet/Wallet';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -109,6 +110,7 @@ function AppContent() {
           <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
           <Route path="/user-profile" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><UserProfile /></ProtectedRoute>} />
+          <Route path="/wallet" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><Wallet /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/material-management" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><MaterialManagement /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />

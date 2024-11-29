@@ -69,7 +69,7 @@ const ManagerManagement = () => {
         <div className="manager-management-container">
             <Sidebar />
             <div className="manager-management-content">
-                <h1>Quản Lý</h1>
+                <h1>Quản Lý Nhân Sự</h1>
                 
                 {loading ? (
                     <div className="centered">
@@ -81,19 +81,22 @@ const ManagerManagement = () => {
                         <table className="manager-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    
                                     <th>Tên quản lý</th>
+                                    <th>Khu vực</th>
                                     <th>Thời gian tạo</th>
                                     <th>Tình trạng</th>
                                     <th>Email</th>
+                                    <th>Số điện thoại</th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredManagers.map((manager) => (
                                     <tr key={manager.accountId}>
-                                        <td>#{manager.accountId}</td>
+                                        
                                         <td>{manager.fullName}</td>
+                                        <td>{manager.areaId}</td>
                                         <td>{new Date(manager.createAt).toLocaleDateString('vi-VN', {
                                             year: 'numeric',
                                             month: '2-digit',
@@ -104,7 +107,8 @@ const ManagerManagement = () => {
                                                 {manager.status ? 'Hoạt động' : 'Không hoạt động'}
                                             </span>
                                         </td>
-                                        <td>{manager.email}</td>
+                                        <td>{manager.emailAddress}</td>
+                                        <td>{manager.phoneNumber}</td>
                                         <td>
                                             <button 
                                                 className="icon-button"
@@ -117,13 +121,7 @@ const ManagerManagement = () => {
                                                     <ToggleLeft className="toggle-inactive" size={28} />
                                                 )}
                                             </button>
-                                            <button 
-                                                className="clipboard-pen"
-                                                onClick={() => handleCreateReport(manager.managerId)}
-                                                title="Tạo báo cáo"
-                                            >
-                                                <FileText size={28} />
-                                            </button>
+                                            
                                         </td>
                                     </tr>
                                 ))}

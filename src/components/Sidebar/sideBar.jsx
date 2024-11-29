@@ -58,9 +58,15 @@ const Sidebar = () => {
   const menuItems = [
     // Admin Items (Role 1)
     {
+      to: "/admin",
+      icon: faCreditCard,
+      text: "Thống kê",
+      roles: [1],
+    },
+    {
       to: "/danhsachaccount",
       icon: faUserCog,
-      text: "Quản lý tài khoản",
+      text: "Quản lý nhân sự",
       roles: [1],
     },
     {
@@ -75,6 +81,7 @@ const Sidebar = () => {
       text: "Quản lý vật liệu",
       roles: [1],
     },
+    
 
 
     // Manager Items (Role 2)
@@ -124,7 +131,7 @@ const Sidebar = () => {
       to: "/danhsachthanhtoan",
       icon: faCreditCard,
       text: "Thanh toán",
-      roles: [1,2],
+      roles: [],
     },
 
     // Staff Items (Role 3)

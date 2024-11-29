@@ -14,3 +14,16 @@ export const getMaterialAdmin = async () => {
     throw error;
   }
 };
+
+export const getMaterialByServiceId = async (serviceId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/Material/admin/${serviceId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

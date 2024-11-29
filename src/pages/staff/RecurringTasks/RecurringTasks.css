@@ -1,0 +1,146 @@
+.recurring-tasks {
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.task-details {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.task-details .MuiTypography-root {
+    margin-bottom: 12px;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1300;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.recurring-detail {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
+.date-picker-container {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.custom-datepicker {
+    height: 40px;
+    width: 200px;
+    padding: 8px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: inherit;
+    background-color: transparent;
+}
+
+.custom-datepicker:hover {
+    border-color: rgba(0, 0, 0, 0.87);
+}
+
+.custom-datepicker:focus {
+    border-color: #1976d2;
+    border-width: 2px;
+    outline: none;
+}
+
+/* Căn chỉnh icon clear của datepicker */
+.react-datepicker__close-icon {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.react-datepicker__close-icon::after {
+    font-size: 16px;
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
+    background-color: rgba(0, 0, 0, 0.54);
+}
+
+/* Container cho datepicker */
+.date-picker-container {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+/* Style cho dropdown của datepicker */
+.react-datepicker-popper {
+    z-index: 2;
+}
+
+.react-datepicker {
+    font-family: inherit;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+}
+
+.react-datepicker__header {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.23);
+}
+
+.react-datepicker__day--selected {
+    background-color: #1976d2;
+    color: white;
+}
+
+.react-datepicker__day:hover {
+    background-color: rgba(25, 118, 210, 0.1);
+}
+
+/* Thêm styles cho trường hợp không có kết quả */
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+/* Style cho filter summary */
+.filter-summary {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+/* Style cho clear filter button */
+.clear-filter-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+} 

@@ -97,3 +97,22 @@ export const deleteScheduleDetail = async (scheduleDetailId, accountId) => {
   }
 };
   
+export const createScheduleDetailRecurringService = async (accountId, scheduleDetails) => {
+    try {
+        const response = await axios.post(
+            `${BASE_URL}/ScheduleDetail/CreateScheduleDetailRecurringService?accountId=${accountId}`,
+            scheduleDetails,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error creating recurring schedule detail:', error);
+        throw error;
+    }
+};
+  

@@ -291,7 +291,7 @@
 .blog-detail__comments-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  
 }
 
 .blog-detail__comment {
@@ -1112,4 +1112,21 @@
 
 .blog-detail__report-cancel:hover {
   background-color: #dde2e6;
+}
+
+.blog-detail__view-more-comments {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: background-color 0.2s;
+}
+
+.blog-detail__view-more-comments:hover {
+  background-color: #e0e0e0;
 }

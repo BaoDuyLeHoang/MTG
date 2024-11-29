@@ -22,6 +22,7 @@ const BlogDetail = () => {
   const [reportContent, setReportContent] = useState('');
   const [reportingCommentId, setReportingCommentId] = useState(null);
   const [reportTitle, setReportTitle] = useState('');
+  const [showAllComments, setShowAllComments] = useState(false);
 
   // Lấy thông tin user và token
   const accessToken = localStorage.getItem('accessToken');
@@ -300,10 +301,12 @@ const BlogDetail = () => {
       } else {
         return acc;
       }
-    }, []);
+    }, [])
+    .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
 
-    // Đếm số lượng bình luận
-    const commentCount = blog.comments.length;
+    // Lấy số comments sẽ hiển thị dựa vào state showAllComments
+    const commentsToShow = showAllComments ? uniqueComments : uniqueComments.slice(0, 3);
+    const commentCount = uniqueComments.length;
 
     return (
       <div className="blog-detail__comments-section">
@@ -311,7 +314,7 @@ const BlogDetail = () => {
           Bình luận ({commentCount})
         </h2>
         <div className="blog-detail__comments-list">
-          {uniqueComments.map((comment) => {
+          {commentsToShow.map((comment) => {
             const isEditing = editingCommentId === comment.commentId;
             const isOwnComment = currentAccountId && parseInt(currentAccountId) === comment.accountId;
 
@@ -503,6 +506,16 @@ const BlogDetail = () => {
             );
           })}
         </div>
+        
+        {/* Thêm nút xem thêm/ẩn bớt comments */}
+        {uniqueComments.length > 3 && (
+          <button 
+            className="blog-detail__view-more-comments"
+            onClick={() => setShowAllComments(!showAllComments)}
+          >
+            {showAllComments ? 'Ẩn bớt bình luận' : `Xem thêm ${uniqueComments.length - 3} bình luận`}
+          </button>
+        )}
       </div>
     );
   };

@@ -42,8 +42,9 @@ import BlogManager from './pages/manager/BlogManager/BlogManager';
 import BlogDetailManager from './pages/manager/BlogDetail/BlogDetailManager';
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
-  import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
+import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
 import TaskDetails from './pages/staff/TaskDetail/TaskDetail';
+import RecurringTasks from './pages/staff/RecurringTasks/RecurringTasks';
 
 // Customer Components
 import HomePage from "./pages/customer/homePage/homePage";
@@ -143,6 +144,7 @@ function AppContent() {
           <Route path="/blog-management" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogManagement /></ProtectedRoute>} />
           <Route path="/blog-create" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogCreate /></ProtectedRoute>} />
           <Route path="/schedule-staff" element={<ScheduleManager />} />
+          <Route path="/recurring-tasks" element={<RecurringTasks />} />
 
           
 

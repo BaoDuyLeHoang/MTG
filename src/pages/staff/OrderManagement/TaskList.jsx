@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { format } from 'date-fns';
 import { updateTaskStatus } from '../../../APIcontroller/API';
-import { getTasksByAccountId , updateTaskImage} from '../../../services/task';
+import { getTasksByAccountId, updateTaskImage } from '../../../services/task';
 import { useAuth } from '../../../context/AuthContext';
 import { ROLES } from '../../../utils/auth';
 import DatePicker from 'react-datepicker';
@@ -38,7 +39,8 @@ const TaskList = () => {
     const [responseContent, setResponseContent] = useState('');
     const [isResponding, setIsResponding] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const tasksPerPage = 10; // Số lượng công việc trên mỗi trang
+    const [totalPages, setTotalPages] = useState(1);
+    const pageSize = 5;
     const [statusFilter, setStatusFilter] = useState('all');
 
     // Add status options
@@ -54,41 +56,36 @@ const TaskList = () => {
 
     useEffect(() => {
         if (user?.accountId) {
-            console.log('fetching tasks');
             fetchTasks();
         }
-    }, [user?.accountId, startDate, endDate, filter]);
-    
- 
+    }, [user?.accountId, currentPage]);
+
     const fetchTasks = async () => {
         if (user && user.accountId && user.role === ROLES.STAFF) {
             try {
-                const response = await getTasksByAccountId(user.accountId);
-                console.log('response', response); 
-                const transformed = response.tasks.map(tasks => ({
-                    id: tasks.taskId,
-                    serviceName: tasks.serviceName,
-                    serviceDescription: tasks.serviceDescription,
-                    graveLocation: tasks.graveLocation,
-                    startDate: tasks.startDate,
-                    endDate: tasks.endDate,
-                    status: tasks.status,
-                    imagePath1: tasks.imagePath1,
-                    imagePath2: tasks.imagePath2,
-                    imagePath3: tasks.imagePath3    
-                 
-                  }));
-
-                setTasks(transformed);
-            
+                const response = await getTasksByAccountId(user.accountId, currentPage, pageSize);
+                setTasks(response.tasks.map(task => ({
+                    id: task.taskId,
+                    serviceName: task.serviceName,
+                    serviceDescription: task.serviceDescription,
+                    graveLocation: task.graveLocation,
+                    startDate: task.startDate,
+                    endDate: task.endDate,
+                    status: task.status,
+                    description: task.description,
+                    orderId: task.orderId,
+                    detailId: task.detailId,
+                    imageWorkSpace: task.imageWorkSpace,
+                    taskImages: task.taskImages || []
+                })));
+                setTotalPages(response.totalPage);
             } catch (error) {
                 console.error('Error fetching tasks:', error);
             }
-        } else {
-            console.log('User is not logged in or is not a staff member');
         }
     };
-    const filteredTasks =  tasks.filter(task => {
+
+    const filteredTasks = tasks.filter(task => {
         // First check the status filter
         let statusMatch;
         switch (statusFilter) {
@@ -120,7 +117,6 @@ const TaskList = () => {
 
         return statusMatch && isWithinDateRange;
     });
-    
 
     const handleConfirm = async (taskId) => {
         navigate(`/schedule-staff`);
@@ -131,7 +127,7 @@ const TaskList = () => {
             alert('Vui lòng nhập lý do từ chối');
             return;
         }
-        
+
         try {
             await updateTaskStatus(taskId, 2, rejectReason); // Thêm rejectReason vào API call
             setIsPopupOpen(false);
@@ -166,22 +162,18 @@ const TaskList = () => {
         }
     };
 
-    
-
     const handleViewDetails = async (task) => {
         setSelectedTask(task);
         if (task.status === 4) {
             // Transform existing image paths into the format we need
             const existingImages = [
-                task.imagePath1,
-                task.imagePath2,
-                task.imagePath3
+                task.imageWorkSpace
             ]
-            .filter(path => path) // Remove null/empty paths
-            .map((url, index) => ({
-                id: index + 1,
-                url: url
-            }));
+                .filter(path => path) // Remove null/empty paths
+                .map((url, index) => ({
+                    id: index + 1,
+                    url: url
+                }));
             setTaskImages(existingImages);
 
             // Fetch feedback when task is completed
@@ -268,7 +260,7 @@ const TaskList = () => {
                 staffId: user.accountId,
                 responseContent: responseContent
             };
-            
+
             await createFeedbackResponse(responseData);
             // Refresh feedback data
             const updatedFeedback = await getFeedbackWithDetailId(selectedTask.id);
@@ -282,10 +274,6 @@ const TaskList = () => {
         }
     };
 
-    const indexOfLastTask = currentPage * tasksPerPage;
-    const indexOfFirstTask = indexOfLastTask - tasksPerPage;
-    const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
-
     return (
         <div className="staff-task-list-container">
             <Sidebar />
@@ -294,7 +282,7 @@ const TaskList = () => {
                 <div className="staff-task-list-date-range">
                     <div className="filter-group">
                         <span>Trạng thái:</span>
-                        <select 
+                        <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="staff-task-list-status-select"
@@ -308,16 +296,16 @@ const TaskList = () => {
                     </div>
                     <div className="filter-group">
                         <span>Từ ngày:</span>
-                        <DatePicker 
-                            selected={startDate} 
+                        <DatePicker
+                            selected={startDate}
                             onChange={date => handleDateChange(date, setStartDate)}
                             maxDate={endDate}
                         />
                     </div>
                     <div className="filter-group">
                         <span>Đến ngày:</span>
-                        <DatePicker 
-                            selected={endDate} 
+                        <DatePicker
+                            selected={endDate}
                             onChange={date => handleDateChange(date, setEndDate)}
                             minDate={startDate}
                         />
@@ -334,14 +322,14 @@ const TaskList = () => {
                             <th>Hành động</th>
                         </tr>
                     </thead>
-                    
+
                     <tbody>
-                        {currentTasks.map(task => (
+                        {tasks.map(task => (
                             <tr key={task.id}>
                                 <td>{task.serviceName || task.description || 'Không có mô tả'}</td>
                                 <td>{task.graveLocation || `MTG-K${task.orderId}D${task.detailId}`}</td>
-                                <td>{new Date(task.startDate).toLocaleDateString()}</td>
-                                <td>{new Date(task.endDate).toLocaleDateString()}</td>
+                                <td>{format(new Date(task.startDate), 'dd/MM/yyyy')}</td>
+                                <td>{format(new Date(task.endDate), 'dd/MM/yyyy')}</td>
                                 <td>
                                     <span className="status-badge" style={{
                                         backgroundColor: getStatusText(task.status).color,
@@ -356,7 +344,7 @@ const TaskList = () => {
                                 </td>
                                 <td>
                                     <button 
-                                        className="staff-task-list-detail-button" 
+                                        className="staff-task-list-detail-button"
                                         onClick={() => handleViewDetails(task)}
                                     >
                                         Chi tiết
@@ -368,22 +356,38 @@ const TaskList = () => {
                 </table>
                 {/* Phân trang */}
                 <div className="pagination">
-                    {Array.from({ length: Math.ceil(filteredTasks.length / tasksPerPage) }, (_, index) => (
-                        <button 
-                            key={index + 1} 
-                            onClick={() => setCurrentPage(index + 1)} 
-                            className={currentPage === index + 1 ? 'active' : ''}
+                    <button 
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="pagination-button"
+                    >
+                        Trang trước
+                    </button>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`pagination-button ${currentPage === page ? 'active' : ''}`}
                         >
-                            {index + 1}
+                            {page}
                         </button>
                     ))}
+                    
+                    <button 
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="pagination-button"
+                    >
+                        Trang sau
+                    </button>
                 </div>
                 {isPopupOpen && selectedTask && (
                     <div className="popup-overlay">
                         <div className="popup-content">
                             <div className="popup-header">
                                 <h2>Chi Tiết Công Việc</h2>
-                                <button 
+                                <button
                                     className="close-button"
                                     onClick={() => {
                                         setIsPopupOpen(false);
@@ -432,8 +436,8 @@ const TaskList = () => {
                                         <div className="image-preview-grid">
                                             {taskImages.map(image => (
                                                 <div key={image.id} className="image-preview-item">
-                                                    <img 
-                                                        src={image.url} 
+                                                    <img
+                                                        src={image.url}
                                                         alt={`Tài liệu ${image.id}`}
                                                         onClick={() => window.open(image.url, '_blank')}
                                                     />
@@ -503,8 +507,8 @@ const TaskList = () => {
                                                 <div className="feedback-content">
                                                     <div className="customer-info">
                                                         <div className="customer-avatar">
-                                                            <img 
-                                                                src={feedback.avatarPath || 'https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/accounts%2Favt-7.jpg?alt=media&token=43c0380f-9a7d-4b88-b72c-05fd146b764f'} 
+                                                            <img
+                                                                src={feedback.avatarPath || 'https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/accounts%2Favt-7.jpg?alt=media&token=43c0380f-9a7d-4b88-b72c-05fd146b764f'}
                                                                 alt="Avatar"
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
@@ -535,14 +539,14 @@ const TaskList = () => {
                                                         <div className="staff-response">
                                                             <div className="response-header">
                                                                 <span className="staff-name">Phản hồi từ nhân viên</span>
-                                                                
+
                                                             </div>
                                                             <p className="response-content">{feedback.responseContent}</p>
                                                         </div>
                                                     ) : (
                                                         <div className="response-section">
                                                             {!isResponding ? (
-                                                                <button 
+                                                                <button
                                                                     className="respond-button"
                                                                     onClick={() => setIsResponding(true)}
                                                                 >
@@ -557,14 +561,14 @@ const TaskList = () => {
                                                                         rows={4}
                                                                     />
                                                                     <div className="response-actions">
-                                                                        <button 
+                                                                        <button
                                                                             className="submit-response"
                                                                             onClick={() => handleSubmitResponse(feedback.feedbackId)}
                                                                             disabled={!responseContent.trim()}
                                                                         >
                                                                             Gửi phản hồi
                                                                         </button>
-                                                                        <button 
+                                                                        <button
                                                                             className="cancel-response"
                                                                             onClick={() => {
                                                                                 setIsResponding(false);
@@ -587,7 +591,7 @@ const TaskList = () => {
                             <div className="popup-footer">
                                 {(selectedTask.status === 0 || selectedTask.status === 1) && (
                                     <div className="action-buttons">
-                                        <button 
+                                        <button
                                             className="accept-button"
                                             onClick={() => {
                                                 handleConfirm(selectedTask.id);
@@ -596,7 +600,7 @@ const TaskList = () => {
                                         >
                                             Chấp nhận
                                         </button>
-                                        <button 
+                                        <button
                                             className="reject-button"
                                             onClick={() => {
                                                 setIsRejectPopupOpen(true);
@@ -606,7 +610,7 @@ const TaskList = () => {
                                         </button>
                                     </div>
                                 )}
-                                
+
                             </div>
                         </div>
                     </div>
@@ -617,7 +621,7 @@ const TaskList = () => {
                         <div className="popup-content reject-reason-popup">
                             <div className="popup-header">
                                 <h2>Lý Do Từ Chối</h2>
-                                <button 
+                                <button
                                     className="close-button"
                                     onClick={() => {
                                         setIsRejectPopupOpen(false);
@@ -637,13 +641,13 @@ const TaskList = () => {
                                 />
                             </div>
                             <div className="popup-footer">
-                                <button 
+                                <button
                                     className="reject-button"
                                     onClick={() => handleReject(selectedTask.id)}
                                 >
                                     Xác nhận từ chối
                                 </button>
-                                <button 
+                                <button
                                     className="close-popup-button"
                                     onClick={() => {
                                         setIsRejectPopupOpen(false);
@@ -657,7 +661,7 @@ const TaskList = () => {
                     </div>
                 )}
             </div>
-            
+
         </div>
     );
 };

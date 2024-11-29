@@ -89,6 +89,8 @@ const OrderManagement = () => {
           return "Đang bàn giao";
         case 1:
           return "Đã giao";
+        case 2:
+          return "Đã từ chối";
         case 3:
           return "Đang thực hiện";
         case 4:

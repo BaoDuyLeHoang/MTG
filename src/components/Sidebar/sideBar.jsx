@@ -85,12 +85,6 @@ const Sidebar = () => {
       roles: [2],
     },
     {
-      to: "/schedule-manager",
-      icon: faCalendarAlt,
-      text: "Lịch công việc",
-      roles: [2],
-    },
-    {
       to: "/danhsachdonhang",
       icon: faShoppingCart,
       text: "Đơn hàng",
@@ -144,6 +138,12 @@ const Sidebar = () => {
       to: "/danhsachdonhang-staff", 
       icon: faClipboardList, 
       text: "Công việc", 
+      roles: [3] 
+    },
+    { 
+      to: "/recurring-tasks", 
+      icon: faClipboardList, 
+      text: "Công việc định kì", 
       roles: [3] 
     },
     {

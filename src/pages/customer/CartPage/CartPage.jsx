@@ -62,6 +62,7 @@ const CartPage = () => {
                   selected: item.status || false,
                   martyrId: item.martyrId,
                   martyrCode: item.martyrCode,
+                  martyrName: item.martyrName,
                   serviceView: {
                     serviceId: item.serviceView.serviceId,
                     serviceName: item.serviceView.serviceName,
@@ -184,6 +185,10 @@ const CartPage = () => {
     navigate('/tim-kiem-mo'); // Adjust this path if needed
   };
 
+  const navigateToLogin = () => {
+    navigate('/login'); // Adjust this path if needed
+  };
+
   // Function to handle closing the alert
   const handleAlertClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -231,6 +236,12 @@ const CartPage = () => {
                     Đến mộ thân nhân
                   </button>
                 )}
+                {!user?.accountId && (
+                  <button onClick={navigateToLogin} className="cart-page-button tertiary">
+                    <i className="fas fa-user"></i>
+                    Đăng nhập / Đăng ký
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -249,7 +260,7 @@ const CartPage = () => {
                 <th>Tên dịch vụ</th>
                 <th>Mô tả</th>
                 <th>Giá</th>
-                <th>Mã mộ</th>
+                <th>Tên Liệt sĩ</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -273,7 +284,7 @@ const CartPage = () => {
                   <td>{item.serviceView.description}</td>
                   <td className='cart-page-price'>{item.serviceView.price.toLocaleString('vi-VN')} đ</td>
                   <td>
-                    <Link to={`/chitietmo/${item.martyrId}`} className="cart-page-martyr-link">{item.martyrCode}</Link>
+                    <Link to={`/chitietmo/${item.martyrId}`} className="cart-page-martyr-link">{item.martyrName}</Link>
                   </td>
                   <td>
                     <button onClick={() => handleDelete(item.cartId)} className="cart-page-delete-btn">

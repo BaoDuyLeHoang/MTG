@@ -1,5 +1,5 @@
 .notification-container {
-  max-width: 900px;
+  max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
   background: #ffffff;
@@ -240,5 +240,66 @@
   
   .error-container h2 {
     font-size: 1.1rem;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.pagination-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #4a5568;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background: #f7fafc;
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 0.95rem;
+  color: #4a5568;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 768px) {
+  .pagination {
+    gap: 0.5rem;
+  }
+
+  .pagination-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .pagination-info {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
   }
 } 

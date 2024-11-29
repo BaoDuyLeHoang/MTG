@@ -162,31 +162,40 @@ export const updateTaskImage = async (taskId, urlImages) => {
     }
 };
 
-export const getTasksByManagerId = async (managerId, date, pageIndex, pageSize = 5) => {
+export const getTasksByManagerId = async (managerId, fromDate, toDate, pageIndex = 1, pageSize = 5) => {
     try {
+        // Format dates to dd-MM-yyyy
+        const formattedFromDate = fromDate.split('-').reverse().join('-');
+        const formattedToDate = toDate.split('-').reverse().join('-');
+        
         const params = new URLSearchParams({
-            pageIndex: pageIndex,
-            pageSize: pageSize
+            pageIndex: pageIndex.toString(),
+            pageSize: pageSize.toString(),
+            fromDate: formattedFromDate,
+            toDate: formattedToDate
         });
-        if (date) {
-            params.append('date', date);
-        }
+
+        const url = `${BASE_URL}/Task/tasks/manager/${managerId}`;
+        console.log('Request URL:', `${url}?${params.toString()}`);
 
         const response = await axios.get(
-            `${BASE_URL}/Task/tasks/manager/${managerId}?${params}`,
-
+            url,
             {
+                params: params,
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'application/json'
                 },
             }
         );
+        
         return response.data;
     } catch (error) {
-
-        throw new Error(error.response?.data?.message || 'Failed to add images to task');
-
-        throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
-
+        console.error('API Error Details:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message
+        });
+        throw new Error(error.response?.data?.message || 'Failed to fetch tasks for manager');
     }
 };

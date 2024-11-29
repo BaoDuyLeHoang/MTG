@@ -29,9 +29,20 @@ import { format } from 'date-fns';
 import viLocale from 'date-fns/locale/vi'; // For Vietnamese localization
 import { getTasksByManagerId } from '../../../services/task'; // Import the API function
 import { useAuth } from "../../../context/AuthContext";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 
 const AttendanceManager = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [fromDate, setFromDate] = useState(() => {
+    const date = new Date();
+    date.setDate(date.getDate() - 7);
+    return date;
+  });
+  const [toDate, setToDate] = useState(new Date());
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [taskAssignments, setTaskAssignments] = useState([]); // State to hold tasks
@@ -41,21 +52,51 @@ const AttendanceManager = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Set the number of items per page
 
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+
   // Fetch tasks when the component mounts or when the selected date changes
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const dateFormatted = format(selectedDate, 'yyyy-MM-dd'); // Format date for API
-        const response = await getTasksByManagerId(user.accountId, dateFormatted, 1); // Fetch tasks
-        // Set taskAssignments to the tasks array from the response
-        setTaskAssignments(response.tasks || []); // Update state with fetched tasks
+        if (!user?.accountId) {
+          console.error('No accountId found');
+          return;
+        }
+
+        const fromDateFormatted = format(fromDate, 'yyyy-MM-dd');
+        const toDateFormatted = format(toDate, 'yyyy-MM-dd');
+
+        console.log('Fetching tasks with params:', {
+          managerId: user.accountId,
+          fromDate: fromDateFormatted,
+          toDate: toDateFormatted,
+          pageIndex: currentPage,
+          pageSize: itemsPerPage
+        });
+
+        const response = await getTasksByManagerId(
+          user.accountId,
+          fromDateFormatted,
+          toDateFormatted,
+          currentPage,
+          itemsPerPage
+        );
+
+        if (response && response.tasks) {
+          setTaskAssignments(response.tasks);
+        } else {
+          setTaskAssignments([]);
+        }
       } catch (error) {
         console.error('Error fetching tasks:', error);
+        setTaskAssignments([]);
+        // Có thể thêm state để hiển thị thông báo lỗi cho người dùng
       }
     };
 
     fetchTasks();
-  }, [selectedDate]); // Fetch tasks when selectedDate changes
+  }, [fromDate, toDate, currentPage, user?.accountId, itemsPerPage]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -100,17 +141,16 @@ const AttendanceManager = () => {
         task.graveLocation.toLowerCase().includes(searchLower) ||
         task.fullname.toLowerCase().includes(searchLower);
 
-      // Date filter
-      const taskStartDate = format(new Date(task.startDate), 'dd/MM/yyyy');
-      const today = format(selectedDate, 'dd/MM/yyyy');
-      const matchesDate = taskStartDate === today;
+      // Date filter - check if task date is within range
+      const taskDate = new Date(task.startDate);
+      const matchesDate = taskDate >= fromDate && taskDate <= toDate;
 
       // Status filter
       const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
 
       return matchesSearch && matchesDate && matchesStatus;
     });
-  }, [taskAssignments, searchQuery, selectedDate, statusFilter]);
+  }, [taskAssignments, searchQuery, fromDate, toDate, statusFilter]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
@@ -128,6 +168,16 @@ const AttendanceManager = () => {
     }
   };
 
+  const handleOpenDetails = (task) => {
+    setSelectedTask(task);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedTask(null);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
@@ -140,7 +190,7 @@ const AttendanceManager = () => {
           minHeight: '100vh'
         }}
       >
-        <Container maxWidth="lg" className="dashboard-container">
+        <Container maxWidth="lg" className="attendance-manager-container">
           <div className="blog-manager-header">
             <h1 className="blog-manager-title">Công việc của nhân viên</h1>
           </div>
@@ -175,22 +225,48 @@ const AttendanceManager = () => {
             />
 
             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
-              <DatePicker
-                value={selectedDate}
-                onChange={(newValue) => setSelectedDate(newValue)}
-                format="dd/MM/yyyy"
-                sx={{
-                  width: '200px',
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '8px',
-                  }
-                }}
-                slotProps={{
-                  textField: {
-                    size: "small",
-                  },
-                }}
-              />
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <DatePicker
+                  label="Từ ngày"
+                  value={fromDate}
+                  onChange={(newValue) => {
+                    setFromDate(newValue);
+                    if (newValue > toDate) {
+                      setToDate(newValue);
+                    }
+                  }}
+                  format="dd/MM/yyyy"
+                  sx={{
+                    width: '160px',
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                    }
+                  }}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                    },
+                  }}
+                />
+                <DatePicker
+                  label="Đến ngày"
+                  value={toDate}
+                  onChange={(newValue) => setToDate(newValue)}
+                  minDate={fromDate}
+                  format="dd/MM/yyyy"
+                  sx={{
+                    width: '160px',
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                    }
+                  }}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                    },
+                  }}
+                />
+              </Box>
             </LocalizationProvider>
 
             <FormControl size="small" sx={{ width: '200px' }}>
@@ -254,6 +330,9 @@ const AttendanceManager = () => {
                       backgroundColor: 'white',
                       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
                       transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
                       '&:hover': {
                         transform: 'translateY(-2px)',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -261,42 +340,56 @@ const AttendanceManager = () => {
                       }
                     }}
                   >
-                    <Box className="task-main-info">
-                      <Avatar
-                        src={task.serviceImage} // Assuming imagePath1 is the avatar
-                        alt={task.fullname}
-                        sx={{ width: 50, height: 50 }}
-                      >
-                        {task.fullname.split(' ').map(n => n[0]).join('')}
-                      </Avatar>
-                      <Box className="task-details" sx={{ ml: 2 }}>
-                        <Box className="task-title-row">
-                          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                            {task.serviceName}
-                          </Typography>
-                          <Chip
-                            label={task.categoryName}
-                            size="small"
-                            variant="outlined"
-                            sx={{ ml: 1 }}
-                          />
-                        </Box>
-                        <Typography variant="body2" color="textSecondary" className="task-location">
-                          {task.graveLocation} • {format(new Date(task.startDate), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
+                    <Avatar
+                      src={task.serviceImage}
+                      alt={task.serviceName}
+                      sx={{ 
+                        width: 56, 
+                        height: 56,
+                        border: '2px solid #e0e0e0',
+                        flexShrink: 0
+                      }}
+                    />
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, flexWrap: 'wrap' }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                          {task.serviceName}
+                        </Typography>
+                        <Chip
+                          label={task.categoryName}
+                          size="small"
+                          variant="outlined"
+                        />
+                      </Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 2, flexWrap: 'wrap' }}>
+                        <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                          📍 {task.graveLocation}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          📅 {format(new Date(task.startDate), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
                         </Typography>
                       </Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Person sx={{ fontSize: 16, mr: 0.5 }} />
+                          {task.fullname}
+                        </Typography>
+                        <Chip
+                          label={getStatusText(task.status)}
+                          size="small"
+                          color={getStatusColor(task.status)}
+                          sx={{ ml: 1 }}
+                        />
+                      </Box>
                     </Box>
-                    <Box className="task-status">
-                      <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                        {task.fullname}
-                      </Typography>
-                      <Chip
-                        label={getStatusText(task.status)}
-                        size="small"
-                        color={getStatusColor(task.status)}
-                        sx={{ mt: 1 }}
-                      />
-                    </Box>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => handleOpenDetails(task)}
+                      sx={{ ml: 2 }}
+                    >
+                      Chi tiết
+                    </Button>
                   </Box>
                 ))}
               </Box>
@@ -317,6 +410,78 @@ const AttendanceManager = () => {
           </Box>
         </Container>
       </Box>
+
+      {/* Dialog for task details */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        {selectedTask && (
+          <>
+            <DialogTitle>Chi tiết công việc</DialogTitle>
+            <DialogContent>
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid item xs={12}>
+                  <Typography variant="h6">{selectedTask.serviceName}</Typography>
+                  <Chip label={selectedTask.categoryName} sx={{ mt: 1 }} />
+                </Grid>
+                
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle2" color="textSecondary">Nhân viên thực hiện</Typography>
+                  <Typography>{selectedTask.fullname}</Typography>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle2" color="textSecondary">Vị trí</Typography>
+                  <Typography>{selectedTask.graveLocation}</Typography>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle2" color="textSecondary">Ngày bắt đầu</Typography>
+                  <Typography>{format(new Date(selectedTask.startDate), 'dd/MM/yyyy')}</Typography>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="subtitle2" color="textSecondary">Ngày kết thúc</Typography>
+                  <Typography>{format(new Date(selectedTask.endDate), 'dd/MM/yyyy')}</Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Typography variant="subtitle2" color="textSecondary">Trạng thái</Typography>
+                  <Chip
+                    label={getStatusText(selectedTask.status)}
+                    color={getStatusColor(selectedTask.status)}
+                    sx={{ mt: 1 }}
+                  />
+                </Grid>
+
+                {selectedTask.images && selectedTask.images.length > 0 && (
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>Hình ảnh</Typography>
+                    <ImageList sx={{ width: '100%', height: 300 }} cols={3} rowHeight={164}>
+                      {selectedTask.images.map((image, index) => (
+                        <ImageListItem key={index}>
+                          <img
+                            src={image}
+                            alt={`Task image ${index + 1}`}
+                            loading="lazy"
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </ImageListItem>
+                      ))}
+                    </ImageList>
+                  </Grid>
+                )}
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog}>Đóng</Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
     </Box>
   );
 };

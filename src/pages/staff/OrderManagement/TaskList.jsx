@@ -63,9 +63,8 @@ const TaskList = () => {
     const fetchTasks = async () => {
         if (user && user.accountId && user.role === ROLES.STAFF) {
             try {
-                // First response for pagination
-                const paginatedResponse = await getTasksByAccountId(user.accountId, currentPage, pageSize);
-                setTasks(paginatedResponse.tasks.map(task => ({
+                const response = await getTasksByAccountId(user.accountId, currentPage, pageSize);
+                setTasks(response.tasks.map(task => ({
                     id: task.taskId,
                     serviceName: task.serviceName,
                     serviceDescription: task.serviceDescription,
@@ -79,32 +78,7 @@ const TaskList = () => {
                     imageWorkSpace: task.imageWorkSpace,
                     taskImages: task.taskImages || []
                 })));
-                setTotalPages(paginatedResponse.totalPage);
-
-                // Second response for all tasks
-                const allTasksResponse = await getTasksByAccountId(user.accountId);
-                console.log('API Response:', allTasksResponse);
-
-                const transformed = allTasksResponse.tasks.map(task => {
-                    console.log('Task before transform:', task); // Log từng task trước khi transform
-                    return {
-                        id: task.taskId,
-                        serviceName: task.serviceName,
-                        serviceDescription: task.serviceDescription,
-                        graveLocation: task.graveLocation,
-                        startDate: task.startDate,
-                        endDate: task.endDate,
-                        status: task.status,
-                        imagePath1: task.imagePath1,
-                        imagePath2: task.imagePath2,
-                        imagePath3: task.imagePath3,
-                        detailId: task.detailId // Kiểm tra xem có detailId trong response không
-                    };
-                });
-
-                console.log('Transformed tasks:', transformed); // Log sau khi transform
-                setTasks(transformed);
-
+                setTotalPages(response.totalPage);
             } catch (error) {
                 console.error('Error fetching tasks:', error);
             }
@@ -190,32 +164,22 @@ const TaskList = () => {
 
     const handleViewDetails = async (task) => {
         setSelectedTask(task);
-        console.log("Task detail:", task); // Log để kiểm tra task object
-        console.log("Detail ID:", task.detailId); // Log specific detailId
-
         if (task.status === 4) {
+            // Transform existing image paths into the format we need
             const existingImages = [
                 task.imageWorkSpace
             ]
-            .filter(path => path) // Remove null/empty paths
-            .map((url, index) => ({
-                id: index + 1,
-                url: url
-            }));
-
+                .filter(path => path) // Remove null/empty paths
+                .map((url, index) => ({
+                    id: index + 1,
+                    url: url
+                }));
             setTaskImages(existingImages);
 
-            // Fetch feedback chỉ khi có detailId
-            if (!task.detailId) {
-                console.error('DetailId is missing');
-                setFeedback(null);
-                setIsPopupOpen(true);
-                return;
-            }
-
+            // Fetch feedback when task is completed
             try {
-                const feedbackData = await getFeedbackWithDetailId(task.detailId);
-                console.log('Feedback data:', feedbackData);
+                const feedbackData = await getFeedbackWithDetailId(task.id);
+                console.log('Feedback data:', feedbackData); // For debugging
                 setFeedback(feedbackData);
             } catch (error) {
                 console.error('Error fetching feedback:', error);
@@ -291,7 +255,6 @@ const TaskList = () => {
 
     const handleSubmitResponse = async (feedbackId) => {
         try {
-
             const responseData = {
                 feedbackId: feedbackId,
                 staffId: user.accountId,
@@ -300,18 +263,14 @@ const TaskList = () => {
 
             await createFeedbackResponse(responseData);
             // Refresh feedback data
-           
-
-            await createFeedbackResponse(feedbackId, responseContent);
-            // Sau khi response thành công
-            const updatedFeedback = await getFeedbackWithDetailId(selectedTask.detailId);
-
+            const updatedFeedback = await getFeedbackWithDetailId(selectedTask.id);
             setFeedback(updatedFeedback);
-            setIsResponding(false);
+            // Reset form
             setResponseContent('');
+            setIsResponding(false);
         } catch (error) {
             console.error('Error submitting response:', error);
-            // Xử lý lỗi ở đây (ví dụ: hiển thị thông báo lỗi)
+            alert('Không thể gửi phản hồi. Vui lòng thử lại.');
         }
     };
 
@@ -544,7 +503,7 @@ const TaskList = () => {
                                     <>
                                         {feedback && (
                                             <div className="feedback-section">
-                                                <h3>Đánh giá t khách hàng</h3>
+                                                <h3>Đánh giá từ khách hàng</h3>
                                                 <div className="feedback-content">
                                                     <div className="customer-info">
                                                         <div className="customer-avatar">
@@ -639,7 +598,7 @@ const TaskList = () => {
                                                 setIsPopupOpen(false);
                                             }}
                                         >
-                                            Xếp lịch làm việc
+                                            Chấp nhận
                                         </button>
                                         <button
                                             className="reject-button"

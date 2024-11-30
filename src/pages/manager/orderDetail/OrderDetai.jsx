@@ -25,13 +25,13 @@ const OrderDetail = () => {
   const getStatusText = (statusTask) => {
     switch (statusTask) {
       case 0:
-        return "Đang chờ";
+        return "Đang giao";
       case 1:
         return "Đã giao";
       case 2:
         return "Đã từ chối";
       case 3:
-          return "Đang làm";
+        return "Đang thực hiện";
       case 4:
         return "Hoàn thành";
       case 5:
@@ -41,6 +41,7 @@ const OrderDetail = () => {
     }
   };
 
+  // Function to get status text based on status number
   const getStatusOrderText = (statusOrder) => {
     switch (statusOrder) {
       case 0:
@@ -57,9 +58,6 @@ const OrderDetail = () => {
         return "Không xác định";
     }
   };
-
-  // Function to get status text based on status number
- 
 
   useEffect(() => {
     const fetchOrderDetail = async () => {
@@ -116,8 +114,6 @@ const OrderDetail = () => {
 
       console.log("Sending task data:", taskData);
 
-
-      // Check if statusTask is 2
       if (orderDetail.statusTask === 2) {
         // Call the reassign API using the service
         const result = await reassignTask(orderDetail.detailId, selectedStaff[orderDetail.detailId]);

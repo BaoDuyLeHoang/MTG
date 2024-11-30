@@ -30,12 +30,7 @@ import {
 import Sidebar from "../../../components/Sidebar/sideBar";
 import "./ScheduleManager.css";
 import { useAuth } from '../../../context/AuthContext';
-
 import { getNotSchedulingTasksByAccountId } from '../../../services/task';
-
-import { getTasksNotSchedulingByAccountId } from '../../../services/task';
-import { getSlot } from '../../../services/slot';
-
 import CloseIcon from '@mui/icons-material/Close';
 import { createScheduleDetailForStaff, getSchedulesForStaffFilterDate, createScheduleDetailRecurringService } from '../../../services/scheduleDetail';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';

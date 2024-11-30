@@ -147,8 +147,8 @@ function AppContent() {
           <Route path="/profilestaff-staff" element={<ProtectedRoute requiredRole={[ROLES.STAFF]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/blog-management" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogManagement /></ProtectedRoute>} />
           <Route path="/blog-create" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogCreate /></ProtectedRoute>} />
-          <Route path="/schedule-staff" element={<ScheduleManager />} />
-          <Route path="/recurring-tasks" element={<RecurringTasks />} />
+          <Route path="/schedule-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ScheduleManager /></ProtectedRoute>} />
+          <Route path="/recurring-tasks" element={<ProtectedRoute requiredRole={ROLES.STAFF}><RecurringTasks /></ProtectedRoute>} />
 
           
 

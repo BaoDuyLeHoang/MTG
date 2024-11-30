@@ -59,22 +59,7 @@ const OrderDetail = () => {
   };
 
   // Function to get status text based on status number
-  const getStatusOrderText = (statusOrder) => {
-    switch (statusOrder) {
-      case 0:
-        return "Đang chờ";
-      case 1:
-        return "Đã thanh toán";
-      case 2:
-        return "Đã hủy";
-      case 4:
-        return "Hoàn thành";
-      case 5:
-        return "Thất bại";
-      default:
-        return "Không xác định";
-    }
-  };
+ 
 
   useEffect(() => {
     const fetchOrderDetail = async () => {

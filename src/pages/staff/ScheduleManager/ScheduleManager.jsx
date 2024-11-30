@@ -255,7 +255,6 @@ const ScheduleManager = () => {
   const fetchTasksPage = async (pageIndex) => {
     try {
       setOrderLoading(true);
-
       const response = await getNotSchedulingTasksByAccountId(
         user.accountId,
         pageIndex,
@@ -263,23 +262,6 @@ const ScheduleManager = () => {
       );
       
       if (response) {
-
-      const response = await getTasksNotSchedulingByAccountId(user.accountId);
-      if (response && response.tasks) {
-        // Tạo map để đếm số lần xuất hiện của mỗi taskId trong lịch
-        const taskOccurrences = {};
-        Object.values(schedule).forEach(assignments => {
-          assignments.forEach(assignment => {
-            if (!taskOccurrences[assignment.serviceName]) {
-              taskOccurrences[assignment.serviceName] = 1;
-            } else {
-              taskOccurrences[assignment.serviceName]++;
-            }
-          });
-        });
-
-        // Lọc tasks dựa trên status, date và số lần xuất hiện
-
         const filteredTasks = response.tasks.filter(task => {
           const taskEndDate = new Date(task.endDate);
           taskEndDate.setHours(0, 0, 0, 0);

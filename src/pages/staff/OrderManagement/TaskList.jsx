@@ -63,9 +63,9 @@ const TaskList = () => {
     const fetchTasks = async () => {
         if (user && user.accountId && user.role === ROLES.STAFF) {
             try {
-
-                const response = await getTasksByAccountId(user.accountId, currentPage, pageSize);
-                setTasks(response.tasks.map(task => ({
+                // First response for pagination
+                const paginatedResponse = await getTasksByAccountId(user.accountId, currentPage, pageSize);
+                setTasks(paginatedResponse.tasks.map(task => ({
                     id: task.taskId,
                     serviceName: task.serviceName,
                     serviceDescription: task.serviceDescription,
@@ -79,12 +79,13 @@ const TaskList = () => {
                     imageWorkSpace: task.imageWorkSpace,
                     taskImages: task.taskImages || []
                 })));
-                setTotalPages(response.totalPage);
+                setTotalPages(paginatedResponse.totalPage);
 
-                const response = await getTasksByAccountId(user.accountId);
-                console.log('API Response:', response); // Log toàn bộ response
+                // Second response for all tasks
+                const allTasksResponse = await getTasksByAccountId(user.accountId);
+                console.log('API Response:', allTasksResponse);
 
-                const transformed = response.tasks.map(task => {
+                const transformed = allTasksResponse.tasks.map(task => {
                     console.log('Task before transform:', task); // Log từng task trước khi transform
                     return {
                         id: task.taskId,
@@ -196,14 +197,7 @@ const TaskList = () => {
             const existingImages = [
                 task.imageWorkSpace
             ]
-
-                .filter(path => path) // Remove null/empty paths
-                .map((url, index) => ({
-                    id: index + 1,
-                    url: url
-                }));
-
-            .filter(path => path)
+            .filter(path => path) // Remove null/empty paths
             .map((url, index) => ({
                 id: index + 1,
                 url: url
@@ -306,7 +300,7 @@ const TaskList = () => {
 
             await createFeedbackResponse(responseData);
             // Refresh feedback data
-            const updatedFeedback = await getFeedbackWithDetailId(selectedTask.id);
+           
 
             await createFeedbackResponse(feedbackId, responseContent);
             // Sau khi response thành công
@@ -550,7 +544,7 @@ const TaskList = () => {
                                     <>
                                         {feedback && (
                                             <div className="feedback-section">
-                                                <h3>Đánh giá từ khách hàng</h3>
+                                                <h3>Đánh giá t khách hàng</h3>
                                                 <div className="feedback-content">
                                                     <div className="customer-info">
                                                         <div className="customer-avatar">

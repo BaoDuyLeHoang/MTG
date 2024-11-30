@@ -12,6 +12,9 @@ const SearchResult = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; // Show 6 items (2 rows of 3)
 
+  // Add default image constant
+  const DEFAULT_IMAGE = "https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072";
+
   useEffect(() => {
     if (location.state && location.state.results) {
       setResults(location.state.results);
@@ -153,8 +156,8 @@ const SearchResult = () => {
             >
               <div className="search-result__image-container">
                 <img
-                  src={grave.imageUrls[0]?.image}
-                  alt={`Grave location of ${grave.name}`}
+                  src={grave.imageUrl || DEFAULT_IMAGE}
+                  alt={`Grave of ${grave.fullName}`}
                   className="search-result__image"
                 />
               </div>

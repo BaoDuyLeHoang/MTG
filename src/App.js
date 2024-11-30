@@ -72,6 +72,8 @@ import BlogDetail from './pages/customer/BlogDetailView/BlogDetail';
 import BlogCategoryDetail from './pages/customer/BlogCategoryDetail/BlogCategoryDetail';
 import Notifications from './pages/customer/NotificationList/NotificationList';
 import Wallet from './pages/customer/Wallet/Wallet';
+import MartyrList from './pages/customer/martyrList/martyrList';
+
 
 function AppContent() {
   const navigate = useNavigate();
@@ -102,7 +104,7 @@ function AppContent() {
           <Route path="/service-list" element={<ServiceList />} />
           <Route path="/blog-category/:id" element={<BlogCategoryDetail />} />
           <Route path="/notifications" element={<Notifications />} />
-          
+          <Route path="/danh-sach-liet-si/:area" element={<MartyrList />} />
 
           
           {/* Protected routes */}

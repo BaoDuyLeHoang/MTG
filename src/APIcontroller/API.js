@@ -38,6 +38,8 @@ export const API_ENDPOINTS = {
   UPDATE_PROFILE: "/Customer/update-profile",
   CHANGE_PASSWORD: "/Customer/change-password-customer",
   GET_MY_NOTIFICATIONS: "/Notification/my-notifications",
+  GET_WALLET_BALANCE: "/Wallet/balance",
+  DEPOSIT_WALLET: "/Payment/deposit-wallet",
 };
 
 export const getServices = async () => {
@@ -1069,12 +1071,99 @@ export const changePassword = async (passwordData) => {
 };
 
 
-export const getMyNotifications = async () => {
+export const getMyNotifications = async (pageIndex = 1, pageSize = 5) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching notifications - Page ${pageIndex}, Size ${pageSize}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_MY_NOTIFICATIONS}?pageIndex=${pageIndex}&pageSize=${pageSize}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    console.log("Notifications API Response:", response.data);
+    return response.data; // Trả về { notifications: [...], totalPage: number }
+  } catch (error) {
+    console.error(
+      "Error fetching notifications:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const getWalletBalance = async (customerId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching wallet balance for customer ID: ${customerId}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_WALLET_BALANCE}?customerId=${customerId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Wallet balance API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching wallet balance:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const depositWallet = async (depositData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Depositing to wallet:", depositData);
+    
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.DEPOSIT_WALLET}`,
+      {
+        customerId: depositData.customerId,
+        amount: depositData.amount,
+        paymentMethod: depositData.paymentMethod
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Deposit API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error depositing to wallet:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const getWalletTransactions = async (customerId, pageIndex = 1, pageSize = 5, startDate = null, endDate = null) => {
   try {
     const token = localStorage.getItem("accessToken");
     const response = await axios.get(
-      `${BASE_URL}${API_ENDPOINTS.GET_MY_NOTIFICATIONS}`,
-      {
+      `${BASE_URL}/Wallet/transactions`, {
+        params: {
+          customerId,
+          pageIndex,
+          pageSize,
+          startDate,
+          endDate
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -1082,7 +1171,7 @@ export const getMyNotifications = async () => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching notifications:", error);
+    console.error("Error fetching wallet transactions:", error);
     throw error;
   }
 };

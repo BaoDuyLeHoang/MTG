@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
-import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -76,15 +75,12 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-logo">
-        <img src={logo} alt="Logo" />
+        
       </div>
       <nav className="navigation">
         <ul>
           <li>
             <Link to="/">Trang chủ</Link>
-          </li>
-          <li>
-            <Link to="/gioi-thieu">Giới thiệu</Link>
           </li>
           <li>
             <Link to="/dichvu">Dịch vụ</Link>
@@ -143,6 +139,7 @@ const Header = () => {
                       <Link to="/relative-grave">Mộ người thân</Link>
                       <Link to="/cart">Giỏ hàng</Link>
                       <Link to="/order-history">Lịch sử đơn hàng</Link>
+                      <Link to="/wallet">Ví của tôi</Link>
                       <Link to="/notifications">Thông báo</Link>
                     </>
                   )}

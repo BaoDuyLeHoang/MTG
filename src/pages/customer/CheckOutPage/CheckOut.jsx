@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Header from "../../../components/Header/header";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "./CheckOutPage.css";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt, FaWallet } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 import {getCheckoutItemsByCustomerId } from "../../../APIcontroller/API";
 import { createOrder } from "../../../services/orders";
@@ -62,6 +62,11 @@ const CheckOut = () => {
       name: "Ví Momo",
       logo: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
     },
+    {
+      id: "balance",
+      name: "Số dư tài khoản",
+      icon: <FaWallet size={24} color="#4F46E5" />
+    }
   ];
 
   const handlePaymentMethodChange = (methodId) => {
@@ -124,17 +129,33 @@ const CheckOut = () => {
         orderData
       );
 
-      if (response.paymentUrl) {
+      if (selectedPaymentMethod === "balance") {
+        if (response.message && response.message.includes("thành công")) {
+          setAlertMessage("Đặt hàng thành công!");
+          setAlertSeverity("success");
+          setAlertOpen(true);
+          
+          setTimeout(() => {
+            navigate('/checkout-success');
+          }, 1500);
+        } else {
+          setAlertMessage(response.message || "Số dư tài khoản không đủ để thực hiện giao dịch");
+          setAlertSeverity("error");
+          setAlertOpen(true);
+        }
+      } else if (response.paymentUrl) {
         window.location.href = response.paymentUrl;
-      } else {
-        setAlertMessage("Đặt hàng thành công!");
-        setAlertSeverity("success");
-        setAlertOpen(true);
-        navigate('/order-confirmation', { state: { orderId: response.orderId } });
       }
     } catch (error) {
       console.error("Error creating order:", error);
-      setAlertMessage("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
+      
+      if (error.response?.status === 400) {
+        setAlertMessage(error.response.data);
+      } else {
+        setAlertMessage("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.");
+      }
+      
+      setAlertSeverity("error");
       setAlertOpen(true);
     } finally {
       setIsLoading(false);
@@ -198,7 +219,9 @@ const CheckOut = () => {
                       checked={selectedPaymentMethod === method.id}
                       onChange={() => handlePaymentMethodChange(method.id)}
                     />
-                    <img src={method.logo} alt={method.name} className="payment-logo" />
+                    {method.logo ? (
+                      <img src={method.logo} alt={method.name} className="payment-logo" />
+                    ) : method.icon}
                     <span className="payment-name">{method.name}</span>
                   </label>
                 ))}

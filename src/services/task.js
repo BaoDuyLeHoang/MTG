@@ -27,74 +27,39 @@ export const createTask = async (taskData) => {
     }
 };
 
-export const getNotSchedulingTasksByAccountId = async (accountId, date, pageIndex = 1, pageSize = 5) => {
+export const getNotSchedulingTasksByAccountId = async (accountId, pageIndex = 1, pageSize = 5) => {
     try {
-        const params = new URLSearchParams({
-            pageIndex: pageIndex,
-            pageSize: pageSize
-        });
-        if (date) {
-            params.append('date', date);
-        }
-
         const response = await axios.get(
-            `${BASE_URL}/Task/tasks/account/${accountId}?${params}`,
+            `${BASE_URL}/Task/tasksNotScheduling/account/${accountId}`,
             {
+                params: {
+                    pageIndex,
+                    pageSize
+                },
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             }
         );
-        return response.data; 
+        return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
+        throw error;
     }
 };
 
-export const getTasksNotSchedulingByAccountId = async (accountId, date, pageIndex = 1, pageSize = 5) => {
+export const getTasksByAccountId = async (accountId, pageIndex, pageSize) => {
     try {
-        const params = new URLSearchParams({
-            pageIndex: pageIndex,
-            pageSize: pageSize
-        });
-        if (date) {
-            params.append('date', date);
-        }
-
         const response = await axios.get(
-            `${BASE_URL}/Task/tasksNotScheduling/account/${accountId}?${params}`,
-            {
+            `${BASE_URL}/Task/tasks/account/${accountId}?pageIndex=${pageIndex}&pageSize=${pageSize}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             }
         );
-        return response.data; 
+        return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
-    }
-};
-export const getTasksByAccountId = async (accountId, date, pageIndex = 1, pageSize = 5) => {
-    try {
-        const params = new URLSearchParams({
-            pageIndex: pageIndex,
-            pageSize: pageSize
-        });
-        if (date) {
-            params.append('date', date);
-        }
-
-        const response = await axios.get(
-            `${BASE_URL}/Task/tasks/account/${accountId}?${params}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                },
-            }
-        );
-        return response.data; 
-    } catch (error) {
-        throw new Error(error.response?.data?.message || 'Failed to fetch tasks for account');
+        console.error('Error in getTasksByAccountId:', error);
+        throw error;
     }
 };
 
@@ -145,11 +110,14 @@ export const updateCommentStatus = async (commentId, status) => {
 };
 
 
-export const updateTaskImage = async (taskId, urlImages) => {
+export const updateTaskImage = async (taskId, imageData) => {
     try {
         const response = await axios.put(
             `${BASE_URL}/Task/tasks/${taskId}/images`,
-            { urlImages },
+            {
+                imageWorkSpace: imageData.imageWorkSpace,
+                urlImages: imageData.urlImages
+            },
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -197,5 +165,17 @@ export const getTasksByManagerId = async (managerId, fromDate, toDate, pageIndex
             message: error.message
         });
         throw new Error(error.response?.data?.message || 'Failed to fetch tasks for manager');
+    }
+};
+export const reassignTask = async (detailId, accountId) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/Task/tasks/${detailId}/reassign/${accountId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to reassign task');
     }
 };

@@ -67,7 +67,10 @@ export const createOrder = async (customerId, paymentMethod, orderData) => {
     );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to create order');
+    if (error.response) {
+      throw error.response;
+    }
+    throw error;
   }
 };
 

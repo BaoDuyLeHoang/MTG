@@ -184,6 +184,15 @@
   color: #333;
 }
 
+.payment-method svg {
+  margin-right: 10px;
+  min-width: 24px;
+}
+
+.payment-method.selected svg {
+  color: #4F46E5;
+}
+
 /* Checkout Form Right Section */
 .checkout-form-right {
   flex: 1;

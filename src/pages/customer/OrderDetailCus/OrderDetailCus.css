@@ -315,32 +315,15 @@
 }
 
 .odc-feedback-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
-}
-
-.odc-feedback-btn {
-  padding: 8px 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.odc-feedback-btn:hover {
-  background-color: #45a049;
+  margin-top: 20px;
+  padding: 16px;
+  border-top: 1px solid #eaeaea;
 }
 
 .odc-feedback-display {
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  margin-top: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -348,9 +331,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 12px;
 }
 
 .odc-feedback-rating {
@@ -361,63 +342,144 @@
 
 .rating-stars {
   display: flex;
-  gap: 2px;
+  gap: 4px;
 }
 
 .star-filled {
   color: #ffc107;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .star-empty {
-  color: #e4e5e9;
-  font-size: 18px;
+  color: #e0e0e0;
+  font-size: 20px;
 }
 
 .rating-text {
-  color: #6c757d;
-  font-size: 14px;
-  margin-left: 5px;
+  font-weight: 500;
+  color: #666;
+  margin-left: 4px;
 }
 
 .odc-feedback-date {
-  color: #6c757d;
-  font-size: 14px;
+  color: #888;
+  font-size: 0.9rem;
 }
 
 .odc-feedback-content {
-  margin-bottom: 15px;
+  margin: 16px 0;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #2196f3;
 }
 
-.feedback-label, .response-label {
-  font-weight: 600;
-  color: #495057;
-  margin-bottom: 5px;
+.feedback-label {
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
-.feedback-text, .response-text {
-  color: #212529;
+.feedback-text {
+  color: #333;
   line-height: 1.5;
-  margin: 0;
+}
+
+.odc-feedback-response-wrapper {
+  margin-top: 20px;
+}
+
+.response-header {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+  margin-bottom: 8px;
+}
+
+.response-date {
+  color: #757575;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .odc-feedback-response {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #e9ecef;
+  background: #e3f2fd;
+  border-radius: 12px;
+  padding: 20px;
+  border-left: 5px solid #64b5f6;
+  position: relative;
+}
+
+.response-label {
+  color: #1976d2;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.response-text {
+  color: #333;
+  line-height: 1.5;
 }
 
 .odc-feedback-btn {
-  background-color: #0d6efd;
+  width: 100%;
+  padding: 12px 24px;
+  background: #2196f3;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
+  border-radius: 6px;
   font-weight: 500;
-  transition: background-color 0.2s;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .odc-feedback-btn:hover {
-  background-color: #0b5ed7;
+  background: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.odc-feedback-btn:active {
+  transform: translateY(0);
+}
+
+/* Animation cho khi feedback hiển thị */
+.odc-feedback-display {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.response-header .response-label {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.response-date .FaRegClock {
+  margin-right: 4px;
+  font-size: 14px;
 }

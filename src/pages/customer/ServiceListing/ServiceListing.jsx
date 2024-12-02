@@ -144,6 +144,22 @@ const ServiceListing = () => {
     navigate(`/chitietmo/${martyrId}`);
   };
 
+  const handleServiceAction = async (dichVu) => {
+    if (dichVu.isScheduleService) {
+      // Navigate to scheduling page with service details
+      navigate(`/schedule-service/${dichVu.serviceId}`, {
+        state: {
+          martyrId: martyrId,
+          serviceName: dichVu.serviceName,
+          price: dichVu.price
+        }
+      });
+    } else {
+      // Existing add to cart logic
+      await themVaoGioHang(dichVu);
+    }
+  };
+
   if (dangTai) {
     return <div className="sl-loading">Đang tải dịch vụ...</div>;
   }
@@ -213,12 +229,15 @@ const ServiceListing = () => {
                 </p>
                 <button
                   className={`sl-add-to-cart-button ${
+                    dv.isScheduleService ? 'sl-schedule-button' : 
                     coTrongGioHang(dv.serviceId) ? "sl-in-cart" : ""
                   }`}
-                  onClick={() => themVaoGioHang(dv)}
-                  disabled={coTrongGioHang(dv.serviceId)}
+                  onClick={() => handleServiceAction(dv)}
+                  disabled={!dv.isScheduleService && coTrongGioHang(dv.serviceId)}
                 >
-                  {coTrongGioHang(dv.serviceId)
+                  {dv.isScheduleService
+                    ? "Đặt dịch vụ"
+                    : coTrongGioHang(dv.serviceId)
                     ? "Đã thêm vào giỏ"
                     : "Thêm vào giỏ"}
                 </button>

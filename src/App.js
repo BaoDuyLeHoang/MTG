@@ -42,8 +42,9 @@ import BlogManager from './pages/manager/BlogManager/BlogManager';
 import BlogDetailManager from './pages/manager/BlogDetail/BlogDetailManager';
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
-  import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
+import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
 import TaskDetails from './pages/staff/TaskDetail/TaskDetail';
+import RecurringTasks from './pages/staff/RecurringTasks/RecurringTasks';
 
 // Customer Components
 import HomePage from "./pages/customer/homePage/homePage";
@@ -70,6 +71,9 @@ import ServiceList from './pages/manager/ServiceList/ServiceList';
 import BlogDetail from './pages/customer/BlogDetailView/BlogDetail';
 import BlogCategoryDetail from './pages/customer/BlogCategoryDetail/BlogCategoryDetail';
 import Notifications from './pages/customer/NotificationList/NotificationList';
+import Wallet from './pages/customer/Wallet/Wallet';
+import MartyrList from './pages/customer/martyrList/martyrList';
+
 
 function AppContent() {
   const navigate = useNavigate();
@@ -100,7 +104,7 @@ function AppContent() {
           <Route path="/service-list" element={<ServiceList />} />
           <Route path="/blog-category/:id" element={<BlogCategoryDetail />} />
           <Route path="/notifications" element={<Notifications />} />
-          
+          <Route path="/danh-sach-liet-si/:area" element={<MartyrList />} />
 
           
           {/* Protected routes */}
@@ -108,6 +112,7 @@ function AppContent() {
           <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
           <Route path="/order-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderHistory /></ProtectedRoute>} />
           <Route path="/user-profile" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><UserProfile /></ProtectedRoute>} />
+          <Route path="/wallet" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><Wallet /></ProtectedRoute>} />
           {/* Admin routes */}
           <Route path="/material-management" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><MaterialManagement /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><Dashboard /></ProtectedRoute>} />
@@ -142,7 +147,8 @@ function AppContent() {
           <Route path="/profilestaff-staff" element={<ProtectedRoute requiredRole={[ROLES.STAFF]}><ProfileStaff /></ProtectedRoute>} />
           <Route path="/blog-management" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogManagement /></ProtectedRoute>} />
           <Route path="/blog-create" element={<ProtectedRoute requiredRole={ROLES.STAFF}><BlogCreate /></ProtectedRoute>} />
-          <Route path="/schedule-staff" element={<ScheduleManager />} />
+          <Route path="/schedule-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ScheduleManager /></ProtectedRoute>} />
+          <Route path="/recurring-tasks" element={<ProtectedRoute requiredRole={ROLES.STAFF}><RecurringTasks /></ProtectedRoute>} />
 
           
 

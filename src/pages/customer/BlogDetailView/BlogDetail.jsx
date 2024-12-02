@@ -231,6 +231,8 @@ const BlogDetail = () => {
       return null;
     }
 
+    const DEFAULT_IMAGE = 'https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072';
+
     return (
       <div className="blog-detail__related-martyrs">
         <h2 className="blog-detail__related-title">Các anh hùng liên quan:</h2>
@@ -244,20 +246,25 @@ const BlogDetail = () => {
               <div className="blog-detail__martyr-card">
                 <h3 className="blog-detail__martyr-name">{martyr.name}</h3>
                 <div className="blog-detail__martyr-image-slider">
-                  {martyr.images && martyr.images.map((image, imgIndex) => (
+                  {(!martyr.images || martyr.images.length === 0) ? (
                     <img
-                      key={imgIndex}
-                      src={image}
-                      alt={`${martyr.name} - Ảnh ${imgIndex + 1}`}
-                      className={`blog-detail__martyr-image ${
-                        imgIndex === currentImageIndices[martyr.martyrGraveId] ? 'active' : ''
-                      }`}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/default-martyr-image.jpg';
-                      }}
+                      src={DEFAULT_IMAGE}
+                      alt={martyr.name}
+                      className="blog-detail__martyr-image"
                     />
-                  ))}
+                  ) : (
+                    martyr.images.map((image, imgIndex) => (
+                      <img
+                        key={imgIndex}
+                        src={image}
+                        alt={`${martyr.name} - Ảnh ${imgIndex + 1}`}
+                        className="blog-detail__martyr-image"
+                        style={{
+                          display: currentImageIndices[martyr.martyrGraveId] === imgIndex ? 'block' : 'none'
+                        }}
+                      />
+                    ))
+                  )}
                   {martyr.images && martyr.images.length > 1 && (
                     <>
                       <button 

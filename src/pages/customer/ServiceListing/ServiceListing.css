@@ -373,3 +373,12 @@
     color: #5c5c5c;
     text-decoration: none;
   }
+
+  .sl-schedule-button {
+    background-color: #3b82f6 !important; /* or any color you prefer */
+    color: white;
+  }
+
+  .sl-schedule-button:hover {
+    background-color: #3b82f6 !important;
+  }

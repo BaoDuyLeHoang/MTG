@@ -319,7 +319,8 @@
 
 /* Trending Services Section */
 .trending-section {
-  padding: 60px 0;
+  padding: 20px 0 60px;
+  margin-top: -40px; /* Thêm margin-top âm để kéo section lên */
   background-color: #f8f9fa;
 }
 
@@ -818,4 +819,337 @@
 
 .martyr-card {
   animation: fadeInUp 0.3s ease forwards;
+}
+
+/* Cemetery Layout Styles */
+.cemetery-layout-section {
+  padding: 4rem 0;
+  background-color: #fff;
+}
+
+.cemetery-layout {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cemetery-areas {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+}
+
+.area-block {
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border: 2px solid #4a90e2;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #1a365d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 5px;
+}
+
+.area-block:hover {
+  background: #4a90e2;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+/* Khu vực trái */
+.area-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Khu vực giữa trái */
+.area-middle-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Khu vực giữa */
+.area-center {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.area-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* Đường đi giữa */
+.center-path {
+  position: absolute;
+  bottom: -40px;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.memorial-symbol {
+  font-size: 24px;
+  color: #d4af37;
+  margin-bottom: 5px;
+}
+
+.path-label {
+  font-size: 14px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cemetery-layout {
+    padding: 1rem;
+  }
+
+  .area-block {
+    width: 45px;
+    height: 45px;
+    font-size: 12px;
+  }
+
+  .cemetery-areas {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .center-path {
+    position: relative;
+    bottom: 0;
+    margin-top: 20px;
+  }
+}
+
+.map-controls {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.select-area-btn {
+  padding: 12px 25px;
+  background: linear-gradient(135deg, rgb(80, 56, 56) 0%, rgb(59, 41, 41) 100%);
+  color: white;
+  margin-left: 7%;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(59, 41, 41, 0.1), 0 2px 4px -1px rgba(59, 41, 41, 0.06);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.select-area-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px -1px rgba(59, 41, 41, 0.15), 0 4px 6px -1px rgba(59, 41, 41, 0.1);
+  background: linear-gradient(135deg, rgb(70, 46, 46) 0%, rgb(49, 31, 31) 100%);
+}
+
+.select-area-btn:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  font-size: 20px;
+}
+
+.btn-text {
+  letter-spacing: 0.5px;
+}
+
+.area-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.area-popup-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  position: relative;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease-out;
+}
+
+.close-popup {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #6B7280;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-popup:hover {
+  background-color: #F3F4F6;
+  color: #1F2937;
+}
+
+.area-popup-content h3 {
+  font-size: 24px;
+  color: #1F2937;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.area-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 12px;
+  padding: 10px;
+}
+
+.area-button {
+  padding: 12px;
+  background-color: #F3F4F6;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  color: #374151;
+}
+
+.area-button:hover {
+  background-color: rgb(80, 56, 56);
+  border-color: rgb(80, 56, 56);
+  color: white;
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* For webkit browsers */
+.area-popup-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.area-popup-content::-webkit-scrollbar-track {
+  background: #F3F4F6;
+  border-radius: 4px;
+}
+
+.area-popup-content::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+.area-popup-content::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Style cho trending-title giống section-title */
+.trending-title {
+  font-size: 1.25rem;
+  color: #1a365d;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+  padding-bottom: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-left: 8%;
+  justify-content: flex-start;
+}
+
+.trending-title::before,
+.trending-title::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #4a90e2;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0;
+}
+
+.trending-title span::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 12%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #4a90e2, #805ad5);
+  border-radius: 2px;
+}
+
+.trending-title:hover span::after {
+  width: 120px;
+  transition: width 0.3s ease;
+}
+
+/* Giữ nguyên trending section spacing */
+.trending-section {
+  padding: 20px 0 60px;
+  margin-top: -20px;
+  background-color: #f8f9fa;
 }

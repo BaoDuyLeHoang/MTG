@@ -45,7 +45,7 @@ const ServiceListing = () => {
     };
 
     layDichVu();
-  }, []);
+  }, [sessionStorage.getItem("selectedMartyrId")]);
 
   useEffect(() => {
     // Get martyr ID and name from storage

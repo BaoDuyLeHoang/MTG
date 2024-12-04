@@ -1175,3 +1175,60 @@ export const getWalletTransactions = async (customerId, pageIndex = 1, pageSize 
     throw error;
   }
 };
+
+export const createServiceSchedule = async (scheduleData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.post(
+      `${BASE_URL}/RecurringServiceSchedule`,
+      scheduleData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Xử lý response theo cấu trúc API trả về
+    if (response.data) {
+      const { status, messages } = response.data;
+      return {
+        status: status,
+        messages: messages,
+      };
+    }
+
+    return {
+      status: false,
+      messages: "Không nhận được phản hồi từ server"
+    };
+
+  } catch (error) {
+    console.error("Error creating service schedule:", error);
+    throw error;
+  }
+};
+
+export const getServiceScheduleById = async (id, customerId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}/RecurringServiceSchedule/GetServiceScheduleById/${id}?customerId=${customerId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching service schedule:", error);
+    if (error.response?.status === 403) {
+      return {
+        error: "Không có quyền truy cập dịch vụ này"
+      };
+    }
+    throw error;
+  }
+};

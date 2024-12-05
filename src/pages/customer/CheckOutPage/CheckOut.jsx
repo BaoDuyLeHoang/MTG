@@ -118,8 +118,11 @@ const CheckOut = () => {
     setIsLoading(true);
 
     try {
+      const adjustedDate = new Date(completionDate);
+      adjustedDate.setHours(7, 0, 0, 0);
+
       const orderData = {
-        expectedCompletionDate: completionDate.toISOString(),
+        expectedCompletionDate: adjustedDate.toISOString(),
         note: customerNote || ""
       };
 

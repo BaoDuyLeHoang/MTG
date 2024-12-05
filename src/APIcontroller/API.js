@@ -40,6 +40,7 @@ export const API_ENDPOINTS = {
   GET_MY_NOTIFICATIONS: "/Notification/my-notifications",
   GET_WALLET_BALANCE: "/Wallet/balance",
   DEPOSIT_WALLET: "/Payment/deposit-wallet",
+  GET_SERVICE_SCHEDULES_FOR_CUSTOMER: "/RecurringServiceSchedule/GetServiceSchedulesForCustomer"
 };
 
 export const getServices = async () => {
@@ -1232,3 +1233,24 @@ export const getServiceScheduleById = async (id, customerId) => {
     throw error;
   }
 };
+
+export const getServiceSchedulesForCustomer = async (customerId) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_SERVICE_SCHEDULES_FOR_CUSTOMER}/${customerId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching service schedules:", error);
+    throw error;
+  }
+};
+

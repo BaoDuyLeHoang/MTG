@@ -214,7 +214,7 @@ const ScheduleService = () => {
         <h1>Đặt Dịch Vụ Định Kỳ</h1>
         
         <div className="service-hero">
-          <div className="service-image">
+          <div className="schedule-service-image">
             <img 
               src={serviceDetails?.imagePath || '/placeholder-service.jpg'} 
               alt={serviceDetails?.serviceName}

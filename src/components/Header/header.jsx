@@ -141,6 +141,7 @@ const Header = () => {
                       <Link to="/order-history">Lịch sử đơn hàng</Link>
                       <Link to="/wallet">Ví của tôi</Link>
                       <Link to="/notifications">Thông báo</Link>
+                      <Link to="/schedule-service-history">Dịch vụ định kỳ</Link>
                     </>
                   )}
                   {user.role === 2 && (

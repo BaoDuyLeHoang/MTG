@@ -99,13 +99,49 @@ const CartPage = () => {
     try {
       if (user?.accountId) {
         await deleteCartItem(cartId);
+        // Update state for logged-in users
+        setCartItems(prevItems => prevItems.filter(item => item.cartId !== cartId));
       } else {
+        // For non-logged in users
         const savedCartItems = JSON.parse(sessionStorage.getItem('savedCartItems') || '[]');
-        const updatedCartItems = savedCartItems.filter((_, index) => `temp-${index}` !== cartId);
-        sessionStorage.setItem('savedCartItems', JSON.stringify(updatedCartItems));
+        const itemToDelete = cartItems.find(item => item.cartId === cartId);
+        const updatedItems = savedCartItems.filter(item => 
+          item.serviceId !== itemToDelete.serviceView.serviceId
+        );
+        sessionStorage.setItem('savedCartItems', JSON.stringify(updatedItems));
+        
+        // Call API to update anonymous cart
+        if (updatedItems.length > 0) {
+          const itemsForApi = updatedItems.map(item => ({
+            serviceId: item.serviceId,
+            martyrId: item.martyrId
+          }));
+          
+          const response = await addToAnonymousCart(itemsForApi);
+          
+          if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
+            const mappedItems = response.cartItemList.map(item => ({
+              cartId: `temp-${item.martyrId}`,
+              selected: item.status || false,
+              martyrId: item.martyrId,
+              martyrCode: item.martyrCode,
+              serviceView: {
+                serviceId: item.serviceView.serviceId,
+                serviceName: item.serviceView.serviceName,
+                description: item.serviceView.description,
+                price: item.serviceView.price,
+                imagePath: item.serviceView.imagePath
+              }
+            }));
+            setCartItems(mappedItems);
+          } else {
+            setCartItems([]);
+          }
+        } else {
+          setCartItems([]);
+        }
       }
       
-      setCartItems(cartItems.filter(item => item.cartId !== cartId));
       setAlertMessage("Sản phẩm đã được xóa khỏi giỏ hàng thành công!");
       setAlertSeverity("success");
       setAlertOpen(true);

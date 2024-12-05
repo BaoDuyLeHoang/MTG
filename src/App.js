@@ -73,6 +73,9 @@ import BlogCategoryDetail from './pages/customer/BlogCategoryDetail/BlogCategory
 import Notifications from './pages/customer/NotificationList/NotificationList';
 import Wallet from './pages/customer/Wallet/Wallet';
 import MartyrList from './pages/customer/martyrList/martyrList';
+import ScheduleService from './pages/customer/ScheduleService/ScheduleService';
+import ScheduleServiceHistory from './pages/customer/ScheduleServiceHistory/ScheduleServiceHistory';
+import ServiceDetail from './pages/customer/ServiceDetail/ServiceDetail';
 
 
 function AppContent() {
@@ -105,6 +108,9 @@ function AppContent() {
           <Route path="/blog-category/:id" element={<BlogCategoryDetail />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/danh-sach-liet-si/:area" element={<MartyrList />} />
+          <Route path="/schedule-service/:serviceId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><ScheduleService /></ProtectedRoute>} />
+          <Route path="/schedule-service-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><ScheduleServiceHistory /></ProtectedRoute>} />
+          <Route path="/schedule-service-detail/:id" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><ServiceDetail /></ProtectedRoute>} />
 
           
           {/* Protected routes */}

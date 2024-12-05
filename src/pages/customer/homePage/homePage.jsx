@@ -199,7 +199,7 @@ const HomePage = () => {
                       className="trending-service-card" 
                       key={service.serviceId}
                     >
-                      <div className="service-image">
+                      <div className="trending-service-image">
                         <img src={service.imagePath} alt={service.serviceName} />
                       </div>
                       <div className="service-content">

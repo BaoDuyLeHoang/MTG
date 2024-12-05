@@ -365,20 +365,20 @@
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
-.service-image {
+.trending-service-image {
   width: 100%;
   height: 200px;
   overflow: hidden;
 }
 
-.service-image img {
+.trending-service-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.trending-service-card:hover .service-image img {
+.trending-service-card:hover .trending-service-image img {
   transform: scale(1.05);
 }
 
@@ -429,7 +429,7 @@
     grid-template-columns: 1fr;
   }
   
-  .service-image {
+  .trending-service-image {
     height: 180px;
   }
 }

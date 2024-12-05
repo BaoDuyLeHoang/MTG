@@ -4,6 +4,9 @@ import Header from '../../../components/Header/header';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { getWalletBalance, depositWallet, getWalletTransactions } from '../../../APIcontroller/API';
 import './Wallet.css';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import { format, parse } from 'date-fns';
 
 const Wallet = () => {
   const { user } = useAuth();
@@ -14,8 +17,8 @@ const Wallet = () => {
   const [transactions, setTransactions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [amount, setAmount] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -56,9 +59,23 @@ const Wallet = () => {
     }
   };
 
+  const formatDateForApi = (date) => {
+    if (!date) return '';
+    return format(date, 'yyyy-MM-dd');
+  };
+
   const fetchTransactions = async () => {
     try {
-      const data = await getWalletTransactions(user.accountId, currentPage, 5, startDate, endDate);
+      const formattedStartDate = startDate ? `${formatDateForApi(startDate)}T00:00:00` : '';
+      const formattedEndDate = endDate ? `${formatDateForApi(endDate)}T23:59:59` : '';
+      
+      const data = await getWalletTransactions(
+        user.accountId, 
+        currentPage, 
+        5, 
+        formattedStartDate, 
+        formattedEndDate
+      );
       setTransactions(data.transactions);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -78,13 +95,20 @@ const Wallet = () => {
       second: '2-digit',
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
+      hour12: false
     });
   };
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const handleDeposit = async () => {
-    if (!amount || amount <= 0) {
-      setAlertMessage('Vui lòng nhập số tiền hợp lệ');
+    if (!amount || parseFloat(amount) < 10000) {
+      setAlertMessage('Số tiền nạp tối thiểu là 10.000 VNĐ');
       setAlertSeverity('error');
       setAlertOpen(true);
       return;
@@ -146,11 +170,13 @@ const Wallet = () => {
             <h3>Nạp tiền</h3>
             <div className="amount-input">
               <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Nhập số tiền muốn nạp"
-                min="10000"
+                type="text"
+                value={amount ? Number(amount).toLocaleString('vi-VN') + '' : ''}
+                onChange={(e) => {
+                  const rawValue = e.target.value.replace(/[^\d]/g, '');
+                  setAmount(rawValue);
+                }}
+                placeholder="Nhập số tiền muốn nạp (Tối thiểu 10.000 VNĐ)"
               />
             </div>
 
@@ -182,18 +208,35 @@ const Wallet = () => {
           <div className="transaction-history">
             <h3>Biến động số dư:</h3>
             <div className="date-filters">
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                placeholder="Ngày bắt đầu"
-              />
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                placeholder="Ngày kết thúc"
-              />
+              <div className="date-filter-item">
+                <label>Từ ngày:</label>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="ngày /tháng / năm"
+                  isClearable
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={15}
+                  maxDate={endDate || new Date()}
+                />
+              </div>
+              <div className="date-filter-item">
+                <label>Đến ngày:</label>
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="ngày / tháng / năm"
+                  isClearable
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={15}
+                  minDate={startDate}
+                  maxDate={new Date()}
+                />
+              </div>
             </div>
             <div className="transaction-list">
               {transactions.map((transaction) => (

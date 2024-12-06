@@ -7,6 +7,7 @@ import { getCartItemsByCustomerId, updateItemStatus, deleteCartItem, getServiceB
 import { useAuth } from "../../../context/AuthContext";
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { addToAnonymousCart } from '../../../services/cart';
+import { getMartyrGraveById } from '../../../services/graves';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -57,19 +58,22 @@ const CartPage = () => {
               const response = await addToAnonymousCart(itemsForApi);
               
               if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
-                const mappedItems = response.cartItemList.map(item => ({
-                  cartId: `temp-${item.martyrId}`,
-                  selected: item.status || false,
-                  martyrId: item.martyrId,
-                  martyrCode: item.martyrCode,
-                  martyrName: item.martyrName,
-                  serviceView: {
-                    serviceId: item.serviceView.serviceId,
-                    serviceName: item.serviceView.serviceName,
-                    description: item.serviceView.description,
-                    price: item.serviceView.price,
-                    imagePath: item.serviceView.imagePath
-                  }
+                const mappedItems = await Promise.all(response.cartItemList.map(async item => {
+                  const martyrInfo = await getMartyrGraveById(item.martyrId);
+                  return {
+                    cartId: `temp-${item.martyrId}`,
+                    selected: item.status || false,
+                    martyrId: item.martyrId,
+                    martyrCode: item.martyrCode,
+                    martyrName: martyrInfo.name,
+                    serviceView: {
+                      serviceId: item.serviceView.serviceId,
+                      serviceName: item.serviceView.serviceName,
+                      description: item.serviceView.description,
+                      price: item.serviceView.price,
+                      imagePath: item.serviceView.imagePath
+                    }
+                  };
                 }));
                 
                 console.log('Mapped items from API:', mappedItems);
@@ -100,7 +104,6 @@ const CartPage = () => {
     try {
       if (user?.accountId) {
         await deleteCartItem(cartId);
-        // Update state for logged-in users
         setCartItems(prevItems => prevItems.filter(item => item.cartId !== cartId));
       } else {
         // For non-logged in users
@@ -121,18 +124,22 @@ const CartPage = () => {
           const response = await addToAnonymousCart(itemsForApi);
           
           if (response && response.cartItemList && Array.isArray(response.cartItemList)) {
-            const mappedItems = response.cartItemList.map(item => ({
-              cartId: `temp-${item.martyrId}`,
-              selected: item.status || false,
-              martyrId: item.martyrId,
-              martyrCode: item.martyrCode,
-              serviceView: {
-                serviceId: item.serviceView.serviceId,
-                serviceName: item.serviceView.serviceName,
-                description: item.serviceView.description,
-                price: item.serviceView.price,
-                imagePath: item.serviceView.imagePath
-              }
+            const mappedItems = await Promise.all(response.cartItemList.map(async item => {
+              const martyrInfo = await getMartyrGraveById(item.martyrId);
+              return {
+                cartId: `temp-${item.martyrId}`,
+                selected: item.status || false,
+                martyrId: item.martyrId,
+                martyrCode: item.martyrCode,
+                martyrName: martyrInfo.name,
+                serviceView: {
+                  serviceId: item.serviceView.serviceId,
+                  serviceName: item.serviceView.serviceName,
+                  description: item.serviceView.description,
+                  price: item.serviceView.price,
+                  imagePath: item.serviceView.imagePath
+                }
+              };
             }));
             setCartItems(mappedItems);
           } else {
@@ -320,7 +327,9 @@ const CartPage = () => {
                   <td>{item.serviceView.description}</td>
                   <td className='cart-page-price'>{item.serviceView.price.toLocaleString('vi-VN')} đ</td>
                   <td>
-                    <Link to={`/chitietmo/${item.martyrId}`} className="cart-page-martyr-link">{item.martyrName}</Link>
+                    <Link to={`/chitietmo/${item.martyrId}`} className="cart-page-martyr-link">
+                      {item.martyrName}
+                    </Link>
                   </td>
                   <td>
                     <button onClick={() => handleDelete(item.cartId)} className="cart-page-delete-btn">

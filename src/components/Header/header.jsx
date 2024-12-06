@@ -36,6 +36,11 @@ const Header = () => {
     fetchCartItems();
   }, [user]);
 
+  const getSessionCartCount = () => {
+    const savedCartItems = JSON.parse(sessionStorage.getItem("savedCartItems") || "[]");
+    return savedCartItems.length;
+  };
+
   const fetchCartItems = useCallback(async () => {
     if (user && user.accountId) {
       try {
@@ -44,28 +49,24 @@ const Header = () => {
       } catch (error) {
         console.error("Error fetching cart items:", error);
       }
+    } else {
+      setCartItemCount(getSessionCartCount());
     }
   }, [user]);
 
   useEffect(() => {
-    //fetchCartItems();
-
-    const handleClick = () => {
-      // Delay fetching cart items by 1 second after a click
-      setTimeout(() => {
+    const updateCartCount = () => {
+      if (user && user.accountId) {
         fetchCartItems();
-      }, 500);
+      } else {
+        setCartItemCount(getSessionCartCount());
+      }
     };
 
-    // Add event listener to document for all clicks
-    document.addEventListener('click', handleClick);
+    const intervalId = setInterval(updateCartCount, 500);
 
-    // Cleanup
-    return () => {
-      document.removeEventListener('click', handleClick);
-      
-    };
-  }, [fetchCartItems]);
+    return () => clearInterval(intervalId);
+  }, [user, fetchCartItems]);
 
   const toggleSettings = () => {
     setShowSettings(!showSettings);

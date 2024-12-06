@@ -41,6 +41,13 @@ const MartyrList = () => {
     navigate(`/chitietmo/${martyrId}`);
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Không có thông tin';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Không có thông tin';
+    return date.toLocaleDateString('vi-VN');
+  };
+
   if (loading) {
     return <Loading text="Đang tải danh sách liệt sĩ..." />;
   }
@@ -67,10 +74,10 @@ const MartyrList = () => {
                   <p><strong>Vị trí:</strong> {martyr.locationDescription || 'Không có thông tin'}</p>
                   <p><strong>Bí danh:</strong> {martyr.matyrGraveInformations?.[0]?.nickName || 'Không có thông tin'}</p>
                   <p><strong>Chức vụ:</strong> {martyr.matyrGraveInformations?.[0]?.position || 'Không có thông tin'}</p>
-                  <p><strong>Huân chương:</strong> {martyr.matyrGraveInformations?.[0]?.medal || 'Không có thông tin'}</p>
+                  <p><strong>Huân chương:</strong> {martyr.matyrGraveInformations?.[0]?.medal || 'Kh��ng có thông tin'}</p>
                   <p><strong>Quê quán:</strong> {martyr.matyrGraveInformations?.[0]?.homeTown || 'Không có thông tin'}</p>
-                  <p><strong>Ngày sinh:</strong> {martyr.matyrGraveInformations?.[0]?.dateOfBirth || 'Không có thông tin'}</p>
-                  <p><strong>Ngày hy sinh:</strong> {martyr.matyrGraveInformations?.[0]?.dateOfSacrifice || 'Không có thông tin'}</p>
+                  <p><strong>Ngày sinh:</strong> {formatDate(martyr.matyrGraveInformations?.[0]?.dateOfBirth)}</p>
+                  <p><strong>Ngày hy sinh:</strong> {formatDate(martyr.matyrGraveInformations?.[0]?.dateOfSacrifice)}</p>
                 </div>
               </div>
             ))

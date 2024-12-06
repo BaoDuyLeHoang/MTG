@@ -140,55 +140,154 @@
   }
   
   .maintenance-section {
-    margin-top: 3rem;
-    background-color: #fff;
+    padding: 20px;
+    background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 20px;
   }
   
-  .maintenance-list {
+  .maintenance-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+  }
+  
+  .order-history-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
   }
   
-  .maintenance-item {
-    background-color: #f8f9fa;
-    border-left: 4px solid #3498db;
-    padding: 1rem;
-    border-radius: 0 4px 4px 0;
+  .order-card {
+    position: relative;
+    display: flex;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
   }
   
-  .maintenance-header {
+  .order-status-indicator {
+    width: 6px;
+    height: 100%;
+  }
+  
+  .order-status-indicator.status-1 { background: #ffd700; }
+  .order-status-indicator.status-2 { background: #1e90ff; }
+  .order-status-indicator.status-3 { background: #9370db; }
+  .order-status-indicator.status-4 { background: #32cd32; }
+  .order-status-indicator.status-5 { background: #dc3545; }
+  
+  .order-main-content {
+    flex: 1;
+    padding: 1.5rem;
+  }
+  
+  .order-top {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .order-service h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .order-service p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+  }
+  
+  .order-meta {
+    text-align: right;
+  }
+  
+  .order-date {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
     margin-bottom: 0.5rem;
   }
   
-  .maintenance-date {
-    font-weight: bold;
-    color: #2c3e50;
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
   }
   
-  .maintenance-type {
-    background-color: #3498db;
+  /* Chờ xác nhận */
+  .status-badge.status-1 {
+    background: linear-gradient(45deg, #ffd700, #ffc107);
+    color: #000;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+  
+  /* Đã xác nhận */
+  .status-badge.status-2 {
+    background: linear-gradient(45deg, #2196f3, #1976d2);
     color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
-    font-size: 0.9rem;
+    border: 1px solid rgba(33, 150, 243, 0.3);
   }
   
-  .maintenance-description {
-    margin: 0.5rem 0;
-    line-height: 1.4;
+  /* Đang thực hiện */
+  .status-badge.status-3 {
+    background: linear-gradient(45deg, #9c27b0, #7b1fa2);
+    color: white;
+    border: 1px solid rgba(156, 39, 176, 0.3);
   }
   
-  .maintenance-performer {
-    display: block;
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
+  /* Hoàn thành */
+  .status-badge.status-4 {
+    background: linear-gradient(45deg, #4caf50, #388e3c);
+    color: white;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+  }
+  
+  /* Đã hủy */
+  .status-badge.status-5 {
+    background: linear-gradient(45deg, #f44336, #d32f2f);
+    color: white;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+  }
+  
+  .status-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .status-badge {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+    }
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    color: #666;
+  }
+  
+  /* Hover effect */
+  .order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   }
   
   @media (max-width: 768px) {
@@ -251,4 +350,39 @@
     display: flex;
     gap: 2rem;
     align-items: flex-start;
+  }
+
+  /* Chờ xác nhận */
+  .order-card[data-status="1"] {
+    border-color: #ffd700;
+    background: linear-gradient(to right, rgba(255, 215, 0, 0.05), transparent);
+  }
+
+  /* Đã xác nhận */
+  .order-card[data-status="2"] {
+    border-color: #2196f3;
+    background: linear-gradient(to right, rgba(33, 150, 243, 0.05), transparent);
+  }
+
+  /* Đang thực hiện */
+  .order-card[data-status="3"] {
+    border-color: #9c27b0;
+    background: linear-gradient(to right, rgba(156, 39, 176, 0.05), transparent);
+  }
+
+  /* Hoàn thành */
+  .order-card[data-status="4"] {
+    border-color: #4caf50;
+    background: linear-gradient(to right, rgba(76, 175, 80, 0.05), transparent);
+  }
+
+  /* Đã hủy */
+  .order-card[data-status="5"] {
+    border-color: #f44336;
+    background: linear-gradient(to right, rgba(244, 67, 54, 0.05), transparent);
+  }
+
+  .order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   }

@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Header from "../../../components/Header/header";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "./CheckOutPage.css";
-import { FaTrashAlt, FaWallet } from "react-icons/fa";
+import { FaTrashAlt, FaWallet, FaCalendarAlt } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
-import {getCheckoutItemsByCustomerId } from "../../../APIcontroller/API";
+import {getCheckoutItemsByCustomerId, getWalletBalance } from "../../../APIcontroller/API";
 import { createOrder } from "../../../services/orders";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -22,6 +22,7 @@ const CheckOut = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("error");
+  const [walletBalance, setWalletBalance] = useState(0);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -51,6 +52,22 @@ const CheckOut = () => {
     fetchCartItems();
   }, [location.state, user]);
 
+  useEffect(() => {
+    const fetchWalletBalance = async () => {
+      if (user?.accountId) {
+        try {
+          const response = await getWalletBalance(user.accountId);
+          setWalletBalance(response.customerBalance || 0);
+        } catch (error) {
+          console.error("Error fetching wallet balance:", error);
+          setWalletBalance(0);
+        }
+      }
+    };
+
+    fetchWalletBalance();
+  }, [user]);
+
   const paymentMethods = [
     { 
       id: "VNPay", 
@@ -64,7 +81,7 @@ const CheckOut = () => {
     },
     {
       id: "balance",
-      name: "Số dư tài khoản",
+      name: `Số dư tài khoản (${Number(walletBalance).toLocaleString()}đ)`,
       icon: <FaWallet size={24} color="#4F46E5" />
     }
   ];
@@ -118,6 +135,13 @@ const CheckOut = () => {
     setIsLoading(true);
 
     try {
+      if (selectedPaymentMethod === "balance" && walletBalance < totalPrice) {
+        setAlertMessage("Số dư tài khoản không đủ để thực hiện giao dịch");
+        setAlertSeverity("error");
+        setAlertOpen(true);
+        return;
+      }
+
       const adjustedDate = new Date(completionDate);
       adjustedDate.setHours(7, 0, 0, 0);
 
@@ -134,6 +158,9 @@ const CheckOut = () => {
 
       if (selectedPaymentMethod === "balance") {
         if (response.message && response.message.includes("thành công")) {
+          const newBalance = await getWalletBalance(user.accountId);
+          setWalletBalance(newBalance);
+          
           setAlertMessage("Đặt hàng thành công!");
           setAlertSeverity("success");
           setAlertOpen(true);
@@ -163,6 +190,31 @@ const CheckOut = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const renderWalletInfo = () => {
+    if (selectedPaymentMethod === "balance") {
+      const remainingBalance = walletBalance - totalPrice;
+      return (
+        <div className="wallet-info">
+          <div className="wallet-detail">
+            <span>Số dư hiện tại:</span>
+            <span>{Number(walletBalance).toLocaleString()}đ</span>
+          </div>
+          <div className="wallet-detail">
+            <span>Tổng thanh toán:</span>
+            <span>{totalPrice.toLocaleString()}đ</span>
+          </div>
+          <div className="wallet-detail remaining">
+            <span>Số dư còn lại:</span>
+            <span className={remainingBalance < 0 ? 'negative' : ''}>
+              {Number(remainingBalance).toLocaleString()}đ
+            </span>
+          </div>
+        </div>
+      );
+    }
+    return null;
   };
 
   if (isLoading) {
@@ -229,6 +281,7 @@ const CheckOut = () => {
                   </label>
                 ))}
               </div>
+              {renderWalletInfo()}
             </div>
           </div>
 
@@ -236,40 +289,34 @@ const CheckOut = () => {
             <h3>Thông tin bổ sung</h3>
             <div className="additional-info">
               <div className="form-group">
-                <label>Ngày hoàn thành dự kiến *</label>
-                <DatePicker
-                  selected={completionDate}
-                  onChange={(date) => setCompletionDate(date)}
-                  dateFormat="dd/MM/yyyy"
-                  minDate={new Date()}
-                  placeholderText="dd/mm/yyyy"
-                  className="form-control"
-                  required
-                  locale="vi"
-                  isClearable
-                  showYearDropdown
-                  scrollableYearDropdown
-                  yearDropdownItemNumber={15}
-                  customInput={
-                    <input
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px'
-                      }}
-                    />
-                  }
-                />
+                <label>Ngày hoàn thành dự kiến</label>
+                <div className="datepicker-container">
+                  <DatePicker
+                    selected={completionDate}
+                    onChange={(date) => setCompletionDate(date)}
+                    dateFormat="dd/MM/yyyy"
+                    minDate={new Date()}
+                    placeholderText="Chọn ngày hoàn thành"
+                    className="form-control"
+                    required
+                  />
+                </div>
+                <div className="form-helper-text">
+                  Thời gian hoàn thành tối thiểu là 3 ngày kể từ ngày đặt hàng
+                </div>
               </div>
+
               <div className="form-group">
                 <label>Ghi chú</label>
                 <textarea
                   value={customerNote}
                   onChange={(e) => setCustomerNote(e.target.value)}
-                  placeholder="Nhập ghi chú cho đơn hàng (không bắt buộc)"
+                  placeholder="Nhập ghi chú cho đơn hàng của bạn"
                   rows={4}
                 />
+                <div className="form-helper-text">
+                  Thêm bất kỳ thông tin bổ sung nào bạn muốn gửi cho chúng tôi
+                </div>
               </div>
             </div>
           </div>

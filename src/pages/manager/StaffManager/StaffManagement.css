@@ -1,179 +1,58 @@
 .staff-management-container {
     display: flex;
     min-height: 100vh;
-    background-color: #f5f5f5;
 }
 
 .staff-management-content {
     flex: 1;
     padding: 2rem;
-}
-
-.staff-management-content h1 {
-    color: #2c3e50;
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 0.5rem;
-}
-
-.table-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    margin-top: 1rem;
-}
-
-.staff-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.staff-table th {
-    background-color: #f8f9fa;
-    color: #2c3e50;
-    padding: 1.2rem 1rem;
-    text-align: left;
-    font-weight: 600;
-    border-bottom: 2px solid #e9ecef;
-    white-space: nowrap;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.staff-table th:hover {
-    background-color: #e9ecef;
-}
-
-.staff-table thead {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.staff-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-}
-
-.staff-table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-.status {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: 500;
-    display: inline-block;
-}
-
-.status-green {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status-red {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.detail-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.detail-button:hover {
-    background-color: #2980b9;
-}
-
-.detail-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-.centered {
-    text-align: center;
-}
-
-.filter-search-container {
-    margin-bottom: 1rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.report-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.report-button:hover {
-    background-color: #45a049;
-}
-
-.icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px 12px;
-    margin: 0 8px;
-    display: inline-flex;
-    align-items: center;
-    transition: transform 0.2s ease;
-}
-
-.icon-button:hover {
-    transform: scale(1.15);
-}
-
-.toggle-active {
-    color: #28a745;
-    width: 28px;
-    height: 28px;
-}
-
-.toggle-inactive {
-    color: #dc3545;
-    width: 28px;
-    height: 28px;
-}
-
-.icon-button:hover svg {
-    color: #007bff;
+    background: #f5f5f5;
 }
 
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
 }
 
 .create-staff-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #4CAF50;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
-.create-staff-btn:hover {
-    background-color: #45a049;
+.table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.staff-table th {
+    background: #f8f9fa;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+}
+
+.staff-table td {
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
 }
 
 .modal-overlay {
@@ -182,7 +61,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -190,45 +69,212 @@
 }
 
 .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
+    max-width: 500px;
+    width: 90%;
+    padding: 2rem;
 }
 
-.modal-content form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.form-group {
+    margin-bottom: 1rem;
 }
 
-.modal-content input,
-.modal-content select {
-    padding: 8px;
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 1rem;
+}
+
+.required {
+    color: red;
+    margin-left: 2px;
 }
 
 .modal-buttons {
     display: flex;
-    gap: 10px;
+    gap: 1rem;
     justify-content: flex-end;
-    margin-top: 20px;
+    margin-top: 1.5rem;
 }
 
-.modal-buttons button {
-    padding: 8px 16px;
-    border: none;
+.submit-btn, .cancel-btn {
+    padding: 0.5rem 1.5rem;
     border-radius: 4px;
+    border: none;
     cursor: pointer;
+    font-weight: 500;
 }
 
-.modal-buttons button[type="submit"] {
+.submit-btn {
     background-color: #4CAF50;
     color: white;
 }
 
-.modal-buttons button[type="button"] {
+.cancel-btn {
     background-color: #f44336;
     color: white;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+.cancel-btn:hover {
+    background-color: #da190b;
+}
+
+.staff-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.staff-avatar {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.staff-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-green {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-red {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: #6c757d;
+    transition: color 0.3s;
+}
+
+.icon-button:hover {
+    color: #000;
+}
+
+.action-column {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.detail-link {
+    background: none;
+    border: none;
+    color: #2196F3;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.detail-link:hover {
+    color: #1976D2;
+    text-decoration: none;
+}
+
+/* Đảm bảo cột action đủ rộng */
+.staff-table td:last-child {
+    min-width: 160px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.date-input {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    padding: 0.2rem;
+}
+
+/* Tùy chỉnh style cho date picker trên các trình duyệt khác nhau */
+.date-input::-webkit-datetime-edit-fields-wrapper { padding: 0; }
+.date-input::-webkit-datetime-edit-text { padding: 0 0.3em; }
+.date-input::-webkit-datetime-edit-month-field,
+.date-input::-webkit-datetime-edit-day-field,
+.date-input::-webkit-datetime-edit-year-field {
+    padding: 0 0.3em;
+}
+
+.date-picker-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Tùy chỉnh popup calendar */
+.react-datepicker {
+    font-family: inherit;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.react-datepicker__header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.react-datepicker__day--selected {
+    background-color: #4CAF50 !important;
+    color: white !important;
+}
+
+.react-datepicker__day:hover {
+    background-color: #e9ecef;
+}
+
+.react-datepicker__day--keyboard-selected {
+    background-color: #4CAF50 !important;
+    color: white !important;
+}
+
+.react-datepicker__year-dropdown {
+    max-height: 300px;
+    overflow-y: auto;
 }

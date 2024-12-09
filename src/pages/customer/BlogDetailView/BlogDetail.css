@@ -97,90 +97,153 @@
 /* Related Martyrs Section */
 .blog-detail__related-martyrs {
   margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid #eee;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
 }
 
 .blog-detail__related-title {
   font-size: 1.8rem;
   color: #2d3436;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f2f5;
 }
 
-.blog-detail__martyrs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-/* Khi chỉ có một liệt sĩ */
-.blog-detail__martyrs-grid:only-child {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-.blog-detail__martyr-card {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.blog-detail__martyr-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.blog-detail__martyr-name {
-  font-size: 1.4rem;
-  color: #2d3436;
-  margin-bottom: 1rem;
-  text-align: center;
-  text-decoration: none;
-}
-
-.blog-detail__martyr-images {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+.blog-detail__martyrs-container {
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 }
 
-.blog-detail__martyr-image-container {
-  aspect-ratio: 1;
-  overflow: hidden;
-  border-radius: 8px;
+.blog-detail__martyrs-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
 }
 
-.blog-detail__martyr-image {
-  width: 100%;
+.blog-detail__martyr-link {
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.blog-detail__martyr-name {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  color: #2d3436;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.4;
 }
 
-.blog-detail__martyr-image:hover {
-  transform: scale(1.05);
+.blog-detail__martyr-name:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1a73e8;
+  color: #1a73e8;
+}
+
+.blog-detail__martyr-name:active {
+  transform: translateY(0);
+  background: #e9ecef;
+}
+
+/* Pagination styles */
+.blog-detail__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f2f5;
+}
+
+.blog-detail__pagination-button {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  color: #2d3436;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-detail__pagination-button:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #1a73e8;
+  color: #1a73e8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.15);
+}
+
+.blog-detail__pagination-button:disabled {
+  background: #f5f5f5;
+  color: #aaa;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.blog-detail__page-info {
+  font-size: 0.95rem;
+  color: #666;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-  .blog-detail__martyrs-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 1200px) {
+  .blog-detail__martyrs-row {
+    grid-template-columns: repeat(4, 1fr);
   }
+}
 
-  .blog-detail__martyr-images {
+@media (max-width: 992px) {
+  .blog-detail__martyrs-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .blog-detail__martyr-name {
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .blog-detail__martyrs-row {
     grid-template-columns: repeat(2, 1fr);
   }
-
+  
   .blog-detail__related-title {
     font-size: 1.5rem;
   }
+  
+  .blog-detail__pagination {
+    flex-wrap: wrap;
+  }
+}
 
-  .blog-detail__martyr-name {
-    font-size: 1.2rem;
+@media (max-width: 480px) {
+  .blog-detail__martyrs-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .blog-detail__pagination-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -291,7 +354,7 @@
 .blog-detail__comments-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  
 }
 
 .blog-detail__comment {
@@ -1112,4 +1175,87 @@
 
 .blog-detail__report-cancel:hover {
   background-color: #dde2e6;
+}
+
+.blog-detail__view-more-comments {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: background-color 0.2s;
+}
+
+.blog-detail__view-more-comments:hover {
+  background-color: #e0e0e0;
+}
+
+.blog-detail__martyrs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
+.blog-detail__martyr-link {
+  text-decoration: none;
+  flex: 0 0 calc(20% - 0.8rem); /* 5 items per row with gap consideration */
+  margin-bottom: 1rem;
+}
+
+.blog-detail__martyr-name {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  text-align: center;
+  color: #2d3436;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.blog-detail__martyr-name:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #1a73e8;
+}
+
+.blog-detail__martyr-name:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .blog-detail__martyr-link {
+    flex: 0 0 calc(25% - 0.75rem); /* 4 items per row */
+  }
+}
+
+@media (max-width: 992px) {
+  .blog-detail__martyr-link {
+    flex: 0 0 calc(33.333% - 0.67rem); /* 3 items per row */
+  }
+}
+
+@media (max-width: 768px) {
+  .blog-detail__martyr-link {
+    flex: 0 0 calc(50% - 0.5rem); /* 2 items per row */
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-detail__martyr-link {
+    flex: 0 0 100%; /* 1 item per row */
+  }
 }

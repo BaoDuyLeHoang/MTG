@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./MyGraveDetail.css";
 import Header from "../../../components/Header/header";
 import { getGraveById } from "../../../APIcontroller/API";
+import { getGraveOrders } from "../../../services/graves";
 
 const MyGraveDetail = () => {
   const navigate = useNavigate();
@@ -11,11 +12,12 @@ const MyGraveDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [orders, setOrders] = useState([]);
 
   const defaultImage = "https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072";
 
   useEffect(() => {
-    const fetchGraveDetails = async () => {
+    const fetchData = async () => {
       if (!martyrId) {
         setError("No martyr ID provided");
         setLoading(false);
@@ -23,17 +25,21 @@ const MyGraveDetail = () => {
       }
 
       try {
-        const data = await getGraveById(martyrId);
-        console.log("Fetched data:", data); // Log the fetched data
-        setMartyrDetails(data);
+        const [graveData, ordersData] = await Promise.all([
+          getGraveById(martyrId),
+          getGraveOrders(martyrId)
+        ]);
+        
+        setMartyrDetails(graveData);
+        setOrders(ordersData);
       } catch (err) {
-        setError("Failed to fetch grave details. Please try again later.");
+        setError("Failed to fetch data. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchGraveDetails();
+    fetchData();
   }, [martyrId]);
 
   const handleImageClick = () => {
@@ -56,36 +62,35 @@ const MyGraveDetail = () => {
     navigate("/dichvutheoloai");
   };
 
+  // Add this function to format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Add this helper function
+  const getStatusText = (status) => {
+    switch (status) {
+      case 1:
+        return "Đã đặt";
+      case 3:
+        return "Đang thực hiện";
+      case 4:
+        return "Hoàn thành";
+      default:
+        return null;
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!martyrDetails) return <div>No grave details found.</div>;
 
   const info = martyrDetails.matyrGraveInformations[0];
-
-  // Add this fake data
-  const fakeMaintenanceHistory = [
-    {
-      id: 1,
-      date: "2023-05-15",
-      type: "Vệ sinh",
-      description: "Vệ sinh tổng thể và đánh bóng bia tưởng niệm.",
-      performedBy: "Nguyễn Văn An",
-    },
-    {
-      id: 2,
-      date: "2023-08-22",
-      type: "Phục hồi",
-      description: "Sửa chữa các vết nứt nhỏ và làm mới phần khắc chữ.",
-      performedBy: "Trần Thị Bình",
-    },
-    {
-      id: 3,
-      date: "2024-01-10",
-      type: "Cảnh quan",
-      description: "Trồng hoa mới và cắt tỉa thực vật xung quanh.",
-      performedBy: "Lê Văn Cường",
-    },
-  ];
 
   return (
     <>
@@ -152,19 +157,36 @@ const MyGraveDetail = () => {
         </div>
         <div className="maintenance-section">
           <h2>Lịch sử bảo trì</h2>
-          <div className="maintenance-list">
-            {fakeMaintenanceHistory.map((record) => (
-              <div key={record.id} className="maintenance-item">
-                <div className="maintenance-header">
-                  <span className="maintenance-date">{record.date}</span>
-                  <span className="maintenance-type">{record.type}</span>
-                </div>
-                <p className="maintenance-description">{record.description}</p>
-                <span className="maintenance-performer">
-                  Thực hiện bởi: {record.performedBy}
-                </span>
+          <div className="order-history-list">
+            {orders && orders.length > 0 ? (
+              orders.map((order) => {
+                // Only render orders with status 1, 3, or 4
+                if (![1, 3, 4].includes(order.status)) return null;
+                
+                return (
+                  <div key={order.orderDate} className="order-card" data-status={order.status}>
+                    <div className="order-main-content">
+                      <div className="order-top">
+                        <div className="order-service">
+                          <h3>{order.serviceName}</h3>
+                          <p>{order.serviceCategoryName}</p>
+                        </div>
+                        <div className="order-meta">
+                          <span className="order-date">{formatDate(order.orderDate)}</span>
+                          <span className="status-badge status-${order.status}">
+                            {getStatusText(order.status)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="empty-state">
+                <p>Chưa có dịch vụ nào được đặt cho mộ này</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 

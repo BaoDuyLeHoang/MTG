@@ -1,19 +1,25 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
 import { getProfile } from "../../services/profile";
-import { getCartItemsByCustomerId } from "../../APIcontroller/API";
+import { getCartItemsByCustomerId, getMyNotifications } from "../../APIcontroller/API";
 
 const Header = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const settingsRef = useRef(null);
+  const notificationsRef = useRef(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -30,6 +36,11 @@ const Header = () => {
     fetchCartItems();
   }, [user]);
 
+  const getSessionCartCount = () => {
+    const savedCartItems = JSON.parse(sessionStorage.getItem("savedCartItems") || "[]");
+    return savedCartItems.length;
+  };
+
   const fetchCartItems = useCallback(async () => {
     if (user && user.accountId) {
       try {
@@ -38,31 +49,28 @@ const Header = () => {
       } catch (error) {
         console.error("Error fetching cart items:", error);
       }
+    } else {
+      setCartItemCount(getSessionCartCount());
     }
   }, [user]);
 
   useEffect(() => {
-    //fetchCartItems();
-
-    const handleClick = () => {
-      // Delay fetching cart items by 1 second after a click
-      setTimeout(() => {
+    const updateCartCount = () => {
+      if (user && user.accountId) {
         fetchCartItems();
-      }, 500);
+      } else {
+        setCartItemCount(getSessionCartCount());
+      }
     };
 
-    // Add event listener to document for all clicks
-    document.addEventListener('click', handleClick);
+    const intervalId = setInterval(updateCartCount, 500);
 
-    // Cleanup
-    return () => {
-      document.removeEventListener('click', handleClick);
-      
-    };
-  }, [fetchCartItems]);
+    return () => clearInterval(intervalId);
+  }, [user, fetchCartItems]);
 
   const toggleSettings = () => {
     setShowSettings(!showSettings);
+    setShowNotifications(false);
   };
 
   const handleLogout = () => {
@@ -70,7 +78,45 @@ const Header = () => {
     navigate('/login');
   };
 
+  const fetchNotifications = async (page = 1) => {
+    try {
+      const response = await getMyNotifications(page, 5);
+      setNotifications(response.notifications);
+      setTotalPages(response.totalPage);
+      setCurrentPage(page);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  const handleNotificationClick = () => {
+    setShowNotifications(!showNotifications);
+    setShowSettings(false);
+    if (!showNotifications) {
+      fetchNotifications();
+    }
+  };
+
   const displayName = user ? (user.accountName) : "👤";
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Kiểm tra click outside cho settings dropdown
+      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+        setShowSettings(false);
+      }
+      
+      // Kiểm tra click outside cho notifications dropdown
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="header">
@@ -98,7 +144,64 @@ const Header = () => {
           <FontAwesomeIcon icon={faShoppingCart} className="cart-icon" />
           {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
         </Link>
-        <div className="user-settings">
+        
+        <div className="notifications-container" ref={notificationsRef}>
+          <button 
+            onClick={handleNotificationClick} 
+            className="notifications-button"
+            aria-label="Notifications"
+          >
+            <FontAwesomeIcon icon={faBell} className="notifications-icon" />
+            {notifications.some(n => !n.isRead) && (
+              <span className="notification-badge"></span>
+            )}
+          </button>
+          
+          {showNotifications && (
+            <div className="notifications-dropdown">
+              <h3>Thông báo</h3>
+              {notifications.length > 0 ? (
+                <>
+                  <div className="notifications-list">
+                    {notifications.map((notification) => (
+                      <div 
+                        key={notification.notificationId} 
+                        className={`notification-item ${!notification.status ? 'unread' : ''}`}
+                      >
+                        <div className="notification-title">{notification.title}</div>
+                        <div className="notification-description">{notification.description}</div>
+                        <div className="notification-date">
+                          {new Date(notification.createdDate).toLocaleString('vi-VN')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {totalPages > 1 && (
+                    <div className="notifications-pagination">
+                      <button 
+                        onClick={() => fetchNotifications(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        Trước
+                      </button>
+                      <span>{currentPage}/{totalPages}</span>
+                      <button 
+                        onClick={() => fetchNotifications(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        Sau
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="no-notifications">Không có thông báo mới</p>
+              )}
+            </div>
+          )}
+        </div>
+        
+        <div className="user-settings" ref={settingsRef}>
           {user && (
             <span className="user-name-header" style={{ marginRight: '10px', color: '#fff' }}>
               {userProfile?.fullName || user.accountName}
@@ -140,8 +243,7 @@ const Header = () => {
                       <Link to="/cart">Giỏ hàng</Link>
                       <Link to="/order-history">Lịch sử đơn hàng</Link>
                       <Link to="/wallet">Ví của tôi</Link>
-                      <Link to="/notifications">Thông báo</Link>
-                      <Link to="/schedule-service-history">Dịch vụ định kỳ</Link>
+                      
                     </>
                   )}
                   {user.role === 2 && (

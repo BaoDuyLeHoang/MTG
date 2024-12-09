@@ -6,6 +6,8 @@ import { getAllStaff, updateAccountStatus } from '../../../APIcontroller/API';
 import { createStaff } from '../../../services/staff';
 import { ToggleLeft, ToggleRight, FileText, UserPlus } from 'lucide-react';
 import axios from 'axios';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 const StaffManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -27,6 +29,8 @@ const StaffManagement = () => {
         roleId: 3, // Default role for staff
         areaId: user.areaId
     });
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [selectedStaff, setSelectedStaff] = useState(null);
 
     useEffect(() => {
         fetchStaffData();
@@ -94,6 +98,21 @@ const StaffManagement = () => {
         }
     };
 
+    const handleShowDetail = (staff) => {
+        setSelectedStaff(staff);
+        setShowDetailModal(true);
+    };
+
+    // Add this helper function near the top of the component
+    const formatDate = (date) => {
+        if (!date) return '';
+        return new Date(date).toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    };
+
     return (
         <div className="staff-management-container">
             <Sidebar />
@@ -111,50 +130,80 @@ const StaffManagement = () => {
                         <div className="modal-content">
                             <h2>Thêm Nhân Viên Mới</h2>
                             <form onSubmit={handleCreateStaff}>
-                                <input
-                                    type="text"
-                                    placeholder="Số điện thoại"
-                                    value={newStaff.phoneNumber}
-                                    onChange={(e) => setNewStaff({ ...newStaff, phoneNumber: e.target.value })}
-                                />
-                                <input
-                                    type="password"
-                                    placeholder="Mật khẩu"
-                                    value={newStaff.password}
-                                    onChange={(e) => setNewStaff({ ...newStaff, password: e.target.value })}
-                                />
-                                <input
-                                    type="password"
-                                    placeholder="Xác nhận mật khẩu"
-                                    value={newStaff.confirmPassword}
-                                    onChange={(e) => setNewStaff({ ...newStaff, confirmPassword: e.target.value })}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Họ và tên"
-                                    value={newStaff.fullName}
-                                    onChange={(e) => setNewStaff({ ...newStaff, fullName: e.target.value })}
-                                />
-                                <input
-                                    type="email"
-                                    placeholder="Email"
-                                    value={newStaff.emailAddress}
-                                    onChange={(e) => setNewStaff({ ...newStaff, emailAddress: e.target.value })}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Địa chỉ"
-                                    value={newStaff.address}
-                                    onChange={(e) => setNewStaff({ ...newStaff, address: e.target.value })}
-                                />
-                                <input
-                                    type="date"
-                                    value={newStaff.dateOfBirth}
-                                    onChange={(e) => setNewStaff({ ...newStaff, dateOfBirth: e.target.value })}
-                                />
+                                <div className="form-group">
+                                    <label>Số điện thoại <span className="required">*</span></label>
+                                    <input
+                                        type="tel"
+                                        pattern="[0-9]{10}"
+                                        required
+                                        value={newStaff.phoneNumber}
+                                        onChange={(e) => setNewStaff({ ...newStaff, phoneNumber: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Mật khẩu <span className="required">*</span></label>
+                                    <input
+                                        type="password"
+                                        required
+                                        minLength="6"
+                                        value={newStaff.password}
+                                        onChange={(e) => setNewStaff({ ...newStaff, password: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Xác nhận mật khẩu <span className="required">*</span></label>
+                                    <input
+                                        type="password"
+                                        required
+                                        minLength="6"
+                                        value={newStaff.confirmPassword}
+                                        onChange={(e) => setNewStaff({ ...newStaff, confirmPassword: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Họ và tên <span className="required">*</span></label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={newStaff.fullName}
+                                        onChange={(e) => setNewStaff({ ...newStaff, fullName: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Email <span className="required">*</span></label>
+                                    <input
+                                        type="email"
+                                        required
+                                        value={newStaff.emailAddress}
+                                        onChange={(e) => setNewStaff({ ...newStaff, emailAddress: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Địa chỉ</label>
+                                    <input
+                                        type="text"
+                                        value={newStaff.address}
+                                        onChange={(e) => setNewStaff({ ...newStaff, address: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Ngày sinh</label>
+                                    <DatePicker
+                                        selected={newStaff.dateOfBirth ? new Date(newStaff.dateOfBirth) : null}
+                                        onChange={(date) => setNewStaff({ ...newStaff, dateOfBirth: date })}
+                                        dateFormat="dd/MM/yyyy"
+                                        maxDate={new Date()}
+                                        showYearDropdown
+                                        scrollableYearDropdown
+                                        yearDropdownItemNumber={100}
+                                        placeholderText="Chọn ngày sinh"
+                                        className="date-picker-input"
+                                        isClearable
+                                    />
+                                </div>
                                 <div className="modal-buttons">
-                                    <button type="submit" onClick={handleCreateStaff}>Tạo</button>
-                                    <button type="button" onClick={() => setShowModal(false)}>Hủy</button>
+                                    <button type="submit" className="submit-btn">Tạo</button>
+                                    <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Hủy</button>
                                 </div>
                             </form>
                         </div>
@@ -170,33 +219,31 @@ const StaffManagement = () => {
                         <table className="staff-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    
                                     <th>Tên nhân viên</th>
-                                    <th>Thời gian bắt đầu làm</th>
-                                    <th>Tình trạng</th>
-                                    <th>Khu Vực</th>
+                                    
+                                    <th>Số điện thoại</th>
+                                    <th>Địa chỉ</th>
                                     <th>Email</th>
-                                    <th>Hành động</th>
+                                    <th>Tình trạng</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredStaff.map((staff) => (
                                     <tr key={staff.accountId}>
-                                        <td>#{staff.accountId}</td>
+                                        
                                         <td>{staff.fullName}</td>
-                                        <td>{new Date(staff.createAt).toLocaleDateString('vi-VN', {
-                                            year: 'numeric',
-                                            month: '2-digit',
-                                            day: '2-digit'
-                                        })}</td>
-                                        <td>
-                                            <span className={`status ${staff.status ? 'status-green' : 'status-red'}`}>
-                                                {staff.status ? 'Active' : 'Inactive'}
-                                            </span>
-                                        </td>
-                                        <td>{staff.areaId}</td>
+                                        
+                                        <td>{staff.phoneNumber}</td>
+                                        <td>{staff.address}</td>
                                         <td>{staff.emailAddress}</td>
                                         <td>
+                                            <span className={`status ${staff.status ? 'status-green' : 'status-red'}`}>
+                                                {staff.status ? 'Hoạt động' : 'Không hoạt động'}
+                                            </span>
+                                        </td>
+                                        <td className="action-column">
                                             <button
                                                 className="icon-button"
                                                 onClick={() => handleAction(staff.accountId)}
@@ -209,17 +256,44 @@ const StaffManagement = () => {
                                                 )}
                                             </button>
                                             <button
-                                                className="clipboard-pen"
-                                                onClick={() => handleCreateReport(staff.accountId)}
-                                                title="Tạo báo cáo"
+                                                className="detail-link"
+                                                onClick={() => handleShowDetail(staff)}
                                             >
-                                                <FileText size={28} />
+                                                Xem chi tiết
                                             </button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                )}
+                {showDetailModal && selectedStaff && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h2>Chi Tiết Nhân Viên</h2>
+                            <div className="staff-details">
+                            {selectedStaff.avatarPath && (
+                                    <div className="staff-avatar">
+                                        
+                                        <img src={selectedStaff.avatarPath} alt="Avatar" />
+                                    </div>
+                                )}
+                                <p><strong>ID:</strong> #{selectedStaff.accountId}</p>
+                                <p><strong>Họ và tên:</strong> {selectedStaff.fullName}</p>
+                                <p><strong>Ngày tạo:</strong> {formatDate(selectedStaff.createAt)}</p>
+                                <p><strong>Trạng thái:</strong> {selectedStaff.status ? 'Hoạt động' : 'Không hoạt động'}</p>
+                                <p><strong>Khu vực:</strong> {selectedStaff.areaId}</p>
+                                <p><strong>Email:</strong> {selectedStaff.emailAddress || 'Chưa cập nhật'}</p>
+                                <p><strong>Số điện thoại:</strong> {selectedStaff.phoneNumber}</p>
+                                <p><strong>Địa chỉ:</strong> {selectedStaff.address || 'Chưa cập nhật'}</p>
+                                <p><strong>Ngày sinh:</strong> {selectedStaff.dateOfBirth ? formatDate(selectedStaff.dateOfBirth) : 'Chưa cập nhật'}</p>
+                                
+                            </div>
+                            <div className="modal-buttons">
+                                <button onClick={() => setShowDetailModal(false)}>Đóng</button>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

@@ -22,6 +22,10 @@ const BlogDetail = () => {
   const [reportContent, setReportContent] = useState('');
   const [reportingCommentId, setReportingCommentId] = useState(null);
   const [reportTitle, setReportTitle] = useState('');
+  const [showAllComments, setShowAllComments] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const martyrsPerPage = 20;
+  const martyrsPerRow = 5;
 
   // Lấy thông tin user và token
   const accessToken = localStorage.getItem('accessToken');
@@ -230,61 +234,69 @@ const BlogDetail = () => {
       return null;
     }
 
-    const DEFAULT_IMAGE = 'https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072';
+    // Tính toán phân trang trực tiếp từ mảng gốc
+    const indexOfLastMartyr = currentPage * martyrsPerPage;
+    const indexOfFirstMartyr = indexOfLastMartyr - martyrsPerPage;
+    const currentMartyrs = blog.relatedMartyrDetails.slice(indexOfFirstMartyr, indexOfLastMartyr);
+    const totalPages = Math.ceil(blog.relatedMartyrDetails.length / martyrsPerPage);
+
+    // Chia martyrs thành các hàng
+    const rows = [];
+    for (let i = 0; i < currentMartyrs.length; i += martyrsPerRow) {
+      rows.push(currentMartyrs.slice(i, i + martyrsPerRow));
+    }
+
+    const handlePageChange = (newPage) => {
+      setCurrentPage(newPage);
+      // Reset scroll position khi chuyển trang
+      window.scrollTo({
+        top: document.querySelector('.blog-detail__related-martyrs').offsetTop,
+        behavior: 'smooth'
+      });
+    };
 
     return (
       <div className="blog-detail__related-martyrs">
         <h2 className="blog-detail__related-title">Các anh hùng liên quan:</h2>
-        <div className="blog-detail__martyrs-grid">
-          {blog.relatedMartyrDetails.map((martyr, index) => (
-            <Link 
-              to={`/chitietmo/${martyr.martyrGraveId}`} 
-              key={martyr.martyrGraveId || index} 
-              className="blog-detail__martyr-link"
-            >
-              <div className="blog-detail__martyr-card">
-                <h3 className="blog-detail__martyr-name">{martyr.name}</h3>
-                <div className="blog-detail__martyr-image-slider">
-                  {(!martyr.images || martyr.images.length === 0) ? (
-                    <img
-                      src={DEFAULT_IMAGE}
-                      alt={martyr.name}
-                      className="blog-detail__martyr-image"
-                    />
-                  ) : (
-                    martyr.images.map((image, imgIndex) => (
-                      <img
-                        key={imgIndex}
-                        src={image}
-                        alt={`${martyr.name} - Ảnh ${imgIndex + 1}`}
-                        className="blog-detail__martyr-image"
-                        style={{
-                          display: currentImageIndices[martyr.martyrGraveId] === imgIndex ? 'block' : 'none'
-                        }}
-                      />
-                    ))
-                  )}
-                  {martyr.images && martyr.images.length > 1 && (
-                    <>
-                      <button 
-                        className="blog-detail__slider-button blog-detail__slider-button--prev"
-                        onClick={(e) => handlePrevImage(e, martyr.martyrGraveId, martyr.images)}
-                      >
-                        ‹
-                      </button>
-                      <button 
-                        className="blog-detail__slider-button blog-detail__slider-button--next"
-                        onClick={(e) => handleNextImage(e, martyr.martyrGraveId, martyr.images)}
-                      >
-                        ›
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </Link>
+        <div className="blog-detail__martyrs-container">
+          {rows.map((row, rowIndex) => (
+            <div key={`row-${rowIndex}-page-${currentPage}`} className="blog-detail__martyrs-row">
+              {row.map((martyr, martyrIndex) => (
+                <Link 
+                  to={`/chitietmo/${martyr.martyrGraveId}`} 
+                  key={`${martyr.martyrGraveId}-${martyrIndex}-page-${currentPage}`}
+                  className="blog-detail__martyr-link"
+                >
+                  <div className="blog-detail__martyr-name">
+                    {martyr.name}
+                  </div>
+                </Link>
+              ))}
+            </div>
           ))}
         </div>
+        
+        {totalPages > 1 && (
+          <div className="blog-detail__pagination">
+            <button 
+              onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+              disabled={currentPage === 1}
+              className="blog-detail__pagination-button"
+            >
+              Trang trước
+            </button>
+            <span className="blog-detail__page-info">
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button 
+              onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="blog-detail__pagination-button"
+            >
+              Trang sau
+            </button>
+          </div>
+        )}
       </div>
     );
   };
@@ -307,10 +319,12 @@ const BlogDetail = () => {
       } else {
         return acc;
       }
-    }, []);
+    }, [])
+    .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
 
-    // Đếm số lượng bình luận
-    const commentCount = blog.comments.length;
+    // Lấy số comments sẽ hiển thị dựa vào state showAllComments
+    const commentsToShow = showAllComments ? uniqueComments : uniqueComments.slice(0, 3);
+    const commentCount = uniqueComments.length;
 
     return (
       <div className="blog-detail__comments-section">
@@ -318,7 +332,7 @@ const BlogDetail = () => {
           Bình luận ({commentCount})
         </h2>
         <div className="blog-detail__comments-list">
-          {uniqueComments.map((comment) => {
+          {commentsToShow.map((comment) => {
             const isEditing = editingCommentId === comment.commentId;
             const isOwnComment = currentAccountId && parseInt(currentAccountId) === comment.accountId;
 
@@ -510,6 +524,16 @@ const BlogDetail = () => {
             );
           })}
         </div>
+        
+        {/* Thêm nút xem thêm/ẩn bớt comments */}
+        {uniqueComments.length > 3 && (
+          <button 
+            className="blog-detail__view-more-comments"
+            onClick={() => setShowAllComments(!showAllComments)}
+          >
+            {showAllComments ? 'Ẩn bớt bình luận' : `Xem thêm ${uniqueComments.length - 3} bình luận`}
+          </button>
+        )}
       </div>
     );
   };
@@ -566,7 +590,7 @@ const BlogDetail = () => {
           <header className="blog-detail__header">
             <h1 className="blog-detail__title">{blog.blogName}</h1>
             <div className="blog-detail__meta">
-              <span className="blog-detail__author">Tác giả: {blog.fullName}</span>
+              <span className="blog-detail__author">Tác gi: {blog.fullName}</span>
               <span className="blog-detail__date">
                 {new Date(blog.createDate).toLocaleDateString('vi-VN')}
               </span>

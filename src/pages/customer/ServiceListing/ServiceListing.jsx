@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext"; // Add this import
 import AlertMessage from "../../../components/AlertMessage/AlertMessage"; // Add this import
@@ -28,6 +28,16 @@ const ServiceListing = () => {
 
   const [martyrName, setMartyrName] = useState("");
   const [martyrId, setMartyrId] = useState("");
+
+  const [cartUpdateTrigger, setCartUpdateTrigger] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCartUpdateTrigger(prev => prev + 1);
+    }, 500);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     const layDichVu = async () => {
@@ -125,13 +135,13 @@ const ServiceListing = () => {
     }
   };
 
-  const coTrongGioHang = (serviceId) => {
+  const coTrongGioHang = useCallback((serviceId) => {
     const savedCartItems = JSON.parse(sessionStorage.getItem("savedCartItems") || "[]");
     return savedCartItems.some(item => 
       item.serviceId === serviceId && 
       item.martyrId === martyrId
     );
-  };
+  }, [martyrId, cartUpdateTrigger]);
 
   const handleAlertClose = (event, reason) => {
     if (reason === 'clickaway') {

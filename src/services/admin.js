@@ -129,5 +129,37 @@ export const createMaterial = async (materialData) => {
   }
 };
 
+export const getOrder = async () => {
+  try {
+    console.log('BASE_URL:', BASE_URL);
+    
+    const response = await axios.get(`${BASE_URL}/Orders`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to fetch staff');
+  }
+};
+
+export const getTotalAccountsByRoles = async (...roleIds) => {
+  try {
+    console.log('BASE_URL:', BASE_URL);
+    
+    const queryString = roleIds.map(id => `roleIds=${id}`).join('&');
+    const response = await axios.get(`${BASE_URL}/Account/total-by-roles?${queryString}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to fetch account totals');
+  }
+};
 
 

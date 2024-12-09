@@ -73,3 +73,16 @@ export const createOrder = async (customerId, paymentMethod, orderData) => {
     throw error;
   }
 };
+
+export const getAllOrders = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/Orders`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch order details');
+  }
+};

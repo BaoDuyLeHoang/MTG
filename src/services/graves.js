@@ -18,6 +18,23 @@ export const getMartyrGraveByCustomerId = async (customerId) => {
   }
 };
 
+export const getMartyrGraveById = async (martyrId) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/MartyrGraveInformation/${martyrId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching martyr graves:", error);
+    throw error;
+  }
+};
+
 export const getAllGravesForManager = async (page, pageSize, managerId) => {
   try {
     const response = await fetch(
@@ -99,4 +116,21 @@ export const deleteGraveService = async (managerId, graveServiceId) => {
       throw new Error(error.response?.data?.message || 'Failed to delete graveService');
   }
 
+};
+
+export const getGraveOrders = async (martyrGraveId) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/Orders/martyr-grave/${martyrGraveId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching grave orders:", error);
+    throw error;
+  }
 };

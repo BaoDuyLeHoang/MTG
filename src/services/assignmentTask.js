@@ -58,3 +58,21 @@ export const updateAssignmentTaskImage = async (assignmentTaskId, imageData) => 
         throw new Error(error.response?.data?.message || 'Failed to update task image');
     }
 };
+
+export const rejectAssignmentTask = async (taskId, rejectionReason) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/AssignmentTask/status/${taskId}`, {
+            status: 2,
+            reason: rejectionReason
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        }
+    );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to reject task');
+    }
+};

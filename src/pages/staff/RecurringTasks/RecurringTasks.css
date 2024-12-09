@@ -144,3 +144,20 @@
     align-items: center;
     gap: 0.5rem;
 } 
+.reject-button {
+    background-color: #f44336; /* Red color */
+    color: white;
+}
+
+.reject-button:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+.cancel-button {
+    border-color: #2196f3; /* Custom border color */
+    color: #2196f3; /* Text color */
+}
+
+.cancel-button:hover {
+    background-color: #e3f2fd; /* Light blue on hover */
+}

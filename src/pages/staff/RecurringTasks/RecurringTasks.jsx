@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -20,7 +21,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from '../../../context/AuthContext';
 import Sidebar from '../../../components/Sidebar/sideBar';
-import { getAssignmentTasks } from '../../../services/assignmentTask';
+import { getAssignmentTasks, rejectAssignmentTask } from '../../../services/assignmentTask';
 import './RecurringTasks.css';
 import ClearIcon from '@mui/icons-material/Clear';
 
@@ -34,6 +35,9 @@ const RecurringTasks = () => {
     const { user } = useAuth();
     const [selectedTask, setSelectedTask] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState('');
+    const navigate = useNavigate();
     
     // States cho filters
     const [statusFilter, setStatusFilter] = useState('all');
@@ -138,6 +142,33 @@ const RecurringTasks = () => {
         setFilteredTasks(allTasks);
         setTotalTasks(allTasks.length);
     };
+    // Add this function to convert day number to Vietnamese day name
+const getDayOfWeek = (dayNumber) => {
+    const days = ['Không biết',' Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']; // 1 là thứ 2, 2 là thứ 3, 3, là thứ 4 ...
+    return days[dayNumber];
+};
+
+    // Function to handle acceptance
+    const handleAccept = () => {
+        // Redirect to the staff's work schedule page
+        // Assuming you have a function or method to navigate
+        navigate('/schedule-staff'); // Adjust the path as necessary
+    };
+
+    // Function to handle rejection
+    const handleReject = async () => {
+    try {
+        await rejectAssignmentTask(selectedTask.assignmentTaskId, rejectionReason);
+        console.log('Task rejected successfully');
+        setIsRejectPopupOpen(false);
+        setIsPopupOpen(false); // Close the main popup
+        setRejectionReason(''); // Optionally reset the rejection reason
+        window.location.reload(); // Reload the page
+    } catch (error) {
+        console.error('Error rejecting task:', error);
+        // Handle error (e.g., show a notification to the user)
+    }
+};
 
     return (
         <div style={{ display: 'flex' }}>
@@ -237,7 +268,7 @@ const RecurringTasks = () => {
                                         <TableCell>
                                             {getRecurringTypeText(task.recurringType)}
                                             <div className="recurring-detail">
-                                                {task.recurringType === 1 && `Thứ ${task.dayOfWeek}`}
+                                                {task.recurringType === 1 && `${getDayOfWeek(task.dayOfWeek)}`}
                                                 {task.recurringType === 2 && `Ngày ${task.dayOfMonth}`}
                                             </div>
                                         </TableCell>
@@ -364,7 +395,48 @@ const RecurringTasks = () => {
                                     <strong>Loại định kỳ:</strong> {getRecurringTypeText(selectedTask.recurringType)}
                                 </Typography>
                                 <Typography><strong>Ghi chú:</strong> {selectedTask.note || 'Không có'}</Typography>
+                                <Typography>
+                                    <strong>Trạng thái công việc: </strong> 
+                                    <span style={{ color: getStatusText(selectedTask.status).color }}>
+                                        {getStatusText(selectedTask.status).text}
+                                    </span>
+                                </Typography>
                             </div>
+                            {selectedTask.status === 1 && (
+                                <>
+                                    <Button variant="contained" onClick={handleAccept}>Chấp nhận</Button>
+                                    <Button variant="outlined" onClick={() => setIsRejectPopupOpen(true)}>Từ chối</Button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {isRejectPopupOpen && (
+                    <div className="popup-overlay">
+                        <div className="popup-content">
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="h6">Lý do từ chối</Typography>
+                                <textarea 
+                                    value={rejectionReason}
+                                    onChange={(e) => setRejectionReason(e.target.value)}
+                                    placeholder="Nhập lý do tại đây"
+                                    rows={4}
+                                    style={{ width: '100%' }}
+                                />
+                            </Box>
+                            <Button 
+                                className="reject-button" 
+                                onClick={handleReject}
+                            >
+                                Xác nhận từ chối
+                            </Button>
+                            <Button 
+                                className="cancel-button" 
+                                onClick={() => setIsRejectPopupOpen(false)}
+                            >
+                                Hủy
+                            </Button>
                         </div>
                     </div>
                 )}

@@ -105,6 +105,14 @@ const CartPage = () => {
       if (user?.accountId) {
         await deleteCartItem(cartId);
         setCartItems(prevItems => prevItems.filter(item => item.cartId !== cartId));
+        
+        // Remove specific item from session storage
+        const savedCartItems = JSON.parse(sessionStorage.getItem('savedCartItems') || '[]');
+        const itemToDelete = cartItems.find(item => item.cartId === cartId);
+        const updatedItems = savedCartItems.filter(item => 
+          item.serviceId !== itemToDelete.serviceView.serviceId
+        );
+        sessionStorage.setItem('savedCartItems', JSON.stringify(updatedItems));
       } else {
         // For non-logged in users
         const savedCartItems = JSON.parse(sessionStorage.getItem('savedCartItems') || '[]');

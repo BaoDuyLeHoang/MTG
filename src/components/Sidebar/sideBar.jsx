@@ -23,7 +23,8 @@ import {
   faCreditCard,
   faUserTie,
   faBriefcase,
-  faPen
+  faPen,
+  faMessage
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
 import "./sideBar.css";
@@ -159,6 +160,12 @@ const Sidebar = () => {
       text: "Bài viết",
       roles: [3],
     },
+    {
+      to: "/notifications-staff",
+      icon: faMessage,
+      text: "Thông báo",
+      roles: [3],
+    }
     
 
   ];

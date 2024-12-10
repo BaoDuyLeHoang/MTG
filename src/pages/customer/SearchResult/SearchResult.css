@@ -18,10 +18,11 @@
 
 .search-result__grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    gap: 24px;
-    padding: 16px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 
@@ -45,9 +46,10 @@
 
 .search-result__image-container {
     width: 100%;
-    height: 200px;
+    height: 180px;
     overflow: hidden;
     position: relative;
+    background-color: #C4161C;
 }
 
 
@@ -55,6 +57,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    background-color: #C4161C;
 }
 
 

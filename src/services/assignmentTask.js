@@ -18,6 +18,23 @@ export const getAssignmentTasks = async (pageIndex, pageSize, endDate = null) =>
     }
 }; 
 
+export const getAssignmentTasksForManager = async (pageIndex = 1, pageSize = 5) => {
+    try {
+        let url = `${BASE_URL}/AssignmentTask/manager?pageIndex=${pageIndex}&pageSize=${pageSize}`;   
+
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in getAssignmentTasks:', error);
+        throw error;
+    }
+}; 
+
 export const getRecurringTasks = async (pageIndex, pageSize) => {
     try {
         const token = localStorage.getItem('accessToken');
@@ -65,6 +82,21 @@ export const rejectAssignmentTask = async (taskId, rejectionReason) => {
             status: 2,
             reason: rejectionReason
         },
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+        }
+    );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to reject task');
+    }
+};
+
+export const reassignTaskToStaff = async (taskId, staffId) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/AssignmentTask/reassign/${taskId}?newStaffId=${staffId}`,{},
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

@@ -44,3 +44,20 @@ export const getNotificationDetail = async (notificationId) => {
         throw error; // Ném lỗi để xử lý ở nơi gọi
     }
 };
+
+export const getNotificationDetailForManager = async (notificationId) => {
+    try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${BASE_URL}/Notification/detail-for-manager/${notificationId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data; // Trả về dữ liệu chi tiết thông báo
+    } catch (error) {
+        console.error("Error fetching notification detail:", error);
+        throw error; // Ném lỗi để xử lý ở nơi gọi
+    }
+};

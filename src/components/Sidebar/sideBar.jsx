@@ -93,6 +93,12 @@ const Sidebar = () => {
       roles: [2],
     },
     {
+      to: "/notification-manager",
+      icon: faMessage,
+      text: "Thông báo",
+      roles: [2],
+    },
+    {
       to: "/danhsachdonhang",
       icon: faShoppingCart,
       text: "Đơn hàng",
@@ -117,7 +123,7 @@ const Sidebar = () => {
       roles: [2],
     },
     {
-      to: "/attendance-manager",
+      to: "/task-manager",
       icon: faUserClock,
       text: "Quản lý công việc",
       roles: [2],

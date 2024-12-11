@@ -40,6 +40,7 @@ import CreateService from "./pages/manager/CreateService/CreateService";
 import ScheduleAttendanceManager from "./pages/manager/ScheduleAttendanceManager/ScheduleAttendanceManager";
 import BlogManager from './pages/manager/BlogManager/BlogManager';
 import BlogDetailManager from './pages/manager/BlogDetail/BlogDetailManager';
+import NotificationManagerList from './pages/manager/NotificationList/NotificationList';
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
 import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
@@ -145,7 +146,8 @@ function AppContent() {
           <Route path="/chitietmoquanly/:martyrId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><GraveDetailManager /></ProtectedRoute>} />
           <Route path="/blog-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><BlogManager /></ProtectedRoute>} />
           <Route path="/blog-detail-manager/:blogId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><BlogDetailManager /></ProtectedRoute>} />
-          <Route path="/attendance-manager" element={<AttendanceManager />} />
+          <Route path="/notification-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><NotificationManagerList /></ProtectedRoute>} />
+          <Route path="/task-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AttendanceManager /></ProtectedRoute>} />
           
           {/* Staff routes */}
           <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ScheduleManager /></ProtectedRoute>} />

@@ -10,10 +10,10 @@ const SearchResult = () => {
   const [results, setResults] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Show 6 items (2 rows of 3)
+  const itemsPerPage = 15; // Changed from 6 to 15 items per page
 
-  // Add default image constant
-  const DEFAULT_IMAGE = "https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072";
+  // Cập nhật DEFAULT_IMAGE để sử dụng ảnh local từ thư mục public
+  const DEFAULT_IMAGE = "/Hinh-nen-co-Viet-Nam-hinh-nen-Quoc-ky-Viet-Nam-dep-cho-dien-thoai-3D.jpg";
 
   useEffect(() => {
     if (location.state && location.state.results) {
@@ -144,7 +144,11 @@ const SearchResult = () => {
       <div className="search-result__container">
         <h1 className="search-result__heading">Kết Quả Tìm Kiếm</h1>
         
-        <div className="search-result__grid">
+        <div className="search-result__grid" style={{ 
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)', // Changed from 3 to 5 columns
+          gap: '20px'
+        }}>
           {currentResults.map((grave) => (
             <div
               key={grave.martyrId}

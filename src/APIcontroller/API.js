@@ -1072,7 +1072,7 @@ export const changePassword = async (passwordData) => {
 };
 
 
-export const getMyNotifications = async (pageIndex = 1, pageSize = 5) => {
+export const getMyNotifications = async (pageIndex, pageSize) => {
   try {
     const token = localStorage.getItem("accessToken");
     console.log(`Fetching notifications - Page ${pageIndex}, Size ${pageSize}`);

@@ -20,6 +20,7 @@ const Header = () => {
   const navigate = useNavigate();
   const settingsRef = useRef(null);
   const notificationsRef = useRef(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -55,46 +56,84 @@ const Header = () => {
   }, [user]);
 
   useEffect(() => {
-    const updateCartCount = () => {
-      if (user && user.accountId) {
-        fetchCartItems();
-      } else {
-        setCartItemCount(getSessionCartCount());
+    const handleStorageChange = (e) => {
+      if (e.key === "savedCartItems") {
+        if (!user || !user.accountId) {
+          setCartItemCount(getSessionCartCount());
+        }
       }
     };
 
-    const intervalId = setInterval(updateCartCount, 500);
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Initial cart count
+    if (!user || !user.accountId) {
+      setCartItemCount(getSessionCartCount());
+    }
 
-    return () => clearInterval(intervalId);
-  }, [user, fetchCartItems]);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [user]);
 
   const toggleSettings = () => {
-    setShowSettings(!showSettings);
-    setShowNotifications(false);
+    setTimeout(() => {
+      setShowSettings(!showSettings);
+      setShowNotifications(false);
+    }, 500);
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    setTimeout(() => {
+      logout();
+      navigate('/login');
+    }, 500);
+  };
+
+  const handleCartClick = (e) => {
+    e.preventDefault();
+    setTimeout(() => {
+      navigate('/cart');
+    }, 500);
+  };
+
+  const handleNavLinkClick = (e, path) => {
+    e.preventDefault();
+    setTimeout(() => {
+      navigate(path);
+    }, 500);
   };
 
   const fetchNotifications = async (page = 1) => {
     try {
-      const response = await getMyNotifications(page, 5);
-      setNotifications(response.notifications);
-      setTotalPages(response.totalPage);
-      setCurrentPage(page);
+      setNotifications([]);
+      
+      const response = await getMyNotifications(page, 15);
+      if (response && response.notifications) {
+        setNotifications(response.notifications);
+        setTotalPages(response.totalPage);
+        setCurrentPage(page);
+        
+        const unreadNotifications = response.notifications.filter(
+          notification => !notification.isRead
+        );
+        setUnreadCount(unreadNotifications.length);
+      }
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      setNotifications([]);
+      setUnreadCount(0);
     }
   };
 
   const handleNotificationClick = () => {
-    setShowNotifications(!showNotifications);
-    setShowSettings(false);
-    if (!showNotifications) {
-      fetchNotifications();
-    }
+    setTimeout(() => {
+      setShowNotifications(!showNotifications);
+      setShowSettings(false);
+      if (!showNotifications) {
+        fetchNotifications();
+      }
+    }, 1000);
   };
 
   const displayName = user ? (user.accountName) : "👤";
@@ -118,6 +157,50 @@ const Header = () => {
     };
   }, []);
 
+  // Add this new useEffect for click listener
+  useEffect(() => {
+    const handleClick = () => {
+      setTimeout(() => {
+        fetchCartItems();
+      }, 500);
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [fetchCartItems]);
+
+  // Thêm hàm để chỉ fetch số lượng thông báo chưa đọc
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await getMyNotifications(1, 15);
+      if (response && response.notifications) {
+        const unreadNotifications = response.notifications.filter(
+          notification => !notification.isRead
+        );
+        setUnreadCount(unreadNotifications.length);
+      }
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+      setUnreadCount(0);
+    }
+  };
+
+  // Fetch số lượng thông báo chưa đọc khi component mount và mỗi 30 giây
+  useEffect(() => {
+    if (user && user.accountId) {
+      fetchUnreadCount();
+      
+      // Cập nhật định kỳ mỗi 30 giây
+      const interval = setInterval(() => {
+        fetchUnreadCount();
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
   return (
     <header className="header">
       <div className="header-logo">
@@ -126,21 +209,21 @@ const Header = () => {
       <nav className="navigation">
         <ul>
           <li>
-            <Link to="/">Trang chủ</Link>
+            <Link to="/" onClick={(e) => handleNavLinkClick(e, '/')}>Trang chủ</Link>
           </li>
           <li>
-            <Link to="/dichvu">Dịch vụ</Link>
+            <Link to="/dichvu" onClick={(e) => handleNavLinkClick(e, '/dichvu')}>Dịch vụ</Link>
           </li>
           <li>
-            <Link to="/tim-kiem-mo">Tìm kiếm mộ</Link>
+            <Link to="/tim-kiem-mo" onClick={(e) => handleNavLinkClick(e, '/tim-kiem-mo')}>Tìm kiếm mộ</Link>
           </li>
           <li>
-            <Link to="/blog-view">Bài viết</Link>
+            <Link to="/blog-view" onClick={(e) => handleNavLinkClick(e, '/blog-view')}>Bài viết</Link>
           </li>
         </ul>
       </nav>
       <div className="header-right">
-        <Link to="/cart" className="cart-link">
+        <Link to="/cart" className="cart-link" onClick={handleCartClick}>
           <FontAwesomeIcon icon={faShoppingCart} className="cart-icon" />
           {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
         </Link>
@@ -152,8 +235,10 @@ const Header = () => {
             aria-label="Notifications"
           >
             <FontAwesomeIcon icon={faBell} className="notifications-icon" />
-            {notifications.some(n => !n.isRead) && (
-              <span className="notification-badge"></span>
+            {unreadCount > 0 && (
+              <span className="notification-badge">
+                {unreadCount > 10 ? '10+' : unreadCount}
+              </span>
             )}
           </button>
           
@@ -166,12 +251,19 @@ const Header = () => {
                     {notifications.map((notification) => (
                       <div 
                         key={notification.notificationId} 
-                        className={`notification-item ${!notification.status ? 'unread' : ''}`}
+                        className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
                       >
                         <div className="notification-title">{notification.title}</div>
                         <div className="notification-description">{notification.description}</div>
                         <div className="notification-date">
-                          {new Date(notification.createdDate).toLocaleString('vi-VN')}
+                          {new Date(notification.createdDate).toLocaleTimeString('vi-VN', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })} {new Date(notification.createdDate).toLocaleDateString('vi-VN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                          })}
                         </div>
                       </div>
                     ))}

@@ -213,7 +213,7 @@ const TaskDetails = () => {
           message = "Nhiệm vụ đã hoàn thành thành công";
           break;
         case 5:
-          message = "Nhiệm v�� đã được đánh dấu là thất bại";
+          message = "Nhiệm vụ đã được đánh dấu là thất bại";
           break;
         default:
           message = "Trạng thái nhiệm vụ đã được cập nhật thành công";

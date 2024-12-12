@@ -53,6 +53,12 @@ const NotificationList = () => {
     setCurrentPage(page);
   };
 
+  const handleNavigateToDetail = (linkTo) => {
+    if (linkTo) {
+      navigate(linkTo);
+    }
+  };
+
   if (loading) return <Loading text="Đang tải thông báo..." />;
 
   // src/pages/staff/NotificationList/NotificationList.jsx
@@ -128,13 +134,23 @@ const NotificationList = () => {
             <h2>{selectedNotification.title}</h2>
             <p>{selectedNotification.description}</p>
             <p><strong>Ngày tạo:</strong> {new Date(selectedNotification.createdDate).toLocaleString('vi-VN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}</p>
-            <button onClick={closePopup}>Đóng</button>
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}</p>
+            <div className="popup-actions">
+              <button onClick={closePopup}>Đóng</button>
+              {selectedNotification.linkTo && (
+                <button 
+                  onClick={() => handleNavigateToDetail(selectedNotification.linkTo)}
+                  className="view-detail-button"
+                >
+                  Xem chi tiết
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

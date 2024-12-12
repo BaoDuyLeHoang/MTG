@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMyNotifications, getNotificationDetail } from '../../../services/notification';
 import './NotificationList.css';
-import { Bell, Calendar, ArrowLeft, AlertCircle, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Bell, Calendar, ArrowLeft, AlertCircle, RefreshCcw, ChevronLeft, ChevronRight, X, Eye } from 'lucide-react';
 import Loading from '../../../components/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/sideBar';
@@ -13,8 +13,8 @@ const NotificationList = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedNotification, setSelectedNotification] = useState(null); // Thêm state cho thông báo đã chọn
-  const [showPopup, setShowPopup] = useState(false); // Thêm state cho popup
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     fetchNotifications();
@@ -35,17 +35,17 @@ const NotificationList = () => {
 
   const handleNotificationClick = async (notificationId) => {
     try {
-      const detail = await getNotificationDetail(notificationId); // Gọi API để lấy chi tiết thông báo
-      setSelectedNotification(detail); // Cập nhật thông báo đã chọn
-      setShowPopup(true); // Hiển thị popup
+      const detail = await getNotificationDetail(notificationId);
+      setSelectedNotification(detail);
+      setShowPopup(true);
     } catch (err) {
       console.error(err);
     }
   };
 
   const closePopup = () => {
-    setShowPopup(false); // Đóng popup
-    setSelectedNotification(null); // Reset thông báo đã chọn
+    setShowPopup(false);
+    setSelectedNotification(null);
     fetchNotifications();
   };
 
@@ -53,9 +53,14 @@ const NotificationList = () => {
     setCurrentPage(page);
   };
 
+  const handleNavigateToDetail = (linkTo) => {
+    if (linkTo) {
+      navigate(linkTo);
+    }
+  };
+
   if (loading) return <Loading text="Đang tải thông báo..." />;
 
-  // src/pages/staff/NotificationList/NotificationList.jsx
   return (
     <div className="page-container-notification-list">
       <Sidebar />
@@ -76,7 +81,7 @@ const NotificationList = () => {
                 <div
                   key={notification.notificationId}
                   className={`notification-card ${notification.isRead ? 'read' : 'unread'}`}
-                  onClick={() => handleNotificationClick(notification.notificationId)} // Thêm sự kiện click
+                  onClick={() => handleNotificationClick(notification.notificationId)}
                 >
                   <div className="notification-icon">
                     <Calendar size={24} />
@@ -127,8 +132,28 @@ const NotificationList = () => {
           <div className="popup-content">
             <h2>{selectedNotification.title}</h2>
             <p>{selectedNotification.description}</p>
-            <p><strong>Ngày tạo:</strong> {new Date(selectedNotification.createdDate).toLocaleString()}</p>
-            <button onClick={closePopup}>Đóng</button>
+            <p><strong>Ngày tạo:</strong> {new Date(selectedNotification.createdDate).toLocaleString('vi-VN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}</p>
+            <div className="popup-actions">
+              <button onClick={closePopup}>
+                <X size={18} />
+                Đóng
+              </button>
+              {selectedNotification.linkTo && (
+                <button 
+                  onClick={() => handleNavigateToDetail(selectedNotification.linkTo)}
+                  className="view-detail-button"
+                >
+                  <Eye size={18} />
+                  Xem chi tiết
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

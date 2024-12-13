@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../../components/Header/header";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "../Login/Login.css";
-import lk from "../../../assets/logo/logo-giao-duc-an-nhien.png";
 import { useAuth } from "../../../context/AuthContext";
 import { ROLES } from "../../../utils/auth";
 import { addToCart } from "../../../services/cart";
@@ -144,8 +143,9 @@ export default function Login() {
           message={alertMessage}
         />
         <div className="login-content">
-          <div className="login-image">
-            <img src={lk} className="login-logo" alt="logo" />
+          <div className="welcome-text">
+            <h1>Nghĩa Trang Liệt Sĩ TPHCM</h1>
+            <p>Đăng nhập để sử dụng dịch vụ tìm kiếm và chăm sóc phần mộ liệt sĩ theo ý của bạn</p>
           </div>
           <div className="login-box">
             <form onSubmit={handleLogin} className="login-form">

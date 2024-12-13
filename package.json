@@ -16,6 +16,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "agora-rtc-react": "^2.3.0",
+    "agora-rtc-sdk-ng": "^4.22.2",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "date-fns": "^2.30.0",

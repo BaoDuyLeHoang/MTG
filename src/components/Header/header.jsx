@@ -220,6 +220,9 @@ const Header = () => {
           <li>
             <Link to="/blog-view" onClick={(e) => handleNavLinkClick(e, '/blog-view')}>Bài viết</Link>
           </li>
+          <li>
+            <Link to="/livestream" onClick={(e) => handleNavLinkClick(e, '/livestream')}>Trực tiếp</Link>
+          </li>
         </ul>
       </nav>
       <div className="header-right">

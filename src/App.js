@@ -24,6 +24,8 @@ import AccountManagement from "./pages/admin/accountManagement/accountManagement
 import TaskDescription from "./pages/admin/taskDescription/TaskDescription";
 import AddTask from "./pages/admin/addTask/AddTask";
 import ServiceManagement from "./pages/admin/serviceManagement/serviceManagement";
+import LivestreamAdmin from './pages/admin/Livestream/LivestreamAdmin';
+
 // Manager Components
 import OrderManagementManager from "./pages/manager/OrderManagement/OrderManagement";
 import OrderDetail from "./pages/manager/orderDetail/OrderDetai";
@@ -78,7 +80,7 @@ import MartyrList from './pages/customer/martyrList/martyrList';
 import ScheduleService from './pages/customer/ScheduleService/ScheduleService';
 import ScheduleServiceHistory from './pages/customer/ScheduleServiceHistory/ScheduleServiceHistory';
 import ServiceDetail from './pages/customer/ServiceDetail/ServiceDetail';
-
+import Livestream from './pages/Livestream/Livestream';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -102,6 +104,7 @@ function AppContent() {
           <Route path="/dichvutheoloai" element={<ServiceListing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/relative-grave" element={<RelativeGrave />} />
+          <Route path='/livestream' element={<Livestream/>}/>
           
           <Route path="/blog-view" element={<BlogView />} />
           <Route path="/blog/:blogId" element={<BlogDetail />} />
@@ -133,7 +136,7 @@ function AppContent() {
           <Route path="/chitietcongviec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><TaskDescription /></ProtectedRoute>} />
           <Route path="/taoCongViec" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AddTask /></ProtectedRoute>} />
           <Route path="/service-management" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><ServiceManagement /></ProtectedRoute>} />
-
+          <Route path="/admin/livestream" element={<LivestreamAdmin />} />
           {/* Manager routes */}
           <Route path="/manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><OrderManagementManager /></ProtectedRoute>} />
           <Route path="/schedule-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><ScheduleAttendanceManager /></ProtectedRoute>} />

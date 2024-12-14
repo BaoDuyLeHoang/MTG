@@ -24,9 +24,10 @@ import {
   faUserTie,
   faBriefcase,
   faPen,
-  faMessage
+  faMessage,
+  faVideo
 } from "@fortawesome/free-solid-svg-icons";
-import logo from "../../assets/logo/logo-giao-duc-an-nhien.png";
+import logo from "../../assets/logo/logo-truong-dai-hoc-fpt.png";
 import "./sideBar.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -62,6 +63,12 @@ const Sidebar = () => {
       to: "/admin",
       icon: faCreditCard,
       text: "Thống kê",
+      roles: [1],
+    },
+    {
+      to: "/admin/livestream",
+      icon: faVideo,
+      text: "Quản lý Livestream",
       roles: [1],
     },
     {

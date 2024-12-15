@@ -4,6 +4,7 @@ import "./MyGraveDetail.css";
 import Header from "../../../components/Header/header";
 import { getGraveById } from "../../../APIcontroller/API";
 import { getGraveOrders } from "../../../services/graves";
+import Footer from "../../../components/Footer/footer";
 
 const MyGraveDetail = () => {
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ const MyGraveDetail = () => {
       <Header />
       <div className="grave-detail-container">
         <div className="grave-info">
-          <h1>Tưởng niệm Liệt sĩ</h1>
+          <h1>Tưởng niệm liệt sĩ</h1>
           <div className="grave-info-container">
             <div className="image-section">
               <div className="memorial-image">
@@ -202,6 +203,7 @@ const MyGraveDetail = () => {
           </div>
         )}
       </div>
+      <Footer />
     </>
   );
 };

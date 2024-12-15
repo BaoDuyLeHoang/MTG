@@ -1,7 +1,47 @@
+/* Wrapper cho toàn bộ trang */
+.blog-detail-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Đảm bảo chiều cao tối thiểu bằng viewport */
+}
+
+/* Container chính */
 .blog-detail__container {
+  flex: 1; /* Cho phép container mở rộng để đẩy footer xuống dưới */
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  margin-bottom: 60px; /* Tạo khoảng cách với footer */
+}
+
+/* Điều chỉnh margin bottom cho phần content cuối cùng */
+.blog-detail__content {
+  padding: 1rem;
+  margin-bottom: 2rem; /* Tăng khoảng cách với footer */
+}
+
+/* Điều chỉnh margin cho phần comments */
+.blog-detail__comments-section {
+  margin-bottom: 3rem; /* Tăng khoảng cách với footer */
+}
+
+/* Điều chỉnh margin cho form comment */
+.blog-detail__comment-form {
+  margin-bottom: 3rem; /* Tăng khoảng cách với footer */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-detail__container {
+    padding: 1rem;
+    margin-bottom: 40px;
+  }
+  
+  .blog-detail__content,
+  .blog-detail__comments-section,
+  .blog-detail__comment-form {
+    margin-bottom: 2rem;
+  }
 }
 
 .blog-detail__back-button {
@@ -54,10 +94,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.blog-detail__content {
-  padding: 1rem;
 }
 
 .blog-detail__description {

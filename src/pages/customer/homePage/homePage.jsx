@@ -9,6 +9,7 @@ import { getTrendingServices } from "../../../APIcontroller/API";
 import { formatCurrency } from '../../../components/Format/formatCurrency';
 import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../../../components/Loading/Loading';
+import Footer from "../../../components/Footer/footer";
 
 const HomePage = () => {
   const images = [image1, image2, image3];
@@ -81,16 +82,19 @@ const HomePage = () => {
           </h1>
           <div className="home-content-wrapper">
             <p className="home-introduction-text">
-              Nghĩa trang liệt sĩ TP.HCM là một địa điểm linh thiêng, nơi an
-              nghỉ vĩnh hằng của những anh hùng đã hiến dâng cuộc đời mình cho
-              sự nghiệp đấu tranh giành độc lập, tự do và thống nhất Tổ quốc.
-              Đây là biểu tượng cao quý của lòng yêu nước, sự hy sinh cao cả và
-              tinh thần bất khuất của dân tộc Việt Nam. Du khách đến viếng thăm
-              không chỉ để dâng hương tưởng niệm, mà còn để thể hiện lòng tri ân
-              sâu sắc đối với những người chiến sĩ đã ngã xuống vì nền hòa bình
-              và độc lập dân tộc. Nghĩa trang liệt sĩ TP.HCM là biểu tượng trường tồn
-              của lòng biết ơn và sự kính trọng đối với những người anh hùng đã
-              viết nên trang sử vàng chói lọi của đất nước.
+            Nghĩa trang liệt sĩ TP.HCM là một địa điểm linh thiêng và trang nghiêm, nơi an nghỉ 
+            vĩnh hằng của những người anh hùng đã hiến dâng cả cuộc đời mình cho sự nghiệp bảo vệ 
+            độc lập, tự do và thống nhất đất nước. Nằm giữa lòng thành phố mang tên Bác, nghĩa trang 
+            không chỉ là nơi yên nghỉ của các liệt sĩ mà còn là biểu tượng cao quý của lòng yêu nước, 
+            tinh thần bất khuất và sự hy sinh vô giá của dân tộc Việt Nam. Được xây dựng như một minh 
+            chứng cho lòng tri ân sâu sắc của thế hệ hôm nay đối với những người đã ngã xuống, nơi đây 
+            đồng thời mang ý nghĩa giáo dục truyền thống cách mạng cho thế hệ trẻ, giúp họ hiểu rõ hơn 
+            giá trị của hòa bình và trách nhiệm đối với Tổ quốc. Vào những dịp lễ lớn như Ngày Thương 
+            binh Liệt sĩ 27/7 hay Ngày Quốc khánh 2/9, hàng ngàn người dân khắp cả nước đến dâng hương tưởng 
+            niệm, bày tỏ lòng biết ơn chân thành với những chiến sĩ đã hy sinh để đất nước được trường 
+            tồn. Với không gian yên bình, từng hàng bia mộ ngay ngắn và khung cảnh xanh mát được chăm sóc 
+            kỹ lưỡng, Nghĩa trang liệt sĩ TP.HCM không chỉ là nơi tưởng nhớ mà còn là biểu tượng trường 
+            tồn của lòng biết ơn, sự kính trọng và tinh thần bất khuất của dân tộc Việt Nam.
             </p>
           </div>
         </div>
@@ -216,6 +220,8 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

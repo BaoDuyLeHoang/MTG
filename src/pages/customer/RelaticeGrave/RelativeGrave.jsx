@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./RelativeGrave.css";
 import Header from "../../../components/Header/header";
+import Footer from "../../../components/Footer/footer";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { getMartyrGraveByCustomerId } from "../../../services/graves";
@@ -125,6 +126,7 @@ const RelativeGrave = () => {
           );
         })}
       </div>
+      <Footer />
     </div>
   );
 };

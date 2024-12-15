@@ -4,6 +4,8 @@ import { getMartyrsByArea } from '../../../APIcontroller/API';
 import Loading from '../../../components/Loading/Loading';
 import Header from '../../../components/Header/header';
 import './martyrList.css';
+import Footer from "../../../components/Footer/footer";
+
 
 const MartyrList = () => {
   const navigate = useNavigate();
@@ -118,6 +120,7 @@ const MartyrList = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

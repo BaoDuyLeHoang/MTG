@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LivestreamViewer from '../../components/LivestreamViewer/LivestreamViewer';
 import Header from '../../components/Header/header';
+import Footer from '../../components/Footer/footer';
 import './Livestream.css';
 
 // Dữ liệu mẫu cho livestreams
@@ -41,7 +42,7 @@ const Livestream = () => {
         setLivestreams(MOCK_LIVESTREAMS);
         setTotalPages(1);
       } catch (err) {
-        setError('Không thể tải danh sách livestream');
+        setError('Không thể tải danh sách phát sóng');
         console.error('Error fetching livestreams:', err);
       } finally {
         setLoading(false);
@@ -61,7 +62,7 @@ const Livestream = () => {
       <div className="livestream-content">
         {/* Main Livestream Viewer - Chỉ hiển thị một lần */}
         <section className="main-livestream-section">
-          <h2>Livestream hiện tại</h2>
+          <h2>Phát sóng trực tiếp hiện tại</h2>
           <div className="main-livestream-container">
             <LivestreamViewer />
           </div>
@@ -69,7 +70,7 @@ const Livestream = () => {
 
         {/* Danh sách các livestream khác */}
         <section className="other-livestreams-section">
-          <h2>Các livestream cũ hơn</h2>
+          <h2>Các buổi phát sóng trước đây</h2>
           {loading ? (
             <div className="loading">Đang tải...</div>
           ) : error ? (
@@ -126,6 +127,7 @@ const Livestream = () => {
           )}
         </section>
       </div>
+      <Footer />
     </div>
   );
 };

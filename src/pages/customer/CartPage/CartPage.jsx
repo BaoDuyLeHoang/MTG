@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import './CartPage.css';
 import deleteIcon from '../../../assets/images/delete.png';
 import { getCartItemsByCustomerId, updateItemStatus, deleteCartItem, getServiceById } from "../../../APIcontroller/API";
@@ -361,6 +362,7 @@ const CartPage = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

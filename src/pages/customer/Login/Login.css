@@ -6,13 +6,14 @@ body {
 }
 
 .login-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 64px);
+    padding: 2rem 0;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-
+    min-height: auto;
 }
 
 .login-content {
@@ -22,6 +23,7 @@ body {
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
+    padding: 0 1rem;
 }
 
 .login-image {
@@ -49,6 +51,7 @@ body {
     position: relative;
     overflow: hidden;
     margin-top: 1rem;
+    margin-bottom: 2rem;
 }
 
 .login-box::before {
@@ -230,9 +233,11 @@ body {
     border: 1px solid #ffebeb;
 }
 
-.login-page{
-    height: 100vh;
-    overflow: hidden;
+.login-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow: visible;
 }
 
 .welcome-text {
@@ -298,5 +303,32 @@ body {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        padding: 1rem 0;
+    }
+
+    .login-content {
+        padding: 0 0.5rem;
+    }
+
+    .login-box {
+        margin-bottom: 1.5rem;
+    }
+
+    .welcome-text {
+        padding: 0.5rem;
+    }
+
+    .welcome-text h1 {
+        font-size: 2rem;
+    }
+
+    .welcome-text p {
+        font-size: 1rem;
+        max-width: 90%;
     }
 }

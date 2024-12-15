@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SearchResult.css';
 import Header from '../../../components/Header/header'; // Import the Header component
-
+import Footer from '../../../components/Footer/footer';
 
 const SearchResult = () => {
   const location = useLocation();
@@ -197,6 +197,7 @@ const SearchResult = () => {
           {renderPaginationButtons()}
         </div>
       </div>
+      <Footer />
     </>
   );
 };

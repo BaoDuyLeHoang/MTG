@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
 import { getProfile } from "../../services/profile";
-import { getCartItemsByCustomerId, getMyNotifications } from "../../APIcontroller/API";
+import { getCartItemsByCustomerId, getMyNotifications, updateNotificationReadStatus } from "../../APIcontroller/API";
 
 const Header = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -126,14 +126,40 @@ const Header = () => {
     }
   };
 
-  const handleNotificationClick = () => {
-    setTimeout(() => {
-      setShowNotifications(!showNotifications);
-      setShowSettings(false);
-      if (!showNotifications) {
-        fetchNotifications();
+  const handleNotificationClick = async (notification) => {
+    try {
+      // Nếu notification chưa được đọc
+      if (!notification.isRead) {
+        await updateNotificationReadStatus(notification.notificationId, true);
+        
+        // Cập nhật lại state notifications để đánh dấu đã đọc
+        setNotifications(prevNotifications => 
+          prevNotifications.map(n => 
+            n.notificationId === notification.notificationId 
+              ? {...n, isRead: true} 
+              : n
+          )
+        );
+
+        // Giảm số lượng thông báo chưa đọc
+        setUnreadCount(prev => Math.max(0, prev - 1));
       }
-    }, 1000);
+
+      // Xử lý chuyển hướng dựa trên linkTo
+      if (notification.linkTo) {
+        navigate(notification.linkTo);
+        setShowNotifications(false); // Đóng dropdown sau khi click
+      } else {
+        // Hiển thị thông báo nếu không có linkTo
+        alert("Không xác định được trang đích của thông báo");
+        // Hoặc sử dụng toast/notification system của bạn
+        // toast.info("Không xác định được trang đích của thông báo");
+      }
+    } catch (error) {
+      console.error("Error handling notification click:", error);
+      alert("Có lỗi xảy ra khi xử lý thông báo");
+      // toast.error("Có lỗi xảy ra khi xử lý thông báo");
+    }
   };
 
   const displayName = user ? (user.accountName) : "👤";
@@ -201,6 +227,14 @@ const Header = () => {
     }
   }, [user]);
 
+  // Thêm hàm xử lý click vào icon thông báo
+  const toggleNotifications = async () => {
+    setShowNotifications(!showNotifications);
+    if (!showNotifications) { // Nếu đang mở dropdown
+      await fetchNotifications(1); // Fetch notifications khi mở dropdown
+    }
+  };
+
   return (
     <header className="header">
       <div className="header-logo">
@@ -233,7 +267,7 @@ const Header = () => {
         
         <div className="notifications-container" ref={notificationsRef}>
           <button 
-            onClick={handleNotificationClick} 
+            onClick={toggleNotifications}  // Thay đổi từ handleNotificationClick sang toggleNotifications
             className="notifications-button"
             aria-label="Notifications"
           >
@@ -255,6 +289,8 @@ const Header = () => {
                       <div 
                         key={notification.notificationId} 
                         className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
+                        onClick={() => handleNotificationClick(notification)}
+                        style={{ cursor: 'pointer' }}
                       >
                         <div className="notification-title">{notification.title}</div>
                         <div className="notification-description">{notification.description}</div>
@@ -365,7 +401,6 @@ const Header = () => {
                   <Link to="/cart">Giỏ hàng</Link>
                   <Link to="/login">Đăng nhập</Link>
                 </>
-              
               )}
             </div>
           )}

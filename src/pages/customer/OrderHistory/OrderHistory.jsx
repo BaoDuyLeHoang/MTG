@@ -212,7 +212,7 @@ const OrderHistory = () => {
           </Box>
         </Paper>
 
-        <div className="table-container">
+        <div className="order-history-table-container">
             <Table>
               <TableHead>
                 <TableRow>

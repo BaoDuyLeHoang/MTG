@@ -40,7 +40,8 @@ export const API_ENDPOINTS = {
   GET_MY_NOTIFICATIONS: "/Notification/my-notifications",
   GET_WALLET_BALANCE: "/Wallet/balance",
   DEPOSIT_WALLET: "/Payment/deposit-wallet",
-  GET_SERVICE_SCHEDULES_FOR_CUSTOMER: "/RecurringServiceSchedule/GetServiceSchedulesForCustomer"
+  GET_SERVICE_SCHEDULES_FOR_CUSTOMER: "/RecurringServiceSchedule/GetServiceSchedulesForCustomer",
+  UPDATE_NOTIFICATION_READ_STATUS: "/Notification/update-isRead",
 };
 
 export const getServices = async () => {
@@ -1250,6 +1251,32 @@ export const getServiceSchedulesForCustomer = async (customerId) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching service schedules:", error);
+    throw error;
+  }
+};
+
+export const updateNotificationReadStatus = async (notificationId, isRead) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Updating notification read status - ID: ${notificationId}, isRead: ${isRead}`);
+    
+    const response = await axios.put(
+      `${BASE_URL}${API_ENDPOINTS.UPDATE_NOTIFICATION_READ_STATUS}?notificationId=${notificationId}&isRead=${isRead}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Update notification status response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error updating notification read status:",
+      error.response ? error.response.data : error.message
+    );
     throw error;
   }
 };

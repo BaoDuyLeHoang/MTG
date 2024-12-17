@@ -102,7 +102,7 @@ const LivestreamViewer = () => {
     <div className="livestream-viewer">
       {!isStreamActive && (
         <div className="no-stream">
-          <p>Không có stream nào đang diễn ra</p>
+          <p>Không có buổi phát sóng nào đang diễn ra</p>
         </div>
       )}
       <div 

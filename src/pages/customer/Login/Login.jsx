@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../../components/Header/header";
+import Footer from "../../../components/Footer/footer";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "../Login/Login.css";
 import { useAuth } from "../../../context/AuthContext";
@@ -183,6 +184,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { getWalletBalance, depositWallet, getWalletTransactions } from '../../../APIcontroller/API';
 import './Wallet.css';
@@ -287,6 +288,7 @@ const Wallet = () => {
         severity={alertSeverity}
         message={alertMessage}
       />
+      <Footer />
     </div>
   );
 };

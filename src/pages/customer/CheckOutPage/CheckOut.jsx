@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from "../../../components/Header/header";
+import Footer from "../../../components/Footer/footer";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
 import "./CheckOutPage.css";
 import { FaTrashAlt, FaWallet, FaCalendarAlt } from "react-icons/fa";
@@ -336,6 +337,7 @@ const CheckOut = () => {
         severity={alertSeverity}
         message={alertMessage}
       />
+      <Footer />
     </div>
   );
 };

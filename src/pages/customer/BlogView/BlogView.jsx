@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import { getAllBlogs, getBlogCategories, getBlogCategoryById } from '../../../APIcontroller/API';
 import './BlogView.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -353,6 +354,7 @@ const BlogView = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

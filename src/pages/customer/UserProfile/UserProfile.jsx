@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Camera } from "lucide-react";
 import "./UserProfile.css";
 import Header from "../../../components/Header/header";
+import Footer from "../../../components/Footer/footer";
 import placeholder from "../../../assets/images/placeholder.jpg";
 import { getProfile, updateProfile, changePassword } from "../../../APIcontroller/API";
 import { jwtDecode } from "jwt-decode";
@@ -297,6 +298,7 @@ const UserProfile = () => {
             size={64}
           />
         </div>
+        <Footer />
       </>
     );
   }
@@ -512,6 +514,7 @@ const UserProfile = () => {
           <div className={`alert ${message.type}`}>{message.text}</div>
         )}
       </div>
+      <Footer />
     </>
   );
 };

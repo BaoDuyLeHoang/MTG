@@ -3,6 +3,7 @@ import { Search, Calendar, MapPin, Filter } from "lucide-react";
 import "./OrderHistory.css";
 import { getOrdersByCustomer } from "../../../services/orders";
 import Header from "../../../components/Header/header"; // Import the Header component
+import Footer from '../../../components/Footer/footer';
 import { useAuth } from "../../../context/AuthContext"; // Import useAuth
 import { Link } from "react-router-dom";
 import { 
@@ -291,6 +292,7 @@ const OrderHistory = () => {
           message={alertMessage}
         />
       </div>
+      <Footer />
     </div>
   );
 };

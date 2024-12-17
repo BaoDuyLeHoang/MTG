@@ -5,6 +5,7 @@ import ServiceCard from "../../../components/ServiceCard/ServiceCard";
 import SellServiceCard from "../../../components/SellServiceCard/SellServiceCard";
 import Loading from "../../../components/Loading/Loading";
 import "./ServicePage.css";
+import Footer from "../../../components/Footer/footer";
 import { getServices, getServicesByCategory } from "../../../APIcontroller/API";
 
 const formatCurrency = (amount) => {
@@ -117,6 +118,7 @@ const ServicePage = () => {
           ))
         )}
       </div>
+      <Footer />
     </div>
   );
 };

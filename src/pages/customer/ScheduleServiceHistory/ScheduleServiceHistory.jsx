@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import Loading from '../../../components/Loading/Loading';
 import { getServiceSchedulesForCustomer } from '../../../APIcontroller/API';
 import './ScheduleServiceHistory.css';
@@ -132,6 +133,7 @@ const ScheduleServiceHistory = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

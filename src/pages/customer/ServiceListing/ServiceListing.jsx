@@ -7,6 +7,7 @@ import "./ServiceListing.css";
 import { getAllServices, addToCart } from "../../../APIcontroller/API";
 import { getGraveServices } from "../../../services/graves";
 import Header from "../../../components/Header/header"; // Import the Header component
+import Footer from "../../../components/Footer/footer";
 import { login } from "../../../APIcontroller/LoginController";
 
 const ServiceListing = () => {
@@ -298,6 +299,7 @@ const ServiceListing = () => {
         severity={alertSeverity}
         message={alertMessage}
       />
+      <Footer />
     </div>
   );
 };

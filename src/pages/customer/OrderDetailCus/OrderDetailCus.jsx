@@ -4,6 +4,7 @@ import { getOrderDetails, createFeedback } from '../../../APIcontroller/API';
 import { getFeedbackWithDetailId } from '../../../services/feedback';
 import './OrderDetailCus.css';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import FeedbackModal from '../../../components/FeedbackModal/FeedbackModal';
 import { useAuth } from '../../../context/AuthContext';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
@@ -314,6 +315,7 @@ const OrderDetailCus = () => {
         severity={alertSeverity}
         message={alertMessage}
       />
+      <Footer />
     </div>
   );
 };

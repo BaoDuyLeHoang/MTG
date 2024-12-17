@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getBlogCategoryById } from '../../../APIcontroller/API';
 import Header from '../../../components/Header/header';
 import './BlogCategoryDetail.css';
+import Footer from '../../../components/Footer/footer';
 
 const BlogCategoryDetail = () => {
   const { id } = useParams();
@@ -94,6 +95,7 @@ const BlogCategoryDetail = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

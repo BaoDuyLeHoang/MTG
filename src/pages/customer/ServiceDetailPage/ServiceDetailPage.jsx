@@ -4,6 +4,7 @@ import { getServiceDetails, getServicesByCategory } from "../../../APIcontroller
 import "./ServiceDetailPage.css";
 import Header from "../../../components/Header/header";
 import Loading from '../../../components/Loading/Loading';
+import Footer from "../../../components/Footer/footer";
 
 const ServiceDetailPage = () => {
   const [service, setService] = useState(null);
@@ -64,6 +65,7 @@ const ServiceDetailPage = () => {
             size={64}
           />
         </div>
+        <Footer />
       </>
     );
   }
@@ -75,6 +77,7 @@ const ServiceDetailPage = () => {
         <div className="error-container">
           <div className="error-message">{error}</div>
         </div>
+        <Footer />
       </>
     );
   }
@@ -86,6 +89,7 @@ const ServiceDetailPage = () => {
         <div className="error-container">
           <div className="error-message">Không tìm thấy thông tin dịch vụ.</div>
         </div>
+        <Footer />
       </>
     );
   }
@@ -97,7 +101,7 @@ const ServiceDetailPage = () => {
        
 
         <img src={service.imagePath} alt={service.serviceName} className="header-image" />
-        <h1 className="service-title">{service.serviceName}</h1>
+        <h1 className="service-title-detail">{service.serviceName}</h1>
         <p className="description">{service.description}</p>
 
         <h2 className="section-title">Vật liệu thực hiện</h2>
@@ -163,6 +167,7 @@ const ServiceDetailPage = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </>
   );
 };

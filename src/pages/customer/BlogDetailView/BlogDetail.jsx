@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import { getBlogById, postComment, postCommentIcon, updateComment, updateCommentIcon, deleteCommentIcon, deleteComment } from '../../../APIcontroller/API';
 import { createCommentReport } from '../../../services/blog';
 import './BlogDetail.css';
@@ -583,14 +584,14 @@ const BlogDetail = () => {
   }
 
   return (
-    <>
+    <div className="blog-detail-page">
       <Header />
       <div className="blog-detail__container">
         <article className="blog-detail__article">
           <header className="blog-detail__header">
             <h1 className="blog-detail__title">{blog.blogName}</h1>
             <div className="blog-detail__meta">
-              <span className="blog-detail__author">Tác gi: {blog.fullName}</span>
+              <span className="blog-detail__author">Tác giả: {blog.fullName}</span>
               <span className="blog-detail__date">
                 {new Date(blog.createDate).toLocaleDateString('vi-VN')}
               </span>
@@ -619,7 +620,8 @@ const BlogDetail = () => {
           </div>
         </article>
       </div>
-    </>
+      <Footer />
+    </div>
   );
 };
 

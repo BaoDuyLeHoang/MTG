@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import Loading from '../../../components/Loading/Loading';
 import { getServiceScheduleById } from '../../../APIcontroller/API';
 import './ServiceDetail.css';
@@ -45,6 +46,7 @@ const ServiceDetail = () => {
         <div className="loading-container">
           <Loading text="Đang tải dữ liệu..." />
         </div>
+        <Footer />
       </div>
     );
   }
@@ -54,6 +56,7 @@ const ServiceDetail = () => {
       <div>
         <Header />
         <div className="error-message">Không tìm thấy thông tin dịch vụ</div>
+        <Footer />
       </div>
     );
   }
@@ -169,6 +172,7 @@ const ServiceDetail = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

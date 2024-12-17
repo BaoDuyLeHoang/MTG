@@ -3,6 +3,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import Header from '../../../components/Header/header';
+import Footer from '../../../components/Footer/footer';
 import { getServiceDetails, createServiceSchedule, getServiceScheduleById } from '../../../APIcontroller/API';
 import './ScheduleService.css';
 import Loading from '../../../components/Loading/Loading';
@@ -194,6 +195,7 @@ const ScheduleService = () => {
         <div className="schedule-container" style={{ position: 'relative', minHeight: '400px' }}>
           <Loading text="Đang tải thông tin dịch vụ..." />
         </div>
+        <Footer />
       </div>
     );
   }
@@ -203,6 +205,7 @@ const ScheduleService = () => {
       <div className="schedule-service-page">
         <Header />
         <div className="schedule-error">Không thể tải thông tin dịch vụ</div>
+        <Footer />
       </div>
     );
   }
@@ -339,6 +342,7 @@ const ScheduleService = () => {
         severity={alertState.severity}
         message={alertState.message}
       />
+      <Footer />
     </div>
   );
 };

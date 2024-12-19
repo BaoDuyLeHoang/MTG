@@ -56,7 +56,7 @@ const Footer = () => {
 
         <div className="footer-section">
           <h3>Chức năng nổi bật</h3>
-          <ul className="services-list">
+          <ul className="services-list-footer">
             <li><Link to="/dichvu">Dịch vụ chăm sóc mộ</Link></li>
             <li><Link to="/tim-kiem-mo">Tìm kiếm mộ</Link></li>
             <li><Link to="/livestream">Thăm viếng trực tuyến</Link></li>
@@ -66,11 +66,9 @@ const Footer = () => {
 
         <div className="footer-section">
           <h3>Bản đồ</h3>
-          <div className="map-container">
+          <div className="map-container-footer">
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.1882626354904!2d106.81105014847336!3d10.873281166057783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3174d8a964f9cb8d%3A0xbaa4ab98fd658b19!2zTmdoxKlhIHRyYW5nIExp4buHdCBzxKkgVGjDoG5oIHBo4buRIEjhu5MgQ2jDrSBNaW5o!5e0!3m2!1svi!2sus!4v1734275140973!5m2!1svi!2sus"
-              width="100%"
-              height="200"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
@@ -82,7 +80,7 @@ const Footer = () => {
       
       <div className="footer-bottom">
         <p>
-          <FontAwesomeIcon icon={faHeart} className="heart-icon" />
+          
           Bản quyền © {new Date().getFullYear()}. Đồ án tốt nghiệp sinh viên trường Đại học FPT TP.HCM.
         </p>
       </div>

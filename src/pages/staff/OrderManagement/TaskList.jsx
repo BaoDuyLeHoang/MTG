@@ -15,6 +15,7 @@ import { storage } from "../../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { addTaskImages } from "../../../services/task";
 import { getFeedbackWithDetailId, createFeedbackResponse } from '../../../services/feedback';
+import { IoClose } from "react-icons/io5";
 
 const TaskList = () => {
     // Calculate initial start date (2 days before current date)
@@ -384,18 +385,18 @@ const TaskList = () => {
                 </div>
                 {isPopupOpen && selectedTask && (
                     <div className="popup-overlay">
-                        <div className="popup-content">
-                            <div className="popup-header">
+                        <div className="popup-content-task-list">
+                            <div className="popup-header-task-list">
                                 <h2>Chi Tiết Công Việc</h2>
                                 <button
-                                    className="close-button"
+                                    className="close-button-task-list-popup"
                                     onClick={() => {
                                         setIsPopupOpen(false);
                                         setTaskImages([]);
                                         setImages([]);
                                     }}
                                 >
-                                    <FaTimes />
+                                    <IoClose />
                                 </button>
                             </div>
                             <div className="popup-body">
@@ -590,9 +591,9 @@ const TaskList = () => {
                             </div>
                             <div className="popup-footer">
                                 {(selectedTask.status === 0 || selectedTask.status === 1) && (
-                                    <div className="action-buttons">
+                                    <div className="action-buttons-task-list">
                                         <button
-                                            className="accept-button"
+                                            className="accept-button-task-list"
                                             onClick={() => {
                                                 handleConfirm(selectedTask.id);
                                                 setIsPopupOpen(false);
@@ -601,7 +602,7 @@ const TaskList = () => {
                                             Chấp nhận
                                         </button>
                                         <button
-                                            className="reject-button"
+                                            className="reject-button-task-list"
                                             onClick={() => {
                                                 setIsRejectPopupOpen(true);
                                             }}
@@ -618,11 +619,11 @@ const TaskList = () => {
 
                 {isRejectPopupOpen && (
                     <div className="popup-overlay">
-                        <div className="popup-content reject-reason-popup">
-                            <div className="popup-header">
+                        <div className="popup-content-reject-reason-popup-task-list">
+                            <div className="popup-header-task-list">
                                 <h2>Lý Do Từ Chối</h2>
                                 <button
-                                    className="close-button"
+                                    className="close-button-task-list-popup"
                                     onClick={() => {
                                         setIsRejectPopupOpen(false);
                                         setRejectReason('');
@@ -631,18 +632,18 @@ const TaskList = () => {
                                     <FaTimes />
                                 </button>
                             </div>
-                            <div className="popup-body">
+                            <div className="popup-body-task-list">
                                 <textarea
-                                    className="reject-reason-input"
+                                    className="reject-reason-input-task-list"
                                     value={rejectReason}
                                     onChange={(e) => setRejectReason(e.target.value)}
                                     placeholder="Nhập lý do từ chối..."
                                     rows={4}
                                 />
                             </div>
-                            <div className="popup-footer">
+                            <div className="popup-footer-task-list">
                                 <button
-                                    className="reject-button"
+                                    className="reject-button-task-list"
                                     onClick={() => handleReject(selectedTask.id)}
                                 >
                                     Xác nhận từ chối

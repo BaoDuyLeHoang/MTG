@@ -103,7 +103,7 @@ const HomePage = () => {
       {/* Simplified Map Section */}
       <section className="home-section section map-section">
         <div className="container">
-          <h1 className="section-title">
+          <h1 className="section-title-map">
             <span>Bản đồ nghĩa trang liệt sĩ TP.HCM</span>
           </h1>
           <div className="map-container">

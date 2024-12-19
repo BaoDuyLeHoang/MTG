@@ -22,30 +22,30 @@
     --white: #ffffff;
 }
 
-.layout-container {
+.schedule-layout-container {
     display: flex;
     width: 100%;
 }
 
-.main-content {
+.schedule-main-content {
     flex-grow: 1;
     padding: 24px;
     background-color: #f5f7fa;
 }
 
-.mgmt-dashboard {
+.schedule-mgmt-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.mgmt-dashboard__header {
+.schedule-mgmt__header {
     width: 95%;
     margin: 0 auto 24px;
 }
 
-.mgmt-dashboard__title{
+.schedule-mgmt__title {
     color: #2c3e50;
     margin-bottom: 24px;
     font-size: 2rem;
@@ -56,27 +56,27 @@
     text-align: center;
 }
 
-.mgmt-dashboard__controls {
+.schedule-mgmt__controls {
     width: 100%;
 }
 
-.mgmt-dashboard__week-nav {
+.schedule-mgmt__week-nav {
     display: flex;
     gap: 16px;
     justify-content: center;
     margin-bottom: 24px;
 }
 
-.mgmt-dashboard__task-controls {
+.schedule-mgmt__task-controls {
     display: flex;
     align-items: center;
     gap: 16px;
     flex-wrap: wrap;
 }
 
-.mgmt-dashboard__week-nav button,
-.mgmt-dashboard__task-controls button,
-.mgmt-dashboard__task-controls select {
+.schedule-mgmt__week-nav button,
+.schedule-mgmt__task-controls button,
+.schedule-mgmt__task-controls select {
     padding: 8px 16px;
     margin-right: 10px;
     border: none;
@@ -86,55 +86,55 @@
     transition: all 0.2s ease;
 }
 
-.mgmt-dashboard__week-nav button {
+.schedule-mgmt__week-nav button {
     background-color: var(--primary-color);
     color: var(--white);
 }
 
-.mgmt-dashboard__week-nav button:hover {
+.schedule-mgmt__week-nav button:hover {
     background-color: var(--primary-dark);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.mgmt-dashboard__week-nav button:nth-child(2) {
+.schedule-mgmt__week-nav button:nth-child(2) {
     background-color: var(--success-color);
 }
 
-.mgmt-dashboard__week-nav button:nth-child(2):hover {
+.schedule-mgmt__week-nav button:nth-child(2):hover {
     background-color: var(--success-dark);
 }
 
-.mgmt-dashboard__task-controls button {
+.schedule-mgmt__task-controls button {
     background-color: var(--primary-color);
     color: var(--white);
 }
 
-.mgmt-dashboard__task-controls button:hover {
+.schedule-mgmt__task-controls button:hover {
     background-color: var(--primary-dark);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.mgmt-dashboard__task-controls button[color="error"] {
+.schedule-mgmt__task-controls button[color="error"] {
     background-color: var(--error-color);
 }
 
-.mgmt-dashboard__task-controls button[color="error"]:hover {
+.schedule-mgmt__task-controls button[color="error"]:hover {
     background-color: var(--error-dark);
 }
 
-.mgmt-dashboard__task-controls select {
+.schedule-mgmt__task-controls select {
     background: var(--white);
     border: 1px solid var(--gray-300);
     color: var(--gray-800);
     min-width: 150px;
 }
 
-.mgmt-dashboard__task-controls select:hover {
+.schedule-mgmt__task-controls select:hover {
     border-color: var(--primary-color);
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.mgmt-dashboard__task-controls select:focus {
+.schedule-mgmt__task-controls select:focus {
     border-color: var(--primary-color);
     outline: none;
 }
@@ -171,21 +171,8 @@
     vertical-align: top;
 }
 
-.mgmt-task-list {
-    min-height: 50px;
-    padding: 8px;
-}
 
-.mgmt-task-list__item {
-    margin-bottom: 8px;
-    padding: 12px;
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-.mgmt-task-list__item:hover {
+.mgmt-task-list__item-schedule:hover {
     background: #f8f9fa;
     border-color: #bdbdbd;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -230,16 +217,16 @@
 }
 
 /* Add hover effect for the close button */
-.mgmt-task-list__item .MuiIconButton-root {
+.mgmt-task-list__item-schedule .MuiIconButton-root {
     opacity: 0.6;
     transition: all 0.2s ease;
 }
 
-.mgmt-task-list__item:hover .MuiIconButton-root {
+.mgmt-task-list__item-schedule:hover .MuiIconButton-root {
     opacity: 1;
 }
 
-.mgmt-task-list__item .MuiIconButton-root:hover {
+.mgmt-task-list__item-schedule .MuiIconButton-root:hover {
     color: #d32f2f;
     background-color: rgba(211, 47, 47, 0.04);
 }
@@ -314,34 +301,34 @@
 }
 
 @media (max-width: 1200px) {
-    .mgmt-dashboard__content {
+    .schedule-mgmt__content {
         grid-template-columns: 1fr;
     }
     
-    .mgmt-dashboard__controls {
+    .schedule-mgmt__controls {
         flex-direction: column;
         gap: 10px;
     }
 }
 
 @media (max-width: 1024px) {
-    .main-content {
+    .schedule-main-content {
         margin-left: 0;
         padding: 10px;
     }
     
-    .mgmt-dashboard__controls {
+    .schedule-mgmt__controls {
         flex-direction: column;
     }
     
-    .mgmt-dashboard__task-controls {
+    .schedule-mgmt__task-controls {
         flex-direction: column;
         align-items: stretch;
     }
 }
 
 /* Add ripple effect for better interaction feedback */
-.mgmt-task-list__item::after {
+.mgmt-task-list__item-schedule::after {
     content: '';
     position: absolute;
     top: 0;
@@ -354,7 +341,7 @@
     border-radius: 8px;
 }
 
-.mgmt-task-list__item:active::after {
+.mgmt-task-list__item-schedule:active::after {
     opacity: 1;
 }
 
@@ -383,24 +370,15 @@
   white-space: nowrap;
 }
 
-.mgmt-task-list {
+.schedule-task-list {
   /* Container cho danh sách công việc */
   max-height: 200px;
   overflow-y: auto;
   padding: 4px;
 }
 
-.mgmt-task-list__item {
-  /* Style cho mỗi task item */
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 4px;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  transition: all 0.2s ease;
-}
 
-.mgmt-task-list__item:hover {
+.schedule-task-list__item:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -411,21 +389,21 @@
 }
 
 /* Tùy chỉnh thanh cuộn */
-.mgmt-task-list::-webkit-scrollbar {
+.schedule-task-list ::-webkit-scrollbar {
   width: 6px;
 }
 
-.mgmt-task-list::-webkit-scrollbar-track {
+.schedule-task-list::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 3px;
 }
 
-.mgmt-task-list::-webkit-scrollbar-thumb {
+.schedule-task-list::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 3px;
 }
 
-.mgmt-task-list::-webkit-scrollbar-thumb:hover {
+.schedule-task-list::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
@@ -501,23 +479,24 @@
 }
 
 /* Style cho task list */
-.mgmt-task-list {
+.schedule-task-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-height: 100px; /* Đảm bảo các ô có chiều cao tối thiểu */
 }
 
-.mgmt-task-list__item {
+.schedule-task-list__item  {
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   padding: 12px;
   margin-bottom: 8px;
   transition: all 0.2s ease;
+  position: relative;
 }
 
-.mgmt-task-list__item:hover {
+.schedule-task-list__item:hover {
   background: #f8f9fa;
   border-color: #bdbdbd;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -542,18 +521,41 @@
 }
 
 /* Style cho trạng thái công việc */
-.mgmt-task-list__item-info {
+.schedule-task-list__item-info-schedule {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 /* Style cho công việc đã hoàn thành */
-.mgmt-task-list__item[data-status="completed"] {
+.schedule-task-list__item[data-status="completed"] {
   border-left: 3px solid #4caf50;
 }
 
 /* Style cho công việc đã hủy */
-.mgmt-task-list__item[data-status="cancelled"] {
+.schedule-task-list__item[data-status="cancelled"] {
   border-left: 3px solid #f44336;
+}
+
+/* Style cho button close (dấu X) */
+.schedule-task-list__item .MuiIconButton-root {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    padding: 4px;
+    width: 24px;
+    height: 24px;
+    min-width: auto;
+    opacity: 0.6;
+}
+
+/* Hover effect cho button close */
+.schedule-task-list__item .MuiIconButton-root:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Đảm bảo nội dung không bị che bởi nút close */
+.schedule-task-list__item-info {
+    padding-right: 28px;
 }

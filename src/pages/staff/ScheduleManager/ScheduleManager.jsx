@@ -39,6 +39,7 @@ import { deleteScheduleDetail } from '../../../services/scheduleDetail';
 import { AlignVerticalJustifyEndIcon } from "lucide-react";
 import { getRecurringTasks } from '../../../services/assignmentTask';
 import axios from 'axios';
+import Loading from '../../../components/Loading/Loading';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -129,6 +130,9 @@ const ScheduleManager = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [recurringTasks, setRecurringTasks] = useState([]); // Tasks định kỳ
 
+  // Thêm state mới để kiểm soát loading khi thêm công việc
+  const [isAddingTask, setIsAddingTask] = useState(false);
+
   // Hàm mới để lấy task không định kỳ
   const fetchNonSchedulingTasks = async (pageIndex) => {
     try {
@@ -208,7 +212,7 @@ const ScheduleManager = () => {
         setAlert({
           open: true,
           severity: 'error',
-          message: 'Không thể tải lịch làm việc. Vui lòng thử lại sau.'
+          message: 'Không thể tải lịch làm vi��c. Vui lòng thử lại sau.'
         });
       }
     };
@@ -256,7 +260,16 @@ const ScheduleManager = () => {
         pageSize
       );
       
-      if (response) {
+      // Kiểm tra nếu response có error message
+      if (response?.error || response?.message?.includes("does not have any tasks")) {
+        setOrders([]); // Reset orders list
+        setTotalPages(1);
+        setOrderError('Không có công việc nào khả dụng');
+        return;
+      }
+      
+      // Nếu có tasks thì mới xử lý tiếp
+      if (response?.tasks && Array.isArray(response.tasks)) {
         const filteredTasks = response.tasks.filter(task => {
           const taskEndDate = new Date(task.endDate);
           taskEndDate.setHours(0, 0, 0, 0);
@@ -267,10 +280,17 @@ const ScheduleManager = () => {
         });
 
         setOrders(filteredTasks);
-        setTotalPages(response.totalPage);
+        setTotalPages(response.totalPage || 1);
+      } else {
+        // Nếu không có tasks hoặc response không đúng format
+        setOrders([]);
+        setTotalPages(1);
+        setOrderError('Không có công việc nào khả dụng');
       }
     } catch (err) {
       console.error('Error fetching tasks:', err);
+      setOrders([]);
+      setTotalPages(1);
       setOrderError('Không thể tải danh sách công việc');
     } finally {
       setOrderLoading(false);
@@ -315,20 +335,19 @@ const ScheduleManager = () => {
   // Cập nhật hàm handleConfirmSelect
   const handleConfirmSelect = async () => {
     try {
+        setIsAddingTask(true); // Bắt đầu loading
         const task = confirmDialog.task;
         const formattedDate = format(selectedTaskDate, 'yyyy-MM-dd');
 
         const scheduleDetails = [{
-            taskId: selectedTab === 0 ? task.taskId : task.assignmentTaskId, // Sử dụng ID phù hợp theo loại task
+            taskId: selectedTab === 0 ? task.taskId : task.assignmentTaskId,
             date: formattedDate,
             description: task.serviceName
         }];
 
         if (selectedTab === 0) {
-            // Tạo lịch cho công việc thường
             await createScheduleDetailForStaff(user.accountId, scheduleDetails);
         } else {
-            // Tạo lịch cho công việc định kỳ
             await createScheduleDetailRecurringService(user.accountId, scheduleDetails);
         }
 
@@ -347,14 +366,16 @@ const ScheduleManager = () => {
             setSchedules(response);
         }
 
+        // Reload lại danh sách công việc trong dialog
+        await fetchTasksPage(1);
+
         setAlert({ 
             open: true, 
             severity: 'success', 
             message: `Tạo lịch ${selectedTab === 0 ? 'thường' : 'định kỳ'} thành công!` 
         });
         setConfirmDialog({ open: false, task: null });
-        setOpenOrderDialog(false);
-        setSelectedTaskDate(null);
+        
     } catch (error) {
         console.error('Failed to create schedule detail:', error);
         setAlert({ 
@@ -362,6 +383,8 @@ const ScheduleManager = () => {
             severity: 'error', 
             message: 'Không thể thêm công việc. Vui lòng thử lại sau.' 
         });
+    } finally {
+        setIsAddingTask(false); // Kết thúc loading
     }
   };
 
@@ -445,15 +468,15 @@ const ScheduleManager = () => {
   };
 
   return (
-    <div className="layout-container">
+    <div className="schedule-layout-container">
       <Sidebar />
-      <div className="main-content" style={{ width: '100%', padding: '24px' }}>
-        <div className="mgmt-dashboard">
-          <h1 className="mgmt-dashboard__title">Bảng Quản Lý Lịch Trình</h1>
+      <div className="schedule-main-content" style={{ width: '100%', padding: '24px' }}>
+        <div className="schedule-mgmt-container">
+          <h1 className="schedule-mgmt__title">Bảng Quản Lý Lịch Trình</h1>
 
-          <div className="mgmt-dashboard__header" style={{ width: '95%', margin: '0 auto 24px' }}>
-            <div className="mgmt-dashboard__controls">
-              <div className="mgmt-dashboard__week-nav">
+          <div className="schedule-mgmt__header" style={{ width: '95%', margin: '0 auto 24px' }}>
+            <div className="schedule-mgmt__controls">
+              <div className="schedule-mgmt__week-nav">
                 <Button variant="contained" onClick={() => changeWeek('prev')}>
                   Tuần Trước
                 </Button>
@@ -546,15 +569,15 @@ const ScheduleManager = () => {
                       
                       {/* Công Việc Đang Làm (Status: 3) */}
                       <TableCell>
-                        <div className="mgmt-task-list">
+                        <div className="schedule-task-list">
                           {getSchedulesByDateAndStatus(date, 3).map((schedule) => (
                             <div 
                               key={schedule.scheduleDetailId} 
-                              className="mgmt-task-list__item"
+                              className="schedule-task-list__item"
                               onClick={() => handleTaskClick(schedule.scheduleDetailId)}
                               sx={{ width: '100%' }}
                             >
-                              <div className="mgmt-task-list__item-info">
+                              <div className="schedule-task-list__item-info">
                                 <Typography variant="subtitle2" noWrap>
                                   {schedule.serviceName}
                                 </Typography>
@@ -598,11 +621,11 @@ const ScheduleManager = () => {
 
                       {/* Công Việc Đã Hoàn Thành (Status: 4) */}
                       <TableCell>
-                        <div className="mgmt-task-list">
+                        <div className="schedule-task-list">
                           {getSchedulesByDateAndStatus(date, 4).map((schedule) => (
                             <div 
                               key={schedule.scheduleDetailId} 
-                              className="mgmt-task-list__item"
+                              className="schedule-task-list__item"
                               onClick={() => handleTaskClick(schedule.scheduleDetailId)}
                               sx={{ 
                                 cursor: 'pointer',
@@ -612,7 +635,7 @@ const ScheduleManager = () => {
                                 }
                               }}
                             >
-                              <div className="mgmt-task-list__item-info">
+                              <div className="schedule-task-list__item-info">
                                 <Typography variant="subtitle2">
                                   {schedule.serviceName}
                                 </Typography>
@@ -642,10 +665,10 @@ const ScheduleManager = () => {
 
                       {/* Công Việc Đã Hủy (Status: 5) */}
                       <TableCell>
-                        <div className="mgmt-task-list">
+                        <div className="schedule-task-list">
                           {getSchedulesByDateAndStatus(date, 5).map((schedule) => (
-                            <div key={schedule.id} className="mgmt-task-list__item">
-                              <div className="mgmt-task-list__item-info">
+                            <div key={schedule.id} className="schedule-task-list__item">
+                              <div className="schedule-task-list__item-info">
                                 <Typography variant="subtitle2">
                                   {schedule.serviceName}
                                 </Typography>
@@ -683,9 +706,9 @@ const ScheduleManager = () => {
             </Tabs>
           </Box>
 
-          {orderLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-              <CircularProgress />
+          {(orderLoading || isAddingTask) ? (
+            <Box sx={{ position: 'relative', minHeight: '200px' }}>
+              <Loading text={isAddingTask ? "Đang thêm công việc..." : "Đang tải danh sách công việc..."} />
             </Box>
           ) : (
             <>
@@ -753,7 +776,7 @@ const ScheduleManager = () => {
                                   {task.serviceName}
                                 </Typography>
                                 <TaskLocation>
-                                  Địa điểm: {task.graveLocation || 'Chưa có thông tin'}
+                                  Địa ��iểm: {task.graveLocation || 'Chưa có thông tin'}
                                 </TaskLocation>
                                 <TaskDate>
                                   Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}

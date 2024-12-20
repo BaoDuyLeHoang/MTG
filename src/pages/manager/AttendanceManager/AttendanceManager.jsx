@@ -720,7 +720,7 @@ const AttendanceManager = () => {
 
                 <Grid item xs={12} sm={6}>
                   <Typography variant="subtitle2" color="textSecondary">Ngày bắt đầu</Typography>
-                  <Typography>{format(new Date(selectedTask.createAt), 'dd/MM/yyyy')}</Typography>
+                  <Typography>{format(new Date(selectedTask.startDate), 'dd/MM/yyyy')}</Typography>
                 </Grid>
 
                 <Grid item xs={12} sm={6}>

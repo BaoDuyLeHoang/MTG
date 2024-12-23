@@ -26,6 +26,7 @@ import { getByScheduleDetailId } from "../../../services/scheduleDetail"; // Add
 import { useAuth } from "../../../context/AuthContext";
 import { addTaskImages } from "../../../services/task";
 import { updateAssignmentTaskImage } from "../../../services/assignmentTask";
+import { updateRequestTaskImage } from "../../../services/requestTask";
 import { checkAttendanceForStaff } from "../../../services/attendance";
 import { updateTaskImage } from "../../../services/task";
 
@@ -567,6 +568,11 @@ const TaskDetails = () => {
                 imageWorkSpace: workplaceUrl,
                 urlImages: resultUrls
             });
+        } else if (task.requestTaskId) {
+          await updateRequestTaskImage(task.requestTaskId, {
+            imageWorkSpace: workplaceUrl,
+            urlImages: resultUrls
+          });
         }
 
         // Hiển thị thông báo thành công
@@ -662,8 +668,8 @@ const TaskDetails = () => {
           </div>
 
           <div className="td-description-card">
-            <h3>Mô tả</h3>
-            <p>{task.serviceDescription || "Không có mô tả."}</p>
+            <h3>Ghi chú của khách hàng</h3>
+            <p>{task.description || "Không có ghi chú."}</p>
           </div>
 
           {task.status === 4 ? (
@@ -777,6 +783,25 @@ const TaskDetails = () => {
               </div>
             </div>
           )}
+          
+          <div className="td-materials-section">
+            <h3>Vật liệu cần thiết</h3>
+            {task.materials && task.materials.length > 0 ? (
+                <ul>
+                    {task.materials.map((material) => (
+                        <li key={material.materialId}>
+                            <div>
+                                <strong>{material.materialName}</strong>
+                                <p>{material.description}</p>
+                                <p>Giá: {material.price.toLocaleString()} VNĐ</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Không có vật liệu cần thiết cho công việc này.</p>
+            )}
+          </div>
 
           {task && task.status === 3 && (
             <div className="td-completion-section">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './checkoutSuccessPage.css';
 import successImage from '../../../assets/images/success.png'; // Make sure to add this image to your assets folder
 import image from '../../../assets/images/image.png';
@@ -6,6 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 const CheckoutSuccessPage = () => {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Xóa savedCartItems khi component được mount
+        localStorage.removeItem('savedCartItems');
+        sessionStorage.removeItem('savedCartItems');
+    }, []);
+
     const handleReturnHome = () => {
         navigate('/'); // Navigate to the home page
     };

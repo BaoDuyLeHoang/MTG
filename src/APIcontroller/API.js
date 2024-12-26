@@ -42,6 +42,12 @@ export const API_ENDPOINTS = {
   DEPOSIT_WALLET: "/Payment/deposit-wallet",
   GET_SERVICE_SCHEDULES_FOR_CUSTOMER: "/RecurringServiceSchedule/GetServiceSchedulesForCustomer",
   UPDATE_NOTIFICATION_READ_STATUS: "/Notification/update-isRead",
+  GET_RELATIVE_GRAVES: "/MartyrGrave/getMartyrGraveByCustomerId", // Updated endpoint
+  GET_REQUEST_TYPES: "/RequestType", // Updated endpoint
+  CREATE_REQUEST: "/RequestCustomer/request",
+  GET_REQUEST_BY_ID: "/RequestCustomer/requests",
+  GET_MANAGER_REQUESTS: "/RequestCustomer/requests/manager",
+  ACCEPT_REQUEST: "/RequestCustomer/AcceptRequest",
 };
 
 export const getServices = async () => {
@@ -1281,3 +1287,257 @@ export const updateNotificationReadStatus = async (notificationId, isRead) => {
   }
 };
 
+export const getRelativeGraves = async (customerId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching relative graves for customer ID: ${customerId}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_RELATIVE_GRAVES}/${customerId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Relative graves API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching relative graves:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const getRequestTypes = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Fetching request types");
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_REQUEST_TYPES}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Request types API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching request types:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const createCustomerRequest = async (requestData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Creating customer request:", requestData);
+    
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.CREATE_REQUEST}`,
+      requestData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Create request API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating customer request:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+
+export const getRequestHistoryByDate = async (accountId, date, pageIndex = 1, pageSize = 5) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    const response = await axios.get(
+      `${BASE_URL}/RequestCustomer/requests/account/${accountId}`, {
+        params: {
+          Date: date,
+          pageIndex,
+          pageSize
+        },
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Có lỗi xảy ra khi tải lịch sử yêu cầu');
+    }
+    throw new Error('Không thể kết nối đến server');
+  }
+};
+
+export const getRequestById = async (requestId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_REQUEST_BY_ID}/${requestId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request details:", error);
+    throw error;
+  }
+};
+
+export const getManagerRequests = async (managerId, date, pageIndex = 1, pageSize = 10) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_MANAGER_REQUESTS}/${managerId}`,
+      {
+        params: {
+          Date: date,
+          pageIndex,
+          pageSize
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching manager requests:", error);
+    throw error;
+  }
+};
+
+export const acceptManagerRequest = async (requestData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("Không tìm thấy token");
+    }
+
+    // Lấy accountId từ token
+    const decodedToken = jwtDecode(token);
+    const managerId = decodedToken.accountId; // Lấy từ claim "accountId"
+
+    if (!managerId) {
+      throw new Error("Không tìm thấy thông tin người quản lý trong token");
+    }
+
+    const response = await axios.put(
+      `${BASE_URL}${API_ENDPOINTS.ACCEPT_REQUEST}`,
+      {
+        requestId: requestData.requestId,
+        managerId: parseInt(managerId), // Convert string "2" thành number 2
+        note: requestData.note,
+        status: requestData.status,
+        materialIds: requestData.materialIds || []
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data) {
+      return {
+        status: response.data.status,
+        message: response.data.message,
+        response: response.data.response
+      };
+    }
+    
+    throw new Error("Không nhận được phản hồi hợp lệ từ server");
+  } catch (error) {
+    if (error.response) {
+      switch (error.response.status) {
+        case 403:
+          throw new Error(error.response.data.message || "Bạn không có quyền thực hiện thao tác này");
+        case 400:
+          throw new Error(error.response.data.message || "Yêu cầu không hợp lệ");
+        case 404:
+          throw new Error(error.response.data.message || "Không tìm thấy yêu cầu");
+        default:
+          throw new Error(error.response.data.message || "Có lỗi xảy ra");
+      }
+    }
+    throw error;
+  }
+};
+
+export const getAllMaterials = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}/Material`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching materials:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const acceptServiceRequest = async (requestId, accountId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('Không tìm thấy token xác thực');
+    }
+
+    console.log('Making API call to:', `${BASE_URL}/RequestCustomer/AcceptServiceRequest/customer`);
+    console.log('With params:', { requestId, customerId: accountId });
+
+    const response = await axios.put(
+      `${BASE_URL}/RequestCustomer/AcceptServiceRequest/customer`, 
+      null,
+      { 
+        params: { 
+          requestId, 
+          customerId: accountId
+        },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('API Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error.response || error);
+    throw error;
+  }
+};

@@ -25,7 +25,8 @@ import {
   faBriefcase,
   faPen,
   faMessage,
-  faVideo
+  faVideo,
+  faClipboardCheck
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/logo/logo-truong-dai-hoc-fpt.png";
 import "./sideBar.css";
@@ -97,6 +98,12 @@ const Sidebar = () => {
       to: "/profileManager",
       icon: faUserTie,
       text: "Hồ sơ nhân viên",
+      roles: [2],
+    },
+    {
+      to: "/request-manager",
+      icon: faClipboardCheck,
+      text: "Quản lý yêu cầu",
       roles: [2],
     },
     {

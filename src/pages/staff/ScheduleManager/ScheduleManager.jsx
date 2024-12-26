@@ -40,6 +40,7 @@ import { AlignVerticalJustifyEndIcon } from "lucide-react";
 import { getRecurringTasks } from '../../../services/assignmentTask';
 import axios from 'axios';
 import Loading from '../../../components/Loading/Loading';
+import { getNotSchedulingRequestTasksByAccountId } from '../../../services/requestTask';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -91,7 +92,7 @@ const getDayOfWeek = (date) => {
   const days = [
     'Chủ Nhật',
     'Thứ Hai',
-    'Thứ Ba', 
+    'Thứ Ba',
     'Thứ Tư',
     'Thứ Năm',
     'Thứ Sáu',
@@ -129,6 +130,8 @@ const ScheduleManager = () => {
   const [nonSchedulingTasks, setNonSchedulingTasks] = useState([]); // State mới
   const [selectedTab, setSelectedTab] = useState(0);
   const [recurringTasks, setRecurringTasks] = useState([]); // Tasks định kỳ
+  const [customerRequestTasks, setCustomerRequestTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Thêm state mới để kiểm soát loading khi thêm công việc
   const [isAddingTask, setIsAddingTask] = useState(false);
@@ -212,7 +215,7 @@ const ScheduleManager = () => {
         setAlert({
           open: true,
           severity: 'error',
-          message: 'Không thể tải lịch làm vi��c. Vui lòng thử lại sau.'
+          message: 'Không thể tải lịch làm việc. Vui lòng thử lại sau.'
         });
       }
     };
@@ -223,8 +226,8 @@ const ScheduleManager = () => {
   // Helper function để lọc schedules theo ngày và trạng thái
   const getSchedulesByDateAndStatus = (date, status) => {
     const dateStr = format(date, 'yyyy-MM-dd');
-    return schedules.filter(schedule => 
-      schedule.date === dateStr && 
+    return schedules.filter(schedule =>
+      schedule.date === dateStr &&
       schedule.status === status
     );
   };
@@ -259,21 +262,21 @@ const ScheduleManager = () => {
         pageIndex,
         pageSize
       );
-      
-      // Kiểm tra nếu response có error message
+
+      // Kiểm tra n���u response có error message
       if (response?.error || response?.message?.includes("does not have any tasks")) {
         setOrders([]); // Reset orders list
         setTotalPages(1);
         setOrderError('Không có công việc nào khả dụng');
         return;
       }
-      
+
       // Nếu có tasks thì mới xử lý tiếp
       if (response?.tasks && Array.isArray(response.tasks)) {
         const filteredTasks = response.tasks.filter(task => {
           const taskEndDate = new Date(task.endDate);
           taskEndDate.setHours(0, 0, 0, 0);
-          
+
           const isValidStatus = (task.status === 1 || task.status === 3);
           const isValidDate = taskEndDate >= selectedTaskDate;
           return isValidStatus && isValidDate;
@@ -335,62 +338,61 @@ const ScheduleManager = () => {
   // Cập nhật hàm handleConfirmSelect
   const handleConfirmSelect = async () => {
     try {
-        setIsAddingTask(true); // Bắt đầu loading
-        const task = confirmDialog.task;
-        const formattedDate = format(selectedTaskDate, 'yyyy-MM-dd');
+      setIsAddingTask(true); // Bắt đầu loading
+      const task = confirmDialog.task;
+      const formattedDate = format(selectedTaskDate, 'yyyy-MM-dd');
 
-        const scheduleDetails = [{
-            taskId: selectedTab === 0 ? task.taskId : task.assignmentTaskId,
-            date: formattedDate,
-            description: task.serviceName
-        }];
+      const scheduleDetails = [{
+        taskId: selectedTab === 0 ? task.taskId : selectedTab === 1 ? task.assignmentTaskId : task.requestTaskId, // Thay đổi để lấy taskId phù hợp
+        date: formattedDate,
+        description: task.serviceName,
+        scheduleDetailType: selectedTab === 0 ? 1 : selectedTab === 1 ? 2 : 3 // Cập nhật để sử dụng cho 3 trường hợp
+    }];
 
-        if (selectedTab === 0) {
-            await createScheduleDetailForStaff(user.accountId, scheduleDetails);
-        } else {
-            await createScheduleDetailRecurringService(user.accountId, scheduleDetails);
-        }
 
-        // Refresh schedules cho tuần hiện tại
-        const fromDate = new Date(selectedDate);
-        const toDate = new Date(selectedDate);
-        toDate.setDate(toDate.getDate() + 6);
-        
-        const response = await getSchedulesForStaffFilterDate(
-            user.accountId,
-            format(fromDate, 'yyyy-MM-dd'),
-            format(toDate, 'yyyy-MM-dd')
-        );
+      await createScheduleDetailForStaff(user.accountId, scheduleDetails);
 
-        if (response) {
-            setSchedules(response);
-        }
 
-        // Reload lại danh sách công việc trong dialog
-        await fetchTasksPage(1);
+      // Refresh schedules cho tuần hiện tại
+      const fromDate = new Date(selectedDate);
+      const toDate = new Date(selectedDate);
+      toDate.setDate(toDate.getDate() + 6);
 
-        setAlert({ 
-            open: true, 
-            severity: 'success', 
-            message: `Tạo lịch ${selectedTab === 0 ? 'thường' : 'định kỳ'} thành công!` 
-        });
-        setConfirmDialog({ open: false, task: null });
-        
+      const response = await getSchedulesForStaffFilterDate(
+        user.accountId,
+        format(fromDate, 'yyyy-MM-dd'),
+        format(toDate, 'yyyy-MM-dd')
+      );
+
+      if (response) {
+        setSchedules(response);
+      }
+
+      // Reload lại danh sách công việc trong dialog
+      await fetchTasksPage(1);
+
+      setAlert({
+        open: true,
+        severity: 'success',
+        message: `Tạo lịch ${selectedTab === 0 ? 'thường' : 'định kỳ'} thành công!`
+      });
+      setConfirmDialog({ open: false, task: null });
+
     } catch (error) {
-        console.error('Failed to create schedule detail:', error);
-        setAlert({ 
-            open: true, 
-            severity: 'error', 
-            message: 'Không thể thêm công việc. Vui lòng thử lại sau.' 
-        });
+      console.error('Failed to create schedule detail:', error);
+      setAlert({
+        open: true,
+        severity: 'error',
+        message: 'Không thể thêm công việc. Vui lòng thử lại sau.'
+      });
     } finally {
-        setIsAddingTask(false); // Kết thúc loading
+      setIsAddingTask(false); // Kết thúc loading
     }
   };
 
   // Cập nhật hàm handleRemoveTask
   const handleRemoveTask = (schedule) => {
-    console.log('Removing schedule:', schedule); // Thêm log để debug
+    console.log('Removing schedule:', schedule); // Thêm log ��ể debug
     setDeleteConfirm({
       open: true,
       scheduleId: schedule.id, // scheduleDetailId đã được truyền từ component
@@ -403,12 +405,12 @@ const ScheduleManager = () => {
     try {
       console.log('Deleting schedule:', deleteConfirm.scheduleId); // Thêm log để debug
       await deleteScheduleDetail(deleteConfirm.scheduleId, user.accountId);
-      
+
       // Refresh lại dữ liệu lịch sau khi xóa
       const fromDate = new Date(selectedDate);
       const toDate = new Date(selectedDate);
       toDate.setDate(toDate.getDate() + 6);
-      
+
       const scheduleResponse = await getSchedulesForStaffFilterDate(
         user.accountId,
         format(fromDate, 'yyyy-MM-dd'),
@@ -467,6 +469,27 @@ const ScheduleManager = () => {
     navigate(`/task-detail/${user.accountId}/${scheduleDetailId}`);
   };
 
+  // Hàm để lấy công việc theo yêu cầu khách hàng
+  const fetchCustomerRequestTasks = async (pageIndex = 1, pageSize = 5) => {
+    setLoading(true);
+    try {
+      const response = await getNotSchedulingRequestTasksByAccountId(user.accountId, pageIndex, pageSize);
+      setCustomerRequestTasks(response.tasks || []);
+      setRecurringTotalPages(response.totalPage || 1);
+    } catch (error) {
+      console.error('Error fetching customer request tasks:', error);
+      setCustomerRequestTasks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedTab === 2) { // Nếu tab thứ 3 được chọn
+      fetchCustomerRequestTasks();
+    }
+  }, [selectedTab]);
+
   return (
     <div className="schedule-layout-container">
       <Sidebar />
@@ -490,9 +513,9 @@ const ScheduleManager = () => {
             </div>
           </div>
 
-          <TableContainer 
-            component={Paper} 
-            sx={{ 
+          <TableContainer
+            component={Paper}
+            sx={{
               width: '95%',
               margin: '0 auto',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -505,9 +528,9 @@ const ScheduleManager = () => {
               overflow: 'hidden'
             }}
           >
-            <Table 
-              className="schedule-table" 
-              sx={{ 
+            <Table
+              className="schedule-table"
+              sx={{
                 width: '100%',
                 tableLayout: 'fixed',
                 '& .MuiTableCell-root': {
@@ -537,7 +560,7 @@ const ScheduleManager = () => {
                   fontWeight: 600,
                   borderBottom: '2px solid #e0e0e0'
                 }
-              }} 
+              }}
               aria-label="schedule table"
             >
               <TableHead>
@@ -553,7 +576,7 @@ const ScheduleManager = () => {
                   const date = new Date(selectedDate);
                   date.setDate(date.getDate() + index);
                   date.setHours(0, 0, 0, 0); // Đảm bảo giờ luôn là 00:00:00
-                  
+
                   return (
                     <TableRow key={index}>
                       <TableCell>
@@ -566,13 +589,13 @@ const ScheduleManager = () => {
                           </Typography>
                         </Box>
                       </TableCell>
-                      
+
                       {/* Công Việc Đang Làm (Status: 3) */}
                       <TableCell>
                         <div className="schedule-task-list">
                           {getSchedulesByDateAndStatus(date, 3).map((schedule) => (
-                            <div 
-                              key={schedule.scheduleDetailId} 
+                            <div
+                              key={schedule.scheduleDetailId}
                               className="schedule-task-list__item"
                               onClick={() => handleTaskClick(schedule.scheduleDetailId)}
                               sx={{ width: '100%' }}
@@ -590,8 +613,8 @@ const ScheduleManager = () => {
                                   </Typography>
                                 )}
                               </div>
-                              <IconButton 
-                                size="small" 
+                              <IconButton
+                                size="small"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleRemoveTask({
@@ -599,7 +622,7 @@ const ScheduleManager = () => {
                                     serviceName: schedule.serviceName
                                   });
                                 }}
-                                sx={{ 
+                                sx={{
                                   '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
                                   zIndex: 2
                                 }}
@@ -623,11 +646,11 @@ const ScheduleManager = () => {
                       <TableCell>
                         <div className="schedule-task-list">
                           {getSchedulesByDateAndStatus(date, 4).map((schedule) => (
-                            <div 
-                              key={schedule.scheduleDetailId} 
+                            <div
+                              key={schedule.scheduleDetailId}
                               className="schedule-task-list__item"
                               onClick={() => handleTaskClick(schedule.scheduleDetailId)}
-                              sx={{ 
+                              sx={{
                                 cursor: 'pointer',
                                 '&:hover': {
                                   backgroundColor: 'rgba(0, 0, 0, 0.04)',
@@ -647,9 +670,9 @@ const ScheduleManager = () => {
                                     {schedule.description}
                                   </Typography>
                                 )}
-                                <Typography 
-                                  variant="caption" 
-                                  sx={{ 
+                                <Typography
+                                  variant="caption"
+                                  sx={{
                                     color: '#4caf50',
                                     display: 'block',
                                     marginTop: '4px'
@@ -703,6 +726,7 @@ const ScheduleManager = () => {
             <Tabs value={selectedTab} onChange={(e, newValue) => setSelectedTab(newValue)}>
               <Tab label="Công việc thường" />
               <Tab label="Công việc định kỳ" />
+              <Tab label="Công việc theo yêu cầu khách hàng" />
             </Tabs>
           </Box>
 
@@ -735,22 +759,22 @@ const ScheduleManager = () => {
                           </Fade>
                         ))}
                       </List>
-                      <Box sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
+                      <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         gap: 2,
-                        pt: 2 
+                        pt: 2
                       }}>
                         <Typography variant="body2">
                           Trang {page} / {totalPages}
                         </Typography>
-                        <Pagination 
+                        <Pagination
                           count={totalPages}
                           page={page}
                           onChange={handlePageChange}
                           color="primary"
-                          showFirstButton 
+                          showFirstButton
                           showLastButton
                         />
                       </Box>
@@ -776,7 +800,7 @@ const ScheduleManager = () => {
                                   {task.serviceName}
                                 </Typography>
                                 <TaskLocation>
-                                  Địa ��iểm: {task.graveLocation || 'Chưa có thông tin'}
+                                  Địa điểm: {task.graveLocation || 'Chưa có thông tin'}
                                 </TaskLocation>
                                 <TaskDate>
                                   Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}
@@ -786,22 +810,22 @@ const ScheduleManager = () => {
                           </Fade>
                         ))}
                       </List>
-                      <Box sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
+                      <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         gap: 2,
-                        pt: 2 
+                        pt: 2
                       }}>
                         <Typography variant="body2">
                           Trang {recurringPage} / {recurringTotalPages}
                         </Typography>
-                        <Pagination 
+                        <Pagination
                           count={recurringTotalPages}
                           page={recurringPage}
                           onChange={handleRecurringPageChange}
                           color="primary"
-                          showFirstButton 
+                          showFirstButton
                           showLastButton
                         />
                       </Box>
@@ -810,6 +834,66 @@ const ScheduleManager = () => {
                     <Typography sx={{ textAlign: 'center', py: 2 }}>
                       Không có công việc định kỳ nào khả dụng
                     </Typography>
+                  )}
+                </>
+              )}
+
+              {selectedTab === 2 && (
+                <>
+                  {loading ? (
+                    <Typography sx={{ textAlign: 'center', py: 2 }}>Đang tải công việc theo yêu cầu khách hàng...</Typography>
+                  ) : (
+                    <>
+                      {customerRequestTasks.length > 0 ? (
+                        <>
+                          <List>
+                            {customerRequestTasks.map((task) => (
+                              <Fade in key={task.requestTaskId} timeout={500}>
+                                <StyledListItem button onClick={() => handleSelectOrder(task)}>
+                                  <TaskInfo>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                      {task.serviceName}
+                                    </Typography>
+                                    <TaskLocation>
+                                      Địa điểm: {task.graveLocation || 'Chưa có thông tin'}
+                                    </TaskLocation>
+                                    <TaskDate>
+                                      Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}
+                                    </TaskDate>
+                                  </TaskInfo>
+                                </StyledListItem>
+                              </Fade>
+                            ))}
+                          </List>
+                          <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: 2,
+                            pt: 2
+                          }}>
+                            <Typography variant="body2">
+                              Trang {recurringPage} / {recurringTotalPages}
+                            </Typography>
+                            <Pagination
+                              count={recurringTotalPages}
+                              page={recurringPage}
+                              onChange={(event, newPage) => {
+                                setRecurringPage(newPage);
+                                fetchCustomerRequestTasks(newPage);
+                              }}
+                              color="primary"
+                              showFirstButton
+                              showLastButton
+                            />
+                          </Box>
+                        </>
+                      ) : (
+                        <Typography sx={{ textAlign: 'center', py: 2 }}>
+                          Không có công việc nào theo yêu cầu khách hàng.
+                        </Typography>
+                      )}
+                    </>
                   )}
                 </>
               )}

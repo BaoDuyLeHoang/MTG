@@ -43,6 +43,7 @@ import ScheduleAttendanceManager from "./pages/manager/ScheduleAttendanceManager
 import BlogManager from './pages/manager/BlogManager/BlogManager';
 import BlogDetailManager from './pages/manager/BlogDetail/BlogDetailManager';
 import NotificationManagerList from './pages/manager/NotificationList/NotificationList';
+import RequestManager from './pages/manager/RequestManager/RequestManager';
 // Staff Components
 import TaskList from "./pages/staff/OrderManagement/TaskList";
 import BlogCreate from "./pages/staff/BlogCreate/BlogCreate";
@@ -81,6 +82,10 @@ import ScheduleService from './pages/customer/ScheduleService/ScheduleService';
 import ScheduleServiceHistory from './pages/customer/ScheduleServiceHistory/ScheduleServiceHistory';
 import ServiceDetail from './pages/customer/ServiceDetail/ServiceDetail';
 import Livestream from './pages/Livestream/Livestream';
+import RequestCustomer from './pages/customer/RequestCustomer/RequestCustomer';
+import RequestHistory from './pages/customer/RequestHistory/RequestHistory';
+import RequestDetail from './pages/customer/RequestHistory/RequestDetail';
+import RequestDetailManager from './pages/manager/RequestDetailManager/RequestDetailManager';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -116,8 +121,10 @@ function AppContent() {
           <Route path="/schedule-service/:serviceId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><ScheduleService /></ProtectedRoute>} />
           <Route path="/schedule-service-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><ScheduleServiceHistory /></ProtectedRoute>} />
           <Route path="/schedule-service-detail/:id" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><ServiceDetail /></ProtectedRoute>} />
+          <Route path="/request-customer" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><RequestCustomer /></ProtectedRoute>} />
+          <Route path="/request-customer-history" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><RequestHistory /></ProtectedRoute>} />
+          <Route path="/request-detail/:requestId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><RequestDetail /></ProtectedRoute>} />
 
-          
           {/* Protected routes */}
           <Route path="/user" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><HomePage /></ProtectedRoute>} />
           <Route path="/order-detail-cus/:orderId" element={<ProtectedRoute requiredRole={ROLES.CUSTOMER}><OrderDetailCus /></ProtectedRoute>} />
@@ -151,7 +158,8 @@ function AppContent() {
           <Route path="/blog-detail-manager/:blogId" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><BlogDetailManager /></ProtectedRoute>} />
           <Route path="/notification-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><NotificationManagerList /></ProtectedRoute>} />
           <Route path="/task-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><AttendanceManager /></ProtectedRoute>} />
-          
+          <Route path="/request-manager" element={<ProtectedRoute requiredRole={ROLES.MANAGER}><RequestManager /></ProtectedRoute>} />
+          <Route path="/manager/request-detail/:requestId" element={<RequestDetailManager />} />
           {/* Staff routes */}
           <Route path="/staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ScheduleManager /></ProtectedRoute>} />
           <Route path="/danhsachdonhang-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><TaskList /></ProtectedRoute>} />

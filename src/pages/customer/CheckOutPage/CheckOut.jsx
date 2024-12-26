@@ -195,7 +195,7 @@ const CheckOut = () => {
 
   const renderWalletInfo = () => {
     if (selectedPaymentMethod === "balance") {
-      const remainingBalance = walletBalance - totalPrice;
+      const remainingBalance = walletBalance > 0 ? walletBalance - totalPrice : 0;
       return (
         <div className="wallet-info">
           <div className="wallet-detail">
@@ -208,7 +208,7 @@ const CheckOut = () => {
           </div>
           <div className="wallet-detail remaining">
             <span>Số dư còn lại:</span>
-            <span className={remainingBalance < 0 ? 'negative' : ''}>
+            <span className={remainingBalance <= 0 ? 'negative' : ''}>
               {Number(remainingBalance).toLocaleString()}đ
             </span>
           </div>

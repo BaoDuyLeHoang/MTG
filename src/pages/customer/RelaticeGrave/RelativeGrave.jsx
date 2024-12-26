@@ -79,6 +79,25 @@ const RelativeGrave = () => {
       <Header />
       <div className="page-title">
         <h1>Danh Sách Mộ Liệt Sĩ Của Bạn</h1>
+        <div className="guide-section">
+          <div className="guide-content">
+            <h3>Hướng dẫn sử dụng:</h3>
+            <ul>
+              <li>
+                <i className="fas fa-info-circle"></i>
+                <span>Xem Chi Tiết: Xem thông tin chi tiết về mộ liệt sĩ</span>
+              </li>
+              <li>
+                <i className="fas fa-plus-circle"></i>
+                <span>Tạo Yêu Cầu Mới: Tạo các yêu cầu như xem báo cáo tình trạng mộ, đặt dịch vụ riêng, đăng ký thêm dịch vụ cho mộ thân nhân</span>
+              </li>
+            </ul>
+            <p className="note">
+              <i className="fas fa-exclamation-circle"></i>
+              Lưu ý: Mỗi tài khoản chỉ được tạo tối đa 10 yêu cầu trong 1 tháng
+            </p>
+          </div>
+        </div>
       </div>
       
       <div className="relative-grave-list">
@@ -119,6 +138,12 @@ const RelativeGrave = () => {
                 <div className="relative-grave-actions">
                   <Link to={`/chitietmo/${grave.martyrId}`} className="action-button primary">
                     Xem Chi Tiết
+                  </Link>
+                  <Link 
+                    to="/request-customer/" 
+                    className="action-button secondary"
+                  >
+                    Tạo Yêu Cầu Mới
                   </Link>
                 </div>
               </div>

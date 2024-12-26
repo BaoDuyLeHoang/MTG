@@ -375,6 +375,7 @@ const Header = () => {
                       <Link to="/order-history">Lịch sử đơn hàng</Link>
                       <Link to="/wallet">Ví của tôi</Link>
                       <Link to="/schedule-service-history">Dịch vụ định kì</Link>
+                      <Link to="/request-customer-history">Yêu cầu khách hàng</Link>
                     </>
                   )}
                   {user.role === 2 && (

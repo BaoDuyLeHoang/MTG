@@ -1,216 +1,326 @@
 aside.sidebar {
-    width: 280px;
-    height: 100%;
-    min-height: 100vh;
-    background-color: rgba(48, 42, 22, 0.8);
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    left: 0;
-    top: 0;
-    z-index: 1000;
-    overflow-y: auto;
-    position: sticky;
+  width: 280px;
+  height: 100%;
+  min-height: 100vh;
+  background-color: rgba(48, 42, 22, 0.8);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  position: sticky;
 }
 
 .sidebar-header {
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .logo-container {
-    padding: 10px 0;
-    text-align: center;
+  padding: 10px 0;
+  text-align: center;
 }
 
 .logo {
-    max-width: 180px;
-    height: auto;
+  max-width: 180px;
+  height: auto;
 }
 
 .logo:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .user-profile {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    margin-top: 10px;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  margin-top: 10px;
 }
 
 .user-avatar {
-    width: 45px;
-    height: 45px;
-    margin-right: 15px;
+  width: 45px;
+  height: 45px;
+  margin-right: 15px;
 }
 
 .user-avatar img {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .user-avatar img:hover {
-    transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .default-avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #e0d5c1;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e0d5c1;
 }
 
 .user-info {
-    flex: 1;
+  flex: 1;
 }
 
 .user-name {
-    color: #e0d5c1;
-    font-size: 15px;
-    font-weight: 500;
-    margin: 0 0 4px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  color: #e0d5c1;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Optional: Add a subtle animation when the name appears */
 .user-name {
-    animation: fadeIn 0.3s ease-in;
+  animation: fadeIn 0.3s ease-in;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .user-role {
-    display: inline-block;
-    padding: 4px 12px;
-    background: rgba(224, 213, 193, 0.1);
-    border-radius: 15px;
-    color: #e0d5c1;
-    font-size: 12px;
-    font-weight: 400;
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(224, 213, 193, 0.1);
+  border-radius: 15px;
+  color: #e0d5c1;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .role-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    background: #e9ecef;
-    border-radius: 12px;
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
+  display: inline-block;
+  padding: 4px 8px;
+  background: #e9ecef;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
 }
 
 .sidebar-nav {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 0;
 }
 
 .menu-category {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .menu-category h3 {
-    color: #e0d5c1;
-    font-size: 12px;
-    text-transform: uppercase;
-    padding: 20px 20px 10px;
-    opacity: 0.7;
+  color: #e0d5c1;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 20px 20px 10px;
+  opacity: 0.7;
 }
 
 .sidebar-menu-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 20px;
-    color: #000000;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #000000;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  gap: 12px;
 }
 
 .sidebar-menu-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .sidebar-menu-item.active {
-    background: rgba(224, 213, 193, 0.15);
-    color: #ffffff;
-    border-left: 3px solid #e0d5c1;
+  background: rgba(224, 213, 193, 0.15);
+  color: #ffffff;
+  border-left: 3px solid #e0d5c1;
 }
 
 .sidebar-menu-item svg {
-    width: 18px;
-    opacity: 0.9;
+  width: 18px;
+  opacity: 0.9;
 }
 
 .sidebar-footer {
-    padding: 20px;
-    border-top: 1px solid #eee;
+  padding: 20px;
+  border-top: 1px solid #eee;
 }
 
 .logout-button {
-    width: 100%;
-    padding: 12px;
-    background: rgba(220, 53, 69, 0.8);
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.3s ease;
-    margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: rgba(220, 53, 69, 0.8);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.3s ease;
+  margin-top: 20px;
 }
 
 .logout-button:hover {
-    background: rgba(220, 53, 69, 1);
+  background: rgba(220, 53, 69, 1);
 }
 
 /* Scrollbar Styling */
 .sidebar::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .sidebar::-webkit-scrollbar-track {
-    background: rgba(48, 42, 22, 0.9);
+  background: rgba(48, 42, 22, 0.9);
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background: rgba(224, 213, 193, 0.2);
-    border-radius: 3px;
+  background: rgba(224, 213, 193, 0.2);
+  border-radius: 3px;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(224, 213, 193, 0.3);
+  background: rgba(224, 213, 193, 0.3);
 }
 .sidebar nav ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .sidebar nav ul li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .sidebar nav ul li a {
-    text-decoration: none;
-    
+  text-decoration: none;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 1024px) {
+  aside.sidebar {
+    width: 240px;
+  }
+
+  .logo {
+    max-width: 150px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  aside.sidebar {
+    width: 200px;
+  }
+
+  .user-profile {
+    padding: 10px;
+  }
+
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+  }
+
+  .user-name {
+    font-size: 13px;
+  }
+
+  .sidebar-menu-item {
+    padding: 10px 15px;
+  }
+
+  .menu-category h3 {
+    padding: 15px 15px 8px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  aside.sidebar {
+    width: 70px;
+    transition: width 0.3s ease;
+  }
+
+  .sidebar:hover {
+    width: 200px;
+  }
+
+  .logo-container {
+    padding: 5px 0;
+  }
+
+  .logo {
+    max-width: 40px;
+  }
+
+  .user-profile {
+    padding: 8px;
+  }
+
+  .user-info,
+  .menu-category h3,
+  .sidebar-menu-item span {
+    display: none;
+  }
+
+  .sidebar:hover .user-info,
+  .sidebar:hover .menu-category h3,
+  .sidebar:hover .sidebar-menu-item span {
+    display: block;
+  }
+
+  .sidebar-menu-item {
+    padding: 12px;
+    justify-content: center;
+  }
+
+  .sidebar:hover .sidebar-menu-item {
+    padding: 12px 20px;
+    justify-content: flex-start;
+  }
+
+  .logout-button {
+    padding: 8px;
+  }
+
+  .logout-button span {
+    display: none;
+  }
+
+  .sidebar:hover .logout-button span {
+    display: inline;
+  }
+}
+
+/* Add smooth transitions */
+.sidebar,
+.sidebar-menu-item,
+.user-info,
+.logo,
+.user-profile {
+  transition: all 0.3s ease;
 }

@@ -1,105 +1,157 @@
 .search-grave-interface-container {
-    background-image: url(https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/Searchbackground%2Fimage2.png?alt=media&token=6f601a30-1c8d-47f2-9675-b46eb655df66);
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background-image: url(https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/Searchbackground%2Fimage2.png?alt=media&token=6f601a30-1c8d-47f2-9675-b46eb655df66);
+  background-size: cover;
+  background-position: center;
+  height: calc(100vh - 92px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden !important;
 }
 
 .search-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  padding-bottom: 36px;
 }
 
 .title {
-    color: #C4A052;
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 20px;
+  color: #c4a052;
+  font-size: clamp(24px, 5vw, 36px);
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .search-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+  width: 100%;
+  max-width: 600px;
 }
 
 .main-search {
-    width: 100%;
-    position: relative;
-    margin-bottom: 15px;
+  width: 100%;
+  position: relative;
+  margin-bottom: 15px;
 }
 
 .search-grave-input {
-    width: 93%;
-    padding: 12px 40px 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: 25px;
-    font-size: 16px;
-    outline: none;
+  width: 100%;
+  padding: 12px 40px 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+  padding: 12px 15px;
 }
 
 .search-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
 }
 
 .filter-inputs {
-    display: flex;
-    gap: 10px;
-    width: 93%;
-    margin: 10px 0;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  box-sizing: border-box;
+  flex-wrap: wrap;
 }
 
 .filter-input {
-    flex: 1;
-    padding: 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: 25px;
-    font-size: 14px;
-    background-color: white;
+  flex: 1;
+  box-sizing: border-box;
+  padding: 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  font-size: 14px;
+  background-color: white;
 }
 
 .filter-input::placeholder {
-    color: rgba(0, 0, 0, 0.7);
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .filter-input:focus {
-    outline: none;
-    border-color: #C4A052;
+  outline: none;
+  border-color: #c4a052;
 }
 
 /* Remove spinner arrows from number inputs */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .search-button {
-    width: 93%;
-    padding: 12px 40px 12px 15px;
-    background-color: #C4A052;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 15px;
+  background-color: #c4a052;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
 }
 
 .search-button:hover {
-    background-color: #B39245;
+  background-color: #b39245;
+}
+
+/* Media Queries */
+@media screen and (max-width: 768px) {
+  .search-container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .filter-inputs {
+    flex-direction: column;
+  }
+
+  .filter-input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .search-grave-input,
+  .search-button {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 480px) {
+  .search-container {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .search-grave-input,
+  .filter-input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .search-button {
+    padding: 10px;
+    font-size: 14px;
+  }
 }

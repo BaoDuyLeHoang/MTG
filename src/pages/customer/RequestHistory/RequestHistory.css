@@ -1,15 +1,18 @@
+/* Mobile First Approach */
+
+/* Base styles for mobile (320px and up) */
 .request-history-container {
   min-height: 100vh;
   background-color: #f5f7fa;
   display: flex;
   flex-direction: column;
+  padding: 0.5rem;
 }
 
 .content-wrapper-request-history {
   flex: 1;
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  width: 100%;
+  padding: 0.5rem;
 }
 
 .request-history-title {
@@ -21,22 +24,25 @@
 
 .request-history-table-container {
   background: white;
-  border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -1rem;
 }
 
 .request-history-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1200px;
+  min-width: 100%;
+  font-size: 0.875rem;
 }
 
 .request-history-table th,
 .request-history-table td {
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: center;
   border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
 }
 
 .request-history-table th {
@@ -57,36 +63,13 @@
   padding-right: 20px;
 }
 
-.request-history-status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
+/* Status badges for mobile */
+.rh-status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
   font-weight: 500;
-}
-
-.request-history-status-pending {
-  background-color: #fff8e1;
-  color: #f57f17;
-}
-
-.request-history-status-confirmed {
-  background-color: #e3f2fd;
-  color: #1565c0;
-}
-
-.request-history-status-in-progress {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.request-history-status-completed {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.request-history-status-cancelled {
-  background-color: #fef2f2;
-  color: #dc2626;
+  display: inline-block;
 }
 
 .request-history-pagination {
@@ -116,58 +99,182 @@
   background-color: #283593;
 }
 
-@media (max-width: 1600px) {
-  .content-wrapper-request-history {
-    margin: 1rem;
-  }
-
-  .request-history-title {
-    font-size: 1.5rem;
-  }
-
-  .request-history-table-container {
-    margin: 0 -1rem;
-    border-radius: 0;
-  }
+/* Search container for mobile */
+.rh-search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
 }
 
-/* Tablet (768px to 1023px) */
-@media (max-width: 1023px) {
-  .request-history-note-cell {
-    max-width: 300px;
-  }
+.rh-date-input-wrapper {
+  position: relative;
+  width: 150px;
 }
 
-/* Mobile (up to 767px) */
-@media (max-width: 767px) {
-  .request-history-note-cell {
-    max-width: 200px;
-  }
+.rh-date-input {
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  color: #4a5568;
+  background-color: white;
 }
 
-/* Small Mobile (up to 374px) */
-@media (max-width: 374px) {
-  .request-history-note-cell {
-    max-width: 150px;
-  }
+.rh-date-input::-webkit-datetime-edit-fields-wrapper {
+  opacity: 0;
 }
 
-.rh-note-view-btn {
-  color: #1a73e8;
+.rh-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  position: absolute;
+  right: 8px;
+  height: 20px;
+  width: 20px;
+}
+
+.rh-date-placeholder {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+  transition: all 0.2s;
+}
+
+.rh-date-input:not([value=""]) + .rh-date-placeholder {
+  display: none;
+}
+
+.rh-date-input:not([value=""])::-webkit-datetime-edit-fields-wrapper {
+  opacity: 1;
+}
+
+.rh-date-input:hover {
+  border-color: #cbd5e1;
+}
+
+.rh-date-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.rh-clear-search {
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rh-clear-search:hover {
+  background-color: #dc2626;
+}
+
+/* Status Guide Responsive */
+.rh-status-guide {
+  background: white;
+  border-radius: 8px;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.rh-status-guide-section {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.rh-status-guide-section:last-child {
+  border-bottom: none;
+}
+
+.rh-status-guide-header {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: none;
   border: none;
-  padding: 0.5rem;
   cursor: pointer;
-  font-weight: 500;
-  transition: color 0.2s;
+  transition: background-color 0.2s;
 }
 
-.rh-note-view-btn:hover {
-  color: #1557b0;
-  text-decoration: underline;
+.rh-status-guide-header:hover {
+  background-color: #f8fafc;
 }
 
-/* Modal styles */
+.rh-status-guide-header h3 {
+  color: #1a237e;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.rh-status-guide-header i {
+  color: #64748b;
+  transition: transform 0.3s ease;
+}
+
+.rh-status-guide-header.expanded i {
+  transform: rotate(-180deg);
+}
+
+.rh-status-list-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.rh-status-list-wrapper.expanded {
+  max-height: 1000px;
+}
+
+.rh-status-list {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.rh-status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.rh-status-item:last-child {
+  margin-bottom: 0;
+}
+
+.rh-status-item p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rh-status-list-wrapper.expanded .rh-status-list {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Modal Responsive */
 .rh-modal-overlay {
   position: fixed;
   top: 0;
@@ -184,9 +291,9 @@
 .rh-modal-content {
   background: white;
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
+  width: 95%;
+  margin: 1rem;
+  max-height: 80vh;
   overflow-y: auto;
   position: relative;
   animation: modalFadeIn 0.3s ease-out;
@@ -237,292 +344,6 @@
   }
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .rh-modal-content {
-    width: 95%;
-    margin: 1rem;
-  }
-  
-  .rh-modal-header {
-    padding: 0.75rem 1rem;
-  }
-  
-  .rh-modal-body {
-    padding: 1rem;
-  }
-} 
-
-/* Status badges */
-.rh-status-badge {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  display: inline-block;
-}
-
-.rh-status-pending {
-  background-color: #fff8e1;
-  color: #f57f17;
-  border: 1px solid #ffd54f;
-}
-
-.rh-status-confirmed {
-  background-color: #e3f2fd;
-  color: #1565c0;
-  border: 1px solid #90caf9;
-}
-
-.rh-status-rejected {
-  background-color: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-
-.rh-status-waiting-response {
-  background-color: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
-}
-
-.rh-status-responded {
-  background-color: #f0f9ff;
-  color: #0284c7;
-  border: 1px solid #bae6fd;
-}
-
-.rh-status-in-progress {
-  background-color: #f0fdf4;
-  color: #16a34a;
-  border: 1px solid #86efac;
-}
-
-.rh-status-completed {
-  background-color: #ecfdf5;
-  color: #059669;
-  border: 1px solid #6ee7b7;
-}
-
-.rh-status-failed {
-  background-color: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-}
-
-.rh-status-unknown {
-  background-color: #f3f4f6;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
-}
-
-/* Thêm styles cho phần hướng dẫn trạng thái */
-.rh-status-guide {
-  background: white;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.rh-status-guide-section {
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.rh-status-guide-section:last-child {
-  border-bottom: none;
-}
-
-.rh-status-guide-header {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.rh-status-guide-header:hover {
-  background-color: #f8fafc;
-}
-
-.rh-status-guide-header h3 {
-  color: #1a237e;
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.rh-status-guide-header i {
-  color: #64748b;
-  transition: transform 0.3s ease;
-}
-
-.rh-status-guide-header.expanded i {
-  transform: rotate(-180deg);
-}
-
-.rh-status-list-wrapper {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-}
-
-.rh-status-list-wrapper.expanded {
-  max-height: 1000px; /* Adjust based on content */
-}
-
-.rh-status-list {
-  padding: 1rem 1.5rem 1.5rem;
-}
-
-.rh-status-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  background-color: #f8fafc;
-  border-radius: 6px;
-  border: 1px solid #e2e8f0;
-}
-
-.rh-status-item:last-child {
-  margin-bottom: 0;
-}
-
-.rh-status-item p {
-  margin: 0;
-  color: #4b5563;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-/* Animation for content */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.rh-status-list-wrapper.expanded .rh-status-list {
-  animation: slideDown 0.3s ease-out;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .rh-status-guide-header {
-    padding: 1rem;
-  }
-
-  .rh-status-list {
-    padding: 0 1rem 1rem;
-  }
-
-  .rh-status-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .rh-status-badge {
-    width: fit-content;
-  }
-} 
-
-.rh-search-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 2rem 0;
-}
-
-.rh-date-input-wrapper {
-  position: relative;
-  width: 150px;
-}
-
-.rh-date-input {
-  padding: 0.5rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  font-size: 1rem;
-  width: 100%;
-  color: #4a5568;
-  background-color: white;
-}
-
-/* Ẩn text mặc định của input date */
-.rh-date-input::-webkit-datetime-edit-fields-wrapper { 
-  opacity: 0;
-}
-
-.rh-date-input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  position: absolute;
-  right: 8px;
-  height: 20px;
-  width: 20px;
-}
-
-/* Hiển thị "Chọn ngày" khi chưa có giá trị */
-.rh-date-placeholder {
-  position: absolute;
-  left: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6b7280;
-  pointer-events: none;
-  transition: all 0.2s;
-}
-
-/* Ẩn placeholder khi đã chọn ngày */
-.rh-date-input:not([value=""]) + .rh-date-placeholder {
-  display: none;
-}
-
-/* Hiển thị giá trị đã chọn */
-.rh-date-input:not([value=""])::-webkit-datetime-edit-fields-wrapper {
-  opacity: 1;
-}
-
-.rh-date-input:hover {
-  border-color: #cbd5e1;
-}
-
-.rh-date-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.rh-clear-search {
-  padding: 0.5rem 1rem;
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.rh-clear-search:hover {
-  background-color: #dc2626;
-}
-
-@media (max-width: 640px) {
-  .rh-search-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-} 
-
 .view-detail-btn {
   text-decoration: none;
   background-color: #1a237e;
@@ -543,4 +364,61 @@
 .view-detail-btn:active {
   transform: translateY(0);
   box-shadow: none;
-} 
+}
+
+/* Tablet (768px and up) */
+@media (min-width: 768px) {
+  .content-wrapper-request-history {
+    padding: 1rem;
+  }
+
+  .request-history-table th,
+  .request-history-table td {
+    padding: 0.75rem;
+  }
+
+  .rh-search-container {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .rh-status-badge {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .rh-status-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .rh-modal-content {
+    width: 80%;
+    max-width: 600px;
+    margin: 0;
+  }
+}
+
+/* Desktop (1024px and up) */
+@media (min-width: 1024px) {
+  .content-wrapper-request-history {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .request-history-table-container {
+    margin: 0;
+    border-radius: 8px;
+  }
+
+  .request-history-table {
+    font-size: 1rem;
+  }
+
+  .request-history-table th,
+  .request-history-table td {
+    padding: 1rem;
+  }
+}

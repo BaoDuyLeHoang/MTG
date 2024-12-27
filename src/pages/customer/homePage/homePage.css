@@ -1180,7 +1180,7 @@
   font-size: 1.5rem;
   margin-bottom: 24px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #4a90e2;
+  border-bottom: 2px solid #423232;
 }
 
 .guide-content {
@@ -1198,7 +1198,7 @@
 .guide-number {
   width: 32px;
   height: 32px;
-  background: #4a90e2;
+  background: #423232;
   color: white;
   border-radius: 50%;
   display: flex;

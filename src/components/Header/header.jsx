@@ -2,11 +2,19 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faShoppingCart, faBell } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faShoppingCart,
+  faBell,
+} from "@fortawesome/free-solid-svg-icons";
 import { getProfile } from "../../services/profile";
-import { getCartItemsByCustomerId, getMyNotifications, updateNotificationReadStatus } from "../../APIcontroller/API";
+import {
+  getCartItemsByCustomerId,
+  getMyNotifications,
+  updateNotificationReadStatus,
+} from "../../APIcontroller/API";
 
 const Header = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -21,6 +29,20 @@ const Header = () => {
   const settingsRef = useRef(null);
   const notificationsRef = useRef(null);
   const [unreadCount, setUnreadCount] = useState(0);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -38,7 +60,9 @@ const Header = () => {
   }, [user]);
 
   const getSessionCartCount = () => {
-    const savedCartItems = JSON.parse(sessionStorage.getItem("savedCartItems") || "[]");
+    const savedCartItems = JSON.parse(
+      sessionStorage.getItem("savedCartItems") || "[]"
+    );
     return savedCartItems.length;
   };
 
@@ -64,15 +88,15 @@ const Header = () => {
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener("storage", handleStorageChange);
+
     // Initial cart count
     if (!user || !user.accountId) {
       setCartItemCount(getSessionCartCount());
     }
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, [user]);
 
@@ -86,14 +110,14 @@ const Header = () => {
   const handleLogout = () => {
     setTimeout(() => {
       logout();
-      navigate('/login');
+      navigate("/login");
     }, 500);
   };
 
   const handleCartClick = (e) => {
     e.preventDefault();
     setTimeout(() => {
-      navigate('/cart');
+      navigate("/cart");
     }, 500);
   };
 
@@ -107,15 +131,15 @@ const Header = () => {
   const fetchNotifications = async (page = 1) => {
     try {
       setNotifications([]);
-      
+
       const response = await getMyNotifications(page, 15);
       if (response && response.notifications) {
         setNotifications(response.notifications);
         setTotalPages(response.totalPage);
         setCurrentPage(page);
-        
+
         const unreadNotifications = response.notifications.filter(
-          notification => !notification.isRead
+          (notification) => !notification.isRead
         );
         setUnreadCount(unreadNotifications.length);
       }
@@ -131,18 +155,18 @@ const Header = () => {
       // Nếu notification chưa được đọc
       if (!notification.isRead) {
         await updateNotificationReadStatus(notification.notificationId, true);
-        
+
         // Cập nhật lại state notifications để đánh dấu đã đọc
-        setNotifications(prevNotifications => 
-          prevNotifications.map(n => 
-            n.notificationId === notification.notificationId 
-              ? {...n, isRead: true} 
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((n) =>
+            n.notificationId === notification.notificationId
+              ? { ...n, isRead: true }
               : n
           )
         );
 
         // Giảm số lượng thông báo chưa đọc
-        setUnreadCount(prev => Math.max(0, prev - 1));
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
 
       // Xử lý chuyển hướng dựa trên linkTo
@@ -162,7 +186,7 @@ const Header = () => {
     }
   };
 
-  const displayName = user ? (user.accountName) : "👤";
+  const displayName = user ? user.accountName : "👤";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -170,16 +194,19 @@ const Header = () => {
       if (settingsRef.current && !settingsRef.current.contains(event.target)) {
         setShowSettings(false);
       }
-      
+
       // Kiểm tra click outside cho notifications dropdown
-      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target)
+      ) {
         setShowNotifications(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -191,9 +218,9 @@ const Header = () => {
       }, 500);
     };
 
-    document.addEventListener('click', handleClick);
+    document.addEventListener("click", handleClick);
     return () => {
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener("click", handleClick);
     };
   }, [fetchCartItems]);
 
@@ -203,7 +230,7 @@ const Header = () => {
       const response = await getMyNotifications(1, 15);
       if (response && response.notifications) {
         const unreadNotifications = response.notifications.filter(
-          notification => !notification.isRead
+          (notification) => !notification.isRead
         );
         setUnreadCount(unreadNotifications.length);
       }
@@ -217,7 +244,7 @@ const Header = () => {
   useEffect(() => {
     if (user && user.accountId) {
       fetchUnreadCount();
-      
+
       // Cập nhật định kỳ mỗi 30 giây
       const interval = setInterval(() => {
         fetchUnreadCount();
@@ -230,55 +257,90 @@ const Header = () => {
   // Thêm hàm xử lý click vào icon thông báo
   const toggleNotifications = async () => {
     setShowNotifications(!showNotifications);
-    if (!showNotifications) { // Nếu đang mở dropdown
+    if (!showNotifications) {
+      // Nếu đang mở dropdown
       await fetchNotifications(1); // Fetch notifications khi mở dropdown
     }
   };
 
   return (
     <header className="header">
-      <div className="header-logo">
-        
-      </div>
-      <nav className="navigation">
+      {isMobile ? (
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <span
+            className={`hamburger ${mobileMenuOpen ? "active" : ""}`}
+          ></span>
+        </button>
+      ) : (
+        <div className="header-logo"></div>
+      )}
+
+      <nav className={`navigation ${mobileMenuOpen ? "active" : ""}`}>
         <ul>
           <li>
-            <Link to="/" onClick={(e) => handleNavLinkClick(e, '/')}>Trang chủ</Link>
+            <Link to="/" onClick={(e) => handleNavLinkClick(e, "/")}>
+              Trang chủ
+            </Link>
           </li>
           <li>
-            <Link to="/dichvu" onClick={(e) => handleNavLinkClick(e, '/dichvu')}>Dịch vụ</Link>
+            <Link
+              to="/dichvu"
+              onClick={(e) => handleNavLinkClick(e, "/dichvu")}
+            >
+              Dịch vụ
+            </Link>
           </li>
           <li>
-            <Link to="/tim-kiem-mo" onClick={(e) => handleNavLinkClick(e, '/tim-kiem-mo')}>Tìm kiếm mộ</Link>
+            <Link
+              to="/tim-kiem-mo"
+              onClick={(e) => handleNavLinkClick(e, "/tim-kiem-mo")}
+            >
+              Tìm kiếm mộ
+            </Link>
           </li>
           <li>
-            <Link to="/blog-view" onClick={(e) => handleNavLinkClick(e, '/blog-view')}>Bài viết</Link>
+            <Link
+              to="/blog-view"
+              onClick={(e) => handleNavLinkClick(e, "/blog-view")}
+            >
+              Bài viết
+            </Link>
           </li>
           <li>
-            <Link to="/livestream" onClick={(e) => handleNavLinkClick(e, '/livestream')}>Trực tiếp</Link>
+            <Link
+              to="/livestream"
+              onClick={(e) => handleNavLinkClick(e, "/livestream")}
+            >
+              Trực tiếp
+            </Link>
           </li>
         </ul>
       </nav>
       <div className="header-right">
         <Link to="/cart" className="cart-link" onClick={handleCartClick}>
           <FontAwesomeIcon icon={faShoppingCart} className="cart-icon" />
-          {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+          {cartItemCount > 0 && (
+            <span className="cart-badge">{cartItemCount}</span>
+          )}
         </Link>
-        
+
         <div className="notifications-container" ref={notificationsRef}>
-          <button 
-            onClick={toggleNotifications}  // Thay đổi từ handleNotificationClick sang toggleNotifications
+          <button
+            onClick={toggleNotifications} // Thay đổi từ handleNotificationClick sang toggleNotifications
             className="notifications-button"
             aria-label="Notifications"
           >
             <FontAwesomeIcon icon={faBell} className="notifications-icon" />
             {unreadCount > 0 && (
               <span className="notification-badge">
-                {unreadCount > 10 ? '10+' : unreadCount}
+                {unreadCount > 10 ? "10+" : unreadCount}
               </span>
             )}
           </button>
-          
+
           {showNotifications && (
             <div className="notifications-dropdown">
               <h3>Thông báo</h3>
@@ -286,22 +348,33 @@ const Header = () => {
                 <>
                   <div className="notifications-list">
                     {notifications.map((notification) => (
-                      <div 
-                        key={notification.notificationId} 
-                        className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
+                      <div
+                        key={notification.notificationId}
+                        className={`notification-item ${
+                          !notification.isRead ? "unread" : ""
+                        }`}
                         onClick={() => handleNotificationClick(notification)}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: "pointer" }}
                       >
-                        <div className="notification-title">{notification.title}</div>
-                        <div className="notification-description">{notification.description}</div>
+                        <div className="notification-title">
+                          {notification.title}
+                        </div>
+                        <div className="notification-description">
+                          {notification.description}
+                        </div>
                         <div className="notification-date">
-                          {new Date(notification.createdDate).toLocaleTimeString('vi-VN', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })} {new Date(notification.createdDate).toLocaleDateString('vi-VN', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric'
+                          {new Date(
+                            notification.createdDate
+                          ).toLocaleTimeString("vi-VN", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}{" "}
+                          {new Date(
+                            notification.createdDate
+                          ).toLocaleDateString("vi-VN", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
                           })}
                         </div>
                       </div>
@@ -309,14 +382,16 @@ const Header = () => {
                   </div>
                   {totalPages > 1 && (
                     <div className="notifications-pagination">
-                      <button 
+                      <button
                         onClick={() => fetchNotifications(currentPage - 1)}
                         disabled={currentPage === 1}
                       >
                         Trước
                       </button>
-                      <span>{currentPage}/{totalPages}</span>
-                      <button 
+                      <span>
+                        {currentPage}/{totalPages}
+                      </span>
+                      <button
                         onClick={() => fetchNotifications(currentPage + 1)}
                         disabled={currentPage === totalPages}
                       >
@@ -331,32 +406,41 @@ const Header = () => {
             </div>
           )}
         </div>
-        
+
         <div className="user-settings" ref={settingsRef}>
           {user && (
-            <span className="user-name-header" style={{ marginRight: '10px', color: '#fff' }}>
+            <span
+              className="user-name-header"
+              style={{ marginRight: "10px", color: "#fff" }}
+            >
               {userProfile?.fullName || user.accountName}
             </span>
           )}
           <button onClick={toggleSettings} className="user-icon">
             {userProfile?.avatarPath ? (
-              <img 
-                src={userProfile.avatarPath} 
-                alt="User avatar" 
-                style={{ width: '25px', height: '25px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff' }}
+              <img
+                src={userProfile.avatarPath}
+                alt="User avatar"
+                style={{
+                  width: "25px",
+                  height: "25px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "2px solid #fff",
+                }}
               />
             ) : (
-              <svg 
-                width="20" 
-                height="20" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="#fff" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="feather feather-user"
-                style={{ marginRight: '5px'}}
+                style={{ marginRight: "5px" }}
               >
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
@@ -374,8 +458,12 @@ const Header = () => {
                       <Link to="/cart">Giỏ hàng</Link>
                       <Link to="/order-history">Lịch sử đơn hàng</Link>
                       <Link to="/wallet">Ví của tôi</Link>
-                      <Link to="/schedule-service-history">Dịch vụ định kì</Link>
-                      <Link to="/request-customer-history">Yêu cầu khách hàng</Link>
+                      <Link to="/schedule-service-history">
+                        Dịch vụ định kì
+                      </Link>
+                      <Link to="/request-customer-history">
+                        Yêu cầu khách hàng
+                      </Link>
                     </>
                   )}
                   {user.role === 2 && (
@@ -406,7 +494,6 @@ const Header = () => {
             </div>
           )}
         </div>
-        
       </div>
     </header>
   );

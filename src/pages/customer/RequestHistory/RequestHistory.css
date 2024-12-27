@@ -63,13 +63,77 @@
   padding-right: 20px;
 }
 
-/* Status badges for mobile */
+/* Status badges - Updated to match existing classes */
 .rh-status-badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.rh-status-pending {
+  background-color: #fffbeb;
+  color: #d97706;
+  border: 2px solid #fcd34d;
+}
+
+.rh-status-confirmed {
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 2px solid #6ee7b7;
+}
+
+.rh-status-rejected {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 2px solid #fca5a5;
+}
+
+.rh-status-waiting-response {
+  background-color: #fff7ed;
+  color: #c2410c;
+  border: 2px solid #fdba74;
+}
+
+.rh-status-responded {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border: 2px solid #93c5fd;
+}
+
+.rh-status-in-progress {
+  background-color: #f0f9ff;
+  color: #0369a1;
+  border: 2px solid #7dd3fc;
+}
+
+.rh-status-completed {
+  background-color: #f0fdf4;
+  color: #16a34a;
+  border: 2px solid #86efac;
+}
+
+.rh-status-failed {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 2px solid #fca5a5;
+}
+
+.rh-status-unknown {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border: 2px solid #d1d5db;
+}
+
+/* Add hover effect */
+.rh-status-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .request-history-pagination {
@@ -420,5 +484,55 @@
   .request-history-table th,
   .request-history-table td {
     padding: 1rem;
+  }
+}
+
+/* Style cho nút xem thêm trong bảng */
+.rh-note-cell {
+  position: relative;
+  max-width: 200px;
+}
+
+.rh-note-content {
+  display: flex;
+  justify-content: center;
+}
+
+.rh-note-view-btn {
+  padding: 0.5rem 1rem;
+  background-color: #1a237e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rh-note-view-btn:hover {
+  background-color: #283593;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rh-note-view-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .rh-note-cell {
+    max-width: 150px;
+  }
+  
+  .rh-note-view-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
 }

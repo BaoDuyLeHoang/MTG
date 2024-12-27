@@ -26,7 +26,9 @@ import {
   faPen,
   faMessage,
   faVideo,
-  faClipboardCheck
+  faClipboardCheck,
+  faXmark,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/logo/logo-truong-dai-hoc-fpt.png";
 import "./sideBar.css";
@@ -40,6 +42,8 @@ const Sidebar = () => {
   const location = useLocation();
   const [avatarPath, setAvatarPath] = React.useState(null);
   const [fullName, setFullName] = React.useState("");
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   // Add useEffect to fetch profile data
   React.useEffect(() => {
@@ -90,8 +94,6 @@ const Sidebar = () => {
       text: "Quản lý vật liệu",
       roles: [1],
     },
-    
-
 
     // Manager Items (Role 2)
     {
@@ -118,17 +120,17 @@ const Sidebar = () => {
       text: "Đơn hàng",
       roles: [2],
     },
-    { 
-      to: "/danhsachnhanvien", 
-      icon: faUsers, 
-      text: "Nhân viên", 
-      roles: [2] 
+    {
+      to: "/danhsachnhanvien",
+      icon: faUsers,
+      text: "Nhân viên",
+      roles: [2],
     },
-    { 
-      to: "/danhsachmo", 
-      icon: faMonument, 
-      text: "Danh sách mộ", 
-      roles: [2] 
+    {
+      to: "/danhsachmo",
+      icon: faMonument,
+      text: "Danh sách mộ",
+      roles: [2],
     },
     {
       to: "/blog-manager",
@@ -156,23 +158,23 @@ const Sidebar = () => {
       text: "Hồ sơ nhân viên",
       roles: [3],
     },
-    { 
-      to: "/schedule-staff", 
-      icon: faBriefcase, 
-      text: "Lịch làm việc", 
-      roles: [3] 
+    {
+      to: "/schedule-staff",
+      icon: faBriefcase,
+      text: "Lịch làm việc",
+      roles: [3],
     },
-    { 
-      to: "/danhsachdonhang-staff", 
-      icon: faClipboardList, 
-      text: "Công việc", 
-      roles: [3] 
+    {
+      to: "/danhsachdonhang-staff",
+      icon: faClipboardList,
+      text: "Công việc",
+      roles: [3],
     },
-    { 
-      to: "/recurring-tasks", 
-      icon: faClipboardList, 
-      text: "Công việc định kì", 
-      roles: [3] 
+    {
+      to: "/recurring-tasks",
+      icon: faClipboardList,
+      text: "Công việc định kì",
+      roles: [3],
     },
     {
       to: "/blog-management",
@@ -185,29 +187,21 @@ const Sidebar = () => {
       icon: faMessage,
       text: "Thông báo",
       roles: [3],
-    }
-    
-
+    },
   ];
 
   // First, define the role constants to avoid magic numbers
   const ROLES = {
     ADMIN: 1,
     MANAGER: 2,
-    STAFF: 3
+    STAFF: 3,
   };
 
   // Then improve the menu filtering
   const menuCategories = {
-    admin: menuItems.filter(item => 
-      item.roles.includes(ROLES.ADMIN)
-    ),
-    manager: menuItems.filter(item => 
-      item.roles.includes(ROLES.MANAGER)
-    ),
-    staff: menuItems.filter(item => 
-      item.roles.includes(ROLES.STAFF)
-    )
+    admin: menuItems.filter((item) => item.roles.includes(ROLES.ADMIN)),
+    manager: menuItems.filter((item) => item.roles.includes(ROLES.MANAGER)),
+    staff: menuItems.filter((item) => item.roles.includes(ROLES.STAFF)),
   };
 
   const handleLogout = async () => {
@@ -224,74 +218,94 @@ const Sidebar = () => {
   const isActiveRoute = (path) => location.pathname === path;
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <div className="logo-container">
-          <img src={logo} alt="Logo" className="logo" />
-        </div>
-        <h3 className="user-name">Xin chào, {fullName || "Guest"}!</h3>
-        <div className="user-profile">
-          <div className="user-avatar">
-            {avatarPath ? (
-              <img
-                src={`${avatarPath}`}
-                alt={user?.accountName || "User"}
-                onError={(e) => {
-                  if (e.target) {
-                    e.target.style.display = "none";
-                    if (e.target.nextElementSibling) {
-                      e.target.nextElementSibling.style.display = "flex";
+    <>
+      <button
+        className="mobile-toggle-btn"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        <FontAwesomeIcon icon={isMobileMenuOpen ? faXmark : faBars} />
+      </button>
+      <aside className={`sidebar ${isMobileMenuOpen ? "mobile-open" : ""}`}>
+        <div className="sidebar-header">
+          <div className="logo-container">
+            <img src={logo} alt="Logo" className="logo" />
+          </div>
+          <h3 className="user-name">Xin chào, {fullName || "Guest"}!</h3>
+          <div className="user-profile">
+            <div className="user-avatar">
+              {avatarPath ? (
+                <img
+                  src={`${avatarPath}`}
+                  alt={user?.accountName || "User"}
+                  onError={(e) => {
+                    if (e.target) {
+                      e.target.style.display = "none";
+                      if (e.target.nextElementSibling) {
+                        e.target.nextElementSibling.style.display = "flex";
+                      }
                     }
-                  }
-                }}
+                  }}
+                />
+              ) : (
+                <div className="default-avatar">
+                  <FontAwesomeIcon icon={faUser} />
+                </div>
+              )}
+            </div>
+
+            <div className="user-info">
+              <span className="user-role">
+                {user?.role === 1
+                  ? "Quản trị"
+                  : user?.role === 2
+                  ? "Quản lý"
+                  : "Nhân viên"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <nav className="sidebar-nav">
+          {user?.role === ROLES.ADMIN && (
+            <div className="menu-category">
+              <h3>Bảng quản trị</h3>
+              <MenuItems
+                items={menuCategories.admin}
+                isActiveRoute={isActiveRoute}
               />
-            ) : (
-              <div className="default-avatar">
-                <FontAwesomeIcon icon={faUser} />
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          <div className="user-info">
-            <span className="user-role">
-              {user?.role === 1 ? "Quản trị" : user?.role === 2 ? "Quản lý" : "Nhân viên"}
-            </span>
-          </div>
-        </div>
-      </div>
+          {user?.role === ROLES.MANAGER && (
+            <div className="menu-category">
+              <h3>Bảng quản lý</h3>
+              <MenuItems
+                items={menuCategories.manager}
+                isActiveRoute={isActiveRoute}
+              />
+            </div>
+          )}
 
-      <nav className="sidebar-nav">
-        {user?.role === ROLES.ADMIN && (
-          <div className="menu-category">
-            <h3>Bảng quản trị</h3>
-            <MenuItems items={menuCategories.admin} isActiveRoute={isActiveRoute} />
-          </div>
-        )}
+          {user?.role === ROLES.STAFF && (
+            <div className="menu-category">
+              <h3>Bảng nhân viên</h3>
+              <MenuItems
+                items={menuCategories.staff}
+                isActiveRoute={isActiveRoute}
+              />
+            </div>
+          )}
 
-        {user?.role === ROLES.MANAGER && (
-          <div className="menu-category">
-            <h3>Bảng quản lý</h3>
-            <MenuItems items={menuCategories.manager} isActiveRoute={isActiveRoute} />
+          <div className="sidebar-footer">
+            <button className="logout-button" onClick={handleLogout}>
+              <FontAwesomeIcon icon={faSignOutAlt} /> Đăng xuất
+            </button>
           </div>
-        )}
-
-        {user?.role === ROLES.STAFF && (
-          <div className="menu-category">
-            <h3>Bảng nhân viên</h3>
-            <MenuItems items={menuCategories.staff} isActiveRoute={isActiveRoute} />
-          </div>
-        )}
-
-        <div className="sidebar-footer">
-          <button className="logout-button" onClick={handleLogout}>
-            <FontAwesomeIcon icon={faSignOutAlt} /> Đăng xuất
-          </button>
-        </div>
-      </nav>
-    </aside>
+        </nav>
+      </aside>
+    </>
   );
 };
-
 // Separate component for menu items
 const MenuItems = ({ items, isActiveRoute }) => (
   <ul>
@@ -299,7 +313,9 @@ const MenuItems = ({ items, isActiveRoute }) => (
       <li key={index}>
         <Link
           to={item.to}
-          className={`sidebar-menu-item ${isActiveRoute(item.to) ? "active" : ""}`}
+          className={`sidebar-menu-item ${
+            isActiveRoute(item.to) ? "active" : ""
+          }`}
         >
           <FontAwesomeIcon icon={item.icon} />
           <span>{item.text}</span>

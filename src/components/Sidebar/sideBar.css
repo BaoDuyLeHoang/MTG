@@ -324,3 +324,45 @@ aside.sidebar {
 .user-profile {
   transition: all 0.3s ease;
 }
+
+.mobile-toggle-btn {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: rgba(48, 42, 22, 0.9);
+  border: none;
+  color: #e0d5c1;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 480px) {
+  .mobile-toggle-btn {
+    display: block;
+  }
+
+  aside.sidebar {
+    position: fixed;
+    left: -280px;
+    transition: left 0.3s ease;
+  }
+
+  aside.sidebar.mobile-open {
+    left: 0;
+  }
+
+  /* Add overlay when menu is open */
+  .mobile-open::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+}

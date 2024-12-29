@@ -185,6 +185,12 @@ const Sidebar = () => {
       icon: faMessage,
       text: "Thông báo",
       roles: [3],
+    },
+    {
+      to: "/grave-reports",
+      icon: faMessage,
+      text: "Báo cáo mộ",
+      roles: [3],
     }
     
 

@@ -19,20 +19,27 @@ const GraveReports = () => {
         { field: 'description', headerName: 'Mô tả dịch vụ', flex: 1 },
         { field: 'graveLocation', headerName: 'Vị trí mộ', width: 200 },
         { field: 'endDate', headerName: 'Ngày kết thúc', width: 200 },
+        { field: 'status', headerName: 'Trạng thái', width: 200 },
     ];
 
     useEffect(() => {
         const loadReports = async () => {
             setLoading(true);
             const { reports, totalPage } = await fetchGraveReports(pageIndex);
+            console.log(reports);
             const formattedReports = reports.map((report) => ({
                 ...report,
-                id: report.reportId, // Đảm bảo mỗi hàng có trường id
+                id: report.reportId,
                 customerName: report.customerName || 'Không rõ',
                 phone: report.customerPhone || 'N/A',
                 description: report.description,
                 graveLocation: report.martyrCode || 'Chưa cập nhật',
-                endDate: report.endDate
+                endDate: report.endDate,
+                // Cập nhật giá trị status để hiển thị tên trạng thái
+                status: report.status === 1 ? 'Đã giao' :
+                    report.status === 4 ? 'Hoàn thành' :
+                        report.status === 5 ? 'Thất bại' :
+                            'Không xác định' // Giá trị mặc định nếu không khớp
             }));
             setReports(formattedReports);
             setTotalPages(totalPage);
@@ -42,7 +49,7 @@ const GraveReports = () => {
     }, [pageIndex]);
 
     const handleRowClick = (params) => {
-        navigate(`/report-detail/${params.row.reportId}`); // Điều hướng đến trang chi tiết
+        navigate(`/report-detail/${params.row.reportId}`);
     };
 
     return (
@@ -66,10 +73,9 @@ const GraveReports = () => {
                                     pageSize={10}
                                     rowsPerPageOptions={[10]}
                                     disableSelectionOnClick
-                                    getRowId={(row) => row.reportId} // Sử dụng reportId làm id
-                                    onRowClick={handleRowClick} // Nhấn vào hàng
+                                    getRowId={(row) => row.reportId}
+                                    onRowClick={handleRowClick}
                                 />
-
                             </Box>
                         ) : (
                             <Typography sx={{ color: '#888', textAlign: 'center', marginTop: 2 }}>

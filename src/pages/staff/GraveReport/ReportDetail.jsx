@@ -5,7 +5,6 @@ import { useAuth } from "../../../context/AuthContext";
 import { fetchReportDetail, uploadVideo } from '../../../services/reportGrave'; // Import hàm từ file api.js
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { User, MapPin } from 'lucide-react'; // Import các icon cần thiết
-import ReactPlayer from 'react-player';
 
 const ReportDetails = () => {
     const { reportId } = useParams(); // Lấy reportId từ URL

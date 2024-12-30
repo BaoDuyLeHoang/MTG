@@ -31,10 +31,11 @@ const defaultProfile = {
   accountId: null,
   roleId: null,
   status: true,
-  createAt: null
+  createAt: null,
 };
 
-const ProfileStaff = () => {  // Remove props as we'll use useAuth
+const ProfileStaff = () => {
+  // Remove props as we'll use useAuth
   const [isEditing, setIsEditing] = useState(false); // Changed to boolean
   const [editedData, setEditedData] = useState(defaultProfile);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,7 +97,7 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
         fullName: editedData.fullName,
         dateOfBirth: editedData.dateOfBirth,
         address: editedData.address,
-        emailAddress: editedData.emailAddress
+        emailAddress: editedData.emailAddress,
       };
 
       // Show loading state
@@ -206,7 +207,9 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                       className="edit-input"
                     />
                   ) : (
-                    <span>{editedData.emailAddress || "Email Không có sẵn"}</span>
+                    <span>
+                      {editedData.emailAddress || "Email Không có sẵn"}
+                    </span>
                   )}
                 </div>
 
@@ -231,18 +234,28 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                     <input
                       type="date"
                       name="dateOfBirth"
-                      value={editedData.dateOfBirth ? editedData.dateOfBirth.split("T")[0] : "Không có sẵn"}
+                      value={
+                        editedData.dateOfBirth
+                          ? editedData.dateOfBirth.split("T")[0]
+                          : "Không có sẵn"
+                      }
                       onChange={handleInputChange}
                       className="edit-input"
                     />
                   ) : (
-                    <span>{editedData.dateOfBirth ? formatDate(editedData.dateOfBirth) : "Ngày sinh nhật không có sẵn"}</span>
+                    <span>
+                      {editedData.dateOfBirth
+                        ? formatDate(editedData.dateOfBirth)
+                        : "Ngày sinh nhật không có sẵn"}
+                    </span>
                   )}
                 </div>
 
                 <div className="info-row">
                   <Phone className="icon" />
-                    <span>{editedData.phoneNumber || "Số điện thoại không có sẵn"}</span>
+                  <span>
+                    {editedData.phoneNumber || "Số điện thoại không có sẵn"}
+                  </span>
                 </div>
 
                 <div className="info-row">
@@ -269,7 +282,7 @@ const ProfileStaff = () => {  // Remove props as we'll use useAuth
                   </div>
                   <div className="info-item">
                     <dt>Trạng thái hoạt động</dt>
-                    <dd>{editedData.status == true ? 'Active' : 'Inactive'}</dd>
+                    <dd>{editedData.status == true ? "Active" : "Inactive"}</dd>
                   </div>
                 </dl>
               </div>

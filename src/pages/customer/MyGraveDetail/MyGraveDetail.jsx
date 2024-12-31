@@ -5,6 +5,7 @@ import Header from "../../../components/Header/header";
 import { getGraveById } from "../../../APIcontroller/API";
 import { getGraveOrders } from "../../../services/graves";
 import Footer from "../../../components/Footer/footer";
+import Loading from '../../../components/Loading/Loading';
 
 const MyGraveDetail = () => {
   const navigate = useNavigate();
@@ -87,7 +88,16 @@ const MyGraveDetail = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <>
+      <Header />
+      <div className="grave-detail-container">
+        <Loading fullScreen={false} text="Đang tải thông tin mộ..." />
+      </div>
+      <Footer />
+    </>
+  );
+
   if (error) return <div>{error}</div>;
   if (!martyrDetails) return <div>No grave details found.</div>;
 

@@ -2,12 +2,12 @@
 .staff-task-list-container {
     display: flex;
     min-height: 100vh;
-    background-color: #f8fafc;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
 }
 
 .staff-task-list-content {
     flex: 1;
-    padding: 24px;
+    padding: 32px;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
@@ -15,11 +15,11 @@
 
 .staff-task-list-page-title {
     color: #1e293b;
-    margin-bottom: 2rem;
-    font-size: 1.875rem;
-    font-weight: 600;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #3b82f6;
+    margin-bottom: 2.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #3b82f6;
     text-align: center;
 }
 
@@ -27,11 +27,11 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    padding: 20px;
+    padding: 25px;
     background-color: white;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 16px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     flex-wrap: wrap;
 }
 
@@ -39,13 +39,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-left: 60px;
-    min-width: 200px;
+    margin-left: 40px;
+    min-width: 220px;
 }
 
 .filter-group span {
-    font-weight: 500;
-    color: #475569;
+    font-weight: 600;
+    color: #1e293b;
     white-space: nowrap;
 }
 
@@ -75,26 +75,28 @@
     border-collapse: separate;
     border-spacing: 0;
     background-color: white;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .staff-task-list-table th {
     background-color: #f8fafc;
-    padding: 16px;
+    padding: 20px;
     text-align: left;
     font-weight: 600;
     color: #1e293b;
     border-bottom: 2px solid #e2e8f0;
     white-space: nowrap;
+    font-size: 0.95rem;
 }
 
 .staff-task-list-table td {
-    padding: 16px;
+    padding: 20px;
     border-bottom: 1px solid #e2e8f0;
     color: #475569;
     vertical-align: middle;
+    font-size: 0.95rem;
 }
 
 .staff-task-list-table tr:hover {
@@ -102,21 +104,21 @@
 }
 
 .staff-task-list-detail-button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     background-color: #3b82f6;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     font-weight: 500;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
 }
 
 .staff-task-list-detail-button:hover {
     background-color: #2563eb;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .status-badge {
@@ -134,32 +136,36 @@
 .pagination {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-top: 24px;
-    padding: 16px;
+    gap: 12px;
+    margin-top: 32px;
+    padding: 20px;
 }
 
 .pagination-button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: 1px solid #e2e8f0;
     background-color: white;
     color: #475569;
     font-weight: 500;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    min-width: 100px;
 }
 
 .pagination-button:hover:not(:disabled) {
     background-color: #f8fafc;
     border-color: #3b82f6;
     color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
 }
 
 .pagination-button.active {
     background-color: #3b82f6;
     color: white;
     border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
 .pagination-button:disabled {

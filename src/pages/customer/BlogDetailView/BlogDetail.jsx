@@ -5,6 +5,7 @@ import Footer from '../../../components/Footer/footer';
 import { getBlogById, postComment, postCommentIcon, updateComment, updateCommentIcon, deleteCommentIcon, deleteComment } from '../../../APIcontroller/API';
 import { createCommentReport } from '../../../services/blog';
 import './BlogDetail.css';
+import Loading from '../../../components/Loading/Loading';
 
 const BlogDetail = () => {
   const { blogId } = useParams();
@@ -576,7 +577,15 @@ const BlogDetail = () => {
   };
 
   if (loading) {
-    return <div>Đang tải...</div>;
+    return (
+      <div className="blog-detail-page">
+        <Header />
+        <div className="blog-detail__container">
+          <Loading fullScreen={false} text="Đang tải bài viết..." />
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   if (!blog) {

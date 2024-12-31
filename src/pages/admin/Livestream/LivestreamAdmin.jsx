@@ -5,7 +5,7 @@ import './LivestreamAdmin.css';
 
 const APP_ID = "2bab4ee5dcdf4ec89375fa0a0a1df109"; // Thay thế bằng App ID mới của bạn
 const CHANNEL_NAME = "admin-channel";
-const TOKEN = "007eJxTYGCuEHzs59vSO9Po8t67iRMquiRa/VR2hd3eETNzryVfqooCg1FSYpJJaqppSnJKmklqsoWlsblpWqIBEBqmpBkaWH7IyEpvCGRkSJERZGVkgEAQn5chMSU3M083OSMxLy81h4EBAD7OIeM="; // Thay thế bằng token mới
+const TOKEN = "007eJxTYFALrNw25+F8+cSvTfEmJpcX8uv7Puh1/p0rdareis/RU0aBwSgpMckkNdU0JTklzSQ12cLS2Nw0LdEACA1T0gwNLCceKkpvCGRkaG8RZWFkgEAQn5chMSU3M083OSMxLy81h4EBACxTIeI="; // Thay thế bằng token mới
 
 const fetchToken = async () => {
   try {
@@ -23,8 +23,11 @@ const LivestreamAdmin = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [client, setClient] = useState(null);
   const [localTracks, setLocalTracks] = useState([]);
-  const [viewers, setViewers] = useState(0);
+
   const [duration, setDuration] = useState(0);
+  
+  // Add timer interval reference
+  const [timerInterval, setTimerInterval] = useState(null);
 
   useEffect(() => {
     const agoraClient = AgoraRTC.createClient({
@@ -34,13 +37,13 @@ const LivestreamAdmin = () => {
       channelProfile: 1
     });
 
-    agoraClient.on("user-joined", () => {
-      setViewers(prev => prev + 1);
-    });
 
-    agoraClient.on("user-left", () => {
-      setViewers(prev => Math.max(0, prev - 1));
-    });
+
+
+
+
+
+
 
     setClient(agoraClient);
 
@@ -53,31 +56,37 @@ const LivestreamAdmin = () => {
     if (!client) return;
 
     try {
-      // Nếu bạn có server để lấy token
-      // const token = await fetchToken();
-      
-      console.log('Joining channel with:', {
-        appId: APP_ID,
-        channel: CHANNEL_NAME,
-        token: TOKEN
-      });
 
-      // Join channel
+
+
+
+
+
+
+
+
+
       await client.join(APP_ID, CHANNEL_NAME, TOKEN || null, null);
-      console.log('Joined channel successfully');
 
-      // Create tracks
+
+
       const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
-      console.log('Tracks created');
-      
-      // Publish tracks
+
+
+
       await client.publish([audioTrack, videoTrack]);
-      console.log('Tracks published');
-      
+
+
       videoTrack.play('local-video');
       
       setLocalTracks([audioTrack, videoTrack]);
       setIsStreaming(true);
+
+      // Start duration timer
+      const interval = setInterval(() => {
+        setDuration(prev => prev + 1);
+      }, 1000);
+      setTimerInterval(interval);
 
     } catch (error) {
       console.error('Detailed error:', error);
@@ -97,11 +106,26 @@ const LivestreamAdmin = () => {
 
       await client.leave();
       setIsStreaming(false);
-      setViewers(0);
+
+
+      // Clear duration timer
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        setTimerInterval(null);
+      }
+      setDuration(0);
 
     } catch (error) {
       console.error('Error stopping stream:', error);
     }
+  };
+
+  // Format duration to HH:MM:SS
+  const formatDuration = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -139,12 +163,15 @@ const LivestreamAdmin = () => {
           </div>
           <div className="stream-stats">
             <div className="stat-item">
-              <div className="stat-value">{viewers}</div>
-              <div className="stat-label">Người xem</div>
+
+
+              <div className="stat-value">{formatDuration(duration)}</div>
+              <div className="stat-label">Thời gian phát sóng</div>
             </div>
             <div className="stat-item">
-              <div className="stat-value">{isStreaming ? 'Đang phát' : 'Offline'}</div>
               <div className="stat-label">Trạng thái</div>
+              <div className="stat-value">{isStreaming ? 'Đang phát' : 'Offline'}</div>
+
             </div>
           </div>
         </div>
@@ -156,5 +183,6 @@ const LivestreamAdmin = () => {
     </div>
   );
 };
+
 
 export default LivestreamAdmin;

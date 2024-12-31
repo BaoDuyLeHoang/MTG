@@ -7,6 +7,7 @@ import './RequestDetail.css';
 import Button from '@mui/material/Button';
 import { jwtDecode } from "jwt-decode";
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
+import Loading from '../../../components/Loading/Loading';
 
 const RequestDetail = () => {
   const { requestId } = useParams();
@@ -130,7 +131,16 @@ const RequestDetail = () => {
     }
   };
 
-  if (loading) return <div className="loading">Đang tải...</div>;
+  if (loading) return (
+    <div className="rd-container">
+      <Header />
+      <div className="rd-content">
+        <Loading fullScreen={false} text="Đang tải chi tiết yêu cầu..." />
+      </div>
+      <Footer />
+    </div>
+  );
+
   if (error) return <div className="error">{error}</div>;
   if (!request) return <div className="not-found">Không tìm thấy yêu cầu</div>;
 
@@ -290,11 +300,7 @@ const RequestDetail = () => {
               <h3 className="rd-section-title">Báo Cáo Công Việc</h3>
               <div className="rd-report-section">
                 {request.reportTask.videoFile && (
-                  <video 
-                    className="rd-video-player" 
-                    controls
-                    src={request.reportTask.videoFile}
-                  />
+                  <iframe className="rd-video-player" src={request.reportTask.videoFile} allow="autoplay"></iframe>
                 )}
                 {request.reportTask.reportImages && request.reportTask.reportImages.length > 0 && (
                   <div className="rd-image-grid">

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, CircularProgress, Pagination } from '@mui/material';
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { fetchGraveReports } from '../../../services/reportGrave';
-import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
+import './GraveReport.css';
 
 const GraveReports = () => {
     const [reports, setReports] = useState([]);
@@ -12,89 +12,130 @@ const GraveReports = () => {
     const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate();
 
-    const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'customerName', headerName: 'Tên khách hàng', width: 200 },
-        { field: 'phone', headerName: 'Số điện thoại', width: 150 },
-        { field: 'description', headerName: 'Mô tả dịch vụ', flex: 1 },
-        { field: 'graveLocation', headerName: 'Vị trí mộ', width: 200 },
-        { field: 'endDate', headerName: 'Ngày kết thúc', width: 200 },
-        { field: 'status', headerName: 'Trạng thái', width: 200 },
-    ];
-
     useEffect(() => {
         const loadReports = async () => {
-            setLoading(true);
-            const { reports, totalPage } = await fetchGraveReports(pageIndex);
-            console.log(reports);
-            const formattedReports = reports.map((report) => ({
-                ...report,
-                id: report.reportId,
-                customerName: report.customerName || 'Không rõ',
-                phone: report.customerPhone || 'N/A',
-                description: report.description,
-                graveLocation: report.martyrCode || 'Chưa cập nhật',
-                endDate: report.endDate,
-                // Cập nhật giá trị status để hiển thị tên trạng thái
-                status: report.status === 1 ? 'Đã giao' :
-                    report.status === 4 ? 'Hoàn thành' :
-                        report.status === 5 ? 'Thất bại' :
-                            'Không xác định' // Giá trị mặc định nếu không khớp
-            }));
-            setReports(formattedReports);
-            setTotalPages(totalPage);
-            setLoading(false);
+            try {
+                setLoading(true);
+                const { reports, totalPage } = await fetchGraveReports(pageIndex);
+                const formattedReports = reports.map((report) => ({
+                    ...report,
+                    id: report.reportId,
+                    customerName: report.customerName || 'Không rõ',
+                    phone: report.customerPhone || 'N/A',
+                    description: report.description,
+                    graveLocation: report.martyrCode || 'Chưa cập nhật',
+                    endDate: report.endDate,
+                    status: report.status === 1 ? 'Đã giao' :
+                        report.status === 4 ? 'Hoàn thành' :
+                            report.status === 5 ? 'Thất bại' :
+                                'Không xác định'
+                }));
+                setReports(formattedReports);
+                setTotalPages(totalPage);
+            } catch (error) {
+                console.error('Error loading reports:', error);
+            } finally {
+                setLoading(false);
+            }
         };
         loadReports();
     }, [pageIndex]);
 
-    const handleRowClick = (params) => {
-        navigate(`/report-detail/${params.row.reportId}`);
+    const handleRowClick = (reportId) => {
+        navigate(`/report-detail/${reportId}`);
+    };
+
+    const getStatusClassName = (status) => {
+        switch (status) {
+            case 'Đã giao':
+                return 'status-delivered';
+            case 'Hoàn thành':
+                return 'status-completed';
+            case 'Thất bại':
+                return 'status-failed';
+            default:
+                return '';
+        }
     };
 
     return (
-        <Box sx={{ display: 'flex', height: '100vh' }}>
+        <div className="gr-container">
             <Sidebar />
-            <Box sx={{ padding: 2, flexGrow: 1, backgroundColor: '#f5f5f5', overflowY: 'auto' }}>
-                <Typography variant="h4" gutterBottom sx={{ color: '#333', fontWeight: 'bold' }}>
-                    Danh Sách Báo Cáo Mộ Cần Làm
-                </Typography>
+            <div className="gr-content">
                 {loading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                        <CircularProgress />
-                    </Box>
+                    <LoadingForSideBar text="Đang tải danh sách báo cáo..." />
                 ) : (
                     <>
-                        {reports.length > 0 ? (
-                            <Box sx={{ height: 400, width: '100%', bgcolor: 'white', borderRadius: 2, boxShadow: 1 }}>
-                                <DataGrid
-                                    rows={reports}
-                                    columns={columns}
-                                    pageSize={10}
-                                    rowsPerPageOptions={[10]}
-                                    disableSelectionOnClick
-                                    getRowId={(row) => row.reportId}
-                                    onRowClick={handleRowClick}
-                                />
-                            </Box>
-                        ) : (
-                            <Typography sx={{ color: '#888', textAlign: 'center', marginTop: 2 }}>
-                                Không có báo cáo nào.
-                            </Typography>
-                        )}
-                        <Pagination
-                            count={totalPages}
-                            page={pageIndex}
-                            onChange={(event, value) => setPageIndex(value)}
-                            color="primary"
-                            showFirstButton
-                            showLastButton
-                            sx={{ marginTop: 2, display: 'flex', justifyContent: 'center' }}
-                        />
+                        <div className="gr-title">
+                            <h1>Danh Sách Báo Cáo Mộ Cần Làm</h1>
+                        </div>
+                        <div className="gr-grid-container">
+                            {reports.length > 0 ? (
+                                <div className="gr-table-container">
+                                    <table className="gr-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Tên khách hàng</th>
+                                                <th>Số điện thoại</th>
+                                                <th>Mô tả dịch vụ</th>
+                                                <th>Vị trí mộ</th>
+                                                <th>Ngày kết thúc</th>
+                                                <th>Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {reports.map((report) => (
+                                                <tr
+                                                    key={report.reportId}
+                                                    onClick={() => handleRowClick(report.reportId)}
+                                                    className="gr-table-row"
+                                                >
+                                                    <td>{report.id}</td>
+                                                    <td>{report.customerName}</td>
+                                                    <td>{report.phone}</td>
+                                                    <td>{report.description}</td>
+                                                    <td>{report.graveLocation}</td>
+                                                    <td>{report.endDate}</td>
+                                                    <td>
+                                                        <span className={`gr-status-chip gr-status-${getStatusClassName(report.status)}`}>
+                                                            {report.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="gr-empty-state">
+                                    <span>Không có báo cáo nào.</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className="gr-pagination-container">
+                            <button
+                                className="gr-pagination-button"
+                                onClick={() => setPageIndex(prev => Math.max(prev - 1, 1))}
+                                disabled={pageIndex === 1}
+                            >
+                                Trước
+                            </button>
+                            <span className="gr-pagination-info">
+                                Trang {pageIndex} / {totalPages}
+                            </span>
+                            <button
+                                className="gr-pagination-button"
+                                onClick={() => setPageIndex(prev => Math.min(prev + 1, totalPages))}
+                                disabled={pageIndex === totalPages}
+                            >
+                                Sau
+                            </button>
+                        </div>
                     </>
                 )}
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 };
 

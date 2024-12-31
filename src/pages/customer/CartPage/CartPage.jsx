@@ -9,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { addToAnonymousCart } from '../../../services/cart';
 import { getMartyrGraveById } from '../../../services/graves';
+import Loading from '../../../components/Loading/Loading';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -266,9 +267,7 @@ const CartPage = () => {
           </p>
         </div>
         {loading ? (
-          <div className="cart-page-loading-spinner">
-            <div>Đang tải...</div>
-          </div>
+          <Loading fullScreen={false} text="Đang tải giỏ hàng..." />
         ) : error ? (
           <div>{error}</div>
         ) : (cartItems.length === 0) ? (

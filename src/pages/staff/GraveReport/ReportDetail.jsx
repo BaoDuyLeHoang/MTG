@@ -5,6 +5,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { fetchReportDetail, uploadVideo } from '../../../services/reportGrave'; // Import hàm từ file api.js
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { User, MapPin } from 'lucide-react'; // Import các icon cần thiết
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
 
 const ReportDetails = () => {
     const { reportId } = useParams(); // Lấy reportId từ URL
@@ -60,7 +61,14 @@ const ReportDetails = () => {
     
 
     if (loading) {
-        return <CircularProgress />;
+        return (
+            <div className="td-page-layout">
+                <Sidebar />
+                <div className="td-main-content">
+                    <LoadingForSideBar text="Đang tải chi tiết báo cáo..." />
+                </div>
+            </div>
+        );
     }
 
     const formatDate = (dateString) => {

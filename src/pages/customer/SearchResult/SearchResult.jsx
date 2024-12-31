@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './SearchResult.css';
 import Header from '../../../components/Header/header'; // Import the Header component
 import Footer from '../../../components/Footer/footer';
+import Loading from '../../../components/Loading/Loading';
 
 const SearchResult = () => {
   const location = useLocation();
@@ -11,6 +12,7 @@ const SearchResult = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // Changed from 6 to 15 items per page
+  const [loading, setLoading] = useState(true);
 
   // Cập nhật DEFAULT_IMAGE để sử dụng ảnh local từ thư mục public
   const DEFAULT_IMAGE = "/Hinh-nen-co-Viet-Nam-hinh-nen-Quoc-ky-Viet-Nam-dep-cho-dien-thoai-3D.jpg";
@@ -18,8 +20,33 @@ const SearchResult = () => {
   useEffect(() => {
     if (location.state && location.state.results) {
       setResults(location.state.results);
+      setLoading(false);
     }
   }, [location.state]);
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className="search-result__container">
+          <Loading fullScreen={false} text="Đang tải kết quả tìm kiếm..." />
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (!results || results.length === 0) {
+    return (
+      <>
+        <Header />
+        <div className="search-result__container">
+          <h1 className="search-result__heading">Không tìm thấy kết quả</h1>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   // Calculate pagination values
   const totalPages = Math.ceil(results.length / itemsPerPage);

@@ -10,6 +10,7 @@ import {getCheckoutItemsByCustomerId, getWalletBalance } from "../../../APIcontr
 import { createOrder } from "../../../services/orders";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Loading from '../../../components/Loading/Loading';
 
 const CheckOut = () => {
   const location = useLocation();
@@ -219,7 +220,15 @@ const CheckOut = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Header />
+        <div className="checkout-content">
+          <Loading fullScreen={false} text="Đang tải thông tin thanh toán..." />
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   return (

@@ -4,6 +4,7 @@ import { getBlogCategoryById } from '../../../APIcontroller/API';
 import Header from '../../../components/Header/header';
 import './BlogCategoryDetail.css';
 import Footer from '../../../components/Footer/footer';
+import Loading from '../../../components/Loading/Loading';
 
 const BlogCategoryDetail = () => {
   const { id } = useParams();
@@ -29,10 +30,7 @@ const BlogCategoryDetail = () => {
   }, [id]);
 
   if (loading) return (
-    <div className="loading-container">
-      <div className="loading-spinner"></div>
-      <p>Đang tải dữ liệu...</p>
-    </div>
+    <Loading fullScreen={false} text="Đang tải dữ liệu..." />
   );
   
   if (!category) return (

@@ -4,6 +4,7 @@ import Sidebar from '../../../components/Sidebar/sideBar';
 import { getManagerRequests } from '../../../APIcontroller/API';
 import { Link } from 'react-router-dom';
 import './RequestManager.css';
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
 
 const RequestManager = () => {
   const [requests, setRequests] = useState([]);
@@ -117,8 +118,27 @@ const RequestManager = () => {
     });
   };
 
-  if (loading) return <div className="rm-loading">Đang tải...</div>;
-  if (error) return <div className="rm-error">{error}</div>;
+  if (loading) {
+    return (
+      <div className="rm-page-container">
+        <Sidebar />
+        <div className="rm-container">
+          <LoadingForSideBar fullScreen={false} text="Đang tải yêu cầu..." />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rm-page-container">
+        <Sidebar />
+        <div className="rm-container">
+          <div className="rm-error">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rm-page-container">

@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import { FaClipboardList, FaClock, FaMoneyBillWave } from "react-icons/fa";
 import { useAuth } from "../../../context/AuthContext";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
+import LoadingForSideBar from "../../../components/LoadingForSideBar/LoadingForSideBar";
 
 const OrderDetail = () => {
   const { orderId: detailId } = useParams();
@@ -141,9 +142,62 @@ const OrderDetail = () => {
     }
   };
 
-  if (loading) return <div>Đang tải...</div>;
-  if (error) return <div>{error}</div>;
-  if (!orderDetail) return <div>Không tìm thấy chi tiết đơn hàng</div>;
+  if (loading) {
+    return (
+      <div className="order-detail-container">
+        <Sidebar />
+        <div className="order-admin-full">
+          <div className="header-container">
+            <div className="section-name">
+              <FaClipboardList className="header-icon" />
+              Chi Tiết Đơn Hàng
+            </div>
+          </div>
+          <div className="order-section" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+            <LoadingForSideBar fullScreen={false} text="Đang tải chi tiết đơn hàng..." />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="order-detail-container">
+        <Sidebar />
+        <div className="order-admin-full">
+          <div className="header-container">
+            <div className="section-name">
+              <FaClipboardList className="header-icon" />
+              Chi Tiết Đơn Hàng
+            </div>
+          </div>
+          <div className="order-section" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+            <div className="error-message">{error}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!orderDetail) {
+    return (
+      <div className="order-detail-container">
+        <Sidebar />
+        <div className="order-admin-full">
+          <div className="header-container">
+            <div className="section-name">
+              <FaClipboardList className="header-icon" />
+              Chi Tiết Đơn Hàng
+            </div>
+          </div>
+          <div className="order-section" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+            <div className="error-message">Không tìm thấy chi tiết đơn hàng</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="order-detail-container">

@@ -30,6 +30,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import Loading from '../../../components/Loading/Loading';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'center',
@@ -158,7 +159,16 @@ const OrderHistory = () => {
     setAlertOpen(false);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <div className="order-history-page">
+      <Header />
+      <div className="order-history">
+        <Loading fullScreen={false} text="Đang tải lịch sử đơn hàng..." />
+      </div>
+      <Footer />
+    </div>
+  );
+
   if (error) return <div>{error}</div>;
 
   return (

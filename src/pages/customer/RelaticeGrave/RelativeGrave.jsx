@@ -5,6 +5,7 @@ import Footer from "../../../components/Footer/footer";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { getMartyrGraveByCustomerId } from "../../../services/graves";
+import Loading from '../../../components/Loading/Loading';
 
 const DEFAULT_GRAVE_IMAGE = "https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072";
 
@@ -48,7 +49,16 @@ const RelativeGrave = () => {
   }, [user]);
 
   if (loading) {
-    return <div className="loading-state">Loading...</div>;
+    return (
+      <div className="relative-grave-container">
+        <Header />
+        <div className="page-title">
+          <h1>Danh Sách Mộ Liệt Sĩ Của Bạn</h1>
+        </div>
+        <Loading fullScreen={false} text="Đang tải danh sách mộ..." />
+        <Footer />
+      </div>
+    );
   }
 
   if (error) {

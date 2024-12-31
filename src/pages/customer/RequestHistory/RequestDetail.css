@@ -7,7 +7,7 @@
 
 .rd-content {
   flex: 1;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 2.5rem auto;
   padding: 0 1.5rem;
 }
@@ -343,9 +343,9 @@
 /* Video Player - Enhanced */
 .rd-video-player {
   width: 100%;
-  max-height: 400px;
-  border-radius: 8px;
-  margin: 1rem 0;
+  max-height: 1200px;
+  border-radius: 12px;
+  margin: 1.5rem 0;
   background-color: #000;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -603,4 +603,28 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Điều chỉnh phần iframe video */
+.rd-card iframe {
+  width: 1000px;
+  height: 600px; /* Tăng chiều cao cố định */
+  border: none;
+  border-radius: 12px;
+  background-color: #000;
+}
+
+/* Responsive cho video */
+@media (max-width: 768px) {
+  .rd-video-player,
+  .rd-card iframe {
+    height: 400px; /* Giảm chiều cao trên mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .rd-video-player,
+  .rd-card iframe {
+    height: 300px; /* Giảm thêm chiều cao trên điện thoại nhỏ */
+  }
 } 

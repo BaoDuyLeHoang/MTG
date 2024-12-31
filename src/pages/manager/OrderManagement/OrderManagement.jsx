@@ -4,6 +4,7 @@ import { useAuth } from "../../../context/AuthContext";
 import "./OrderManagement.css";
 import { getOrdersByManagerArea } from "../../../services/orders";
 import { useNavigate } from "react-router-dom";
+import LoadingForSideBar from "../../../components/LoadingForSideBar/LoadingForSideBar";
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -141,6 +142,28 @@ const OrderManagement = () => {
     navigate(`/danhsachdonhang/${orderId}?managerId=${user.accountId}`);
   };
 
+  if (loading) {
+    return (
+      <div className="order-management-container">
+        <Sidebar />
+        <div className="order-management-content">
+          <LoadingForSideBar fullScreen={false} text="Đang tải danh sách đơn hàng..." />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="order-management-container">
+        <Sidebar />
+        <div className="order-management-content">
+          <div className="error-message">{error}</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="order-management-container">
       <Sidebar />
@@ -187,16 +210,7 @@ const OrderManagement = () => {
           </div>
         </div>
 
-        {loading ? (
-          <div className="centered">
-            <div className="loading-spinner"></div>
-            <p>Đang tải dữ liệu...</p>
-          </div>
-        ) : error ? (
-          <div className="error">
-            <i className="fas fa-exclamation-circle"></i> {error}
-          </div>
-        ) : orders.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="centered">
             <i className="fas fa-inbox"></i>
             <p>Không tìm thấy đơn hàng nào.</p>

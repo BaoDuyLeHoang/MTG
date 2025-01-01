@@ -119,7 +119,7 @@ const ReportDetails = () => {
                                     <h2 className="td-card-title">Video Tình Trạng Mộ</h2>
                                 </div>
                                 <div className="td-card-content">
-                                <iframe src={report.videoFile} width="100%" height="480" allow="autoplay"></iframe>
+                                <iframe src={report.videoFile} width="100%" height="480" allow="autoplay; encrypted-media" allowFullScreen></iframe>
                                 </div>
                             </div>
                         )}

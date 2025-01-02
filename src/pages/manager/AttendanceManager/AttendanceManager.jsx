@@ -38,6 +38,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
 
 const AttendanceManager = () => {
   const [fromDate, setFromDate] = useState(() => {
@@ -61,6 +62,7 @@ const AttendanceManager = () => {
   const [recurringTasks, setRecurringTasks] = useState([]); // State để lưu trữ công việc định kỳ
   const [activeTab, setActiveTab] = useState(0); // State để theo dõi tab hiện tại
   const [selectedStaff, setSelectedStaff] = useState(null); // State để lưu trữ nhân viên được chọn
+  const [loading, setLoading] = useState(false);
 
   // Hàm để lấy công việc định kỳ
   const fetchRecurringTasks = async () => {
@@ -105,7 +107,9 @@ const AttendanceManager = () => {
           console.error('No accountId found');
           return;
         }
-
+        
+        setLoading(true);
+        
         const fromDateFormatted = format(fromDate, 'yyyy-MM-dd');
         const toDateFormatted = format(toDate, 'yyyy-MM-dd');
 
@@ -133,7 +137,8 @@ const AttendanceManager = () => {
       } catch (error) {
         console.error('Error fetching tasks:', error);
         setTaskAssignments([]);
-        // Có thể thêm state để hiển thị thông báo lỗi cho người dùng
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -238,457 +243,461 @@ const AttendanceManager = () => {
           minHeight: '100vh'
         }}
       >
-        <Container maxWidth="lg" className="attendance-manager-container">
-          <div className="blog-manager-header">
-            <h1 className="blog-manager-title">Công việc của nhân viên</h1>
-          </div>
+        {loading ? (
+          <LoadingForSideBar text="Đang tải danh sách công việc..." />
+        ) : (
+          <Container maxWidth="lg" className="attendance-manager-container">
+            <div className="blog-manager-header">
+              <h1 className="blog-manager-title">Công việc của nhân viên</h1>
+            </div>
 
-          {/* Thêm Tabs */}
-          <Tabs value={activeTab} onChange={(event, newValue) => setActiveTab(newValue)}>
-            <Tab label="Công việc" />
-            <Tab label="Công việc định kỳ" />
-          </Tabs>
+            {/* Thêm Tabs */}
+            <Tabs value={activeTab} onChange={(event, newValue) => setActiveTab(newValue)}>
+              <Tab label="Công việc" />
+              <Tab label="Công việc định kỳ" />
+            </Tabs>
 
-          {activeTab === 0 && (
-            // Hiển thị công việc thông thường
-            <Box>
-              <Box className="dashboard-header"
-                sx={{
-                  mb: 4,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: '15px',
-                  p: 2,
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.07)',
-                  display: 'flex',
-                  gap: 2,
-                  alignItems: 'center'
-                }}
-              >
-                <TextField
-                  placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
-                  variant="outlined"
-                  size="small"
+            {activeTab === 0 && (
+              // Hiển thị công việc thông thường
+              <Box>
+                <Box className="dashboard-header"
                   sx={{
-                    flex: 1,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                    }
+                    mb: 4,
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    borderRadius: '15px',
+                    p: 2,
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.07)',
+                    display: 'flex',
+                    gap: 2,
+                    alignItems: 'center'
                   }}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
-                  }}
-                />
-
-                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
-                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <DatePicker
-                      label="Từ ngày"
-                      value={fromDate}
-                      onChange={(newValue) => {
-                        setFromDate(newValue);
-                        if (newValue > toDate) {
-                          setToDate(newValue);
-                        }
-                      }}
-                      format="dd/MM/yyyy"
-                      sx={{
-                        width: '160px',
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '8px',
-                        }
-                      }}
-                      slotProps={{
-                        textField: {
-                          size: "small",
-                        },
-                      }}
-                    />
-                    <DatePicker
-                      label="Đến ngày"
-                      value={toDate}
-                      onChange={(newValue) => setToDate(newValue)}
-                      minDate={fromDate}
-                      format="dd/MM/yyyy"
-                      sx={{
-                        width: '160px',
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '8px',
-                        }
-                      }}
-                      slotProps={{
-                        textField: {
-                          size: "small",
-                        },
-                      }}
-                    />
-                  </Box>
-                </LocalizationProvider>
-
-                <FormControl size="small" sx={{ width: '200px' }}>
-                  <Select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    displayEmpty
+                >
+                  <TextField
+                    placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
+                    variant="outlined"
+                    size="small"
                     sx={{
-                      borderRadius: '8px',
-                      height: '40px' // Match height with other components
+                      flex: 1,
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px',
+                      }
                     }}
-                  >
-                    <MenuItem value="all">Tất cả trạng thái</MenuItem>
-                    <MenuItem value={4}>Hoàn thành</MenuItem>
-                    <MenuItem value={3}>Đang thực hiện</MenuItem>
-                    <MenuItem value={1}>Chờ xử lý</MenuItem>
-                    <MenuItem value={2}>Từ chối</MenuItem>
-                    <MenuItem value={5}>Thất bại</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Grid container spacing={3} className="stats-container">
-                {/* Your stats rendering logic remains unchanged */}
-              </Grid>
-
-              <Card
-                className="tasks-card"
-                sx={{
-                  mt: 4,
-                  borderRadius: '16px',
-                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)'
-                }}
-              >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 3,
-                      fontWeight: 'bold',
-                      color: '#1a237e',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    InputProps={{
+                      startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
                     }}
-                  >
-                    <Assignment sx={{ color: '#1e88e5' }} />
-                    Danh sách Công việc
-                  </Typography>
-                  <Box className="tasks-list">
-                    {currentTasks.map((task, index) => (
-                      <Box
-                        key={task.taskId}
-                        className="task-item animate-in"
-                        sx={{
-                          p: 2.5,
-                          mb: 2,
-                          borderRadius: '12px',
-                          backgroundColor: 'white',
-                          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                          transition: 'all 0.3s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                            backgroundColor: '#f8f9fa'
+                  />
+
+                  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                      <DatePicker
+                        label="Từ ngày"
+                        value={fromDate}
+                        onChange={(newValue) => {
+                          setFromDate(newValue);
+                          if (newValue > toDate) {
+                            setToDate(newValue);
                           }
                         }}
-                      >
-                        <Avatar
-                          src={task.serviceImage}
-                          alt={task.serviceName}
-                          sx={{ 
-                            width: 56, 
-                            height: 56,
-                            border: '2px solid #e0e0e0',
-                            flexShrink: 0
-                          }}
-                        />
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, flexWrap: 'wrap' }}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                              {task.serviceName}
-                            </Typography>
-                            <Chip
-                              label={task.categoryName}
-                              size="small"
-                              variant="outlined"
-                            />
-                          </Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 2, flexWrap: 'wrap' }}>
-                            <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                              📍 {task.graveLocation}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              📅 {format(new Date(task.startDate), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
-                            </Typography>
-                          </Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                              <Person sx={{ fontSize: 16, mr: 0.5 }} />
-                              {task.fullname}
-                            </Typography>
-                            <Chip
-                              label={getStatusText(task.status)}
-                              size="small"
-                              color={getStatusColor(task.status)}
-                              sx={{ ml: 1 }}
-                            />
-                          </Box>
-                        </Box>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => handleOpenDetails(task)}
-                          sx={{ ml: 2 }}
-                        >
-                          Chi tiết
-                        </Button>
-                      </Box>
-                    ))}
-                  </Box>
-                </CardContent>
-              </Card>
-
-              {/* Pagination Controls */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                  Previous
-                </Button>
-                <Typography>
-                  Page {currentPage} of {totalPages}
-                </Typography>
-                <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                  Next
-                </Button>
-              </Box>
-            </Box>
-          )}
-
-          {activeTab === 1 && (
-            // Hiển thị công việc định kỳ
-            <Box>
-              <Box className="dashboard-header"
-                sx={{
-                  mb: 4,
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: '15px',
-                  p: 2,
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.07)',
-                  display: 'flex',
-                  gap: 2,
-                  alignItems: 'center'
-                }}
-              >
-                <TextField
-                  placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    flex: 1,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                    }
-                  }}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
-                  }}
-                />
-
-                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
-                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <DatePicker
-                      label="Từ ngày"
-                      value={fromDate}
-                      onChange={(newValue) => {
-                        setFromDate(newValue);
-                        if (newValue > toDate) {
-                          setToDate(newValue);
-                        }
-                      }}
-                      format="dd/MM/yyyy"
-                      sx={{
-                        width: '160px',
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '8px',
-                        }
-                      }}
-                      slotProps={{
-                        textField: {
-                          size: "small",
-                        },
-                      }}
-                    />
-                    <DatePicker
-                      label="Đến ngày"
-                      value={toDate}
-                      onChange={(newValue) => setToDate(newValue)}
-                      minDate={fromDate}
-                      format="dd/MM/yyyy"
-                      sx={{
-                        width: '160px',
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '8px',
-                        }
-                      }}
-                      slotProps={{
-                        textField: {
-                          size: "small",
-                        },
-                      }}
-                    />
-                  </Box>
-                </LocalizationProvider>
-
-                <FormControl size="small" sx={{ width: '200px' }}>
-                  <Select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    displayEmpty
-                    sx={{
-                      borderRadius: '8px',
-                      height: '40px' // Match height with other components
-                    }}
-                  >
-                    <MenuItem value="all">Tất cả trạng thái</MenuItem>
-                    <MenuItem value={4}>Hoàn thành</MenuItem>
-                    <MenuItem value={3}>Đang thực hiện</MenuItem>
-                    <MenuItem value={1}>Chờ xử lý</MenuItem>
-                    <MenuItem value={2}>Từ chối</MenuItem>
-                    <MenuItem value={5}>Thất bại</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Grid container spacing={3} className="stats-container">
-                {/* Your stats rendering logic remains unchanged */}
-              </Grid>
-
-              <Card
-                className="tasks-card"
-                sx={{
-                  mt: 4,
-                  borderRadius: '16px',
-                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)'
-                }}
-              >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mb: 3,
-                      fontWeight: 'bold',
-                      color: '#1a237e',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1
-                    }}
-                  >
-                    <Assignment sx={{ color: '#1e88e5' }} />
-                    Danh sách công việc định kì
-                  </Typography>
-                  <Box className="tasks-list">
-                    {recurringTasks.map((task, index) => (
-                      <Box
-                        key={task.assignmentTaskId}
-                        className="task-item animate-in"
+                        format="dd/MM/yyyy"
                         sx={{
-                          p: 2.5,
-                          mb: 2,
-                          borderRadius: '12px',
-                          backgroundColor: 'white',
-                          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                          transition: 'all 0.3s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                            backgroundColor: '#f8f9fa'
+                          width: '160px',
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
                           }
                         }}
-                      >
-                        <Avatar
-                          src={task.serviceImage}
-                          alt={task.serviceName}
-                          sx={{ 
-                            width: 56, 
-                            height: 56,
-                            border: '2px solid #e0e0e0',
-                            flexShrink: 0
-                          }}
-                        />
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, flexWrap: 'wrap' }}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                              {task.serviceName}
-                            </Typography>
-                            <Chip
-                              label={task.categoryName}
-                              size="small"
-                              variant="outlined"
-                            />
-                          </Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 2, flexWrap: 'wrap' }}>
-                            <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                              📍 {task.graveLocation}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              📅 {format(new Date(task.createAt), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
-                            </Typography>
-                          </Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                              <Person sx={{ fontSize: 16, mr: 0.5 }} />
-                              {task.staffName}
-                            </Typography>
-                            <Chip
-                              label={getStatusText(task.status)}
-                              size="small"
-                              color={getStatusColor(task.status)}
-                              sx={{ ml: 1 }}
-                            />
-                          </Box>
-                        </Box>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => handleOpenDetailsAssignTask(task)}
-                          sx={{ ml: 2 }}
-                        >
-                          Chi tiết
-                        </Button>
-                      </Box>
-                    ))}
-                  </Box>
-                </CardContent>
-              </Card>
+                        slotProps={{
+                          textField: {
+                            size: "small",
+                          },
+                        }}
+                      />
+                      <DatePicker
+                        label="Đến ngày"
+                        value={toDate}
+                        onChange={(newValue) => setToDate(newValue)}
+                        minDate={fromDate}
+                        format="dd/MM/yyyy"
+                        sx={{
+                          width: '160px',
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                          }
+                        }}
+                        slotProps={{
+                          textField: {
+                            size: "small",
+                          },
+                        }}
+                      />
+                    </Box>
+                  </LocalizationProvider>
 
-              {/* Pagination Controls */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                  Previous
-                </Button>
-                <Typography>
-                  Page {currentPage} of {totalPages}
-                </Typography>
-                <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                  Next
-                </Button>
+                  <FormControl size="small" sx={{ width: '200px' }}>
+                    <Select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      displayEmpty
+                      sx={{
+                        borderRadius: '8px',
+                        height: '40px' // Match height with other components
+                      }}
+                    >
+                      <MenuItem value="all">Tất cả trạng thái</MenuItem>
+                      <MenuItem value={4}>Hoàn thành</MenuItem>
+                      <MenuItem value={3}>Đang thực hiện</MenuItem>
+                      <MenuItem value={1}>Chờ xử lý</MenuItem>
+                      <MenuItem value={2}>Từ chối</MenuItem>
+                      <MenuItem value={5}>Thất bại</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+
+                <Grid container spacing={3} className="stats-container">
+                  {/* Your stats rendering logic remains unchanged */}
+                </Grid>
+
+                <Card
+                  className="tasks-card"
+                  sx={{
+                    mt: 4,
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        mb: 3,
+                        fontWeight: 'bold',
+                        color: '#1a237e',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1
+                      }}
+                    >
+                      <Assignment sx={{ color: '#1e88e5' }} />
+                      Danh sách Công việc
+                    </Typography>
+                    <Box className="tasks-list">
+                      {currentTasks.map((task, index) => (
+                        <Box
+                          key={task.taskId}
+                          className="task-item animate-in"
+                          sx={{
+                            p: 2.5,
+                            mb: 2,
+                            borderRadius: '12px',
+                            backgroundColor: 'white',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                            transition: 'all 0.3s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                              backgroundColor: '#f8f9fa'
+                            }
+                          }}
+                        >
+                          <Avatar
+                            src={task.serviceImage}
+                            alt={task.serviceName}
+                            sx={{ 
+                              width: 56, 
+                              height: 56,
+                              border: '2px solid #e0e0e0',
+                              flexShrink: 0
+                            }}
+                          />
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, flexWrap: 'wrap' }}>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                                {task.serviceName}
+                              </Typography>
+                              <Chip
+                                label={task.categoryName}
+                                size="small"
+                                variant="outlined"
+                              />
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 2, flexWrap: 'wrap' }}>
+                              <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                                📍 {task.graveLocation}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                📅 {format(new Date(task.startDate), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Person sx={{ fontSize: 16, mr: 0.5 }} />
+                                {task.fullname}
+                              </Typography>
+                              <Chip
+                                label={getStatusText(task.status)}
+                                size="small"
+                                color={getStatusColor(task.status)}
+                                sx={{ ml: 1 }}
+                              />
+                            </Box>
+                          </Box>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleOpenDetails(task)}
+                            sx={{ ml: 2 }}
+                          >
+                            Chi tiết
+                          </Button>
+                        </Box>
+                      ))}
+                    </Box>
+                  </CardContent>
+                </Card>
+
+                {/* Pagination Controls */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                  <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                    Previous
+                  </Button>
+                  <Typography>
+                    Page {currentPage} of {totalPages}
+                  </Typography>
+                  <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                    Next
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          )}
-        </Container>
+            )}
+
+            {activeTab === 1 && (
+              // Hiển thị công việc định kỳ
+              <Box>
+                <Box className="dashboard-header"
+                  sx={{
+                    mb: 4,
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    borderRadius: '15px',
+                    p: 2,
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.07)',
+                    display: 'flex',
+                    gap: 2,
+                    alignItems: 'center'
+                  }}
+                >
+                  <TextField
+                    placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      flex: 1,
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px',
+                      }
+                    }}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    InputProps={{
+                      startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
+                    }}
+                  />
+
+                  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                      <DatePicker
+                        label="Từ ngày"
+                        value={fromDate}
+                        onChange={(newValue) => {
+                          setFromDate(newValue);
+                          if (newValue > toDate) {
+                            setToDate(newValue);
+                          }
+                        }}
+                        format="dd/MM/yyyy"
+                        sx={{
+                          width: '160px',
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                          }
+                        }}
+                        slotProps={{
+                          textField: {
+                            size: "small",
+                          },
+                        }}
+                      />
+                      <DatePicker
+                        label="Đến ngày"
+                        value={toDate}
+                        onChange={(newValue) => setToDate(newValue)}
+                        minDate={fromDate}
+                        format="dd/MM/yyyy"
+                        sx={{
+                          width: '160px',
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: '8px',
+                          }
+                        }}
+                        slotProps={{
+                          textField: {
+                            size: "small",
+                          },
+                        }}
+                      />
+                    </Box>
+                  </LocalizationProvider>
+
+                  <FormControl size="small" sx={{ width: '200px' }}>
+                    <Select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      displayEmpty
+                      sx={{
+                        borderRadius: '8px',
+                        height: '40px' // Match height with other components
+                      }}
+                    >
+                      <MenuItem value="all">Tất cả trạng thái</MenuItem>
+                      <MenuItem value={4}>Hoàn thành</MenuItem>
+                      <MenuItem value={3}>Đang thực hiện</MenuItem>
+                      <MenuItem value={1}>Chờ xử lý</MenuItem>
+                      <MenuItem value={2}>Từ chối</MenuItem>
+                      <MenuItem value={5}>Thất bại</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+
+                <Grid container spacing={3} className="stats-container">
+                  {/* Your stats rendering logic remains unchanged */}
+                </Grid>
+
+                <Card
+                  className="tasks-card"
+                  sx={{
+                    mt: 4,
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        mb: 3,
+                        fontWeight: 'bold',
+                        color: '#1a237e',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1
+                      }}
+                    >
+                      <Assignment sx={{ color: '#1e88e5' }} />
+                      Danh sách công việc định kì
+                    </Typography>
+                    <Box className="tasks-list">
+                      {recurringTasks.map((task, index) => (
+                        <Box
+                          key={task.assignmentTaskId}
+                          className="task-item animate-in"
+                          sx={{
+                            p: 2.5,
+                            mb: 2,
+                            borderRadius: '12px',
+                            backgroundColor: 'white',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                            transition: 'all 0.3s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                              backgroundColor: '#f8f9fa'
+                            }
+                          }}
+                        >
+                          <Avatar
+                            src={task.serviceImage}
+                            alt={task.serviceName}
+                            sx={{ 
+                              width: 56, 
+                              height: 56,
+                              border: '2px solid #e0e0e0',
+                              flexShrink: 0
+                            }}
+                          />
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, flexWrap: 'wrap' }}>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                                {task.serviceName}
+                              </Typography>
+                              <Chip
+                                label={task.categoryName}
+                                size="small"
+                                variant="outlined"
+                              />
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 2, flexWrap: 'wrap' }}>
+                              <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                                📍 {task.graveLocation}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                📅 {format(new Date(task.createAt), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Person sx={{ fontSize: 16, mr: 0.5 }} />
+                                {task.staffName}
+                              </Typography>
+                              <Chip
+                                label={getStatusText(task.status)}
+                                size="small"
+                                color={getStatusColor(task.status)}
+                                sx={{ ml: 1 }}
+                              />
+                            </Box>
+                          </Box>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleOpenDetailsAssignTask(task)}
+                            sx={{ ml: 2 }}
+                          >
+                            Chi tiết
+                          </Button>
+                        </Box>
+                      ))}
+                    </Box>
+                  </CardContent>
+                </Card>
+
+                {/* Pagination Controls */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                  <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                    Previous
+                  </Button>
+                  <Typography>
+                    Page {currentPage} of {totalPages}
+                  </Typography>
+                  <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                    Next
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Container>
+        )}
       </Box>
 
       {/* Dialog for task details */}

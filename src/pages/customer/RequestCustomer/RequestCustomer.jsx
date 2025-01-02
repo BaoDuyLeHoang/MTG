@@ -9,6 +9,7 @@ import {
 import './RequestCustomer.css';
 import Header from '../../../components/Header/header';
 import Footer from '../../../components/Footer/footer';
+import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, requestData, services, getRequestTypeName }) => {
   if (!isOpen) return null;
@@ -61,6 +62,9 @@ const RequestCustomer = () => {
   const [success, setSuccess] = useState('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingRequest, setPendingRequest] = useState(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState('success');
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,6 +123,9 @@ const RequestCustomer = () => {
     try {
       await createCustomerRequest(pendingRequest);
       setSuccess('Yêu cầu đã được tạo thành công!');
+      setAlertMessage('Yêu cầu đã được tạo thành công!');
+      setAlertSeverity('success');
+      setAlertOpen(true);
       setFormData({
         customerId: user?.accountId || 0,
         martyrId: '',
@@ -130,11 +137,18 @@ const RequestCustomer = () => {
     } catch (error) {
       console.error('Error details:', error.response?.data);
       setError(error.response?.data?.message || 'Có lỗi xảy ra khi tạo yêu cầu');
+      setAlertMessage(error.response?.data?.message || 'Có lỗi xảy ra khi tạo yêu cầu');
+      setAlertSeverity('error');
+      setAlertOpen(true);
     } finally {
       setLoading(false);
       setShowConfirmModal(false);
       setPendingRequest(null);
     }
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
   };
 
   const handleChange = (e) => {
@@ -338,6 +352,12 @@ const RequestCustomer = () => {
           getRequestTypeName={getRequestTypeName}
         />
       )}
+      <AlertMessage 
+        open={alertOpen} 
+        handleClose={handleAlertClose} 
+        severity={alertSeverity} 
+        message={alertMessage} 
+      />
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { getGraveServices } from "../../../services/graves";
 import Header from "../../../components/Header/header"; // Import the Header component
 import Footer from "../../../components/Footer/footer";
 import { login } from "../../../APIcontroller/LoginController";
+import Loading from '../../../components/Loading/Loading';
 
 const ServiceListing = () => {
   const [dichVu, setDichVu] = useState([]);
@@ -172,11 +173,27 @@ const ServiceListing = () => {
   };
 
   if (dangTai) {
-    return <div className="sl-loading">Đang tải dịch vụ...</div>;
+    return (
+      <div className="service-listing-page">
+        <Header />
+        <div className="sl-container">
+          <Loading fullScreen={false} text="Đang tải danh sách dịch vụ..." />
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   if (loiTai) {
-    return <div className="sl-error">{loiTai}</div>;
+    return (
+      <div className="service-listing-page">
+        <Header />
+        <div className="sl-container">
+          <div className="sl-error">{loiTai}</div>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   return (

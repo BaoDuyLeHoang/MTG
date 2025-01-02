@@ -5,6 +5,7 @@ import Footer from '../../../components/Footer/footer';
 import './RequestHistory.css';
 import { getRequestHistoryByDate } from '../../../APIcontroller/API';
 import { Link } from 'react-router-dom';
+import Loading from '../../../components/Loading/Loading';
 
 const NoteModal = ({ isOpen, onClose, note }) => {
   if (!isOpen) return null;
@@ -154,7 +155,15 @@ const RequestHistory = () => {
   }, [user, currentPage, searchDate]);
 
   if (loading) {
-    return <div className="loading">Đang tải...</div>;
+    return (
+      <div className="rh-container">
+        <Header />
+        <div className="content-wrapper-request-history">
+          <Loading fullScreen={false} text="Đang tải lịch sử yêu cầu..." />
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   if (error) {

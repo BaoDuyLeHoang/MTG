@@ -7,6 +7,7 @@ import { getAvailableServices } from '../../../services/service';
 import Sidebar from "../../../components/Sidebar/sideBar";
 import { FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import { useAuth } from "../../../context/AuthContext";
+import LoadingForSideBar from "../../../components/LoadingForSideBar/LoadingForSideBar";
 
 // Add this helper function to format date for input
 const formatDateForInput = (dateString) => {
@@ -213,8 +214,40 @@ const MyGraveDetail = () => {
     );
   };
 
-  if (error) return <div className="error-message">{error}</div>;
-  if (!martyrDetails) return <div className="no-data-message">No grave details found.</div>;
+  if (loading) {
+    return (
+      <div className="grave-detail-manager-layout-wrapper">
+        <Sidebar />
+        <div className="grave-detail-manager-container">
+          <div style={{ marginLeft: '-10px'}}>
+            <LoadingForSideBar fullScreen={false} text="Đang tải thông tin mộ..." />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="grave-detail-manager-layout-wrapper">
+        <Sidebar />
+        <div className="grave-detail-manager-container">
+          <div className="error-message">{error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!martyrDetails) {
+    return (
+      <div className="grave-detail-manager-layout-wrapper">
+        <Sidebar />
+        <div className="grave-detail-manager-container">
+          <div className="no-data-message">Không tìm thấy thông tin mộ.</div>
+        </div>
+      </div>
+    );
+  }
 
   const info = martyrDetails.matyrGraveInformations[0];
 

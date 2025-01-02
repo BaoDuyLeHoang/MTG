@@ -8,6 +8,7 @@ import './Wallet.css';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parse } from 'date-fns';
+import Loading from '../../../components/Loading/Loading';
 
 const Wallet = () => {
   const { user } = useAuth();
@@ -149,6 +150,18 @@ const Wallet = () => {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <Header />
+        <div className="wallet-container">
+          <Loading fullScreen={false} text="Đang tải thông tin ví..." />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div>

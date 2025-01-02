@@ -7,7 +7,7 @@
 
 .rd-content {
   flex: 1;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 2.5rem auto;
   padding: 0 1.5rem;
 }
@@ -313,28 +313,29 @@
 /* Image Grid - Enhanced */
 .rd-image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
 }
 
 .rd-image-item {
   position: relative;
-  aspect-ratio: 1;
-  border-radius: 12px;
+  padding-top: 75%;
+  cursor: pointer;
   overflow: hidden;
-  border: 2px solid #e8eaf6;
-  background-color: #f8fafc;
-  transition: all 0.3s ease;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  transition: transform 0.2s ease;
 }
 
 .rd-image-item:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-color: #c5cae9;
+  transform: scale(1.05);
 }
 
 .rd-image-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -343,9 +344,9 @@
 /* Video Player - Enhanced */
 .rd-video-player {
   width: 100%;
-  max-height: 400px;
-  border-radius: 8px;
-  margin: 1rem 0;
+  max-height: 1200px;
+  border-radius: 12px;
+  margin: 1.5rem 0;
   background-color: #000;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -417,44 +418,55 @@
   padding: 1.5rem;
   background-color: #f8fafc;
   border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   border: 1px solid #e2e8f0;
 }
 
+.rd-total-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.rd-total-item:last-child {
+  border-bottom: none;
+}
+
 .rd-total-label {
-  font-size: 1.1rem;
+  color: #4a5568;
   font-weight: 600;
-  color: #1e293b;
+  margin-bottom: 0.5rem;
 }
 
 .rd-total-amount {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #059669;
+  color: #2d3748;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-/* Responsive cho phần nguyên vật liệu */
+.rd-grand-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #1a237e;
+}
+
+.rd-grand-total .rd-total-label {
+  color: #1a237e;
+  font-size: 1.1rem;
+}
+
+.rd-grand-total .rd-total-amount {
+  color: #1a237e;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .rd-material-header {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .rd-material-price {
-    margin-left: 0;
-  }
-
-  .rd-material-item {
-    padding: 1rem;
-  }
-
   .rd-materials-total {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
     padding: 1rem;
+  }
+
+  .rd-total-item {
+    padding: 0.75rem 0;
   }
 }
 
@@ -584,23 +596,172 @@
 .rd-image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .rd-image-item {
   position: relative;
-  padding-top: 75%; /* 4:3 Aspect Ratio */
+  border-radius: 12px;
   overflow: hidden;
-  border-radius: 6px;
-  border: 1px solid #E5E7EB;
+  border: 2px solid #e8eaf6;
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+}
+
+.rd-image-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #c5cae9;
 }
 
 .rd-image-item img {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Điều chỉnh phần iframe video */
+.rd-card iframe {
+  width: 1000px;
+  height: 600px; /* Tăng chiều cao cố định */
+  border: none;
+  border-radius: 12px;
+  background-color: #000;
+}
+
+/* Responsive cho video */
+@media (max-width: 768px) {
+  .rd-video-player,
+  .rd-card iframe {
+    height: 400px; /* Giảm chiều cao trên mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .rd-video-player,
+  .rd-card iframe {
+    height: 300px; /* Giảm thêm chiều cao trên điện thoại nhỏ */
+  }
+}
+
+.rd-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.rd-grand-total {
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 2px solid #1a237e;
+}
+
+.rd-grand-total .rd-total-label,
+.rd-grand-total .rd-total-amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1a237e;
+}
+
+.rd-total-label {
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.rd-total-amount {
+    color: #2d3748;
+    font-weight: 600;
+}
+
+/* Modal phóng to ảnh */
+.rd-image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.rd-modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.rd-modal-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.rd-modal-close {
+    position: absolute;
+    top: -2rem;
+    right: -2rem;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #1a237e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rd-modal-close:hover {
+    background: #f8fafc;
+}
+
+/* Thêm style cho date overlay */
+.rd-image-date {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .rd-image-date {
+        font-size: 0.7rem;
+        padding: 2px 4px;
+    }
+    
+    .rd-modal-info {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+.rd-modal-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
 } 

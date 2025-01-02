@@ -4,6 +4,7 @@ import { useAuth } from "../../../context/AuthContext";
 import "../graveView/GraveView.css";
 import { Link } from "react-router-dom";
 import { getAllGravesForManager } from "../../../services/graves";
+import LoadingForSideBar from "../../../components/LoadingForSideBar/LoadingForSideBar";
 
 export default function GraveView() {
   const [graves, setGraves] = useState([]);
@@ -69,7 +70,8 @@ export default function GraveView() {
       <div className="gv-container">
         <Sidebar />
         <div className="gv-content">
-          <div className="gv-loading">Loading...</div>
+          <h1 className="gv-title">Danh Sách Mộ</h1>
+          <LoadingForSideBar fullScreen={false} text="Đang tải danh sách mộ..." />
         </div>
       </div>
     );
@@ -80,7 +82,8 @@ export default function GraveView() {
       <div className="gv-container">
         <Sidebar />
         <div className="gv-content">
-          <div className="gv-error">Error: {error}</div>
+          <h1 className="gv-title">Danh Sách Mộ</h1>
+          <div className="error-message">{error}</div>
         </div>
       </div>
     );

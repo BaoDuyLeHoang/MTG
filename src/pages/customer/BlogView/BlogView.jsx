@@ -4,6 +4,7 @@ import Footer from '../../../components/Footer/footer';
 import { getAllBlogs, getBlogCategories, getBlogCategoryById } from '../../../APIcontroller/API';
 import './BlogView.css';
 import { Link, useNavigate } from 'react-router-dom';
+import Loading from '../../../components/Loading/Loading';
 
 const BlogView = () => {
   const [blogs, setBlogs] = useState([]);
@@ -177,7 +178,7 @@ const BlogView = () => {
 
   const renderBlogsList = () => {
     if (loading) {
-      return <div>Đang tải...</div>;
+      return <Loading fullScreen={false} text="Đang tải bài viết..." />;
     }
 
     if (!blogs || blogs.length === 0) {

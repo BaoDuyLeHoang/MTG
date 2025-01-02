@@ -45,17 +45,18 @@ const ScheduleServiceHistory = () => {
 
   if (loading) {
     return (
-      <div>
+      <div className="page-wrapper-schedule-service-history">
         <Header />
-        <div className="loading-container">
-          <Loading text="Đang tải dữ liệu..." />
+        <div className="schedule-service-history">
+          <Loading fullScreen={false} text="Đang tải lịch sử dịch vụ..." />
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-schedule-service-history">
       <Header />
       <div className="schedule-service-history">
         <div className="intro-section">

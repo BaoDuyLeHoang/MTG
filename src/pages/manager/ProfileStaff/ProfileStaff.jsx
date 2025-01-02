@@ -18,6 +18,7 @@ import Sidebar from "../../../components/Sidebar/sideBar";
 import { getProfile, updateProfile } from "../../../services/profile";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
 
 const defaultProfile = {
   fullName: "",
@@ -133,6 +134,28 @@ const ProfileStaff = () => {
     const now = new Date();
     return Math.floor((now - start) / (365.25 * 24 * 60 * 60 * 1000));
   };
+
+  if (isLoading) {
+    return (
+      <div className="layout-container">
+        <Sidebar />
+        <div className="profile-main-content">
+          <LoadingForSideBar fullScreen={false} text="Đang tải thông tin..." />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="layout-container">
+        <Sidebar />
+        <div className="profile-main-content">
+          <div className="error-message">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="layout-container">

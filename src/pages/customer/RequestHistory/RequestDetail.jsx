@@ -7,6 +7,7 @@ import './RequestDetail.css';
 import Button from '@mui/material/Button';
 import { jwtDecode } from "jwt-decode";
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
+import Loading from '../../../components/Loading/Loading';
 
 const RequestDetail = () => {
   const { requestId } = useParams();
@@ -17,6 +18,7 @@ const RequestDetail = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const fetchRequestDetail = async () => {
     try {
@@ -130,7 +132,16 @@ const RequestDetail = () => {
     }
   };
 
-  if (loading) return <div className="loading">Đang tải...</div>;
+  if (loading) return (
+    <div className="rd-container">
+      <Header />
+      <div className="rd-content">
+        <Loading fullScreen={false} text="Đang tải chi tiết yêu cầu..." />
+      </div>
+      <Footer />
+    </div>
+  );
+
   if (error) return <div className="error">{error}</div>;
   if (!request) return <div className="not-found">Không tìm thấy yêu cầu</div>;
 
@@ -268,13 +279,29 @@ const RequestDetail = () => {
                     </div>
                   </div>
                 </div>
-                {request.requestTask.taskImages && request.requestTask.taskImages.length > 0 && (
+                {request.requestTask && request.requestTask.taskImages && (
                   <div className="rd-image-section">
                     <span className="rd-task-label">Hình ảnh đính kèm:</span>
                     <div className="rd-image-grid">
                       {request.requestTask.taskImages.map((image, index) => (
-                        <div key={index} className="rd-image-item">
-                          <img src={image.imageRequestTaskCustomer} alt={`Task image ${index + 1}`} />
+                        <div 
+                          key={index} 
+                          className="rd-image-item"
+                          onClick={() => setSelectedImage(image)}
+                        >
+                          <img 
+                            src={image.imageRequestTaskCustomer} 
+                            alt={`Task image ${index + 1}`} 
+                          />
+                          <div className="rd-image-date">
+                            {new Date(image.createAt).toLocaleString('vi-VN', {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -290,11 +317,7 @@ const RequestDetail = () => {
               <h3 className="rd-section-title">Báo Cáo Công Việc</h3>
               <div className="rd-report-section">
                 {request.reportTask.videoFile && (
-                  <video 
-                    className="rd-video-player" 
-                    controls
-                    src={request.reportTask.videoFile}
-                  />
+                  <iframe className="rd-video-player" src={request.reportTask.videoFile} allow="autoplay; encrypted-media" allowFullScreen></iframe>
                 )}
                 {request.reportTask.reportImages && request.reportTask.reportImages.length > 0 && (
                   <div className="rd-image-grid">
@@ -309,7 +332,7 @@ const RequestDetail = () => {
             </div>
           )}
 
-          {/* Materials Section */}
+          {/* Materials Section với phí dịch vụ */}
           {request.requestMaterials && request.requestMaterials.length > 0 && (
             <div className="rd-section">
               <h3 className="rd-section-title">Nguyên Vật Liệu Sử Dụng</h3>
@@ -320,24 +343,48 @@ const RequestDetail = () => {
                       <div className="rd-material-info">
                         <div className="rd-material-name">{material.materialName}</div>
                         <div className="rd-material-description">{material.description}</div>
+                        <div className="rd-material-price">
+                          {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                          }).format(material.price)}
+                        </div>
                       </div>
-                      <span className="rd-material-price">
-                        {new Intl.NumberFormat('vi-VN', {
-                          style: 'currency',
-                          currency: 'VND'
-                        }).format(material.price)}
-                      </span>
                     </div>
                   ))}
                 </div>
                 <div className="rd-materials-total">
-                  <span className="rd-total-label">Tổng chi phí vật liệu:</span>
-                  <span className="rd-total-amount">
-                    {new Intl.NumberFormat('vi-VN', {
-                      style: 'currency',
-                      currency: 'VND'
-                    }).format(request.requestMaterials.reduce((total, material) => total + material.price, 0))}
-                  </span>
+                  <div className="rd-total-item">
+                    <div className="rd-total-label">Tổng chi phí vật liệu:</div>
+                    <div className="rd-total-amount">
+                      {new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                      }).format(request.requestMaterials.reduce((total, material) => total + material.price, 0))}
+                    </div>
+                  </div>
+                  {request.typeId === 2 && (
+                    <>
+                      <div className="rd-total-item">
+                        <div className="rd-total-label">Phí dịch vụ (5%):</div>
+                        <div className="rd-total-amount">
+                          {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                          }).format(request.requestMaterials.reduce((total, material) => total + material.price, 0) * 0.05)}
+                        </div>
+                      </div>
+                      <div className="rd-total-item rd-grand-total">
+                        <div className="rd-total-label">Tổng cộng:</div>
+                        <div className="rd-total-amount">
+                          {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                          }).format(request.requestMaterials.reduce((total, material) => total + material.price, 0) * 1.05)}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -368,6 +415,33 @@ const RequestDetail = () => {
         message={alertMessage}
         onClose={() => setAlertOpen(false)}
       />
+
+      {/* Modal phóng to ảnh */}
+      {selectedImage && (
+        <div 
+          className="rd-image-modal"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="rd-modal-content" onClick={e => e.stopPropagation()}>
+            <img src={selectedImage.imageRequestTaskCustomer} alt="Enlarged view" />
+            <div className="rd-modal-info">
+              {new Date(selectedImage.createAt).toLocaleString('vi-VN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </div>
+            <button 
+              className="rd-modal-close"
+              onClick={() => setSelectedImage(null)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

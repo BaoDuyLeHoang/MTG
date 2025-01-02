@@ -9,6 +9,7 @@ import FeedbackModal from '../../../components/FeedbackModal/FeedbackModal';
 import { useAuth } from '../../../context/AuthContext';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { FaStar, FaRegClock, FaComment, FaReply } from 'react-icons/fa';
+import Loading from '../../../components/Loading/Loading';
 
 const OrderDetailCus = () => {
   const [orderData, setOrderData] = useState(null);
@@ -160,7 +161,15 @@ const OrderDetailCus = () => {
     });
   };
 
-  if (!orderData) return <div>Loading...</div>;
+  if (!orderData) return (
+    <>
+      <Header />
+      <div className="odc-container">
+        <Loading fullScreen={false} text="Đang tải thông tin đơn hàng..." />
+      </div>
+      <Footer />
+    </>
+  );
 
   return (
     <div className="odc-container">

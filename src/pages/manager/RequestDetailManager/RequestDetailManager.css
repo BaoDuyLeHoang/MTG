@@ -346,25 +346,136 @@
   }
 } 
 
+/* Video Styles */
+.rdm-video-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.rdm-video-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Image Modal Styles */
+.rdm-image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.rdm-modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+}
+
+.rdm-modal-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.rdm-modal-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.rdm-modal-close {
+    position: absolute;
+    top: -2rem;
+    right: -2rem;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #1a237e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Image Grid Styles */
 .rdm-image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
 }
 
 .rdm-image-item {
-  aspect-ratio: 1;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #e8eaf6;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rdm-image-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: #c5cae9;
 }
 
 .rdm-image-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.rdm-image-date {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rdm-video-container {
+        padding-top: 75%; /* 4:3 Aspect Ratio for mobile */
+    }
+    
+    .rdm-image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .rdm-image-date {
+        font-size: 0.7rem;
+        padding: 2px 4px;
+    }
 }
 
 /* Video Styles */
@@ -475,4 +586,90 @@
 .rdm-reject-label {
   font-weight: 500;
   margin-right: 0.5rem;
+} 
+
+/* Workspace Image Container */
+.rdm-image-container {
+    width: 100%;
+    max-width: 500px; /* hoặc kích thước phù hợp với design của bạn */
+}
+
+/* Điều chỉnh style cho image items */
+.rdm-image-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #e8eaf6;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rdm-image-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: #c5cae9;
+}
+
+.rdm-image-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.rdm-image-date {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    text-align: center;
+} 
+
+.rdm-materials-summary {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.rdm-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.rdm-summary-row:last-child {
+    border-bottom: none;
+}
+
+.rdm-total-row {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #1a237e;
+}
+
+.rdm-total-price {
+    font-size: 1.25rem;
+    color: #1a237e;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rdm-summary-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .rdm-materials-summary {
+        padding: 1rem;
+    }
 } 

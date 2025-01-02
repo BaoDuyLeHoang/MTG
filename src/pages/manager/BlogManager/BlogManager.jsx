@@ -6,6 +6,7 @@ import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import { getAllBlogsManager, updateBlogStatus } from '../../../services/blog'; // Import the updateBlogStatus function
 import { useAuth } from "../../../context/AuthContext";
 import { Link } from "react-router-dom";
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
 
 const BlogApprovalDashboard = () => {
   const [posts, setPosts] = useState([]);
@@ -105,6 +106,34 @@ const BlogApprovalDashboard = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="app-container">
+        <Sidebar />
+        <div className="blog-manager-dashboard">
+          <div className="blog-manager-header">
+            <h1 className="blog-manager-title">Quản lý Bài viết</h1>
+          </div>
+          <LoadingForSideBar fullScreen={false} text="Đang tải danh sách bài viết..." />
+        </div>
+      </div>
+    );
+  }
+
+  if (alertOpen) {
+    return (
+      <div className="app-container">
+        <Sidebar />
+        <div className="blog-manager-dashboard">
+          <div className="blog-manager-header">
+            <h1 className="blog-manager-title">Quản lý Bài viết</h1>
+          </div>
+          <div className="error-message">{alertMessage}</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       <Sidebar />
@@ -149,9 +178,7 @@ const BlogApprovalDashboard = () => {
         </div>
 
         <div className="blog-manager-table-container">
-          {loading ? (
-            <div className="blog-manager-loading">Đang tải dữ liệu...</div>
-          ) : filteredPosts.length === 0 ? (
+          {filteredPosts.length === 0 ? (
             <div className="blog-manager-no-data">Không có bài viết nào</div>
           ) : (
             <table>

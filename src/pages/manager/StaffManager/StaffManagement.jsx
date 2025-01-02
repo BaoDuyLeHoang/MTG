@@ -8,11 +8,13 @@ import { ToggleLeft, ToggleRight, FileText, UserPlus } from 'lucide-react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
 
 const StaffManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [staffData, setStaffData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const { user } = useAuth();
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
@@ -38,10 +40,13 @@ const StaffManagement = () => {
 
     const fetchStaffData = async () => {
         try {
+            setLoading(true);
+            setError(null);
             const data = await getAllStaff(currentPage, pageSize, user.areaId);
             setStaffData(data.staffList);
         } catch (error) {
             console.error('Error fetching staff data:', error);
+            setError('Không thể tải danh sách nhân viên. Vui lòng thử lại sau.');
         } finally {
             setLoading(false);
         }
@@ -112,6 +117,56 @@ const StaffManagement = () => {
             year: 'numeric'
         });
     };
+
+    if (loading) {
+        return (
+            <div className="staff-management-container">
+                <Sidebar />
+                <div className="staff-management-content">
+                    <div className="header-container">
+                        <h1>Quản Lý Nhân Viên</h1>
+                        <button className="create-staff-btn" disabled>
+                            <UserPlus size={20} />
+                            Thêm Nhân Viên
+                        </button>
+                    </div>
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        minHeight: '400px' 
+                    }}>
+                        <LoadingForSideBar fullScreen={false} text="Đang tải danh sách nhân viên..." />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="staff-management-container">
+                <Sidebar />
+                <div className="staff-management-content">
+                    <div className="header-container">
+                        <h1>Quản Lý Nhân Viên</h1>
+                        <button className="create-staff-btn" disabled>
+                            <UserPlus size={20} />
+                            Thêm Nhân Viên
+                        </button>
+                    </div>
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        minHeight: '400px' 
+                    }}>
+                        <div className="error-message">{error}</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="staff-management-container">

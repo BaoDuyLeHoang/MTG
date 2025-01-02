@@ -38,6 +38,7 @@ const RequestDetailManager = () => {
   const [tempRejectNote, setTempRejectNote] = useState('');
   const [materials, setMaterials] = useState([]);
   const [openMaterialDialog, setOpenMaterialDialog] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const getManagerIdFromToken = () => {
     try {
@@ -408,13 +409,70 @@ const RequestDetailManager = () => {
                         <span className="rdm-label">Mô tả:</span>
                         <span className="rdm-value">{request.requestTask.description}</span>
                       </div>
+                      <div className="rdm-info-row">
+                        <span className="rdm-label">Thời gian tạo:</span>
+                        <span className="rdm-value">
+                          {new Date(request.requestTask.createAt).toLocaleString('vi-VN')}
+                        </span>
+                      </div>
+                      <div className="rdm-info-row">
+                        <span className="rdm-label">Cập nhật lần cuối:</span>
+                        <span className="rdm-value">
+                          {new Date(request.requestTask.updateAt).toLocaleString('vi-VN')}
+                        </span>
+                      </div>
+
+                      {/* Workspace Image */}
+                      {request.requestTask.imageWorkSpace && (
+                        <div className="rdm-info-row">
+                          <span className="rdm-label">Hình ảnh không gian làm việc:</span>
+                          <div className="rdm-image-container">
+                            <div 
+                              className="rdm-image-item"
+                              onClick={() => setSelectedImage({
+                                urlPath: request.requestTask.imageWorkSpace,
+                                createAt: request.requestTask.updateAt
+                              })}
+                            >
+                              <img src={request.requestTask.imageWorkSpace} alt="Workspace" />
+                              <div className="rdm-image-date">
+                                {new Date(request.requestTask.updateAt).toLocaleString('vi-VN', {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Task Images */}
                       {request.requestTask.taskImages && request.requestTask.taskImages.length > 0 && (
                         <div className="rdm-info-row">
-                          <span className="rdm-label">Hình ảnh:</span>
+                          <span className="rdm-label">Hình ảnh công việc:</span>
                           <div className="rdm-image-grid">
                             {request.requestTask.taskImages.map((image, index) => (
-                              <div key={index} className="rdm-image-item">
+                              <div 
+                                key={index} 
+                                className="rdm-image-item"
+                                onClick={() => setSelectedImage({
+                                  urlPath: image.imageRequestTaskCustomer,
+                                  createAt: image.createAt
+                                })}
+                              >
                                 <img src={image.imageRequestTaskCustomer} alt={`Task image ${index + 1}`} />
+                                <div className="rdm-image-date">
+                                  {new Date(image.createAt).toLocaleString('vi-VN', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -433,22 +491,49 @@ const RequestDetailManager = () => {
                         <span className="rdm-label">Mô tả:</span>
                         <span className="rdm-value">{request.reportTask.description}</span>
                       </div>
-                      {request.reportTask.reportImages && request.reportTask.reportImages.length > 0 && (
-                        <div className="rdm-report-images">
-                          <span className="rdm-label">Hình ảnh:</span>
-                          <div className="rdm-image-grid">
-                            {request.reportTask.reportImages.map((image, index) => (
-                              <div key={index} className="rdm-image-item">
-                                <img src={image.urlPath} alt={`Report image ${index + 1}`} />
-                              </div>
-                            ))}
+                      
+                      {/* Video Section */}
+                      {request.reportTask.videoFile && (
+                        <div className="rdm-info-row">
+                          <span className="rdm-label">Video:</span>
+                          <div className="rdm-video-container">
+                            <iframe 
+                              className="rdm-video-frame"
+                              src={request.reportTask.videoFile}
+                              title="Report Video"
+                              allowFullScreen
+                              allow="autoplay; encrypted-media"
+                              loading="lazy"
+                              frameBorder="0"
+                            ></iframe>
                           </div>
                         </div>
                       )}
-                      {request.reportTask.videoFile && (
-                        <div className="rdm-video">
-                          <span className="rdm-label">Video:</span>
-                          <video controls src={request.reportTask.videoFile} />
+
+                      {/* Images Section */}
+                      {request.reportTask.reportImages && request.reportTask.reportImages.length > 0 && (
+                        <div className="rdm-info-row">
+                          <span className="rdm-label">Hình ảnh:</span>
+                          <div className="rdm-image-grid">
+                            {request.reportTask.reportImages.map((image, index) => (
+                              <div 
+                                key={index} 
+                                className="rdm-image-item"
+                                onClick={() => setSelectedImage(image)}
+                              >
+                                <img src={image.urlPath} alt={`Report image ${index + 1}`} />
+                                <div className="rdm-image-date">
+                                  {new Date(image.createAt).toLocaleString('vi-VN', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -478,12 +563,32 @@ const RequestDetailManager = () => {
                           )}
                         </div>
                       ))}
-                      <div className="rdm-materials-total">
-                        <span className="rdm-label">Tổng tiền:</span>
-                        <span className="rdm-value rdm-price">
-                          {request.requestMaterials.reduce((total, material) => total + material.price, 0)
-                            .toLocaleString('vi-VN')}đ
-                        </span>
+                      <div className="rdm-materials-summary">
+                        <div className="rdm-summary-row">
+                          <span className="rdm-label">Tổng tiền nguyên vật liệu:</span>
+                          <span className="rdm-value rdm-price">
+                            {request.requestMaterials.reduce((total, material) => total + material.price, 0)
+                              .toLocaleString('vi-VN')}đ
+                          </span>
+                        </div>
+                        
+                        {request.typeId === 2 && (
+                          <>
+                            <div className="rdm-summary-row">
+                              <span className="rdm-label">Phí dịch vụ (5%):</span>
+                              <span className="rdm-value rdm-price">
+                                {(request.requestMaterials.reduce((total, material) => total + material.price, 0) * 0.05)
+                                  .toLocaleString('vi-VN')}đ
+                              </span>
+                            </div>
+                            <div className="rdm-summary-row rdm-total-row">
+                              <span className="rdm-label">Tổng tiền yêu cầu:</span>
+                              <span className="rdm-value rdm-price rdm-total-price">
+                                {request.price.toLocaleString('vi-VN')}đ
+                              </span>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -601,6 +706,33 @@ const RequestDetailManager = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className="rdm-image-modal"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="rdm-modal-content" onClick={e => e.stopPropagation()}>
+            <img src={selectedImage.urlPath} alt="Enlarged view" />
+            <div className="rdm-modal-info">
+              {new Date(selectedImage.createAt).toLocaleString('vi-VN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </div>
+            <button 
+              className="rdm-modal-close"
+              onClick={() => setSelectedImage(null)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

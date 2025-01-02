@@ -263,7 +263,7 @@ const ScheduleManager = () => {
         pageSize
       );
 
-      // Kiểm tra n���u response có error message
+      // Kiểm tra nếu response có error message
       if (response?.error || response?.message?.includes("does not have any tasks")) {
         setOrders([]); // Reset orders list
         setTotalPages(1);
@@ -392,7 +392,7 @@ const ScheduleManager = () => {
 
   // Cập nhật hàm handleRemoveTask
   const handleRemoveTask = (schedule) => {
-    console.log('Removing schedule:', schedule); // Thêm log ��ể debug
+    console.log('Removing schedule:', schedule); // Thêm log để debug
     setDeleteConfirm({
       open: true,
       scheduleId: schedule.id, // scheduleDetailId đã được truyền từ component
@@ -712,240 +712,227 @@ const ScheduleManager = () => {
         </div>
       </div>
 
-      <StyledDialog
-        open={openOrderDialog}
-        onClose={handleCloseOrderDialog}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 600, pb: 1 }}>
-          Chọn Công Việc
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-            <Tabs value={selectedTab} onChange={(e, newValue) => setSelectedTab(newValue)}>
-              <Tab label="Công việc thường" />
-              <Tab label="Công việc định kỳ" />
-              <Tab label="Công việc theo yêu cầu khách hàng" />
-            </Tabs>
-          </Box>
+      <div className={`popup-overlay ${openOrderDialog ? 'active' : ''}`} onClick={handleCloseOrderDialog}>
+        <div className="popup-container" onClick={e => e.stopPropagation()}>
+          <div className="popup-header">
+            <h2>Chọn Công Việc</h2>
+            <button className="popup-close" onClick={handleCloseOrderDialog}>×</button>
+          </div>
+          
+          <div className="popup-tabs">
+            <button 
+              className={`popup-tab ${selectedTab === 0 ? 'active' : ''}`}
+              onClick={() => setSelectedTab(0)}
+            >
+              Công việc thường
+            </button>
+            <button 
+              className={`popup-tab ${selectedTab === 1 ? 'active' : ''}`}
+              onClick={() => setSelectedTab(1)}
+            >
+              Công việc định kỳ
+            </button>
+            <button 
+              className={`popup-tab ${selectedTab === 2 ? 'active' : ''}`}
+              onClick={() => setSelectedTab(2)}
+            >
+              Công việc theo yêu cầu khách hàng
+            </button>
+          </div>
 
-          {(orderLoading || isAddingTask) ? (
-            <Box sx={{ position: 'relative', minHeight: '200px' }}>
-              <Loading text={isAddingTask ? "Đang thêm công việc..." : "Đang tải danh sách công việc..."} />
-            </Box>
-          ) : (
-            <>
-              {selectedTab === 0 && (
-                <>
-                  {orders.length > 0 ? (
-                    <>
-                      <List>
-                        {orders.map((task) => (
-                          <Fade in key={task.taskId} timeout={500}>
-                            <StyledListItem button onClick={() => handleSelectOrder(task)}>
-                              <TaskInfo>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                  {task.serviceName}
-                                </Typography>
-                                <TaskLocation>
-                                  Địa điểm: {task.graveLocation || 'Chưa có thông tin'}
-                                </TaskLocation>
-                                <TaskDate>
-                                  Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}
-                                </TaskDate>
-                              </TaskInfo>
-                            </StyledListItem>
-                          </Fade>
-                        ))}
-                      </List>
-                      <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        gap: 2,
-                        pt: 2
-                      }}>
-                        <Typography variant="body2">
-                          Trang {page} / {totalPages}
-                        </Typography>
-                        <Pagination
-                          count={totalPages}
-                          page={page}
-                          onChange={handlePageChange}
-                          color="primary"
-                          showFirstButton
-                          showLastButton
-                        />
-                      </Box>
-                    </>
-                  ) : (
-                    <Typography sx={{ textAlign: 'center', py: 2 }}>
-                      Không có công việc thường nào khả dụng
-                    </Typography>
-                  )}
-                </>
-              )}
+          <div className="popup-content-schedule-service-staff">
+            {(orderLoading || isAddingTask) ? (
+              <div className="popup-loading">
+                <div className="loading-spinner"></div>
+                <p>{isAddingTask ? "Đang thêm công việc..." : "Đang tải danh sách công việc..."}</p>
+              </div>
+            ) : (
+              <div className="popup-task-list">
+                {/* Tab Công việc thường */}
+                {selectedTab === 0 && orders.map(task => (
+                  <div 
+                    key={task.taskId} 
+                    className="popup-task-item"
+                    onClick={() => handleSelectOrder(task)}
+                  >
+                    <div className="task-info">
+                      <h4>{task.serviceName}</h4>
+                      <p>Địa điểm: {task.graveLocation || 'Chưa có thông tin'}</p>
+                      <p>Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}</p>
+                    </div>
+                  </div>
+                ))}
 
-              {selectedTab === 1 && (
-                <>
-                  {recurringTasks.length > 0 ? (
-                    <>
-                      <List>
-                        {recurringTasks.map((task) => (
-                          <Fade in key={task.taskId} timeout={500}>
-                            <StyledListItem button onClick={() => handleSelectOrder(task)}>
-                              <TaskInfo>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                  {task.serviceName}
-                                </Typography>
-                                <TaskLocation>
-                                  Địa điểm: {task.graveLocation || 'Chưa có thông tin'}
-                                </TaskLocation>
-                                <TaskDate>
-                                  Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}
-                                </TaskDate>
-                              </TaskInfo>
-                            </StyledListItem>
-                          </Fade>
-                        ))}
-                      </List>
-                      <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        gap: 2,
-                        pt: 2
-                      }}>
-                        <Typography variant="body2">
-                          Trang {recurringPage} / {recurringTotalPages}
-                        </Typography>
-                        <Pagination
-                          count={recurringTotalPages}
-                          page={recurringPage}
-                          onChange={handleRecurringPageChange}
-                          color="primary"
-                          showFirstButton
-                          showLastButton
-                        />
-                      </Box>
-                    </>
-                  ) : (
-                    <Typography sx={{ textAlign: 'center', py: 2 }}>
-                      Không có công việc định kỳ nào khả dụng
-                    </Typography>
-                  )}
-                </>
-              )}
+                {/* Tab Công việc định kỳ */}
+                {selectedTab === 1 && recurringTasks.map(task => (
+                  <div 
+                    key={task.assignmentTaskId} 
+                    className="popup-task-item"
+                    onClick={() => handleSelectOrder(task)}
+                  >
+                    <div className="task-info">
+                      <h4>{task.serviceName}</h4>
+                      <p>Địa điểm: {task.graveLocation || 'Chưa có thông tin'}</p>
+                      <p>Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}</p>
+                      <p className="recurring-tag">Công việc định kỳ</p>
+                    </div>
+                  </div>
+                ))}
 
-              {selectedTab === 2 && (
-                <>
-                  {loading ? (
-                    <Typography sx={{ textAlign: 'center', py: 2 }}>Đang tải công việc theo yêu cầu khách hàng...</Typography>
-                  ) : (
-                    <>
-                      {customerRequestTasks.length > 0 ? (
-                        <>
-                          <List>
-                            {customerRequestTasks.map((task) => (
-                              <Fade in key={task.requestTaskId} timeout={500}>
-                                <StyledListItem button onClick={() => handleSelectOrder(task)}>
-                                  <TaskInfo>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                      {task.serviceName}
-                                    </Typography>
-                                    <TaskLocation>
-                                      Địa điểm: {task.graveLocation || 'Chưa có thông tin'}
-                                    </TaskLocation>
-                                    <TaskDate>
-                                      Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}
-                                    </TaskDate>
-                                  </TaskInfo>
-                                </StyledListItem>
-                              </Fade>
-                            ))}
-                          </List>
-                          <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: 2,
-                            pt: 2
-                          }}>
-                            <Typography variant="body2">
-                              Trang {recurringPage} / {recurringTotalPages}
-                            </Typography>
-                            <Pagination
-                              count={recurringTotalPages}
-                              page={recurringPage}
-                              onChange={(event, newPage) => {
-                                setRecurringPage(newPage);
-                                fetchCustomerRequestTasks(newPage);
-                              }}
-                              color="primary"
-                              showFirstButton
-                              showLastButton
-                            />
-                          </Box>
-                        </>
-                      ) : (
-                        <Typography sx={{ textAlign: 'center', py: 2 }}>
-                          Không có công việc nào theo yêu cầu khách hàng.
-                        </Typography>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseOrderDialog}>Đóng</Button>
-        </DialogActions>
-      </StyledDialog>
+                {/* Tab Công việc theo yêu cầu */}
+                {selectedTab === 2 && customerRequestTasks.map(task => (
+                  <div 
+                    key={task.requestTaskId} 
+                    className="popup-task-item"
+                    onClick={() => handleSelectOrder(task)}
+                  >
+                    <div className="task-info">
+                      <h4>{task.serviceName}</h4>
+                      <p>Địa điểm: {task.graveLocation || 'Chưa có thông tin'}</p>
+                      <p>Ngày hết hạn: {format(new Date(task.endDate), 'dd/MM/yyyy')}</p>
+                      <p className="request-tag">Yêu cầu từ khách hàng</p>
+                    </div>
+                  </div>
+                ))}
 
-      <Dialog
-        open={confirmDialog.open}
-        onClose={() => setConfirmDialog({ open: false, task: null })}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Xác nhận thêm công việc</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Bạn có muốn thực hiện công việc <strong>{confirmDialog.task?.serviceName}</strong> không?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDialog({ open: false, task: null })} color="inherit">Không</Button>
-          <Button onClick={handleConfirmSelect} autoFocus variant="contained">Có</Button>
-        </DialogActions>
-      </Dialog>
+                {/* Hiển thị thông báo khi không có dữ liệu */}
+                {selectedTab === 0 && orders.length === 0 && (
+                  <div className="no-tasks-message">
+                    Không có công việc thường nào khả dụng
+                  </div>
+                )}
+                {selectedTab === 1 && recurringTasks.length === 0 && (
+                  <div className="no-tasks-message">
+                    Không có công việc định kỳ nào khả dụng
+                  </div>
+                )}
+                {selectedTab === 2 && customerRequestTasks.length === 0 && (
+                  <div className="no-tasks-message">
+                    Không có công việc theo yêu cầu nào khả dụng
+                  </div>
+                )}
 
-      <Dialog
-        open={deleteConfirm.open}
-        onClose={handleCloseDeleteConfirm}
-        aria-labelledby="delete-dialog-title"
-        aria-describedby="delete-dialog-description"
-      >
-        <DialogTitle id="delete-dialog-title">
-          Xác nhận xóa công việc
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-dialog-description">
-            Bạn có chắc chắn muốn xóa công việc <strong>{deleteConfirm.serviceName}</strong> không?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteConfirm} color="inherit">
-            Hủy
-          </Button>
-          <Button onClick={handleConfirmDelete} color="error" variant="contained">
-            Xóa
-          </Button>
-        </DialogActions>
-      </Dialog>
+                {/* Phân trang cho mỗi tab */}
+                {selectedTab === 0 && orders.length > 0 && (
+                  <div className="popup-pagination">
+                    <span>Trang {page} / {totalPages}</span>
+                    <div className="pagination-buttons">
+                      <button 
+                        onClick={() => handlePageChange(null, Math.max(1, page - 1))}
+                        disabled={page === 1}
+                      >
+                        Trước
+                      </button>
+                      <button 
+                        onClick={() => handlePageChange(null, Math.min(totalPages, page + 1))}
+                        disabled={page === totalPages}
+                      >
+                        Sau
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {selectedTab === 1 && recurringTasks.length > 0 && (
+                  <div className="popup-pagination">
+                    <span>Trang {recurringPage} / {recurringTotalPages}</span>
+                    <div className="pagination-buttons">
+                      <button 
+                        onClick={() => handleRecurringPageChange(null, Math.max(1, recurringPage - 1))}
+                        disabled={recurringPage === 1}
+                      >
+                        Trước
+                      </button>
+                      <button 
+                        onClick={() => handleRecurringPageChange(null, Math.min(recurringTotalPages, recurringPage + 1))}
+                        disabled={recurringPage === recurringTotalPages}
+                      >
+                        Sau
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="popup-footer">
+            <button className="popup-button secondary" onClick={handleCloseOrderDialog}>
+              Đóng
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className={`confirm-dialog-overlay ${confirmDialog.open ? 'active' : ''}`} onClick={() => setConfirmDialog({ open: false, task: null })}>
+        <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+          <div className="confirm-dialog-header">
+            <h3>Xác nhận thêm công việc</h3>
+            <button 
+              className="confirm-dialog-close"
+              onClick={() => setConfirmDialog({ open: false, task: null })}
+            >
+              ×
+            </button>
+          </div>
+          
+          <div className="confirm-dialog-content">
+            <p>
+              Bạn có muốn thực hiện công việc <strong>{confirmDialog.task?.serviceName}</strong> không?
+            </p>
+          </div>
+
+          <div className="confirm-dialog-actions">
+            <button 
+              className="confirm-button secondary"
+              onClick={() => setConfirmDialog({ open: false, task: null })}
+            >
+              Không
+            </button>
+            <button 
+              className="confirm-button primary"
+              onClick={handleConfirmSelect}
+            >
+              Có
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className={`confirm-dialog-overlay ${deleteConfirm.open ? 'active' : ''}`} onClick={handleCloseDeleteConfirm}>
+        <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+          <div className="confirm-dialog-header">
+            <h3>Xác nhận xóa công việc</h3>
+            <button 
+              className="confirm-dialog-close"
+              onClick={handleCloseDeleteConfirm}
+            >
+              ×
+            </button>
+          </div>
+          
+          <div className="confirm-dialog-content">
+            <p>
+              Bạn có chắc chắn muốn xóa công việc <strong>{deleteConfirm.serviceName}</strong> không?
+            </p>
+          </div>
+
+          <div className="confirm-dialog-actions">
+            <button 
+              className="confirm-button secondary"
+              onClick={handleCloseDeleteConfirm}
+            >
+              Hủy
+            </button>
+            <button 
+              className="confirm-button delete"
+              onClick={handleConfirmDelete}
+            >
+              Xóa
+            </button>
+          </div>
+        </div>
+      </div>
 
       <AlertMessage
         open={alert.open}

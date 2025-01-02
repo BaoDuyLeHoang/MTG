@@ -1,22 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Avatar,
-  Chip,
-  Container,
-  Grid,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  Button,
-  Tab,
-  Tabs
-} from '@mui/material';
-import {
   Assignment,
   CheckCircle,
   Person
@@ -232,66 +215,48 @@ const AttendanceManager = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className="attendance-manager-wrapper">
       <Sidebar />
-      <Box
-        className="dashboard-main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%)',
-          minHeight: '100vh'
-        }}
-      >
+      <div className="attendance-manager-main">
         {loading ? (
           <LoadingForSideBar text="Đang tải danh sách công việc..." />
         ) : (
-          <Container maxWidth="lg" className="attendance-manager-container">
-            <div className="blog-manager-header">
-              <h1 className="blog-manager-title">Công việc của nhân viên</h1>
+          <div className="attendance-manager-container">
+            <div className="attendance-manager-header">
+              <h1 className="attendance-manager-title">Công việc của nhân viên</h1>
             </div>
 
-            {/* Thêm Tabs */}
-            <Tabs value={activeTab} onChange={(event, newValue) => setActiveTab(newValue)}>
-              <Tab label="Công việc" />
-              <Tab label="Công việc định kỳ" />
-            </Tabs>
+            <div className="attendance-manager-tabs">
+              <button 
+                className={`attendance-manager-tab ${activeTab === 0 ? 'active' : ''}`}
+                onClick={() => setActiveTab(0)}
+              >
+                Công việc
+              </button>
+              <button 
+                className={`attendance-manager-tab ${activeTab === 1 ? 'active' : ''}`}
+                onClick={() => setActiveTab(1)}
+              >
+                Công việc định kỳ
+              </button>
+            </div>
 
             {activeTab === 0 && (
-              // Hiển thị công việc thông thường
-              <Box>
-                <Box className="dashboard-header"
-                  sx={{
-                    mb: 4,
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    borderRadius: '15px',
-                    p: 2,
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.07)',
-                    display: 'flex',
-                    gap: 2,
-                    alignItems: 'center'
-                  }}
-                >
-                  <TextField
-                    placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      flex: 1,
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '8px',
-                      }
-                    }}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
-                    }}
-                  />
+              <div className="attendance-manager-content">
+                <div className="attendance-manager-filters">
+                  <div className="attendance-manager-search">
+                    <SearchIcon className="attendance-manager-search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="attendance-manager-search-input"
+                    />
+                  </div>
 
                   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <div className="attendance-manager-date-filters">
                       <DatePicker
                         label="Từ ngày"
                         value={fromDate}
@@ -302,17 +267,7 @@ const AttendanceManager = () => {
                           }
                         }}
                         format="dd/MM/yyyy"
-                        sx={{
-                          width: '160px',
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: '8px',
-                          }
-                        }}
-                        slotProps={{
-                          textField: {
-                            size: "small",
-                          },
-                        }}
+                        className="attendance-manager-date-picker"
                       />
                       <DatePicker
                         label="Đến ngày"
@@ -320,198 +275,111 @@ const AttendanceManager = () => {
                         onChange={(newValue) => setToDate(newValue)}
                         minDate={fromDate}
                         format="dd/MM/yyyy"
-                        sx={{
-                          width: '160px',
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: '8px',
-                          }
-                        }}
-                        slotProps={{
-                          textField: {
-                            size: "small",
-                          },
-                        }}
+                        className="attendance-manager-date-picker"
                       />
-                    </Box>
+                    </div>
                   </LocalizationProvider>
 
-                  <FormControl size="small" sx={{ width: '200px' }}>
-                    <Select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
-                      displayEmpty
-                      sx={{
-                        borderRadius: '8px',
-                        height: '40px' // Match height with other components
-                      }}
-                    >
-                      <MenuItem value="all">Tất cả trạng thái</MenuItem>
-                      <MenuItem value={4}>Hoàn thành</MenuItem>
-                      <MenuItem value={3}>Đang thực hiện</MenuItem>
-                      <MenuItem value={1}>Chờ xử lý</MenuItem>
-                      <MenuItem value={2}>Từ chối</MenuItem>
-                      <MenuItem value={5}>Thất bại</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                  <select 
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="attendance-manager-status-select"
+                  >
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value={4}>Hoàn thành</option>
+                    <option value={3}>Đang thực hiện</option>
+                    <option value={1}>Chờ xử lý</option>
+                    <option value={2}>Từ chối</option>
+                    <option value={5}>Thất bại</option>
+                  </select>
+                </div>
 
-                <Grid container spacing={3} className="stats-container">
-                  {/* Your stats rendering logic remains unchanged */}
-                </Grid>
+                <div className="attendance-manager-tasks-card">
+                  <div className="attendance-manager-tasks-header">
+                    <span className="attendance-manager-tasks-icon">
+                      <Assignment />
+                    </span>
+                    <h2 className="attendance-manager-tasks-title">Danh sách Công việc</h2>
+                  </div>
 
-                <Card
-                  className="tasks-card"
-                  sx={{
-                    mt: 4,
-                    borderRadius: '16px',
-                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(10px)'
-                  }}
-                >
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        mb: 3,
-                        fontWeight: 'bold',
-                        color: '#1a237e',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1
-                      }}
-                    >
-                      <Assignment sx={{ color: '#1e88e5' }} />
-                      Danh sách Công việc
-                    </Typography>
-                    <Box className="tasks-list">
-                      {currentTasks.map((task, index) => (
-                        <Box
-                          key={task.taskId}
-                          className="task-item animate-in"
-                          sx={{
-                            p: 2.5,
-                            mb: 2,
-                            borderRadius: '12px',
-                            backgroundColor: 'white',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                            transition: 'all 0.3s ease',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            '&:hover': {
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                              backgroundColor: '#f8f9fa'
-                            }
-                          }}
+                  <div className="attendance-manager-tasks-list">
+                    {currentTasks.map((task) => (
+                      <div key={task.taskId} className="attendance-manager-task-item">
+                        <img 
+                          src={task.serviceImage} 
+                          alt={task.serviceName}
+                          className="attendance-manager-task-image"
+                        />
+                        <div className="attendance-manager-task-content">
+                          <div className="attendance-manager-task-header">
+                            <h3 className="attendance-manager-task-name">{task.serviceName}</h3>
+                            <span className="attendance-manager-task-category">{task.categoryName}</span>
+                          </div>
+                          <div className="attendance-manager-task-details">
+                            <span className="attendance-manager-task-location">📍 {task.graveLocation}</span>
+                            <span className="attendance-manager-task-dates">
+                              📅 {format(new Date(task.startDate), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
+                            </span>
+                          </div>
+                          <div className="attendance-manager-task-footer">
+                            <span className="attendance-manager-task-staff">
+                              <Person className="attendance-manager-staff-icon" />
+                              {task.fullname}
+                            </span>
+                            <span className={`attendance-manager-task-status status-${task.status}`}>
+                              {getStatusText(task.status)}
+                            </span>
+                          </div>
+                        </div>
+                        <button 
+                          className="attendance-manager-detail-btn"
+                          onClick={() => handleOpenDetails(task)}
                         >
-                          <Avatar
-                            src={task.serviceImage}
-                            alt={task.serviceName}
-                            sx={{ 
-                              width: 56, 
-                              height: 56,
-                              border: '2px solid #e0e0e0',
-                              flexShrink: 0
-                            }}
-                          />
-                          <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, flexWrap: 'wrap' }}>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                                {task.serviceName}
-                              </Typography>
-                              <Chip
-                                label={task.categoryName}
-                                size="small"
-                                variant="outlined"
-                              />
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 2, flexWrap: 'wrap' }}>
-                              <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                                📍 {task.graveLocation}
-                              </Typography>
-                              <Typography variant="body2" color="textSecondary">
-                                📅 {format(new Date(task.startDate), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
-                              </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Person sx={{ fontSize: 16, mr: 0.5 }} />
-                                {task.fullname}
-                              </Typography>
-                              <Chip
-                                label={getStatusText(task.status)}
-                                size="small"
-                                color={getStatusColor(task.status)}
-                                sx={{ ml: 1 }}
-                              />
-                            </Box>
-                          </Box>
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            onClick={() => handleOpenDetails(task)}
-                            sx={{ ml: 2 }}
-                          >
-                            Chi tiết
-                          </Button>
-                        </Box>
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
+                          Chi tiết
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-                {/* Pagination Controls */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                  <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                <div className="attendance-manager-pagination">
+                  <button 
+                    className="attendance-manager-prev-btn"
+                    onClick={handlePreviousPage} 
+                    disabled={currentPage === 1}
+                  >
                     Previous
-                  </Button>
-                  <Typography>
+                  </button>
+                  <span className="attendance-manager-page-info">
                     Page {currentPage} of {totalPages}
-                  </Typography>
-                  <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                  </span>
+                  <button 
+                    className="attendance-manager-next-btn"
+                    onClick={handleNextPage} 
+                    disabled={currentPage === totalPages}
+                  >
                     Next
-                  </Button>
-                </Box>
-              </Box>
+                  </button>
+                </div>
+              </div>
             )}
 
             {activeTab === 1 && (
-              // Hiển thị công việc định kỳ
-              <Box>
-                <Box className="dashboard-header"
-                  sx={{
-                    mb: 4,
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    borderRadius: '15px',
-                    p: 2,
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.07)',
-                    display: 'flex',
-                    gap: 2,
-                    alignItems: 'center'
-                  }}
-                >
-                  <TextField
-                    placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      flex: 1,
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '8px',
-                      }
-                    }}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />
-                    }}
-                  />
+              <div className="attendance-manager-content">
+                <div className="attendance-manager-filters">
+                  <div className="attendance-manager-search">
+                    <SearchIcon className="attendance-manager-search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="attendance-manager-search-input"
+                    />
+                  </div>
 
                   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <div className="attendance-manager-date-filters">
                       <DatePicker
                         label="Từ ngày"
                         value={fromDate}
@@ -522,17 +390,7 @@ const AttendanceManager = () => {
                           }
                         }}
                         format="dd/MM/yyyy"
-                        sx={{
-                          width: '160px',
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: '8px',
-                          }
-                        }}
-                        slotProps={{
-                          textField: {
-                            size: "small",
-                          },
-                        }}
+                        className="attendance-manager-date-picker"
                       />
                       <DatePicker
                         label="Đến ngày"
@@ -540,311 +398,160 @@ const AttendanceManager = () => {
                         onChange={(newValue) => setToDate(newValue)}
                         minDate={fromDate}
                         format="dd/MM/yyyy"
-                        sx={{
-                          width: '160px',
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: '8px',
-                          }
-                        }}
-                        slotProps={{
-                          textField: {
-                            size: "small",
-                          },
-                        }}
+                        className="attendance-manager-date-picker"
                       />
-                    </Box>
+                    </div>
                   </LocalizationProvider>
 
-                  <FormControl size="small" sx={{ width: '200px' }}>
-                    <Select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
-                      displayEmpty
-                      sx={{
-                        borderRadius: '8px',
-                        height: '40px' // Match height with other components
-                      }}
-                    >
-                      <MenuItem value="all">Tất cả trạng thái</MenuItem>
-                      <MenuItem value={4}>Hoàn thành</MenuItem>
-                      <MenuItem value={3}>Đang thực hiện</MenuItem>
-                      <MenuItem value={1}>Chờ xử lý</MenuItem>
-                      <MenuItem value={2}>Từ chối</MenuItem>
-                      <MenuItem value={5}>Thất bại</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                  <select 
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="attendance-manager-status-select"
+                  >
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value={4}>Hoàn thành</option>
+                    <option value={3}>Đang thực hiện</option>
+                    <option value={1}>Chờ xử lý</option>
+                    <option value={2}>Từ chối</option>
+                    <option value={5}>Thất bại</option>
+                  </select>
+                </div>
 
-                <Grid container spacing={3} className="stats-container">
-                  {/* Your stats rendering logic remains unchanged */}
-                </Grid>
+                <div className="attendance-manager-tasks-card">
+                  <div className="attendance-manager-tasks-header">
+                    <i className="attendance-manager-tasks-icon">📋</i>
+                    <h2 className="attendance-manager-tasks-title">Danh sách công việc định kì</h2>
+                  </div>
 
-                <Card
-                  className="tasks-card"
-                  sx={{
-                    mt: 4,
-                    borderRadius: '16px',
-                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(10px)'
-                  }}
-                >
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        mb: 3,
-                        fontWeight: 'bold',
-                        color: '#1a237e',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1
-                      }}
-                    >
-                      <Assignment sx={{ color: '#1e88e5' }} />
-                      Danh sách công việc định kì
-                    </Typography>
-                    <Box className="tasks-list">
-                      {recurringTasks.map((task, index) => (
-                        <Box
-                          key={task.assignmentTaskId}
-                          className="task-item animate-in"
-                          sx={{
-                            p: 2.5,
-                            mb: 2,
-                            borderRadius: '12px',
-                            backgroundColor: 'white',
-                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                            transition: 'all 0.3s ease',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            '&:hover': {
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                              backgroundColor: '#f8f9fa'
-                            }
-                          }}
+                  <div className="attendance-manager-tasks-list">
+                    {recurringTasks.map((task) => (
+                      <div key={task.assignmentTaskId} className="attendance-manager-task-item">
+                        <img 
+                          src={task.serviceImage} 
+                          alt={task.serviceName}
+                          className="attendance-manager-task-image"
+                        />
+                        <div className="attendance-manager-task-content">
+                          <div className="attendance-manager-task-header">
+                            <h3 className="attendance-manager-task-name">{task.serviceName}</h3>
+                            <span className="attendance-manager-task-category">{task.categoryName}</span>
+                          </div>
+                          <div className="attendance-manager-task-details">
+                            <span className="attendance-manager-task-location">📍 {task.graveLocation}</span>
+                            <span className="attendance-manager-task-dates">
+                              📅 {format(new Date(task.createAt), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
+                            </span>
+                          </div>
+                          <div className="attendance-manager-task-footer">
+                            <span className="attendance-manager-task-staff">
+                              <i className="attendance-manager-staff-icon">👤</i>
+                              {task.staffName}
+                            </span>
+                            <span className={`attendance-manager-task-status status-${task.status}`}>
+                              {getStatusText(task.status)}
+                            </span>
+                          </div>
+                        </div>
+                        <button 
+                          className="attendance-manager-detail-btn"
+                          onClick={() => handleOpenDetailsAssignTask(task)}
                         >
-                          <Avatar
-                            src={task.serviceImage}
-                            alt={task.serviceName}
-                            sx={{ 
-                              width: 56, 
-                              height: 56,
-                              border: '2px solid #e0e0e0',
-                              flexShrink: 0
-                            }}
-                          />
-                          <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, flexWrap: 'wrap' }}>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                                {task.serviceName}
-                              </Typography>
-                              <Chip
-                                label={task.categoryName}
-                                size="small"
-                                variant="outlined"
-                              />
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 2, flexWrap: 'wrap' }}>
-                              <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                                📍 {task.graveLocation}
-                              </Typography>
-                              <Typography variant="body2" color="textSecondary">
-                                📅 {format(new Date(task.createAt), 'dd/MM/yyyy')} - {format(new Date(task.endDate), 'dd/MM/yyyy')}
-                              </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Person sx={{ fontSize: 16, mr: 0.5 }} />
-                                {task.staffName}
-                              </Typography>
-                              <Chip
-                                label={getStatusText(task.status)}
-                                size="small"
-                                color={getStatusColor(task.status)}
-                                sx={{ ml: 1 }}
-                              />
-                            </Box>
-                          </Box>
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            onClick={() => handleOpenDetailsAssignTask(task)}
-                            sx={{ ml: 2 }}
-                          >
-                            Chi tiết
-                          </Button>
-                        </Box>
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-
-                {/* Pagination Controls */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                  <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                    Previous
-                  </Button>
-                  <Typography>
-                    Page {currentPage} of {totalPages}
-                  </Typography>
-                  <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                    Next
-                  </Button>
-                </Box>
-              </Box>
+                          Chi tiết
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
-          </Container>
+          </div>
         )}
-      </Box>
+      </div>
 
-      {/* Dialog for task details */}
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        maxWidth="md"
-        fullWidth
-      >
-        {selectedTask && (
-          <>
-            <DialogTitle>Chi tiết công việc</DialogTitle>
-            <DialogContent>
-              <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={12}>
-                  <Typography variant="h6">{selectedTask.serviceName}</Typography>
-                  <Chip label={selectedTask.categoryName} sx={{ mt: 1 }} />
-                </Grid>
-                
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Nhân viên thực hiện</Typography>
-                  <Typography>{selectedTask.fullname}</Typography>
-                </Grid>
+      {/* Dialog component */}
+      {openDialog && (selectedTask || selectedAssignTask) && (
+        <div className="attendance-manager-dialog-overlay" onClick={handleCloseDialog}>
+          <div className="attendance-manager-dialog" onClick={e => e.stopPropagation()}>
+            <div className="attendance-manager-dialog-header">
+              <h2 className="attendance-manager-dialog-title">
+                Chi tiết công việc
+              </h2>
+              <button 
+                className="attendance-manager-dialog-close"
+                onClick={handleCloseDialog}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="attendance-manager-dialog-content">
+              {selectedTask ? (
+                <>
+                  <div className="attendance-manager-dialog-section">
+                    <h3>Thông tin công việc</h3>
+                    <p><strong>Tên dịch vụ:</strong> {selectedTask.serviceName}</p>
+                    <p><strong>Vị trí:</strong> {selectedTask.graveLocation}</p>
+                    <p><strong>Thời gian:</strong> {format(new Date(selectedTask.startDate), 'dd/MM/yyyy')} - {format(new Date(selectedTask.endDate), 'dd/MM/yyyy')}</p>
+                    <p><strong>Trạng thái:</strong> <span className={`attendance-manager-task-status status-${selectedTask.status}`}>{getStatusText(selectedTask.status)}</span></p>
+                  </div>
 
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Vị trí</Typography>
-                  <Typography>{selectedTask.graveLocation}</Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Ngày bắt đầu</Typography>
-                  <Typography>{format(new Date(selectedTask.startDate), 'dd/MM/yyyy')}</Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Ngày kết thúc</Typography>
-                  <Typography>{format(new Date(selectedTask.endDate), 'dd/MM/yyyy')}</Typography>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Typography variant="subtitle2" color="textSecondary">Trạng thái</Typography>
-                  <Chip
-                    label={getStatusText(selectedTask.status)}
-                    color={getStatusColor(selectedTask.status)}
-                    sx={{ mt: 1 }}
-                  />
-                </Grid>
-
-                {selectedTask.images && selectedTask.images.length > 0 && (
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>Hình ảnh</Typography>
-                    <ImageList sx={{ width: '100%', height: 300 }} cols={3} rowHeight={164}>
-                      {selectedTask.images.map((image, index) => (
-                        <ImageListItem key={index}>
-                          <img
+                  {selectedTask.images && selectedTask.images.length > 0 && (
+                    <div className="attendance-manager-dialog-section">
+                      <h3>Hình ảnh</h3>
+                      <div className="attendance-manager-dialog-images">
+                        {selectedTask.images.map((image, index) => (
+                          <img 
+                            key={index}
                             src={image}
                             alt={`Task image ${index + 1}`}
-                            loading="lazy"
-                            style={{ objectFit: 'cover' }}
+                            className="attendance-manager-dialog-image"
                           />
-                        </ImageListItem>
-                      ))}
-                    </ImageList>
-                  </Grid>
-                )}
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseDialog}>Đóng</Button>
-            </DialogActions>
-          </>
-        )}
-        {selectedAssignTask && (
-          <>
-            <DialogTitle>Chi tiết công việc định kỳ</DialogTitle>
-            <DialogContent>
-              <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={12}>
-                  <Typography variant="h6">{selectedAssignTask.serviceName}</Typography>
-                  <Chip label={selectedAssignTask.categoryName} sx={{ mt: 1 }} />
-                </Grid>
-                
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Nhân viên thực hiện</Typography>
-                  <Typography>{selectedAssignTask.staffName}</Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Vị trí</Typography>
-                  <Typography>{selectedAssignTask.graveLocation}</Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Ngày bắt đầu</Typography>
-                  <Typography>{format(new Date(selectedAssignTask.createAt), 'dd/MM/yyyy')}</Typography>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="subtitle2" color="textSecondary">Ngày kết thúc</Typography>
-                  <Typography>{format(new Date(selectedAssignTask.endDate), 'dd/MM/yyyy')}</Typography>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Typography variant="subtitle2" color="textSecondary">Trạng thái</Typography>
-                  <Chip
-                    label={getStatusText(selectedAssignTask.status)}
-                    color={getStatusColor(selectedAssignTask.status)}
-                    sx={{ mt: 1 }}
-                  />
-                </Grid>
-
-                {selectedAssignTask.status === 2 && (
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle2" color="textSecondary">Giao lại cho nhân viên</Typography>
-                    <FormControl fullWidth>
-                      <Select
-                        value={selectedStaff}
-                        onChange={(e) => setSelectedStaff(e.target.value)}
-                        displayEmpty
-                        sx={{ borderRadius: '8px' }}
-                      >
-                        <MenuItem value="" disabled>Chọn nhân viên</MenuItem>
-                        {selectedAssignTask.staffs.map((staff) => ( // Sử dụng danh sách nhân viên từ task
-                          <MenuItem key={staff.accountId} value={staff.accountId}>{staff.staffFullName}</MenuItem>
                         ))}
-                      </Select>
-                    </FormControl>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleReassignTask(selectedAssignTask.assignmentTaskId)}
-                      sx={{ mt: 2 }}
-                      disabled={!selectedStaff} // Disable nếu không có nhân viên được chọn
-                    >
-                      Xác nhận giao lại
-                    </Button>
-                  </Grid>
-                )}
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseDialog}>Đóng</Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
-    </Box>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : selectedAssignTask && (
+                <>
+                  <div className="attendance-manager-dialog-section">
+                    <h3>Thông tin công việc định kỳ</h3>
+                    <p><strong>Tên dịch vụ:</strong> {selectedAssignTask.serviceName}</p>
+                    <p><strong>Vị trí:</strong> {selectedAssignTask.graveLocation}</p>
+                    <p><strong>Thời gian:</strong> {format(new Date(selectedAssignTask.createAt), 'dd/MM/yyyy')} - {format(new Date(selectedAssignTask.endDate), 'dd/MM/yyyy')}</p>
+                    <p><strong>Trạng thái:</strong> <span className={`attendance-manager-task-status status-${selectedAssignTask.status}`}>{getStatusText(selectedAssignTask.status)}</span></p>
+                  </div>
+
+                  {selectedAssignTask.images && selectedAssignTask.images.length > 0 && (
+                    <div className="attendance-manager-dialog-section">
+                      <h3>Hình ảnh</h3>
+                      <div className="attendance-manager-dialog-images">
+                        {selectedAssignTask.images.map((image, index) => (
+                          <img 
+                            key={index}
+                            src={image}
+                            alt={`Task image ${index + 1}`}
+                            className="attendance-manager-dialog-image"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="attendance-manager-dialog-actions">
+              <button 
+                className="attendance-manager-dialog-button"
+                onClick={handleCloseDialog}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -208,12 +208,10 @@
 }
 
 .odc-staff-name {
-  background: #f3f4f6;
-  padding: 6px 12px;
-  border-radius: 6px;
+  background: none;
+  padding: 0;
+  margin: 0;
   font-size: 13px;
-  margin-left: 8px;
-  white-space: nowrap;
 }
 
 .odc-order-total {
@@ -482,4 +480,29 @@
 .response-date .FaRegClock {
   margin-right: 4px;
   font-size: 14px;
+}
+
+.odc-staff-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f3f4f6;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-left: 8px;
+}
+
+.odc-staff-phone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #4b5563;
+  font-size: 13px;
+  padding-left: 12px;
+  border-left: 1px solid #e5e7eb;
+}
+
+.phone-icon {
+  font-size: 12px;
+  color: #6b7280;
 }

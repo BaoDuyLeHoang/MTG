@@ -382,3 +382,105 @@
   .sl-schedule-button:hover {
     background-color: #3b82f6 !important;
   }
+
+  .service-martyr-card {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 5px 5px 15px #d1d1d1,
+                -5px -5px 15px #ffffff;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .service-martyr-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 20px #d1d1d1,
+                -8px -8px 20px #ffffff;
+  }
+
+  .service-martyr-icon {
+    background: linear-gradient(145deg, #1a73e8, #1557b0);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.5rem;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 3px 3px 8px rgba(26, 115, 232, 0.2);
+  }
+
+  .service-martyr-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service-martyr-label {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .service-martyr-name {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+    background: linear-gradient(45deg, #1a73e8, #1557b0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease;
+  }
+
+  .service-martyr-name:hover {
+    background: linear-gradient(45deg, #1557b0, #1a73e8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: scale(1.02);
+    text-decoration: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .service-martyr-card {
+      padding: 1.2rem;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .service-martyr-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      margin-right: 1rem;
+    }
+
+    .service-martyr-name {
+      font-size: 1.2rem;
+    }
+  }
+
+  /* Animation */
+  @keyframes cardAppear {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .service-martyr-card {
+    animation: cardAppear 0.5s ease-out forwards;
+  }

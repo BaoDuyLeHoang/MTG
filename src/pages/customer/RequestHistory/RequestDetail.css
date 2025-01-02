@@ -764,4 +764,89 @@
     padding: 1rem;
     text-align: center;
     font-size: 0.9rem;
+}
+
+.rd-task-staff {
+  margin-bottom: 25px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.rd-task-staff:hover {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.rd-task-staff-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+
+.rd-task-staff-info:last-child {
+  margin-bottom: 0;
+}
+
+.rd-task-staff-info .rd-task-label {
+  min-width: 180px;
+  font-weight: 600;
+  color: #1a237e;
+  font-size: 0.95rem;
+  position: relative;
+  padding-left: 24px;
+}
+
+/* Icon cho nhân viên */
+.rd-task-staff-info:first-child .rd-task-label::before {
+  content: '👤';
+  position: absolute;
+  left: 0;
+  font-size: 1rem;
+}
+
+/* Icon cho số điện thoại */
+.rd-task-staff-info:last-child .rd-task-label::before {
+  content: '📱';
+  position: absolute;
+  left: 0;
+  font-size: 1rem;
+}
+
+.rd-task-staff-info .rd-task-value {
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #e8eaf6;
+  flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rd-task-staff {
+    padding: 15px;
+  }
+
+  .rd-task-staff-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .rd-task-staff-info .rd-task-label {
+    min-width: auto;
+    margin-bottom: 4px;
+  }
+
+  .rd-task-staff-info .rd-task-value {
+    width: 100%;
+  }
 } 

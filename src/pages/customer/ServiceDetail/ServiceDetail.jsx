@@ -138,6 +138,10 @@ const ServiceDetail = () => {
                     <span>{serviceDetail.latestAssignment.staffName}</span>
                   </div>
                   <div className="info-item">
+                    <label>Số điện thoại nhân viên:</label>
+                    <span>{serviceDetail.latestAssignment.phoneNumber}</span>
+                  </div>
+                  <div className="info-item">
                     <label>Trạng thái:</label>
                     <span>
                       {(() => {

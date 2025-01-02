@@ -153,10 +153,11 @@ const RequestDetailManager = () => {
       setErrorMessage('');
       
       // Kiểm tra note khi từ chối
-      if (!status && !rejectNote.trim()) {
+      if (!status && !tempRejectNote.trim()) {
         setAlertSeverity('error');
         setAlertMessage('Vui lòng nhập lý do từ chối');
         setAlertOpen(true);
+        setIsProcessing(false);
         return;
       }
 
@@ -165,12 +166,13 @@ const RequestDetailManager = () => {
         setAlertSeverity('error');
         setAlertMessage('Vui lòng chọn ít nhất một vật liệu');
         setAlertOpen(true);
+        setIsProcessing(false);
         return;
       }
 
       const requestData = {
         requestId: parseInt(requestId),
-        note: status ? null : rejectNote.trim(),
+        note: status ? null : tempRejectNote.trim(),
         status: status,
         materialIds: status && request?.typeId === 2 ? selectedMaterials : []
       };
@@ -209,15 +211,15 @@ const RequestDetailManager = () => {
   };
 
   const handleSubmitReject = () => {
-    if (tempRejectNote.trim()) {
-      setRejectNote(tempRejectNote.trim());
-      handleCloseRejectDialog();
-      handleAcceptRequest(false);
-    } else {
+    if (!tempRejectNote.trim()) {
       setAlertSeverity('error');
       setAlertMessage('Vui lòng nhập lý do từ chối');
       setAlertOpen(true);
+      return;
     }
+    
+    handleAcceptRequest(false);
+    handleCloseRejectDialog();
   };
 
   const handleReject = () => {
@@ -621,54 +623,47 @@ const RequestDetailManager = () => {
       </div>
 
       {/* Dialogs */}
-      <Dialog 
-        open={openRejectDialog} 
-        onClose={handleCloseRejectDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          <div className="rdm-dialog-title">
-            <span>Từ chối yêu cầu</span>
-            <IconButton onClick={handleCloseRejectDialog} size="small">
-              <CloseIcon />
-            </IconButton>
+      {openRejectDialog && (
+        <div className="rdm-popup-overlay">
+          <div className="rdm-popup">
+            <div className="rdm-popup-header">
+              <h3>Từ chối yêu cầu</h3>
+              <button className="rdm-popup-close" onClick={handleCloseRejectDialog}>
+                ×
+              </button>
+            </div>
+            
+            <div className="rdm-popup-content">
+              <div className="rdm-popup-form">
+                <label className="rdm-popup-label">Lý do từ chối</label>
+                <textarea
+                  className="rdm-popup-textarea"
+                  placeholder="Vui lòng nhập lý do từ chối yêu cầu..."
+                  value={tempRejectNote}
+                  onChange={(e) => setTempRejectNote(e.target.value)}
+                  rows={4}
+                />
+              </div>
+            </div>
+
+            <div className="rdm-popup-actions">
+              <button 
+                className="rdm-popup-button secondary"
+                onClick={handleCloseRejectDialog}
+              >
+                Hủy
+              </button>
+              <button
+                className="rdm-popup-button primary"
+                onClick={handleSubmitReject}
+                disabled={!tempRejectNote.trim()}
+              >
+                Xác nhận từ chối
+              </button>
+            </div>
           </div>
-        </DialogTitle>
-        <DialogContent>
-          <div className="rdm-reject-dialog-content">
-            <TextField
-              autoFocus
-              multiline
-              rows={4}
-              fullWidth
-              variant="outlined"
-              label="Lý do từ chối"
-              placeholder="Vui lòng nhập lý do từ chối yêu cầu..."
-              value={tempRejectNote}
-              onChange={(e) => setTempRejectNote(e.target.value)}
-              error={tempRejectNote.trim() === ''}
-              helperText={tempRejectNote.trim() === '' ? 'Vui lòng nhập lý do từ chối' : ''}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions className="rdm-dialog-actions">
-          <Button 
-            onClick={handleCloseRejectDialog} 
-            color="inherit"
-          >
-            Hủy
-          </Button>
-          <Button
-            onClick={handleSubmitReject}
-            variant="contained"
-            color="error"
-            disabled={!tempRejectNote.trim()}
-          >
-            Xác nhận từ chối
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </div>
+      )}
 
       <div className={`material-dialog-overlay ${openMaterialDialog ? 'active' : ''}`} onClick={handleCloseMaterialDialog}>
         <div className="material-dialog" onClick={e => e.stopPropagation()}>

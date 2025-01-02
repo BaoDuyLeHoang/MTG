@@ -88,6 +88,23 @@ const MyGraveDetail = () => {
     }
   };
 
+  // Thêm hàm format date thành chuỗi tiếng Việt
+  const formatDateToVietnamese = (dateString) => {
+    if (!dateString) return "Không có thông tin";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).replace(/\//g, '-');
+  };
+
+  // Thêm hàm format vị trí mộ
+  const formatGraveLocation = (grave) => {
+    if (!grave) return "Không có thông tin";
+    return `Khu ${grave.areaNumber} - Hàng ${grave.rowNumber} - Mộ số ${grave.martyrNumber}`;
+  };
+
   if (loading) return (
     <>
       <Header />
@@ -128,29 +145,31 @@ const MyGraveDetail = () => {
               <div className="info-grid">
                 <div className="info-item">
                   <label>Tên:</label>
-                  <span>{info.name}</span>
+                  <span>{info.name || "Không có thông tin"}</span>
                 </div>
                 <div className="info-item">
                   <label>Bí danh:</label>
-                  <span>{info.nickName}</span>
+                  <span>{info.nickName || "Không có thông tin"}</span>
                 </div>
                 <div className="info-item">
                   <label>Chức danh:</label>
-                  <span>{info.position}</span>
+                  <span>{info.position || "Không có thông tin"}</span>
                 </div>
                 <div className="info-item">
                   <label>Quê quán:</label>
-                  <span>{info.homeTown}</span>
+                  <span>{info.homeTown || "Không có thông tin"}</span>
                 </div>
                 <div className="info-item">
                   <label>Ngày sinh:</label>
-                  <span>{new Date(info.dateOfBirth).toLocaleDateString()}</span>
+                  <span>{info.dateOfBirth || "Không có thông tin"}</span>
                 </div>
                 <div className="info-item">
                   <label>Ngày mất:</label>
-                  <span>
-                    {new Date(info.dateOfSacrifice).toLocaleDateString()}
-                  </span>
+                  <span>{info.dateOfSacrifice || "Không có thông tin"}</span>
+                </div>
+                <div className="info-item">
+                  <label>Vị trí mộ:</label>
+                  <span>{formatGraveLocation(martyrDetails)}</span>
                 </div>
               </div>
             </div>

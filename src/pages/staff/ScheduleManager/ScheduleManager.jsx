@@ -338,20 +338,18 @@ const ScheduleManager = () => {
   // Cập nhật hàm handleConfirmSelect
   const handleConfirmSelect = async () => {
     try {
-      setIsAddingTask(true); // Bắt đầu loading
+      setIsAddingTask(true);
       const task = confirmDialog.task;
       const formattedDate = format(selectedTaskDate, 'yyyy-MM-dd');
 
       const scheduleDetails = [{
-        taskId: selectedTab === 0 ? task.taskId : selectedTab === 1 ? task.assignmentTaskId : task.requestTaskId, // Thay đổi để lấy taskId phù hợp
+        taskId: selectedTab === 0 ? task.taskId : selectedTab === 1 ? task.assignmentTaskId : task.requestTaskId,
         date: formattedDate,
         description: task.serviceName,
-        scheduleDetailType: selectedTab === 0 ? 1 : selectedTab === 1 ? 2 : 3 // Cập nhật để sử dụng cho 3 trường hợp
-    }];
-
+        scheduleDetailType: selectedTab === 0 ? 1 : selectedTab === 1 ? 2 : 3
+      }];
 
       await createScheduleDetailForStaff(user.accountId, scheduleDetails);
-
 
       // Refresh schedules cho tuần hiện tại
       const fromDate = new Date(selectedDate);
@@ -368,13 +366,19 @@ const ScheduleManager = () => {
         setSchedules(response);
       }
 
-      // Reload lại danh sách công việc trong dialog
-      await fetchTasksPage(1);
+      // Reload lại danh sách công việc trong dialog dựa theo tab hiện tại
+      if (selectedTab === 0) {
+        await fetchTasksPage(page);
+      } else if (selectedTab === 1) {
+        await fetchRecurringTasks(recurringPage);
+      } else if (selectedTab === 2) {
+        await fetchCustomerRequestTasks(page);
+      }
 
       setAlert({
         open: true,
         severity: 'success',
-        message: `Tạo lịch ${selectedTab === 0 ? 'thường' : 'định kỳ'} thành công!`
+        message: `Tạo lịch ${selectedTab === 0 ? 'thường' : selectedTab === 1 ? 'định kỳ' : 'theo yêu cầu'} thành công!`
       });
       setConfirmDialog({ open: false, task: null });
 
@@ -386,7 +390,7 @@ const ScheduleManager = () => {
         message: 'Không thể thêm công việc. Vui lòng thử lại sau.'
       });
     } finally {
-      setIsAddingTask(false); // Kết thúc loading
+      setIsAddingTask(false);
     }
   };
 

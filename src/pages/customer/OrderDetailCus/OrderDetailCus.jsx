@@ -8,7 +8,7 @@ import Footer from '../../../components/Footer/footer';
 import FeedbackModal from '../../../components/FeedbackModal/FeedbackModal';
 import { useAuth } from '../../../context/AuthContext';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
-import { FaStar, FaRegClock, FaComment, FaReply } from 'react-icons/fa';
+import { FaStar, FaRegClock, FaComment, FaReply, FaPhone } from 'react-icons/fa';
 import Loading from '../../../components/Loading/Loading';
 
 const OrderDetailCus = () => {
@@ -220,9 +220,17 @@ const OrderDetailCus = () => {
                     <strong>Nhân viên thực hiện:</strong>
                     {detail.staffs && detail.staffs.length > 0 ? (
                       detail.staffs.map((staff) => (
-                        <span key={staff.accountId} className="odc-staff-name">
-                          {staff.staffFullName}
-                        </span>
+                        <div key={staff.accountId} className="odc-staff-details">
+                          <span className="odc-staff-name">
+                            {staff.staffFullName}
+                          </span>
+                          {staff.phoneNumber && (
+                            <span className="odc-staff-phone">
+                              <FaPhone className="phone-icon" />
+                              {staff.phoneNumber}
+                            </span>
+                          )}
+                        </div>
                       ))
                     ) : (
                       <span className="odc-staff-name">Đang chờ phân công</span>

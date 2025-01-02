@@ -46,6 +46,7 @@
     border: 1px solid #ccc;
     background-color: #ffffff;
     width: 200px;
+    margin-top: 15px;
     transition: border-color 0.2s;
   }
 
@@ -413,4 +414,10 @@
 
   .detail-button:hover {
     background-color: #bae6fd;
+  }
+
+  /* Thêm style cho status đang chờ */
+  .status-waiting { 
+    background: #e2e8f0; 
+    color: #475569; 
   }

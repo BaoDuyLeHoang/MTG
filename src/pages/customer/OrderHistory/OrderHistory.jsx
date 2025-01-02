@@ -118,6 +118,8 @@ const OrderHistory = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
+      case 0:
+        return "status-waiting";
       case 1:
         return "status-pending";
       case 2:
@@ -216,6 +218,7 @@ const OrderHistory = () => {
               onChange={(e) => setStatusFilter(e.target.value)}
             >
               <option value="all">Tất cả trạng thái</option>
+              <option value="0">Đang chờ</option>
               <option value="1">Đã thanh toán</option>
               <option value="2">Thất bại</option>
               <option value="4">Hoàn thành</option>

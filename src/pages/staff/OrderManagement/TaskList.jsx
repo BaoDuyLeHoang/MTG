@@ -391,53 +391,49 @@ const TaskList = () => {
                             </button>
                         </div>
                         {isPopupOpen && selectedTask && (
-                            <div className="popup-overlay">
-                                <div className="popup-content-task-list">
-                                    <div className="popup-header-task-list">
+                            <div className="task-detail-overlay">
+                                <div className="task-detail-modal">
+                                    <div className="task-detail-header">
                                         <h2>Chi Tiết Công Việc</h2>
-                                        <button
-                                            className="close-button-task-list-popup"
-                                            onClick={() => {
-                                                setIsPopupOpen(false);
-                                                setTaskImages([]);
-                                                setImages([]);
-                                            }}
-                                        >
+                                        <button className="task-detail-close" onClick={() => {
+                                            setIsPopupOpen(false);
+                                            setTaskImages([]);
+                                            setImages([]);
+                                        }}>
                                             <IoClose />
                                         </button>
                                     </div>
-                                    <div className="popup-body">
-                                        <div className="detail-row">
+                                    
+                                    <div className="task-detail-body">
+                                        <div className="task-info-row">
                                             <label>Công việc:</label>
                                             <span>{selectedTask.serviceName}</span>
                                         </div>
-                                        <div className="detail-row">
+                                        <div className="task-info-row">
                                             <label>Mô tả:</label>
                                             <span>{selectedTask.serviceDescription}</span>
                                         </div>
-                                        <div className="detail-row">
+                                        <div className="task-info-row">
                                             <label>Vị trí:</label>
                                             <span>{selectedTask.graveLocation}</span>
                                         </div>
-                                        <div className="detail-row">
+                                        <div className="task-info-row">
                                             <label>Thời gian:</label>
                                             <span>{new Date(selectedTask.startDate).toLocaleDateString()}</span>
                                         </div>
-                                        <div className="detail-row">
+                                        <div className="task-info-row">
                                             <label>Thời hạn:</label>
                                             <span>{new Date(selectedTask.endDate).toLocaleDateString()}</span>
                                         </div>
-                                        <div className="detail-row">
+                                        <div className="task-info-row">
                                             <label>Trạng thái:</label>
-                                            <span className="status-badge" style={{
-                                                backgroundColor: getStatusText(selectedTask.status).color,
-                                                color: 'white',
-                                                padding: '6px 12px',
-                                                borderRadius: '12px'
+                                            <span className="task-status-badge" style={{
+                                                backgroundColor: getStatusText(selectedTask.status).color
                                             }}>
                                                 {getStatusText(selectedTask.status).text}
                                             </span>
                                         </div>
+
                                         {selectedTask.status === 4 && taskImages.length > 0 && (
                                             <div className="completed-task-images">
                                                 <h3>Hình ảnh đã tải lên</h3>
@@ -596,41 +592,35 @@ const TaskList = () => {
                                             </>
                                         )}
                                     </div>
-                                    <div className="popup-footer">
+
+                                    <div className="task-detail-footer">
                                         {(selectedTask.status === 0 || selectedTask.status === 1) && (
-                                            <div className="action-buttons-task-list">
-                                                <button
-                                                    className="accept-button-task-list"
-                                                    onClick={() => {
-                                                        handleConfirm(selectedTask.id);
-                                                        setIsPopupOpen(false);
-                                                    }}
-                                                >
+                                            <div className="task-detail-actions">
+                                                <button className="task-action-accept" onClick={() => {
+                                                    handleConfirm(selectedTask.id);
+                                                    setIsPopupOpen(false);
+                                                }}>
                                                     Chấp nhận
                                                 </button>
-                                                <button
-                                                    className="reject-button-task-list"
-                                                    onClick={() => {
-                                                        setIsRejectPopupOpen(true);
-                                                    }}
-                                                >
+                                                <button className="task-action-reject" onClick={() => {
+                                                    setIsRejectPopupOpen(true);
+                                                }}>
                                                     Từ chối
                                                 </button>
                                             </div>
                                         )}
-
                                     </div>
                                 </div>
                             </div>
                         )}
 
                         {isRejectPopupOpen && (
-                            <div className="popup-overlay">
-                                <div className="popup-content-reject-reason-popup-task-list">
-                                    <div className="popup-header-task-list">
+                            <div className="reject-popup-overlay">
+                                <div className="reject-popup-container">
+                                    <div className="reject-popup-header">
                                         <h2>Lý Do Từ Chối</h2>
-                                        <button
-                                            className="close-button-task-list-popup"
+                                        <button 
+                                            className="reject-popup-close"
                                             onClick={() => {
                                                 setIsRejectPopupOpen(false);
                                                 setRejectReason('');
@@ -639,30 +629,31 @@ const TaskList = () => {
                                             <FaTimes />
                                         </button>
                                     </div>
-                                    <div className="popup-body-task-list">
+                                    <div className="reject-popup-content">
                                         <textarea
-                                            className="reject-reason-input-task-list"
+                                            className="reject-popup-textarea"
                                             value={rejectReason}
                                             onChange={(e) => setRejectReason(e.target.value)}
                                             placeholder="Nhập lý do từ chối..."
                                             rows={4}
                                         />
                                     </div>
-                                    <div className="popup-footer-task-list">
-                                        <button
-                                            className="reject-button-task-list"
-                                            onClick={() => handleReject(selectedTask.id)}
-                                        >
-                                            Xác nhận từ chối
-                                        </button>
-                                        <button
-                                            className="close-popup-button"
+                                    <div className="reject-popup-actions">
+                                        <button 
+                                            className="reject-popup-cancel"
                                             onClick={() => {
                                                 setIsRejectPopupOpen(false);
                                                 setRejectReason('');
                                             }}
                                         >
                                             Hủy
+                                        </button>
+                                        <button
+                                            className="reject-popup-confirm"
+                                            onClick={() => handleReject(selectedTask.id)}
+                                            disabled={!rejectReason.trim()}
+                                        >
+                                            Xác nhận từ chối
                                         </button>
                                     </div>
                                 </div>

@@ -670,42 +670,65 @@ const RequestDetailManager = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog 
-        open={openMaterialDialog} 
-        onClose={handleCloseMaterialDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Chọn vật liệu</DialogTitle>
-        <DialogContent>
-          <div className="rdm-material-list">
+      <div className={`material-dialog-overlay ${openMaterialDialog ? 'active' : ''}`} onClick={handleCloseMaterialDialog}>
+        <div className="material-dialog" onClick={e => e.stopPropagation()}>
+          <div className="material-dialog-header">
+            <h3>Chọn vật liệu</h3>
+            <button className="material-dialog-close" onClick={handleCloseMaterialDialog}>×</button>
+          </div>
+
+          <div className="material-dialog-content">
             {materials.map((material) => (
               <div 
                 key={material.materialId} 
-                className={`rdm-material-item ${
-                  selectedMaterials.includes(material.materialId) ? 'selected' : ''
-                }`}
+                className={`material-item ${selectedMaterials.includes(material.materialId) ? 'selected' : ''}`}
                 onClick={() => handleMaterialSelect(material.materialId)}
               >
-                <div className="rdm-material-info">
-                  <span className="rdm-material-name">{material.materialName}</span>
-                  <span className="rdm-material-price">
+                <div className="material-info">
+                  <h4>{material.materialName}</h4>
+                  <p className="material-price">
                     {material.price.toLocaleString('vi-VN')}đ
-                  </span>
+                  </p>
                 </div>
-                {selectedMaterials.includes(material.materialId) && (
-                  <span className="rdm-material-check">✓</span>
-                )}
+                <div className="material-select">
+                  {selectedMaterials.includes(material.materialId) && (
+                    <span className="material-checkmark">✓</span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseMaterialDialog} color="inherit">
-            Đóng
-          </Button>
-        </DialogActions>
-      </Dialog>
+
+          <div className="material-dialog-footer">
+            <div className="material-summary">
+              <span>Đã chọn: {selectedMaterials.length} vật liệu</span>
+              <span className="material-total-price">
+                Tổng tiền: {' '}
+                {materials
+                  .filter(m => selectedMaterials.includes(m.materialId))
+                  .reduce((sum, m) => sum + m.price, 0)
+                  .toLocaleString('vi-VN')}
+                đ
+              </span>
+            </div>
+            <div className="material-actions">
+              <button 
+                className="material-button secondary" 
+                onClick={handleCloseMaterialDialog}
+              >
+                Hủy
+              </button>
+              <button 
+                className="material-button primary"
+                onClick={handleCloseMaterialDialog}
+                disabled={selectedMaterials.length === 0}
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Image Modal */}
       {selectedImage && (

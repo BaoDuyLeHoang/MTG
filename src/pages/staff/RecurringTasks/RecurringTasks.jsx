@@ -188,53 +188,44 @@ const getDayOfWeek = (dayNumber) => {
                 </Box>
 
                 {/* Filter Section */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    gap: 2, 
-                    mb: 3,
-                    width: '95%',
-                    margin: '0 auto',
-                    alignItems: 'center'
-                }}>
-                    <FormControl sx={{ minWidth: 200 }}>
-                        <InputLabel>Trạng thái</InputLabel>
-                        <Select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            label="Trạng thái"
-                            sx={{ height: '40px' }}
-                        >
-                            {statusOptions.map(option => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                <div className="filter-container">
+                    <div className="filter-controls">
+                        <FormControl sx={{ minWidth: 200 }}>
+                            <InputLabel>Trạng thái</InputLabel>
+                            <Select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                                label="Trạng thái"
+                                sx={{ height: '40px' }}
+                            >
+                                {statusOptions.map(option => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
 
-                    <FormControl sx={{ minWidth: 200 }}>
-                        <DatePicker
-                            selected={endDateFilter}
-                            onChange={date => setEndDateFilter(date)}
-                            dateFormat="dd/MM/yyyy"
-                            placeholderText="Chọn ngày kết thúc"
-                            className="custom-datepicker"
-                            isClearable
-                        />
-                    </FormControl>
+                        <FormControl sx={{ minWidth: 200 }}>
+                            <DatePicker
+                                selected={endDateFilter}
+                                onChange={date => setEndDateFilter(date)}
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="Chọn ngày kết thúc"
+                                className="custom-datepicker"
+                                isClearable
+                            />
+                        </FormControl>
+                    </div>
 
-                    <Button 
-                        variant="outlined"
+                    <button 
+                        className="clear-filter-button"
                         onClick={handleClearFilters}
-                        sx={{ 
-                            height: '40px',
-                            minWidth: '120px'
-                        }}
-                        startIcon={<ClearIcon />}
                     >
+                        <ClearIcon />
                         Xóa bộ lọc
-                    </Button>
-                </Box>
+                    </button>
+                </div>
 
                 {/* Table Container */}
                 <TableContainer 

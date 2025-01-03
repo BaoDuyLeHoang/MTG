@@ -84,6 +84,15 @@ const RelativeGrave = () => {
     return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
 
+  const formatGraveLocation = (martyrCode) => {
+    if (!martyrCode) return "Không có thông tin";
+    const parts = martyrCode.replace("MTG-", "").split("-");
+    if (parts.length >= 3) {
+      return `Khu ${parts[0]} - Hàng ${parts[1]} - Mộ số ${parts[2]}`;
+    }
+    return "Không có thông tin";
+  };
+
   return (
     <div className="relative-grave-container">
       <Header />
@@ -133,11 +142,11 @@ const RelativeGrave = () => {
                   <h2 className="relative-grave-martyr-name">{info.name}</h2>
                   <div className="info-row">
                     <span className="relative-grave-label">Ngày hy sinh:</span>
-                    <span className="info-value">{formatDate(info.dateOfSacrifice)}</span>
+                    <span className="info-value">{info.dateOfSacrifice}</span>
                   </div>
                   <div className="info-row">
                     <span className="relative-grave-label">Vị trí:</span>
-                    <span className="info-value">Khu {grave.areaNumber}, hàng {grave.rowNumber}, mộ {grave.martyrNumber}</span>
+                    <span className="info-value">{formatGraveLocation(grave.martyrCode)}</span>
                   </div>
                   <div className="info-row">
                     <span className="relative-grave-label">Quê quán:</span>

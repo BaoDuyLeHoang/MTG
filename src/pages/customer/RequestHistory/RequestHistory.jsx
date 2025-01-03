@@ -93,6 +93,7 @@ const RequestHistory = () => {
       switch (statusNum) {
         case 1: return { text: 'Chờ xác nhận', class: 'pending' };
         case 2: return { text: 'Đã xác nhận', class: 'confirmed' };
+        case 3: return { text: 'Từ chối', class: 'rejected' };
         default: return { text: 'Không xác định', class: 'unknown' };
       }
     }
@@ -239,6 +240,10 @@ const RequestHistory = () => {
             <div className="rh-status-item">
               <span className="rh-status-badge rh-status-confirmed">Đã xác nhận</span>
               <p>Đăng ký dịch vụ thành công, sẽ được thực hiện theo lịch</p>
+            </div>
+            <div className="rh-status-item">
+              <span className="rh-status-badge rh-status-rejected">Từ chối</span>
+              <p>Yêu cầu đã bị từ chối, vui lòng xem lý do từ nhân viên</p>
             </div>
           </StatusGuideSection>
         </div>

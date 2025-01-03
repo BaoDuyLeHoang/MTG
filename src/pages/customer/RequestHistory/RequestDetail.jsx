@@ -71,6 +71,7 @@ const RequestDetail = () => {
       switch (statusNum) {
         case 1: return { text: 'Chờ xác nhận', class: 'pending' };
         case 2: return { text: 'Đã xác nhận', class: 'confirmed' };
+        case 3: return { text: 'Từ chối', class: 'rejected' };
         default: return { text: 'Không xác định', class: 'unknown' };
       }
     }
@@ -272,6 +273,21 @@ const RequestDetail = () => {
               <h3 className="rd-section-title">Chi Tiết Công Việc</h3>
               <div className="rd-task-section">
                 <div className="rd-task-info">
+                  {/* Thêm thông tin nhân viên */}
+                  {request.requestTask.staffName && (
+                    <div className="rd-task-staff">
+                      <div className="rd-task-staff-info">
+                        <span className="rd-task-label">Nhân viên phụ trách:</span>
+                        <span className="rd-task-value">{request.requestTask.staffName}</span>
+                      </div>
+                      {request.requestTask.phoneNumber && (
+                        <div className="rd-task-staff-info">
+                          <span className="rd-task-label">Số điện thoại:</span>
+                          <span className="rd-task-value">{request.requestTask.phoneNumber}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="rd-task-note">
                     <span className="rd-task-label">Ghi chú của bạn:</span>
                     <div className="rd-task-description">
@@ -316,8 +332,29 @@ const RequestDetail = () => {
             <div className="rd-section">
               <h3 className="rd-section-title">Báo Cáo Công Việc</h3>
               <div className="rd-report-section">
+                {/* Thêm thông tin nhân viên */}
+                {request.reportTask.staffName && (
+                  <div className="rd-task-staff">
+                    <div className="rd-task-staff-info">
+                      <span className="rd-task-label">Nhân viên báo cáo:</span>
+                      <span className="rd-task-value">{request.reportTask.staffName}</span>
+                    </div>
+                    {request.reportTask.phoneNumber && (
+                      <div className="rd-task-staff-info">
+                        <span className="rd-task-label">Số điện thoại:</span>
+                        <span className="rd-task-value">{request.reportTask.phoneNumber}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
                 {request.reportTask.videoFile && (
-                  <iframe className="rd-video-player" src={request.reportTask.videoFile} allow="autoplay; encrypted-media" allowFullScreen></iframe>
+                  <iframe 
+                    className="rd-video-player" 
+                    src={request.reportTask.videoFile} 
+                    allow="autoplay; encrypted-media" 
+                    allowFullScreen
+                  ></iframe>
                 )}
                 {request.reportTask.reportImages && request.reportTask.reportImages.length > 0 && (
                   <div className="rd-image-grid">

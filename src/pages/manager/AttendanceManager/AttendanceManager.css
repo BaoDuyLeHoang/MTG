@@ -1,230 +1,533 @@
 /* TaskDashboard.css */
+.attendance-manager-wrapper {
+  display: flex;
+}
+
+.attendance-manager-main {
+  flex-grow: 1;
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+  min-height: 100vh;
+}
+
 .attendance-manager-container {
-    margin-left: 0;
-    animation: fadeIn 0.5s ease-out;
+  margin-left: 0;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.attendance-manager-header {
+  margin-bottom: 24px;
+}
+
+.attendance-manager-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.attendance-manager-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.attendance-manager-tab {
+  padding: 12px 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  position: relative;
+}
+
+.attendance-manager-tab.active {
+  color: #1976d2;
+}
+
+.attendance-manager-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #1976d2;
+}
+
+.attendance-manager-filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.attendance-manager-search {
+  flex: 1;
+  position: relative;
+}
+
+.attendance-manager-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.attendance-manager-search-input {
+  width: 600px;
+  padding: 8px 12px 8px 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.attendance-manager-date-filters {
+  display: flex;
+  gap: 16px;
+}
+
+.attendance-manager-status-select {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 200px;
+}
+
+.attendance-manager-tasks-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.attendance-manager-tasks-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.attendance-manager-tasks-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1a237e;
+}
+
+.attendance-manager-task-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.attendance-manager-task-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+}
+
+/* Dialog styles */
+.attendance-manager-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.attendance-manager-dialog {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.attendance-manager-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.attendance-manager-dialog-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1a237e;
+  margin: 0;
+}
+
+.attendance-manager-dialog-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+}
+
+.attendance-manager-dialog-content {
+  margin-bottom: 24px;
+}
+
+.attendance-manager-dialog-section {
+  margin-bottom: 20px;
+}
+
+.attendance-manager-dialog-section h3 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.attendance-manager-dialog-section p {
+  margin: 8px 0;
+  color: #666;
+}
+
+.attendance-manager-dialog-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.attendance-manager-dialog-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.attendance-manager-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.attendance-manager-dialog-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: #1976d2;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.attendance-manager-dialog-button:hover {
+  background-color: #1565c0;
+}
+
+/* Date picker wrapper styles */
+.attendance-manager-date-picker-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.attendance-manager-date-input {
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Task category style */
+.attendance-manager-task-category {
+  font-size: 13px;
+  font-weight: 500;
+  color: #5850EC;
+  background-color: #EEF2FF;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #E5EDFF;
+  transition: all 0.2s ease;
+}
+
+.attendance-manager-task-category:hover {
+  background-color: #E5EDFF;
+  transform: translateY(-1px);
+}
+
+/* Task status styles */
+.attendance-manager-task-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+/* Status colors with gradients */
+.attendance-manager-task-status.status-4 {
+  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(52, 211, 153, 0.2);
+}
+
+.attendance-manager-task-status.status-3 {
+  background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.attendance-manager-task-status.status-1 {
+  background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(251, 191, 36, 0.2);
+}
+
+.attendance-manager-task-status.status-2,
+.attendance-manager-task-status.status-5 {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+/* Hover effects */
+.attendance-manager-task-status:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Add icons before status text */
+.attendance-manager-task-status.status-4::before {
+  content: "✓";
+  font-size: 14px;
+}
+
+.attendance-manager-task-status.status-3::before {
+  content: "↻";
+  font-size: 14px;
+}
+
+.attendance-manager-task-status.status-1::before {
+  content: "⌛";
+  font-size: 14px;
+}
+
+.attendance-manager-task-status.status-2::before,
+.attendance-manager-task-status.status-5::before {
+  content: "✕";
+  font-size: 14px;
+}
+
+/* Task item specific styles */
+.attendance-manager-task-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.attendance-manager-task-content {
+  flex: 1;
+}
+
+.attendance-manager-task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.attendance-manager-task-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.attendance-manager-task-category {
+  font-size: 14px;
+  color: #666;
+  background-color: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.attendance-manager-task-details {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.attendance-manager-task-location,
+.attendance-manager-task-dates {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.attendance-manager-task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.attendance-manager-task-staff {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #666;
+}
+
+.attendance-manager-staff-icon {
+  font-size: 16px;
+}
+
+.attendance-manager-detail-btn {
+  padding: 8px 16px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.attendance-manager-detail-btn:hover {
+  background-color: #1565c0;
+}
+
+/* Pagination styles */
+.attendance-manager-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+}
+
+.attendance-manager-prev-btn,
+.attendance-manager-next-btn {
+  padding: 8px 16px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.attendance-manager-prev-btn:hover,
+.attendance-manager-next-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.attendance-manager-prev-btn:disabled,
+.attendance-manager-next-btn:disabled {
+  background-color: #f5f5f5;
+  color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.attendance-manager-page-info {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .attendance-manager-filters {
+    flex-direction: column;
   }
   
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-  }
-  
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .date-display {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #666;
-  }
-  
-  .stats-container {
-    margin-bottom: 24px;
-  }
-  
-  .stats-card {
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .stats-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+  .attendance-manager-date-filters {
     width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
-    z-index: 1;
   }
   
-  .stats-card::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 100%
-    );
-    transform: rotate(45deg);
-    animation: shimmer 3s infinite;
+  .attendance-manager-status-select {
+    width: 100%;
   }
-  
-  .stats-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-  }
-  
-  .stats-info {
-    display: flex;
+}
+
+@media (max-width: 768px) {
+  .attendance-manager-task-item {
     flex-direction: column;
-    gap: 4px;
+    align-items: flex-start;
   }
   
-  .tasks-card {
-    background-color: #fff;
+  .attendance-manager-task-image {
+    width: 100%;
+    height: 200px;
   }
   
-  .tasks-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: 600px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #90caf9 #f5f5f5;
-    padding-right: 8px;
+  .attendance-manager-detail-btn {
+    width: 100%;
+    margin-top: 16px;
   }
   
-  .task-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background: white;
-    transition: all 0.3s ease;
-    animation-delay: calc(0.1s * var(--index));
+  .attendance-manager-dialog {
+    width: 95%;
+    margin: 16px;
   }
-  
-  .task-main-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .task-details {
-    display: flex;
+}
+
+@media (max-width: 480px) {
+  .attendance-manager-tabs {
     flex-direction: column;
   }
   
-  .task-title-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
+  .attendance-manager-tab {
+    width: 100%;
+    text-align: center;
   }
   
-  .task-location {
-    font-size: 0.875rem;
-  }
-  
-  .task-status {
-    display: flex;
+  .attendance-manager-task-details {
     flex-direction: column;
-    align-items: flex-end;
+    gap: 8px;
   }
   
-  .category-chip {
-    height: 24px;
+  .attendance-manager-task-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
-  
-  .status-chip {
-    height: 24px;
-    text-transform: capitalize;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .staff-name {
-    display: none;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  @media (min-width: 600px) {
-    .staff-name {
-      display: block;
-    }
-  }
-  
-  /* Custom scrollbar */
-  .tasks-list::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .tasks-list::-webkit-scrollbar-track {
-    background: #f5f5f5;
-    border-radius: 4px;
-  }
-  
-  .tasks-list::-webkit-scrollbar-thumb {
-    background: #90caf9;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .tasks-list::-webkit-scrollbar-thumb:hover {
-    background: #64b5f6;
-  }
-  
-  @media (max-width: 600px) {
-    .task-item {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .task-status {
-      margin-top: 16px;
-      align-items: flex-start;
-    }
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes shimmer {
-    0% {
-      transform: translate(-50%, -50%) rotate(45deg);
-    }
-    100% {
-      transform: translate(50%, 50%) rotate(45deg);
-    }
-  }
-  
-  .stats-card:hover .stats-content,
-  .task-item:hover {
-    transform: translateY(-5px);
-    transition: transform 0.3s ease;
-  }
-  
-  .stats-card:hover::after {
-    animation: shimmer 2s infinite;
-  }
-  
-  .status-chip {
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-  }
-  
-  .status-chip:hover {
-    transform: scale(1.05);
-  }
+}

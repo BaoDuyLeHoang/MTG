@@ -444,6 +444,7 @@
   .rh-search-container {
     flex-direction: row;
     align-items: center;
+
   }
 
   .rh-status-badge {

@@ -204,15 +204,16 @@ const ServiceListing = () => {
           <h1>Dịch Vụ Có Sẵn Của Mộ Phần</h1>
         </div>
         <div className="sl-martyr-info">
-          <div className="martyr-card">
-            <div className="martyr-icon">
+          <div className="service-martyr-card">
+            <div className="service-martyr-icon">
               <i className="fas fa-user-circle"></i>
             </div>
-            <div className="martyr-details">
-              <span className="martyr-label">Bạn đang đặt dịch vụ cho liệt sĩ:</span>
+            <div className="service-martyr-details">
+              <span className="service-martyr-label">Bạn đang đặt dịch vụ cho liệt sĩ:</span>
               <h2 
-                className="martyr-name clickable"
+                className="service-martyr-name"
                 onClick={handleMartyrClick}
+                style={{ cursor: 'pointer' }}
                 title="Xem chi tiết"
               >
                 {martyrName}

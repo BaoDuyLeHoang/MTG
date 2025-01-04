@@ -461,6 +461,15 @@
   color: #666;
 }
 
+.error-message {
+  background-color: #f8d7da; /* Màu nền đỏ nhạt */
+  color: #721c24; /* Màu chữ đỏ đậm */
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #f5c6cb; /* Đường viền đỏ nhạt */
+  border-radius: 5px; /* Bo góc */
+}
+
 /* Responsive styles */
 @media (max-width: 1024px) {
   .attendance-manager-filters {

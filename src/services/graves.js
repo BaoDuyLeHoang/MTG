@@ -134,3 +134,26 @@ export const getGraveOrders = async (martyrGraveId) => {
     throw error;
   }
 };
+
+export const getTasksByMartyrGrave = async (martyrGraveId, taskType, pageIndex = 1, pageSize = 5) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/MartyrGrave/getTasks-martyr-grave/${martyrGraveId}`,
+      {
+        params: {
+          taskType,
+          pageIndex,
+          pageSize
+        },
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching martyr grave tasks:', error);
+    throw error;
+  }
+};

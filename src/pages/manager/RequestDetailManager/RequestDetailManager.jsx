@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getRequestById, acceptManagerRequest, getAllMaterials } from '../../../APIcontroller/API';
+import { getRequestById, acceptManagerRequest, getAllMaterials, updateRequestMaterials, getFeedbackByRequestId } from '../../../APIcontroller/API';
 import { jwtDecode } from 'jwt-decode';
 import Sidebar from '../../../components/Sidebar/sideBar';
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
@@ -20,6 +20,7 @@ import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 
 const RequestDetailManager = () => {
   const { requestId } = useParams();
@@ -39,6 +40,9 @@ const RequestDetailManager = () => {
   const [materials, setMaterials] = useState([]);
   const [openMaterialDialog, setOpenMaterialDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateNote, setUpdateNote] = useState('');
+  const [feedback, setFeedback] = useState(null);
 
   const getManagerIdFromToken = () => {
     try {
@@ -246,6 +250,82 @@ const RequestDetailManager = () => {
     }
   };
 
+  const handleUpdateMaterials = async () => {
+    try {
+      setIsUpdating(true);
+      
+      if (!selectedMaterials || selectedMaterials.length === 0) {
+        setAlertSeverity('error');
+        setAlertMessage('Vui lòng chọn ít nhất một vật liệu');
+        setAlertOpen(true);
+        return;
+      }
+
+      const requestData = {
+        requestId: parseInt(requestId),
+        materialIds: selectedMaterials,
+        note: updateNote.trim()
+      };
+
+      const response = await updateRequestMaterials(requestData);
+
+      // Xóa tất cả các vật liệu đã chọn và note
+      setSelectedMaterials([]);
+      setUpdateNote('');
+      
+      setAlertSeverity('success');
+      setAlertMessage(response.message || 'Cập nhật vật liệu thành công');
+      setAlertOpen(true);
+
+      await fetchRequestDetail();
+    } catch (error) {
+      setAlertSeverity('error');
+      setAlertMessage(error.message || 'Có lỗi xảy ra khi cập nhật vật liệu');
+      setAlertOpen(true);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  useEffect(() => {
+    if (request) {
+      console.log('Type check:', {
+        typeId: {
+          value: request.typeId,
+          type: typeof request.typeId
+        },
+        status: {
+          value: request.status,
+          type: typeof request.status
+        }
+      });
+    }
+  }, [request]);
+
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        if (request?.status === 7) {
+          const feedbackData = await getFeedbackByRequestId(requestId);
+          console.log("Fetched feedback:", feedbackData);
+          setFeedback(feedbackData);
+        }
+      } catch (error) {
+        console.error("Error fetching feedback:", error);
+        setAlertSeverity('error');
+        setAlertMessage('Không thể tải thông tin đánh giá');
+        setAlertOpen(true);
+      }
+    };
+
+    fetchFeedback();
+  }, [requestId, request?.status]);
+
+  useEffect(() => {
+    console.log("Current request status:", request?.status);
+    console.log("Current feedback:", feedback);
+  }, [request?.status, feedback]);
+
   if (loading) return <div className="rdm-loading">Đang tải...</div>;
   if (error) return <div className="rdm-error">{error}</div>;
   if (!request) return <div className="rdm-error">Không tìm thấy yêu cầu</div>;
@@ -353,12 +433,12 @@ const RequestDetailManager = () => {
 
                 {request.reasons && request.reasons.length > 0 && (
                   <div className="rdm-info-section">
-                    <h4 className="rdm-section-title">Lịch sử từ chối</h4>
+                    <h4 className="rdm-section-title">Phản hồi của quản lý</h4>
                     <div className="rdm-reject-history">
                       {request.reasons.map((reason, index) => (
                         <div key={index} className="rdm-reject-item">
                           <div className="rdm-reject-reason">
-                            <span className="rdm-reject-label">Lý do:</span> {reason.rejectReason}
+                            <span className="rdm-reject-label">Nội dung:</span> {reason.rejectReason}
                           </div>
                           <div className="rdm-reject-date">
                             <span className="rdm-reject-label">Thời gian:</span>
@@ -398,6 +478,60 @@ const RequestDetailManager = () => {
                           })}
                         </div>
                       )}
+                    </div>
+                  </div>
+                )}
+
+                {parseInt(request.typeId) === 2 && (parseInt(request.status) === 3 || parseInt(request.status) === 4) && (
+                  <div className="rdm-info-section">
+                    <h4 className="rdm-section-title">Cập nhật vật liệu</h4>
+                    <div className="rdm-materials-container">
+                      <Button 
+                        variant="outlined" 
+                        onClick={handleOpenMaterialDialog}
+                        startIcon={<AddIcon />}
+                        className="rdm-material-button"
+                      >
+                        {selectedMaterials.length > 0 ? 'Thêm vật liệu' : 'Chọn vật liệu'}
+                      </Button>
+                      
+                      {selectedMaterials.length > 0 && (
+                        <div className="rdm-selected-materials">
+                          {selectedMaterials.map((materialId) => {
+                            const material = materials.find(m => m.materialId === materialId);
+                            return (
+                              <Chip
+                                key={materialId}
+                                label={`${material?.materialName} - ${material?.price.toLocaleString('vi-VN')}đ`}
+                                onDelete={() => handleMaterialSelect(materialId)}
+                                className="rdm-material-chip"
+                              />
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={3}
+                        variant="outlined"
+                        label="Ghi chú cập nhật"
+                        value={updateNote}
+                        onChange={(e) => setUpdateNote(e.target.value)}
+                        style={{ marginTop: '1rem' }}
+                      />
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpdateMaterials}
+                        disabled={isUpdating || selectedMaterials.length === 0}
+                        startIcon={<SaveIcon />}
+                        style={{ marginTop: '1rem' }}
+                      >
+                        {isUpdating ? 'Đang cập nhật...' : 'Cập nhật vật liệu'}
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -595,6 +729,57 @@ const RequestDetailManager = () => {
                     </div>
                   </div>
                 )}
+
+                {request?.status === 7 && feedback && (
+                  <div className="rdm-info-section">
+                    <h4 className="rdm-section-title">Đánh giá từ khách hàng</h4>
+                    <div className="rdm-feedback-container">
+                      <div className="rdm-feedback-header">
+                        <div className="rdm-feedback-user">
+                          <div className="rdm-user-info">
+                            <span className="rdm-user-name">{feedback.customerName}</span>
+                            <span className="rdm-feedback-date">
+                              {new Date(feedback.createdAt).toLocaleDateString('vi-VN', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="rdm-feedback-rating">
+                          <span className="rdm-rating-label">Đánh giá:</span>
+                          <div className="rdm-rating-stars">
+                            {[...Array(5)].map((_, index) => (
+                              <span 
+                                key={index}
+                                className={`rdm-star ${index < feedback.rating ? 'filled' : ''}`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="rdm-feedback-content">
+                        <p>{feedback.content}</p>
+                      </div>
+
+                      {feedback.responseContent && (
+                        <div className="rdm-feedback-response">
+                          <div className="rdm-response-header">
+                            <span className="rdm-response-label">Phản hồi từ nhân viên:</span>
+                            <span className="rdm-staff-name">{feedback.fullNameStaff}</span>
+                          </div>
+                          <p>{feedback.responseContent}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {request.status === 1 && (
@@ -751,6 +936,11 @@ const RequestDetailManager = () => {
           </div>
         </div>
       )}
+
+      {/* Thêm console.log để debug */}
+      {console.log('Request Type:', request.typeId)}
+      {console.log('Request Status:', request.status)}
+      {console.log('Selected Materials:', selectedMaterials)}
     </>
   );
 };

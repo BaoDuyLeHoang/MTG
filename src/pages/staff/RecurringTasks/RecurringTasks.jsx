@@ -16,6 +16,9 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
+  Alert,
+  TextField,
 } from "@mui/material";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -24,6 +27,22 @@ import Sidebar from '../../../components/Sidebar/sideBar';
 import { getAssignmentTasks, rejectAssignmentTask } from '../../../services/assignmentTask';
 import './RecurringTasks.css';
 import ClearIcon from '@mui/icons-material/Clear';
+import { getAssignmentTaskDetail, getAssignmentFeedback } from '../../../APIcontroller/API';
+import AlertMessage from '../../../components/AlertMessage/AlertMessage';
+import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+
+// Thêm hàm helper để format date an toàn
+const formatDate = (dateString) => {
+  if (!dateString) return 'Không có';
+  try {
+    return format(new Date(dateString), 'dd/MM/yyyy');
+  } catch (error) {
+    console.error('Invalid date:', dateString);
+    return 'Ngày không hợp lệ';
+  }
+};
 
 const RecurringTasks = () => {
     const [allTasks, setAllTasks] = useState([]);
@@ -53,6 +72,20 @@ const RecurringTasks = () => {
         { value: '4', label: 'Hoàn thành' },
         { value: '5', label: 'Thất bại' }
     ];
+
+    const [taskDetail, setTaskDetail] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [alertInfo, setAlertInfo] = useState({
+        open: false,
+        severity: 'success',
+        message: ''
+    });
+
+    const [feedback, setFeedback] = useState(null);
+
+    const handleCloseAlert = () => {
+        setAlertInfo(prev => ({ ...prev, open: false }));
+    };
 
     const fetchRecurringTasks = async () => {
         try {
@@ -131,9 +164,34 @@ const RecurringTasks = () => {
         }
     };
 
-    const handleViewDetails = (task) => {
-        setSelectedTask(task);
-        setIsPopupOpen(true);
+    const handleViewDetails = async (task) => {
+        try {
+            setIsLoading(true);
+            setIsPopupOpen(true);
+            setSelectedTask(task);
+            const detail = await getAssignmentTaskDetail(task.assignmentTaskId);
+            setTaskDetail(detail);
+
+            // Nếu trạng thái là hoàn thành (status === 4), lấy feedback
+            if (task.status === 4) {
+                try {
+                    const feedbackData = await getAssignmentFeedback(task.assignmentTaskId);
+                    setFeedback(feedbackData);
+                } catch (error) {
+                    console.error('Error fetching feedback:', error);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching task detail:', error);
+            setAlertInfo({
+                open: true,
+                severity: 'error',
+                message: 'Có lỗi xảy ra khi tải thông tin chi tiết'
+            });
+            setIsPopupOpen(false);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleClearFilters = () => {
@@ -157,18 +215,58 @@ const getDayOfWeek = (dayNumber) => {
 
     // Function to handle rejection
     const handleReject = async () => {
-    try {
-        await rejectAssignmentTask(selectedTask.assignmentTaskId, rejectionReason);
-        console.log('Task rejected successfully');
-        setIsRejectPopupOpen(false);
-        setIsPopupOpen(false); // Close the main popup
-        setRejectionReason(''); // Optionally reset the rejection reason
-        window.location.reload(); // Reload the page
-    } catch (error) {
-        console.error('Error rejecting task:', error);
-        // Handle error (e.g., show a notification to the user)
-    }
-};
+        try {
+            if (!rejectionReason.trim()) {
+                setAlertInfo({
+                    open: true,
+                    severity: 'warning',
+                    message: 'Vui lòng nhập lý do từ chối'
+                });
+                return;
+            }
+
+            await rejectAssignmentTask(selectedTask.assignmentTaskId, rejectionReason);
+            
+            setAlertInfo({
+                open: true,
+                severity: 'success',
+                message: 'Đã từ chối công việc thành công'
+            });
+            
+            // Đóng các popup
+            setIsRejectPopupOpen(false);
+            setIsPopupOpen(false);
+            setRejectionReason('');
+            
+            // Refresh data
+            fetchRecurringTasks();
+            
+        } catch (error) {
+            console.error('Error rejecting task:', error);
+            setAlertInfo({
+                open: true,
+                severity: 'error',
+                message: 'Có lỗi xảy ra khi từ chối công việc'
+            });
+        }
+    };
+
+    // Hàm hiển thị rating stars
+    const renderRatingStars = (rating) => {
+        return (
+            <div className="recurring-tasks-rating">
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <span key={star}>
+                        {star <= rating ? (
+                            <StarIcon sx={{ color: '#ffd700' }} />
+                        ) : (
+                            <StarBorderIcon sx={{ color: '#ffd700' }} />
+                        )}
+                    </span>
+                ))}
+            </div>
+        );
+    };
 
     return (
         <div style={{ display: 'flex' }}>
@@ -359,9 +457,9 @@ const getDayOfWeek = (dayNumber) => {
                     </div>
                 </Box>
 
-                {isPopupOpen && selectedTask && (
-                    <div className="popup-overlay">
-                        <div className="popup-content">
+                {isPopupOpen && (
+                    <div className="recurring-tasks-popup-overlay">
+                        <div className="recurring-tasks-popup-content">
                             <Box sx={{ 
                                 display: 'flex', 
                                 justifyContent: 'space-between', 
@@ -370,67 +468,151 @@ const getDayOfWeek = (dayNumber) => {
                             }}>
                                 <Typography variant="h6">Chi Tiết Công Việc Định Kỳ</Typography>
                                 <Button 
-                                    onClick={() => setIsPopupOpen(false)}
+                                    onClick={() => {
+                                        setIsPopupOpen(false);
+                                        setTaskDetail(null);
+                                    }}
                                     variant="outlined"
                                 >
                                     Đóng
                                 </Button>
                             </Box>
-                            <div className="task-details">
-                                <Typography><strong>Dịch vụ:</strong> {selectedTask.serviceName}</Typography>
-                                <Typography><strong>Mô tả:</strong> {selectedTask.serviceDescription}</Typography>
-                                <Typography><strong>Vị trí mộ:</strong> {selectedTask.graveLocation}</Typography>
-                                <Typography><strong>Khách hàng:</strong> {selectedTask.customerName}</Typography>
-                                <Typography><strong>Số điện thoại:</strong> {selectedTask.customerPhone}</Typography>
-                                <Typography>
-                                    <strong>Loại định kỳ:</strong> {getRecurringTypeText(selectedTask.recurringType)}
-                                </Typography>
-                                <Typography><strong>Ghi chú:</strong> {selectedTask.note || 'Không có'}</Typography>
-                                <Typography>
-                                    <strong>Trạng thái công việc: </strong> 
-                                    <span style={{ color: getStatusText(selectedTask.status).color }}>
-                                        {getStatusText(selectedTask.status).text}
-                                    </span>
-                                </Typography>
-                            </div>
-                            {selectedTask.status === 1 && (
-                                <>
-                                    <Button variant="contained" onClick={handleAccept}>Chấp nhận</Button>
-                                    <Button variant="outlined" onClick={() => setIsRejectPopupOpen(true)}>Từ chối</Button>
-                                </>
+
+                            {isLoading ? (
+                                <LoadingForSideBar text="Đang tải thông tin..." />
+                            ) : taskDetail && (
+                                <div className="recurring-tasks-detail-container">
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Dịch vụ:</strong> {taskDetail.serviceName}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Mô tả:</strong> {taskDetail.description}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Khách hàng:</strong> {taskDetail.customerName}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Số điện thoại:</strong> {taskDetail.customerPhone}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Địa chỉ mộ:</strong> {taskDetail.graveLocation}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Ngày bắt đầu:</strong> {formatDate(taskDetail.startDate)}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Ngày kết thúc:</strong> {formatDate(taskDetail.endDate)}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Loại định kỳ:</strong> {getRecurringTypeText(taskDetail.recurringType)}
+                                        {taskDetail.recurringType === 1 && ` - ${getDayOfWeek(taskDetail.dayOfWeek)}`}
+                                        {taskDetail.recurringType === 2 && ` - Ngày ${taskDetail.dayOfMonth}`}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Ghi chú:</strong> {taskDetail.note || 'Không có'}
+                                    </Typography>
+                                    <Typography className="recurring-tasks-detail-item">
+                                        <strong>Trạng thái: </strong> 
+                                        <span style={{ color: getStatusText(taskDetail.status).color }}>
+                                            {getStatusText(taskDetail.status).text}
+                                        </span>
+                                    </Typography>
+
+                                    {taskDetail.status === 1 && (
+                                        <Box sx={{ mt: 2, display: 'flex', gap: 2 }} className="recurring-tasks-actions">
+                                            <Button 
+                                                variant="contained" 
+                                                color="primary" 
+                                                onClick={handleAccept}
+                                                className="recurring-tasks-accept-btn"
+                                            >
+                                                Chấp nhận
+                                            </Button>
+                                            <Button 
+                                                variant="outlined" 
+                                                color="error" 
+                                                onClick={() => setIsRejectPopupOpen(true)}
+                                                className="recurring-tasks-reject-btn"
+                                            >
+                                                Từ chối
+                                            </Button>
+                                        </Box>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Hiển thị phần feedback nếu có và trạng thái là hoàn thành */}
+                            {taskDetail?.status === 4 && feedback && (
+                                <div className="recurring-tasks-feedback-section">
+                                    <Typography variant="h6" className="recurring-tasks-feedback-title">
+                                        Đánh giá từ khách hàng
+                                    </Typography>
+                                    <div className="recurring-tasks-feedback-content">
+                                        <Typography className="recurring-tasks-feedback-customer">
+                                            <strong>Khách hàng:</strong> {feedback.customerName}
+                                        </Typography>
+                                        <div className="recurring-tasks-feedback-rating">
+                                            <strong>Đánh giá:</strong>
+                                            {renderRatingStars(feedback.rating)}
+                                        </div>
+                                        <Typography className="recurring-tasks-feedback-text">
+                                            <strong>Nội dung:</strong> {feedback.content}
+                                        </Typography>
+                                        <Typography className="recurring-tasks-feedback-date">
+                                            <strong>Thời gian:</strong> {formatDate(feedback.createdAt)}
+                                        </Typography>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
                 )}
 
                 {isRejectPopupOpen && (
-                    <div className="popup-overlay">
-                        <div className="popup-content">
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="h6">Lý do từ chối</Typography>
-                                <textarea 
-                                    value={rejectionReason}
-                                    onChange={(e) => setRejectionReason(e.target.value)}
-                                    placeholder="Nhập lý do tại đây"
-                                    rows={4}
-                                    style={{ width: '100%' }}
-                                />
+                    <div className="recurring-tasks-popup-overlay">
+                        <div className="recurring-tasks-reject-popup">
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Từ chối công việc
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={4}
+                                variant="outlined"
+                                label="Lý do từ chối"
+                                value={rejectionReason}
+                                onChange={(e) => setRejectionReason(e.target.value)}
+                                sx={{ mb: 2 }}
+                            />
+                            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleReject}
+                                >
+                                    Xác nhận
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() => {
+                                        setIsRejectPopupOpen(false);
+                                        setRejectionReason('');
+                                    }}
+                                >
+                                    Hủy
+                                </Button>
                             </Box>
-                            <Button 
-                                className="reject-button" 
-                                onClick={handleReject}
-                            >
-                                Xác nhận từ chối
-                            </Button>
-                            <Button 
-                                className="cancel-button" 
-                                onClick={() => setIsRejectPopupOpen(false)}
-                            >
-                                Hủy
-                            </Button>
                         </div>
                     </div>
                 )}
+
+                <AlertMessage
+                    open={alertInfo.open}
+                    handleClose={handleCloseAlert}
+                    severity={alertInfo.severity}
+                    message={alertInfo.message}
+                />
             </div>
         </div>
     );

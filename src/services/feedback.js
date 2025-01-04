@@ -26,12 +26,13 @@ export const createFeedback = async (feedbackData) => {
   }
 };
 
-export const createFeedbackResponse = async (feedbackId, responseContent) => {
+export const createFeedbackResponse = async ({ feedbackId, staffId, responseContent }) => {
   try {
     const response = await axios.post(
       `${API_URL}/api/Feedback/Create-Feedback-Response`,
       {
         feedbackId: feedbackId,
+        staffId: staffId,
         responseContent: responseContent
       },
       {

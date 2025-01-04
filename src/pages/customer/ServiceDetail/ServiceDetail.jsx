@@ -4,21 +4,37 @@ import { useAuth } from '../../../context/AuthContext';
 import Header from '../../../components/Header/header';
 import Footer from '../../../components/Footer/footer';
 import Loading from '../../../components/Loading/Loading';
-import { getServiceScheduleById } from '../../../APIcontroller/API';
+import AlertMessage from '../../../components/AlertMessage/AlertMessage';
+import { getServiceScheduleById, createAssignmentFeedback } from '../../../APIcontroller/API';
 import './ServiceDetail.css';
+import axios from 'axios';
 
 const ServiceDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const [serviceDetail, setServiceDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedback, setFeedback] = useState({
+    content: '',
+    rating: 0
+  });
+  const [alertInfo, setAlertInfo] = useState({
+    open: false,
+    severity: 'success',
+    message: ''
+  });
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
+    return date.toLocaleString('vi-VN', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
     });
   };
 
@@ -38,6 +54,13 @@ const ServiceDetail = () => {
       fetchServiceDetail();
     }
   }, [id, user]);
+
+  const handleCloseAlert = () => {
+    setAlertInfo(prev => ({
+      ...prev,
+      open: false
+    }));
+  };
 
   if (loading) {
     return (
@@ -145,15 +168,27 @@ const ServiceDetail = () => {
                     <label>Trạng thái:</label>
                     <span>
                       {(() => {
-                        switch (serviceDetail.latestAssignment.status) {
+                        const status = serviceDetail.latestAssignment.status;
+                        if (status === 4) {
+                          return (
+                            <>
+                              <span className="status-assignment-task-completed">Đã hoàn thành</span>
+                              <button 
+                                className="service-detail-feedback-button"
+                                onClick={() => setShowFeedbackModal(true)}
+                              >
+                                Gửi đánh giá
+                              </button>
+                            </>
+                          );
+                        }
+                        switch (status) {
                           case 1:
                             return 'Đang chờ';
                           case 2:
                             return 'Từ chối';
                           case 3:
                             return 'Đang thực hiện';
-                          case 4:
-                            return 'Đã hoàn thành';
                           case 5:
                             return 'Thất bại';
                           default:
@@ -166,16 +201,111 @@ const ServiceDetail = () => {
                 <div className="images-section">
                   <h5>Hình ảnh kết quả</h5>
                   <div className="image-grid">
-                    {serviceDetail.latestAssignment.taskImages.map((image, index) => (
-                      <img key={index} src={image} alt={`Hình ảnh ${index + 1}`} className="task-image" />
+                    {serviceDetail.latestAssignment.taskImages.map((imageData, index) => (
+                      <div key={index} className="task-image-container">
+                        <img 
+                          src={imageData.imagePath} 
+                          alt={`Hình ảnh ${index + 1}`} 
+                          className="task-image" 
+                          onClick={() => setSelectedImage(imageData.imagePath)}
+                        />
+                        <p className="image-date">
+                          {formatDate(imageData.createAt)}
+                        </p>
+                      </div>
                     ))}
                   </div>
+
+                  {selectedImage && (
+                    <div className="image-modal" onClick={() => setSelectedImage(null)}>
+                      <img 
+                        src={selectedImage} 
+                        alt="Enlarged" 
+                        className="modal-image"
+                      />
+                    </div>
+                  )}
                 </div>
+
+                {showFeedbackModal && (
+                  <div className="service-detail-feedback-modal">
+                    <div className="service-detail-feedback-content">
+                      <h3 className="service-detail-feedback-title">Đánh giá dịch vụ</h3>
+                      <div className="service-detail-rating-container">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`service-detail-star ${star <= feedback.rating ? 'active' : ''}`}
+                            onClick={() => setFeedback(prev => ({ ...prev, rating: star }))}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <textarea
+                        className="service-detail-feedback-textarea"
+                        placeholder="Nhập nội dung đánh giá..."
+                        value={feedback.content}
+                        onChange={(e) => setFeedback(prev => ({ ...prev, content: e.target.value }))}
+                      />
+                      <div className="service-detail-feedback-actions">
+                        <button 
+                          className="service-detail-submit-feedback"
+                          onClick={async () => {
+                            try {
+                              if (feedback.rating === 0) {
+                                setAlertInfo({
+                                  open: true,
+                                  severity: 'warning',
+                                  message: 'Vui lòng chọn số sao đánh giá!'
+                                });
+                                return;
+                              }
+                              await createAssignmentFeedback({
+                                customerId: user.accountId,
+                                assignmentTaskId: serviceDetail.latestAssignment.assignmentTaskId,
+                                content: feedback.content,
+                                rating: feedback.rating
+                              });
+                              setAlertInfo({
+                                open: true,
+                                severity: 'success',
+                                message: 'Cảm ơn bạn đã gửi đánh giá!'
+                              });
+                              setShowFeedbackModal(false);
+                            } catch (error) {
+                              console.error('Error submitting feedback:', error);
+                              setAlertInfo({
+                                open: true,
+                                severity: 'error',
+                                message: 'Bạn đã gửi đánh giá này rồi!'
+                              });
+                            }
+                          }}
+                        >
+                          Gửi đánh giá
+                        </button>
+                        <button 
+                          className="service-detail-cancel-feedback"
+                          onClick={() => setShowFeedbackModal(false)}
+                        >
+                          Hủy
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
       </div>
+      <AlertMessage
+        open={alertInfo.open}
+        handleClose={handleCloseAlert}
+        severity={alertInfo.severity}
+        message={alertInfo.message}
+      />
       <Footer />
     </div>
   );

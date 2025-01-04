@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 import { updateTaskStatus } from '../../../APIcontroller/API';
 import { getTasksByAccountId, updateTaskImage } from '../../../services/task';
 import { useAuth } from '../../../context/AuthContext';
-import { ROLES } from '../../../utils/auth';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './TaskList.css'; // You'll need to create this CSS file
@@ -13,7 +12,6 @@ import { FaTimes } from 'react-icons/fa';
 import { Upload, X } from "lucide-react";
 import { storage } from "../../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { addTaskImages } from "../../../services/task";
 import { getFeedbackWithDetailId, createFeedbackResponse } from '../../../services/feedback';
 import { IoClose } from "react-icons/io5";
 import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
@@ -170,20 +168,18 @@ const TaskList = () => {
         setSelectedTask(task);
         if (task.status === 4) {
             // Transform existing image paths into the format we need
-            const existingImages = [
-                task.imageWorkSpace
-            ]
-                .filter(path => path) // Remove null/empty paths
+            const existingImages = [task.imageWorkSpace]
+                .filter(path => path)
                 .map((url, index) => ({
                     id: index + 1,
                     url: url
                 }));
             setTaskImages(existingImages);
 
-            // Fetch feedback when task is completed
+            // Fetch feedback using the correct detailId from task
             try {
-                const feedbackData = await getFeedbackWithDetailId(task.id);
-                console.log('Feedback data:', feedbackData); // For debugging
+                const feedbackData = await getFeedbackWithDetailId(task.detailId);
+                console.log('Feedback data:', feedbackData);
                 setFeedback(feedbackData);
             } catch (error) {
                 console.error('Error fetching feedback:', error);
@@ -267,7 +263,7 @@ const TaskList = () => {
 
             await createFeedbackResponse(responseData);
             // Refresh feedback data
-            const updatedFeedback = await getFeedbackWithDetailId(selectedTask.id);
+            const updatedFeedback = await getFeedbackWithDetailId(selectedTask.detailId);
             setFeedback(updatedFeedback);
             // Reset form
             setResponseContent('');

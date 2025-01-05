@@ -231,8 +231,6 @@ const RequestCustomer = () => {
           </div>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
 
         <form onSubmit={handleSubmit} className="request-form">
           <div className="form-group-relative">

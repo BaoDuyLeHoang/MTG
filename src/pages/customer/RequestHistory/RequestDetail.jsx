@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getRequestById, acceptServiceRequest } from '../../../APIcontroller/API';
+import { getRequestById, acceptServiceRequest, createRequestFeedback } from '../../../APIcontroller/API';
 import Header from '../../../components/Header/header';
 import Footer from '../../../components/Footer/footer';
 import './RequestDetail.css';
@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import { jwtDecode } from "jwt-decode";
 import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 import Loading from '../../../components/Loading/Loading';
+import { useAuth } from '../../../context/AuthContext';
 
 const RequestDetail = () => {
   const { requestId } = useParams();
@@ -19,6 +20,12 @@ const RequestDetail = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedback, setFeedback] = useState({
+    content: '',
+    rating: 0
+  });
+  const { user } = useAuth();
 
   const fetchRequestDetail = async () => {
     try {
@@ -242,14 +249,32 @@ const RequestDetail = () => {
             </div>
           )}
 
+          {/* Thông tin người quản lý */}
+          {request.managerName && (
+            <div className="rd-section">
+              <h3 className="rd-section-title">Thông Tin Người Quản Lý</h3>
+              <div className="rd-task-staff">
+                <div className="rd-task-staff-info">
+                  <span className="rd-task-label">Họ tên:</span>
+                  <span className="rd-task-value">{request.managerName}</span>
+                </div>
+                <div className="rd-task-staff-info">
+                  <span className="rd-task-label">Số điện thoại:</span>
+                  <span className="rd-task-value">{request.managerPhoneNumber}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Phản hồi của quản lý */}
           {request.reasons && request.reasons.length > 0 && (
             <div className="rd-section">
-              <h3 className="rd-section-title">Lịch sử từ chối</h3>
+              <h3 className="rd-section-title">Phản hồi của quản lý</h3>
               <div className="rd-reject-history">
                 {request.reasons.map((reason, index) => (
                   <div key={index} className="rd-reject-item">
                     <div className="rd-reject-reason">
-                      <span className="rd-reject-label">Lý do:</span> {reason.rejectReason}
+                      <span className="rd-reject-label">Nội dung:</span> {reason.rejectReason}
                     </div>
                     <div className="rd-reject-date">
                       <span className="rd-reject-label">Thời gian:</span>
@@ -441,6 +466,20 @@ const RequestDetail = () => {
               </Button>
             </div>
           )}
+
+          {/* Thêm nút feedback khi request type là 2 và status là 7 (hoàn thành) */}
+          {request.typeId === 2 && request.status === 7 && (
+            <div className="rd-actions">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setShowFeedbackModal(true)}
+                className="rd-feedback-button"
+              >
+                Gửi đánh giá
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <Footer />
@@ -476,6 +515,74 @@ const RequestDetail = () => {
             >
               ×
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Feedback Modal */}
+      {showFeedbackModal && (
+        <div className="rd-feedback-modal">
+          <div className="rd-feedback-content">
+            <h3 className="rd-feedback-title">Đánh giá yêu cầu dịch vụ</h3>
+            <div className="rd-rating-container">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`rd-star ${star <= feedback.rating ? 'active' : ''}`}
+                  onClick={() => setFeedback(prev => ({ ...prev, rating: star }))}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            <textarea
+              className="rd-feedback-textarea"
+              placeholder="Nhập nội dung đánh giá..."
+              value={feedback.content}
+              onChange={(e) => setFeedback(prev => ({ ...prev, content: e.target.value }))}
+            />
+            <div className="rd-feedback-actions">
+              <Button 
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  try {
+                    if (feedback.rating === 0) {
+                      setAlertMessage('Vui lòng chọn số sao đánh giá!');
+                      setAlertSeverity('warning');
+                      setAlertOpen(true);
+                      return;
+                    }
+
+                    await createRequestFeedback({
+                      customerId: user.accountId,
+                      requestId: request.requestId,
+                      content: feedback.content,
+                      rating: feedback.rating
+                    });
+
+                    setAlertMessage('Cảm ơn bạn đã gửi đánh giá!');
+                    setAlertSeverity('success');
+                    setAlertOpen(true);
+                    setShowFeedbackModal(false);
+                  } catch (error) {
+                    console.error('Error submitting feedback:', error);
+                    setAlertMessage('Bạn đã gửi đánh giá này rồi. Vui lòng thử lại!');
+                    setAlertSeverity('error');
+                    setAlertOpen(true);
+                  }
+                }}
+              >
+                Gửi đánh giá
+              </Button>
+              <Button 
+                variant="contained"
+                color="error"
+                onClick={() => setShowFeedbackModal(false)}
+              >
+                Hủy
+              </Button>
+            </div>
           </div>
         </div>
       )}

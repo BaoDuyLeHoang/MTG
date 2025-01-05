@@ -48,6 +48,11 @@ export const API_ENDPOINTS = {
   GET_REQUEST_BY_ID: "/RequestCustomer/requests",
   GET_MANAGER_REQUESTS: "/RequestCustomer/requests/manager",
   ACCEPT_REQUEST: "/RequestCustomer/AcceptRequest",
+  CREATE_ASSIGNMENT_FEEDBACK: "/AssignmentTaskFeedback/Create-Feedback",
+  CREATE_REQUEST_FEEDBACK: "/RequestFeedback/Create-Feedback",
+  GET_ASSIGNMENT_TASK_DETAIL: "/AssignmentTask", // Thêm endpoint mới
+  GET_ASSIGNMENT_FEEDBACK: "/AssignmentTaskFeedback/getFeedbackWithAssignmentTaskId",
+  GET_FEEDBACK_BY_REQUEST: "/RequestFeedback/getFeedbackWithRequestId",
 };
 
 export const getServices = async () => {
@@ -1538,6 +1543,161 @@ export const acceptServiceRequest = async (requestId, accountId) => {
     return response.data;
   } catch (error) {
     console.error('API Error:', error.response || error);
+    throw error;
+  }
+};
+
+export const createAssignmentFeedback = async (feedbackData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Creating assignment feedback:", feedbackData);
+    
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.CREATE_ASSIGNMENT_FEEDBACK}`,
+      feedbackData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Feedback API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating feedback:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const createRequestFeedback = async (feedbackData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log("Creating request feedback:", feedbackData);
+    
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.CREATE_REQUEST_FEEDBACK}`,
+      feedbackData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Request Feedback API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating request feedback:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+export const getAssignmentTaskDetail = async (taskId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_ASSIGNMENT_TASK_DETAIL}/${taskId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching assignment task detail:", error);
+    throw error;
+  }
+};
+
+export const getAssignmentFeedback = async (assignmentTaskId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_ASSIGNMENT_FEEDBACK}/${assignmentTaskId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching assignment feedback:", error);
+    throw error;
+  }
+};
+
+export const updateRequestMaterials = async (requestData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("Không tìm thấy token");
+    }
+
+    const decodedToken = jwtDecode(token);
+    const managerId = decodedToken.accountId;
+
+    if (!managerId) {
+      throw new Error("Không tìm thấy thông tin người quản lý trong token");
+    }
+
+    const response = await axios.put(
+      `${BASE_URL}/RequestCustomer/UpdateRequest`,
+      {
+        requestId: requestData.requestId,
+        managerId: parseInt(managerId),
+        note: requestData.note || null,
+        materialIds: requestData.materialIds || []
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "Có lỗi xảy ra khi cập nhật yêu cầu");
+    }
+    throw error;
+  }
+};
+
+export const getFeedbackByRequestId = async (requestId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching feedback for request ID: ${requestId}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_FEEDBACK_BY_REQUEST}/${requestId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      }
+    );
+
+    console.log("Feedback API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching feedback:",
+      error.response ? error.response.data : error.message
+    );
     throw error;
   }
 };

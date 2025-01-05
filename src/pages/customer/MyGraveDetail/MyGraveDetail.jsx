@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./MyGraveDetail.css";
 import Header from "../../../components/Header/header";
 import { getGraveById } from "../../../APIcontroller/API";
-import { getGraveOrders } from "../../../services/graves";
+import { getGraveOrders, getTasksByMartyrGrave } from "../../../services/graves";
 import Footer from "../../../components/Footer/footer";
 import Loading from '../../../components/Loading/Loading';
 
@@ -15,6 +15,11 @@ const MyGraveDetail = () => {
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [maintenanceTasks, setMaintenanceTasks] = useState([]);
+  const [taskType, setTaskType] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 5;
 
   const defaultImage = "https://firebasestorage.googleapis.com/v0/b/mtg-capstone-2024.appspot.com/o/grave_images%2Fbna_3..jpg?alt=media&token=8f7ddd09-355a-4d65-85b6-476829954072";
 
@@ -31,7 +36,7 @@ const MyGraveDetail = () => {
           getGraveById(martyrId),
           getGraveOrders(martyrId)
         ]);
-        
+
         setMartyrDetails(graveData);
         setOrders(ordersData);
       } catch (err) {
@@ -78,13 +83,17 @@ const MyGraveDetail = () => {
   const getStatusText = (status) => {
     switch (status) {
       case 1:
-        return "Đã đặt";
+        return { text: "Đã giao", color: "#3498db" };
+      case 2:
+        return { text: "Từ chối", color: "#e74c3c" };
       case 3:
-        return "Đang thực hiện";
+        return { text: "Đang thực hiện", color: "#f39c12" };
       case 4:
-        return "Hoàn thành";
+        return { text: "Hoàn thành", color: "#2ecc71" };
+      case 5:
+        return { text: "Thất bại", color: "#c0392b" };
       default:
-        return null;
+        return { text: "Không xác định", color: "#95a5a6" };
     }
   };
 
@@ -104,6 +113,25 @@ const MyGraveDetail = () => {
     if (!grave) return "Không có thông tin";
     return `Khu ${grave.areaNumber} - Hàng ${grave.rowNumber} - Mộ số ${grave.martyrNumber}`;
   };
+
+  // Thêm function để lấy tasks
+  const fetchMaintenanceTasks = async () => {
+    try {
+      const response = await getTasksByMartyrGrave(martyrId, taskType, currentPage, pageSize);
+      if (response.success) {
+        setMaintenanceTasks(response.data);
+        setTotalPages(response.totalPage);
+      }
+    } catch (error) {
+      console.error('Error fetching maintenance tasks:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (martyrId) {
+      fetchMaintenanceTasks();
+    }
+  }, [martyrId, taskType, currentPage]);
 
   if (loading) return (
     <>
@@ -185,47 +213,122 @@ const MyGraveDetail = () => {
             </button>
           </div>
         </div>
-        <div className="maintenance-section">
-          <h2>Lịch sử bảo trì</h2>
-          <div className="order-history-list">
-            {orders && orders.length > 0 ? (
-              orders.map((order) => {
-                // Only render orders with status 1, 3, or 4
-                if (![1, 3, 4].includes(order.status)) return null;
-                
-                return (
-                  <div key={order.orderDate} className="order-card" data-status={order.status}>
-                    <div className="order-main-content">
-                      <div className="order-top">
-                        <div className="order-service">
-                          <h3>{order.serviceName}</h3>
-                          <p>{order.serviceCategoryName}</p>
-                        </div>
-                        <div className="order-meta">
-                          <span className="order-date">{formatDate(order.orderDate)}</span>
-                          <span className="status-badge status-${order.status}">
-                            {getStatusText(order.status)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="empty-state">
-                <p>Chưa có dịch vụ nào được đặt cho mộ này</p>
-              </div>
-            )}
+        <div className="mgd-maintenance-section">
+          <div className="mgd-maintenance-header">
+            <h2>Lịch sử bảo trì</h2>
+            <div className="mgd-maintenance-note">
+              <p>
+                Để đảm bảo tính riêng tư và sự tôn nghiêm, chỉ thân nhân của liệt sĩ mới có quyền xem lịch sử bảo trì mộ phần.
+                Thông tin này bao gồm các dịch vụ đã được thực hiện, thời gian thực hiện, và trạng thái của từng dịch vụ.
+                Điều này giúp người thân có thể theo dõi và đảm bảo mộ phần của liệt sĩ luôn được chăm sóc chu đáo theo yêu cầu.
+              </p>
+            </div>
           </div>
+
+          <div className="mgd-maintenance-filters">
+            <select
+              value={taskType}
+              onChange={(e) => {
+                setTaskType(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="mgd-task-type-select"
+            >
+              <option value={1}>Dịch vụ thường</option>
+              <option value={2}>Dịch vụ định kỳ</option>
+              <option value={3}>Dịch vụ theo yêu cầu</option>
+            </select>
+          </div>
+
+          <div className="mgd-maintenance-table-container">
+            <table className="mgd-maintenance-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tên dịch vụ</th>
+                  <th>Mã mộ</th>
+                  <th>Thời hạn</th>
+                  <th>Người đặt</th>
+                  <th>Nhân viên</th>
+                  <th>Ghi chú</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                {maintenanceTasks.length > 0 ? (
+                  maintenanceTasks.map((task, index) => (
+                    <tr key={index}>
+                      <td>{(currentPage - 1) * pageSize + index + 1}</td>
+                      <td>{task.serviceName}</td>
+                      <td>{task.martyrCode}</td>
+                      <td>{new Date(task.endDate).toLocaleDateString('vi-VN')}</td>
+                      <td>{task.customerName}<br />{task.customerPhone}</td>
+                      <td>
+                        {task.staffName ? (
+                          <>
+                            {task.staffName}
+                            <br />
+                            {task.staffPhone}
+                          </>
+                        ) : '-'}
+                      </td>
+                      <td>{task.description || '-'}</td>
+                      <td>
+                        <span
+                          className="mgd-status-badge"
+                          style={{ backgroundColor: getStatusText(task.status).color }}
+                        >
+                          {getStatusText(task.status).text}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="mgd-empty-state">
+                      Chưa có dịch vụ nào được đặt cho mộ này
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="mgd-pagination">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Trang trước
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={currentPage === page ? 'active' : ''}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Trang sau
+              </button>
+            </div>
+          )}
         </div>
 
         {selectedImage && (
           <div className="modal-overlay" onClick={closeModal}>
             <div className="modal-content">
-              <img 
-                src={selectedImage === martyrDetails?.images?.[0]?.urlPath ? selectedImage : defaultImage} 
-                alt="Memorial - Large view" 
+              <img
+                src={selectedImage === martyrDetails?.images?.[0]?.urlPath ? selectedImage : defaultImage}
+                alt="Memorial - Large view"
               />
               <button className="modal-close" onClick={closeModal}>×</button>
             </div>

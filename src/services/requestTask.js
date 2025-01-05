@@ -40,3 +40,40 @@ export const getNotSchedulingRequestTasksByAccountId = async (accountId, pageInd
         throw error;
     }
 };
+
+export const getRequestTasksByManagerId = async (managerId, pageIndex = 1, pageSize = 5) => {
+    try {
+        const response = await axios.get(
+            `${BASE_URL}/RequestTask/requestTasks/manager/${managerId}`,
+            {
+                params: {
+                    pageIndex,
+                    pageSize
+                },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const reassignRequestTask = async (requestTaskId, staffId) => {
+    try {
+        const response = await axios.put(
+            `${BASE_URL}/RequestTask/requestTasks/${requestTaskId}/reassign/${staffId}`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to reassign request task');
+    }
+};

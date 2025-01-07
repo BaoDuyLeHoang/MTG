@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "./GraveDetailManager.css";
 import { getGraveById } from "../../../APIcontroller/API"; // Adjust import to include getGraveServices
@@ -8,6 +8,9 @@ import Sidebar from "../../../components/Sidebar/sideBar";
 import { FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import { useAuth } from "../../../context/AuthContext";
 import LoadingForSideBar from "../../../components/LoadingForSideBar/LoadingForSideBar";
+import { storage } from "../../../firebase"; // Ensure this import is correct
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage"; // Import necessary Firebase functions
+import { jwtDecode } from "jwt-decode";
 
 // Add this helper function to format date for input
 const formatDateForInput = (dateString) => {
@@ -42,6 +45,9 @@ const MyGraveDetail = () => {
   const [activeTab, setActiveTab] = useState('details'); // State to manage active tab
   const [availableServices, setAvailableServices] = useState([]); // State for available services
   const [selectedServiceId, setSelectedServiceId] = useState(null); // State for selected service
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null); // State to hold the selected image URL
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // State to manage image modal visibility
+  const fileInputRef = useRef(null); // Create a ref for the file input
 
   useEffect(() => {
     const fetchGraveDetails = async () => {
@@ -90,13 +96,28 @@ const MyGraveDetail = () => {
   }, [martyrId]);
 
   const handleImageClick = () => {
-    if (martyrDetails?.images?.[0]?.urlPath) {
-      setSelectedImage(martyrDetails.images[0].urlPath);
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Trigger the file input click
     }
   };
 
-  const closeModal = () => {
-    setSelectedImage(null);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedImage(file); // Set the selected image file
+
+      // Create a URL for the selected image and set it to state
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImageUrl(imageUrl);
+    }
+  };
+
+  const openImageModal = () => {
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
   };
 
   const handleInputChange = (field, value) => {
@@ -113,9 +134,22 @@ const MyGraveDetail = () => {
 
   const handleSave = async () => {
     try {
+      let imageUrl = null;
+
+      // Check if there is an existing image and delete it if necessary
+      if (martyrDetails?.images?.[0]?.urlPath) {
+        await deleteObject(martyrDetails.images[0].urlPath); // Delete the old image
+      }
+
+      // Upload new image if selected
+      if (selectedImage) {
+        imageUrl = await uploadBytes(selectedImage); // Upload the image and get the URL
+      }
+
       const updateData = {
         informations: [
           {
+            martyrId: martyrId, // Include martyrId
             name: editedData.matyrGraveInformations[0].name,
             nickName: editedData.matyrGraveInformations[0].nickName,
             position: editedData.matyrGraveInformations[0].position,
@@ -125,6 +159,11 @@ const MyGraveDetail = () => {
             dateOfSacrifice: editedData.matyrGraveInformations[0].dateOfSacrifice
           }
         ],
+        image: [
+          {
+            urlPath: imageUrl // Include the new image URL
+          }
+        ]
       };
 
       await updateGraveDetail(martyrId, updateData);
@@ -214,6 +253,63 @@ const MyGraveDetail = () => {
     );
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+
+    // Validate file type
+    if (file && !file.type.startsWith('image/')) {
+      setError("Vui lòng chọn file ảnh.");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file && file.size > 5 * 1024 * 1024) {
+      setError("Kích thước ảnh không được vượt quá 5MB.");
+      return;
+    }
+
+    if (file) {
+      try {
+        setLoading(true);
+        
+        // 1. Upload ảnh lên Firebase Storage
+        const storageRef = ref(storage, `graves/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        
+        // 2. Cập nhật URL vào state
+        setSelectedImageUrl(downloadURL);
+
+        // 3. Cập nhật URL vào database thông qua API
+        const accountId = getAccountIdFromToken(); // Assuming you have a function to get the account ID
+        if (!accountId) {
+          throw new Error('Không tìm thấy thông tin người dùng');
+        }
+
+        await updateGraveDetail(martyrId, { // Assuming you have a function to update grave details
+          ...editedData,
+          image: [{ urlPath: downloadURL }] // Update the image URL
+        });
+
+        alert("Tải ảnh lên và cập nhật thông tin thành công!");
+      } catch (error) {
+        console.error('Image upload error:', error);
+        alert("Không thể cập nhật ảnh. Vui lòng thử lại.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const getAccountIdFromToken = () => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.accountId;
+    }
+    return null;
+  };
+
   if (loading) {
     return (
       <div className="grave-detail-manager-layout-wrapper">
@@ -288,15 +384,28 @@ const MyGraveDetail = () => {
           <div className="grave-detail-manager-info-container">
             <div className="grave-detail-manager-image-section">
               <div className="grave-detail-manager-memorial-image">
-                <img
-                  src={
-                    martyrDetails.images[0]?.urlPath ||
-                    "/api/placeholder/400/300"
-                  }
-                  alt="Bia tưởng niệm"
-                  onClick={handleImageClick}
-                  title="Nhấp để phóng to"
-                />
+                {selectedImageUrl || martyrDetails.images[0]?.urlPath ? (
+                  <img
+                    src={selectedImageUrl || martyrDetails.images[0].urlPath}
+                    alt="Bia tưởng niệm"
+                    onClick={handleImageClick} // Click to open file dialog
+                    title="Nhấp để chọn ảnh"
+                  />
+                ) : (
+                  <div className="no-image-placeholder">
+                    <p>Chưa có ảnh</p>
+                    <button onClick={handleImageClick}>Chọn ảnh</button> {/* Button to select image */}
+                  </div>
+                )}
+                {isEditing && ( // Show file input only when in edit mode
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload} // Use the new handleImageUpload function
+                    ref={fileInputRef} // Attach the ref to the file input
+                    style={{ display: 'none' }} // Hide the file input
+                  />
+                )}
               </div>
             </div>
 
@@ -407,14 +516,11 @@ const MyGraveDetail = () => {
           </div>
         )}
 
-        {selectedImage && (
-          <div className="grave-detail-manager-modal-overlay" onClick={closeModal}>
-            <div className="grave-detail-manager-modal-content">
-              <img src={selectedImage} alt="Memorial - Large view" />
-              <button className="grave-detail-manager-modal-close" onClick={closeModal}>
-                ×
-              </button>
-            </div>
+        {/* Image Modal without dark overlay */}
+        {isImageModalOpen && (
+          <div className="image-modal">
+            <img src={selectedImageUrl || martyrDetails.images[0]?.urlPath} alt="Memorial - Large view" />
+            <button onClick={closeImageModal}>Đóng</button>
           </div>
         )}
       </div>

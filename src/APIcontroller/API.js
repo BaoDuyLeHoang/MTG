@@ -1,7 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const BASE_URL = "https://localhost:7006/api"; // Replace with your actual API base URL
+const BASE_URL = "https://milkstyle.id.vn/api"; // Replace with your actual API base URL
 
 export const API_ENDPOINTS = {
   GET_SERVICES: "/ServiceCategory/categories",

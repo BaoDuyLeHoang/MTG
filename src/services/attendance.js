@@ -93,7 +93,7 @@ export const fetchAttendanceById = async (attendanceId) => {
 
 export const updateAttendanceStatus = async (attendanceId, status, note, managerId) => {
   try {
-      await axios.put(`https://localhost:7006/api/Attendance/UpdateSingleAttendanceStatus`, null, {
+      await axios.put(`${BASE_URL}/Attendance/UpdateSingleAttendanceStatus`, null, {
           params: {
               attendanceId: attendanceId,
               status: status,

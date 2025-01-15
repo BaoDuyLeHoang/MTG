@@ -9,35 +9,47 @@ const SearchGraveInterface = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useState({
     name: "",
-    birthYear: "",
-    deathYear: "",
-    hometown: "",
+    yearOfBirth: "",
+    yearOfSacrifice: "",
+    homeTown: "",
+    martyrCode: "",
+    page: 1,
+    pageSize: 15
   });
   const [alertOpen, setAlertOpen] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    // Trim whitespace and normalize input
-    const normalizedValue = value;
-    setSearchParams((prev) => ({ ...prev, [name]: normalizedValue }));
+    setSearchParams((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
     
-    // Validate if at least one field has been filled
-    const hasValue = Object.values(searchParams).some(value => value.length > 0);
+    // Kiểm tra có ít nhất một trường được nhập
+    const hasValue = Object.entries(searchParams).some(([key, value]) => 
+      !['page', 'pageSize'].includes(key) && value.length > 0
+    );
+    
     if (!hasValue) {
       setAlertOpen(true);
       return;
     }
 
     try {
-      const results = await searchGraves(searchParams);
-      if (results.length === 0) {
+      const response = await searchGraves(searchParams);
+      
+      if (!response.martyrGraves || response.martyrGraves.length === 0) {
         setAlertOpen(true);
       } else {
-        navigate("/search-results", { state: { results } });
+        navigate("/search-results", { 
+          state: { 
+            results: response.martyrGraves,
+            totalPages: response.totalPage,
+            currentPage: searchParams.page,
+            searchCriteria: searchParams
+          } 
+        });
       }
     } catch (error) {
       console.error("Error searching graves:", error);
@@ -59,10 +71,12 @@ const SearchGraveInterface = () => {
         <AlertMessage
           open={alertOpen}
           handleClose={handleAlertClose}
-          severity={Object.values(searchParams).some(value => value.length > 0) ? "info" : "warning"}
-          message={Object.values(searchParams).some(value => value.length > 0) ? 
-            "Không tìm thấy kết quả phù hợp" : 
-            "Vui lòng nhập ít nhất một thông tin tìm kiếm"}
+          severity={Object.entries(searchParams).some(([key, value]) => 
+            !['page', 'pageSize'].includes(key) && value.length > 0
+          ) ? "info" : "warning"}
+          message={Object.entries(searchParams).some(([key, value]) => 
+            !['page', 'pageSize'].includes(key) && value.length > 0
+          ) ? "Không tìm thấy kết quả phù hợp" : "Vui lòng nhập ít nhất một thông tin tìm kiếm"}
         />
       </div>
       <div className="search-grave-interface-container">
@@ -82,29 +96,38 @@ const SearchGraveInterface = () => {
             </div>
             <div className="filter-inputs">
               <input
+                type="text"
+                name="martyrCode"
+                className="filter-input"
+                placeholder="Mã mộ"
+                value={searchParams.martyrCode}
+                onChange={handleInputChange}
+                maxLength={50}
+              />
+              <input
                 type="number"
-                name="birthYear"
+                name="yearOfBirth"
                 className="filter-input"
                 placeholder="Năm sinh"
-                value={searchParams.birthYear}
+                value={searchParams.yearOfBirth}
                 onChange={handleInputChange}
                 max={new Date().getFullYear()}
               />
               <input
                 type="number"
-                name="deathYear"
+                name="yearOfSacrifice"
                 className="filter-input"
                 placeholder="Năm mất"
-                value={searchParams.deathYear}
+                value={searchParams.yearOfSacrifice}
                 onChange={handleInputChange}
                 max={new Date().getFullYear()}
               />
               <input
                 type="text"
-                name="hometown"
+                name="homeTown"
                 className="filter-input"
                 placeholder="Quê quán"
-                value={searchParams.hometown}
+                value={searchParams.homeTown}
                 onChange={handleInputChange}
                 maxLength={200}
               />

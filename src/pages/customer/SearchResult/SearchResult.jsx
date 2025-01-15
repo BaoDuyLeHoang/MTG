@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SearchResult.css';
-import Header from '../../../components/Header/header'; // Import the Header component
+import Header from '../../../components/Header/header';
 import Footer from '../../../components/Footer/footer';
 import Loading from '../../../components/Loading/Loading';
+import { searchGraves } from '../../../APIcontroller/API';
 
 const SearchResult = () => {
   const location = useLocation();
@@ -11,15 +12,20 @@ const SearchResult = () => {
   const [results, setResults] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15; // Changed from 6 to 15 items per page
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 15; // Đồng bộ với pageSize từ API
   const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useState(null);
 
-  // Cập nhật DEFAULT_IMAGE để sử dụng ảnh local từ thư mục public
   const DEFAULT_IMAGE = "/Hinh-nen-co-Viet-Nam-hinh-nen-Quoc-ky-Viet-Nam-dep-cho-dien-thoai-3D.jpg";
 
   useEffect(() => {
-    if (location.state && location.state.results) {
-      setResults(location.state.results);
+    if (location.state) {
+      const { results, totalPages, currentPage, searchCriteria } = location.state;
+      setResults(results);
+      setTotalPages(totalPages);
+      setCurrentPage(currentPage);
+      setSearchParams(searchCriteria);
       setLoading(false);
     }
   }, [location.state]);
@@ -48,35 +54,26 @@ const SearchResult = () => {
     );
   }
 
-  // Calculate pagination values
-  const totalPages = Math.ceil(results.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResults = results.slice(startIndex, endIndex);
+  const handlePageChange = async (page) => {
+    setLoading(true);
+    try {
+      const response = await searchGraves({
+        ...searchParams,
+        page: page,
+        pageSize: itemsPerPage
+      });
 
-  // Icons components
-  const CalendarIcon = () => (
-    <svg className="icon" viewBox="0 0 24 24">
-      <path d="M19 4h-1V3c0-.6-.4-1-1-1s-1 .4-1 1v1H8V3c0-.6-.4-1-1-1s-1 .4-1 1v1H5C3.3 4 2 5.3 2 7v12c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V7c0-1.7-1.3-3-3-3z"/>
-    </svg>
-  );
-
-  const HomeIcon = () => (
-    <svg className="icon" viewBox="0 0 24 24">
-      <path d="M12 3L4 9v12h16V9l-8-6zm6 16h-4v-5h-4v5H6v-9l6-4.5 6 4.5v9z"/>
-    </svg>
-  );
-
-  const LocationIcon = () => (
-    <svg className="icon" viewBox="0 0 24 24">
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-    </svg>
-  );
-
-  // Pagination controls
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (response.martyrGraves) {
+        setResults(response.martyrGraves);
+        setCurrentPage(page);
+        setTotalPages(response.totalPage);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error("Error fetching page data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderPaginationButtons = () => {
@@ -162,7 +159,17 @@ const SearchResult = () => {
   };
 
   const handleCardClick = (martyrId) => {
-    navigate(`/chitietmo/${martyrId}`);
+    console.log("Clicking grave with ID:", martyrId);
+    
+    try {
+      if (martyrId) {
+        navigate(`/chitietmo/${martyrId}`);
+      } else {
+        console.error("Invalid martyrId:", martyrId);
+      }
+    } catch (error) {
+      console.error("Error navigating to detail:", error);
+    }
   };
 
   return (
@@ -173,10 +180,10 @@ const SearchResult = () => {
         
         <div className="search-result__grid" style={{ 
           display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)', // Changed from 3 to 5 columns
+          gridTemplateColumns: 'repeat(5, 1fr)',
           gap: '20px'
         }}>
-          {currentResults.map((grave) => (
+          {results.map((grave) => (
             <div
               key={grave.martyrId}
               className={`search-result__card ${hoveredCard === grave.martyrId ? 'search-result__card--hover' : ''}`}
@@ -187,8 +194,8 @@ const SearchResult = () => {
             >
               <div className="search-result__image-container">
                 <img
-                  src={grave.imageUrl || DEFAULT_IMAGE}
-                  alt={`Grave of ${grave.fullName}`}
+                  src={grave.imageUrls?.[0]?.image || DEFAULT_IMAGE}
+                  alt={`Grave of ${grave.name}`}
                   className="search-result__image"
                 />
               </div>
@@ -198,23 +205,18 @@ const SearchResult = () => {
                 
                 <div className="search-result__info-grid">
                   <div className="search-result__info-item">
-                   
-                    <span>Năm sinh: {new Date(grave.dateOfBirth).getFullYear()}</span>
+                    <span>Năm sinh: {grave.dateOfBirth}</span>
                   </div>
                   <div className="search-result__info-item">
-                    
-                    <span>Năm mất: {new Date(grave.dateOfSacrifice).getFullYear()}</span>
+                    <span>Năm mất: {grave.dateOfSacrifice}</span>
                   </div>
                   <div className="search-result__info-item">
-                   
                     <span>Quê quán: {grave.homeTown}</span>
                   </div>
                   <div className="search-result__info-item">
-                    
-                    <span>Vị trí: {grave.graveLocation}</span>
+                    <span>Vị trí: {grave.martyrCode}</span>
                   </div>
                 </div>
-                
               </div>
             </div>
           ))}

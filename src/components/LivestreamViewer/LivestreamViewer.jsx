@@ -4,7 +4,7 @@ import './LivestreamViewer.css';
 
 const APP_ID = "2bab4ee5dcdf4ec89375fa0a0a1df109";
 const CHANNEL_NAME = "admin-channel";
-const TOKEN = "007eJxTYGCuEHzs59vSO9Po8t67iRMquiRa/VR2hd3eETNzryVfqooCg1FSYpJJaqppSnJKmklqsoWlsblpWqIBEBqmpBkaWH7IyEpvCGRkSJERZGVkgEAQn5chMSU3M083OSMxLy81h4EBAD7OIeM=";
+const TOKEN = "007eJxTYHi/8+OfXovgunNR7JZp4hyNvy4db4za37Xoj55QovLHOWsVGIySEpNMUlNNU5JT0kxSky0sjc1N0xINgNAwJc3QwJI1rT29IZCRoUGdhYERCkF8XobElNzMPN3kjMS8vNQcBgYABsAjmg==";
 
 const LivestreamViewer = () => {
   const [isStreamActive, setIsStreamActive] = useState(false);

@@ -531,24 +531,40 @@ export const searchGraves = async (searchParams) => {
     const token = localStorage.getItem("accessToken");
     console.log("Searching graves with params:", searchParams);
     
-    const queryParams = new URLSearchParams({
-      Name: searchParams.name || '',
-      YearOfBirth: searchParams.birthYear || '',
-      YearOfSacrifice: searchParams.deathYear || '',
-      HomeTown: searchParams.hometown || ''
-    }).toString();
+    // Tạo URLSearchParams object và thêm các tham số tìm kiếm
+    const queryParams = new URLSearchParams();
+    
+    // Chỉ thêm các tham số có giá trị
+    if (searchParams.name) queryParams.append('Name', searchParams.name);
+    if (searchParams.yearOfBirth) queryParams.append('YearOfBirth', searchParams.yearOfBirth);
+    if (searchParams.yearOfSacrifice) queryParams.append('YearOfSacrifice', searchParams.yearOfSacrifice);
+    if (searchParams.homeTown) queryParams.append('HomeTown', searchParams.homeTown);
+    if (searchParams.martyrCode) queryParams.append('MartyrCode', searchParams.martyrCode);
+    
+    // Luôn thêm page và pageSize
+    queryParams.append('page', searchParams.page);
+    queryParams.append('pageSize', searchParams.pageSize);
 
-    const url = `${BASE_URL}/MartyrGrave/search?${queryParams}`;
+    const url = `${BASE_URL}/MartyrGrave/search?${queryParams.toString()}`;
     console.log("API URL:", url);
 
     const response = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Accept': '*/*'
       },
     });
 
     console.log("API Response:", response.data);
-    return response.data;
+    
+    if (response.data.success) {
+      return {
+        martyrGraves: response.data.data.martyrGraves,
+        totalPage: response.data.data.totalPage
+      };
+    } else {
+      throw new Error(response.data.message || "Search failed");
+    }
   } catch (error) {
     console.error(
       "Error searching graves:",

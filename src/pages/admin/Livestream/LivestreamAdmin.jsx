@@ -5,7 +5,7 @@ import './LivestreamAdmin.css';
 
 const APP_ID = "2bab4ee5dcdf4ec89375fa0a0a1df109"; // Thay thế bằng App ID mới của bạn
 const CHANNEL_NAME = "admin-channel";
-const TOKEN = "007eJxTYFALrNw25+F8+cSvTfEmJpcX8uv7Puh1/p0rdareis/RU0aBwSgpMckkNdU0JTklzSQ12cLS2Nw0LdEACA1T0gwNLCceKkpvCGRkaG8RZWFkgEAQn5chMSU3M083OSMxLy81h4EBACxTIeI="; // Thay thế bằng token mới
+const TOKEN = "007eJxTYHi/8+OfXovgunNR7JZp4hyNvy4db4za37Xoj55QovLHOWsVGIySEpNMUlNNU5JT0kxSky0sjc1N0xINgNAwJc3QwJI1rT29IZCRoUGdhYERCkF8XobElNzMPN3kjMS8vNQcBgYABsAjmg=="; // Thay thế bằng token mới
 
 const fetchToken = async () => {
   try {

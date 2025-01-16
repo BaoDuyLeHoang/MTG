@@ -53,6 +53,7 @@ export const API_ENDPOINTS = {
   GET_ASSIGNMENT_TASK_DETAIL: "/AssignmentTask", // Thêm endpoint mới
   GET_ASSIGNMENT_FEEDBACK: "/AssignmentTaskFeedback/getFeedbackWithAssignmentTaskId",
   GET_FEEDBACK_BY_REQUEST: "/RequestFeedback/getFeedbackWithRequestId",
+  GET_REQUEST_TASKS: "/RequestTask/requestTasks/account", // Add this new endpoint
 };
 
 export const getServices = async () => {
@@ -1715,5 +1716,73 @@ export const getFeedbackByRequestId = async (requestId) => {
       error.response ? error.response.data : error.message
     );
     throw error;
+  }
+};
+
+// Add new function to get request tasks
+export const getRequestTasks = async (accountId, pageIndex = 1, pageSize = 5, date = null) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    let url = `${BASE_URL}/RequestTask/requestTasks/account/${accountId}?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+    
+    if (date) {
+      url += `&date=${date}`;
+    }
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request tasks:", error);
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Có lỗi xảy ra khi tải danh sách công việc');
+    }
+    throw new Error('Không thể kết nối đến server');
+  }
+};
+
+export const getRequestTaskDetail = async (taskId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_URL}/RequestTask/requestTasks/${taskId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request task detail:", error);
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Có lỗi xảy ra khi tải chi tiết công việc');
+    }
+    throw new Error('Không thể kết nối đến server');
+  }
+};
+
+export const updateRequestTaskStatus = async (taskId, data) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.put(
+      `${BASE_URL}/RequestTask/requestTasks/status/${taskId}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
+    }
+    throw new Error('Không thể kết nối đến server');
   }
 };

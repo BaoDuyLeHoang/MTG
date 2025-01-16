@@ -6,8 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
+  faMonument,
   faShoppingCart,
   faBell,
+  faWallet,
+  faHistory,
+  faCalendarAlt,
+  faClipboardList
 } from "@fortawesome/free-solid-svg-icons";
 import { getProfile } from "../../services/profile";
 import {
@@ -453,16 +458,33 @@ const Header = () => {
                 <>
                   {user.role === 4 && (
                     <>
-                      <Link to="/user-profile">Hồ sơ</Link>
-                      <Link to="/relative-grave">Mộ người thân</Link>
-                      <Link to="/cart">Giỏ hàng</Link>
-                      <Link to="/order-history">Lịch sử đơn hàng</Link>
-                      <Link to="/wallet">Ví của tôi</Link>
+                      <Link to="/user-profile">
+                        <FontAwesomeIcon icon={faUser} className="dropdown-icon" />
+                        Hồ sơ
+                      </Link>
+                      <Link to="/relative-grave">
+                        <FontAwesomeIcon icon={faMonument} className="dropdown-icon" />
+                        Mộ người thân
+                      </Link>
+                      <Link to="/cart">
+                        <FontAwesomeIcon icon={faShoppingCart} className="dropdown-icon" />
+                        Giỏ hàng
+                      </Link>
+                      <Link to="/wallet">
+                        <FontAwesomeIcon icon={faWallet} className="dropdown-icon" />
+                        Ví của tôi
+                      </Link>
+                      <Link to="/order-history">
+                        <FontAwesomeIcon icon={faHistory} className="dropdown-icon" />
+                        Lịch sử đơn hàng
+                      </Link>
                       <Link to="/schedule-service-history">
-                        Dịch vụ định kì
+                        <FontAwesomeIcon icon={faCalendarAlt} className="dropdown-icon" />
+                        Lịch sử dịch vụ định kì
                       </Link>
                       <Link to="/request-customer-history">
-                        Yêu cầu khách hàng
+                        <FontAwesomeIcon icon={faClipboardList} className="dropdown-icon" />
+                        Lịch sử yêu cầu khách hàng
                       </Link>
                     </>
                   )}

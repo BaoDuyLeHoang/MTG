@@ -410,16 +410,6 @@ const getDayOfWeek = (dayNumber) => {
                         Trang {currentPage} / {totalPages} (Tổng số {totalTasks} công việc)
                     </Typography>
                     
-                    {(statusFilter !== 'all' || endDateFilter) && (
-                        <Button 
-                            variant="outlined"
-                            size="small"
-                            onClick={handleClearFilters}
-                            startIcon={<ClearIcon />}
-                        >
-                            Xóa bộ lọc
-                        </Button>
-                    )}
                 </Box>
 
                 {/* Cập nhật phần phân trang */}

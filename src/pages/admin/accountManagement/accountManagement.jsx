@@ -1,24 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../../components/Sidebar/sideBar';
-
+import { useAuth } from "../../../context/AuthContext";
 import './accountManagement.css';
 import { getAllManagers} from '../../../services/admin';
 import { updateAccountStatus } from '../../../APIcontroller/API';
+import { fetchAreas } from '../../../services/area'; // Import fetchAreas from area.js
+import { createStaff } from '../../../services/staff';
 import { jwtDecode } from "jwt-decode";
 
-import { ToggleLeft, ToggleRight, FileText } from 'lucide-react';
+import { ToggleLeft, ToggleRight, FileText, UserPlus } from 'lucide-react';
 // src/pages/admin/accountManagement/mockData.js
 
 const ManagerManagement = () => {
+    const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [managerData, setManagerData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
     const [selectedArea, setSelectedArea] = useState('all');
+    const [showModal, setShowModal] = useState(false);
+    const [newManager, setNewManager] = useState({
+        fullName: '',
+        emailAddress: '',
+        phoneNumber: '',
+        areaId: '',
+        password: '',
+        confirmPassword: '',
+        dateOfBirth: '',
+        roleId: 2
+    });
+    const [areas, setAreas] = useState([]);
 
     useEffect(() => {
         fetchManagerData();
+        fetchAreasData();
     }, [currentPage]); // Re-fetch when page changes
 
     const fetchManagerData = async () => {
@@ -29,6 +45,15 @@ const ManagerManagement = () => {
             console.error('Error fetching manager data:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchAreasData = async () => {
+        try {
+            const data = await fetchAreas();
+            setAreas(data);
+        } catch (error) {
+            console.error('Error fetching areas:', error);
         }
     };
 
@@ -61,8 +86,26 @@ const ManagerManagement = () => {
         }
     };
 
-    const handleCreateReport = (managerId) => {
-        console.log(`Creating report for manager ID: ${managerId}`);
+    const handleCreateManager = async (e) => {
+        e.preventDefault();
+        try {
+            await createStaff(newManager, user.accountId);
+            setShowModal(false);
+            fetchManagerData();
+            setNewManager({
+                fullName: '',
+                emailAddress: '',
+                phoneNumber: '',
+                areaId: '',
+                password: '',
+                confirmPassword: '',
+                dateOfBirth: '',
+                roleId: 2
+            });
+        } catch (error) {
+            console.error('Error creating manager:', error);
+            alert('Failed to create manager. Please check your input and try again.');
+        }
     };
 
     return (
@@ -70,7 +113,92 @@ const ManagerManagement = () => {
             <Sidebar />
             <div className="manager-management-content">
                 <h1>Quản Lý Nhân Sự</h1>
-                
+                <button className="create-manager-btn" onClick={() => setShowModal(true)}>
+                    <UserPlus size={20} />
+                    Thêm Quản Lý
+                </button>
+                {showModal && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h2>Thêm Quản Lý Mới</h2>
+                            <form onSubmit={handleCreateManager}>
+                                <div className="form-group">
+                                    <label>Họ và tên <span className="required">*</span></label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={newManager.fullName}
+                                        onChange={(e) => setNewManager({ ...newManager, fullName: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Email <span className="required">*</span></label>
+                                    <input
+                                        type="email"
+                                        required
+                                        value={newManager.emailAddress}
+                                        onChange={(e) => setNewManager({ ...newManager, emailAddress: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Số điện thoại <span className="required">*</span></label>
+                                    <input
+                                        type="tel"
+                                        required
+                                        value={newManager.phoneNumber}
+                                        onChange={(e) => setNewManager({ ...newManager, phoneNumber: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Khu vực <span className="required">*</span></label>
+                                    <select
+                                        required
+                                        value={newManager.areaId}
+                                        onChange={(e) => setNewManager({ ...newManager, areaId: e.target.value })}
+                                    >
+                                        <option value="">Chọn khu vực</option>
+                                        {areas.map(area => (
+                                            <option key={area.areaId} value={area.areaId}>
+                                                {area.areaName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Ngày tháng năm sinh <span className="required">*</span></label>
+                                    <input
+                                        type="date"
+                                        required
+                                        value={newManager.dateOfBirth}
+                                        onChange={(e) => setNewManager({ ...newManager, dateOfBirth: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Mật khẩu <span className="required">*</span></label>
+                                    <input
+                                        type="password"
+                                        required
+                                        value={newManager.password}
+                                        onChange={(e) => setNewManager({ ...newManager, password: e.target.value })}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Xác nhận mật khẩu <span className="required">*</span></label>
+                                    <input
+                                        type="password"
+                                        required
+                                        value={newManager.confirmPassword}
+                                        onChange={(e) => setNewManager({ ...newManager, confirmPassword: e.target.value })}
+                                    />
+                                </div>
+                                <div className="modal-buttons">
+                                    <button type="submit" className="submit-btn">Tạo</button>
+                                    <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Hủy</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
                 {loading ? (
                     <div className="centered">
                         <div className="loading-spinner"></div>

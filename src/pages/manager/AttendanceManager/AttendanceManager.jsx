@@ -23,6 +23,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
 import { getRequestTasksByManagerId, reassignRequestTask } from '../../../services/requestTask'; // Import hàm mới
+import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 
 const AttendanceManager = () => {
   const [fromDate, setFromDate] = useState(() => {
@@ -38,7 +39,9 @@ const AttendanceManager = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Set the number of items per page
+  const [totalPages, setTotalPages] = useState(1);
+  const [tasks, setTasks] = useState([]);
+  const itemsPerPage = 5; // Số lượng item trên mỗi trang
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedAssignTask, setSelectedAssignTask] = useState(null);
@@ -63,6 +66,17 @@ const AttendanceManager = () => {
   const [openReassignDialog, setOpenReassignDialog] = useState(false); // State để mở dialog giao lại
 
   const [errorMessage, setErrorMessage] = useState(''); // State để lưu thông báo lỗi
+
+  const [isLoading, setIsLoading] = useState(false); // State để lưu trạng thái loading
+
+  // Alert states
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
+
+  const handleCloseAlert = () => {
+    setAlertOpen(false);
+  };
 
   // Hàm để lấy công việc định kỳ
   const fetchRecurringTasks = async () => {
@@ -92,14 +106,6 @@ const AttendanceManager = () => {
       const fromDateFormatted = format(fromDate, 'yyyy-MM-dd');
       const toDateFormatted = format(toDate, 'yyyy-MM-dd');
 
-      console.log('Fetching tasks with params:', {
-        managerId: user.accountId,
-        fromDate: fromDateFormatted,
-        toDate: toDateFormatted,
-        pageIndex: currentPage,
-        pageSize: itemsPerPage
-      });
-
       const response = await getTasksByManagerId(
         user.accountId,
         fromDateFormatted,
@@ -109,22 +115,25 @@ const AttendanceManager = () => {
       );
 
       if (response && response.tasks) {
-        setTaskAssignments(response.tasks);
+        setTasks(response.tasks);
+        setTotalPages(response.totalPage);
       } else {
-        setTaskAssignments([]);
+        setTasks([]);
+        setTotalPages(1);
       }
     } catch (error) {
       console.error('Error fetching tasks:', error);
-      setTaskAssignments([]);
+      setTasks([]);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
   };
 
-  // Gọi hàm fetchTasks khi component mount hoặc khi các giá trị thay đổi
+  // Gọi API khi các dependency thay đổi
   useEffect(() => {
     fetchTasks();
-  }, [fromDate, toDate, currentPage, user?.accountId, itemsPerPage]);
+  }, [fromDate, toDate, currentPage, user?.accountId]);
 
   // Cập nhật hàm để xử lý giao lại công việc
   const handleReassignTask = async (taskId, isRecurring = false) => {
@@ -203,10 +212,6 @@ const AttendanceManager = () => {
       return matchesSearch && matchesDate && matchesStatus;
     });
   }, [taskAssignments, searchQuery, fromDate, toDate, statusFilter]);
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
-  const currentTasks = filteredTasks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -297,35 +302,98 @@ const AttendanceManager = () => {
     setSelectedRequestTask(task);
     setOpenReassignDialog(true);
     setSelectedStaffForRequest(''); // Reset nhân viên được chọn khi mở dialog
+  }
+
+  // Hàm xử lý bàn giao công việc thường
+  const handleReassignNormalTask = async (detailId) => {
+    console.log("Detail ID:", detailId); // Debugging line
+    try {
+      if (!selectedStaff) {
+        setAlertMessage("Vui lòng chọn nhân viên để bàn giao");
+        setAlertSeverity("error");
+        setAlertOpen(true);
+        return;
+      }
+
+      setIsLoading(true);
+      
+      // Call the reassignTask function with the correct parameters
+      await reassignTask(detailId, selectedStaff); // detailId as the first parameter and selectedStaff as the second
+      
+      setAlertMessage("Bàn giao công việc thành công");
+      setAlertSeverity("success");
+      setAlertOpen(true);
+      
+      setOpenDialog(false);
+      setSelectedTask(null);
+      setSelectedStaff("");
+      await fetchTasks();
+    } catch (error) {
+      setAlertMessage(error.message || "Có lỗi xảy ra khi bàn giao công việc");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleReassignRequestTask = async () => {
-    if (!selectedRequestTask || !selectedStaffForRequest) {
-      console.error('No task or staff selected'); // Thông báo lỗi nếu không có công việc hoặc nhân viên được chọn
-      return; 
-    }
-
-    const { requestTaskId, staffId } = selectedRequestTask; // Lấy requestTaskId và staffId từ selectedRequestTask
-    if (!requestTaskId) {
-      console.error('Request Task ID is undefined'); // Thông báo lỗi nếu requestTaskId là undefined
-      return;
-    }
-
-    if (parseInt(staffId) === parseInt(selectedStaffForRequest)) {
-      setErrorMessage('Nhân viên mới được giao phải khác với người nhân viên cũ.'); // Thông báo lỗi nếu nhân viên mới giống nhân viên cũ
-      return;
-    }
-
+  // Hàm xử lý bàn giao công việc định kỳ
+  const handleReassignRecurringTask = async (assignmentTaskId) => {
     try {
-      await reassignRequestTask(requestTaskId, selectedStaffForRequest); // Gọi API để giao lại công việc
-      fetchRequestTasks(); // Gọi lại hàm fetchRequestTasks để cập nhật danh sách công việc
-      setOpenReassignDialog(false); // Đóng dialog
-      setSelectedRequestTask(null); // Reset công việc được chọn
-      setSelectedStaffForRequest(''); // Reset nhân viên được chọn
-      setErrorMessage(''); // Reset thông báo lỗi nếu giao lại thành công
+      if (!selectedStaff) {
+        setAlertMessage("Vui lòng chọn nhân viên để bàn giao");
+        setAlertSeverity("error");
+        setAlertOpen(true);
+        return;
+      }
+
+      setIsLoading(true);
+      await reassignTaskToStaff(assignmentTaskId, selectedStaff);
+      
+      setAlertMessage("Bàn giao công việc định kỳ thành công");
+      setAlertSeverity("success");
+      setAlertOpen(true);
+      
+      setOpenDialog(false);
+      setSelectedAssignTask(null);
+      setSelectedStaff("");
+      await fetchRecurringTasks();
     } catch (error) {
-      console.error('Error reassigning request task:', error);
-      setErrorMessage(error.response ? error.response.data.message : 'Đã xảy ra lỗi khi giao lại công việc.'); // Lưu thông báo lỗi vào state
+      setAlertMessage(error.message || "Có lỗi xảy ra khi bàn giao công việc định kỳ");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Hàm xử lý bàn giao công việc theo yêu cầu (phiên bản mới)
+  const handleReassignRequestTask = async (requestTaskId) => {
+    try {
+      if (!selectedStaffForRequest) {
+        setAlertMessage("Vui lòng chọn nhân viên để bàn giao");
+        setAlertSeverity("error");
+        setAlertOpen(true);
+        return;
+      }
+
+      setIsLoading(true);
+      await reassignRequestTask(requestTaskId, selectedStaffForRequest);
+      
+      setAlertMessage("Bàn giao công việc theo yêu cầu thành công");
+      setAlertSeverity("success");
+      setAlertOpen(true);
+      
+      setOpenReassignDialog(false);
+      setSelectedRequestTask(null);
+      setSelectedStaffForRequest("");
+      await fetchRequestTasks();
+    } catch (error) {
+      setAlertMessage(error.message || "Có lỗi xảy ra khi bàn giao công việc theo yêu cầu");
+      setAlertSeverity("error");
+      setAlertOpen(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -333,6 +401,17 @@ const AttendanceManager = () => {
     <div className="attendance-manager-wrapper">
       <Sidebar />
       <div className="attendance-manager-main">
+        {/* Loading overlay */}
+        {isLoading && <LoadingForSideBar />}
+
+        {/* Alert message */}
+        <AlertMessage
+          open={alertOpen}
+          handleClose={handleCloseAlert}
+          severity={alertSeverity}
+          message={alertMessage}
+        />
+
         {errorMessage && ( // Hiển thị thông báo lỗi nếu có
           <div className="error-message">
             {errorMessage}
@@ -361,56 +440,7 @@ const AttendanceManager = () => {
 
         {activeTab === 0 && (
           <div className="attendance-manager-content">
-            <div className="attendance-manager-filters">
-              <div className="attendance-manager-search">
-                <SearchIcon className="attendance-manager-search-icon" />
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="attendance-manager-search-input"
-                />
-              </div>
-
-              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={viLocale}>
-                <div className="attendance-manager-date-filters">
-                  <DatePicker
-                    label="Từ ngày"
-                    value={fromDate}
-                    onChange={(newValue) => {
-                      setFromDate(newValue);
-                      if (newValue > toDate) {
-                        setToDate(newValue);
-                      }
-                    }}
-                    format="dd/MM/yyyy"
-                    className="attendance-manager-date-picker"
-                  />
-                  <DatePicker
-                    label="Đến ngày"
-                    value={toDate}
-                    onChange={(newValue) => setToDate(newValue)}
-                    minDate={fromDate}
-                    format="dd/MM/yyyy"
-                    className="attendance-manager-date-picker"
-                  />
-                </div>
-              </LocalizationProvider>
-
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="attendance-manager-status-select"
-              >
-                <option value="all">Tất cả trạng thái</option>
-                <option value={4}>Hoàn thành</option>
-                <option value={3}>Đang thực hiện</option>
-                <option value={1}>Chờ xử lý</option>
-                <option value={2}>Từ chối</option>
-                <option value={5}>Thất bại</option>
-              </select>
-            </div>
+            
 
             <div className="attendance-manager-tasks-card">
               <div className="attendance-manager-tasks-header">
@@ -421,7 +451,7 @@ const AttendanceManager = () => {
               </div>
 
               <div className="attendance-manager-tasks-list">
-                {currentTasks.map((task) => (
+                {tasks.map((task) => (
                   <div key={task.taskId} className="attendance-manager-task-item">
                     <img
                       src={task.serviceImage}
@@ -461,22 +491,22 @@ const AttendanceManager = () => {
             </div>
 
             <div className="attendance-manager-pagination">
-              <button
-                className="attendance-manager-prev-btn"
-                onClick={handlePreviousPage}
+              <button 
+                onClick={handlePreviousPage} 
                 disabled={currentPage === 1}
+                className="pagination-button"
               >
-                Previous
+                Trang trước
               </button>
-              <span className="attendance-manager-page-info">
-                Page {currentPage} of {totalPages}
+              <span className="pagination-info">
+                Trang {currentPage} / {totalPages}
               </span>
-              <button
-                className="attendance-manager-next-btn"
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
+              <button 
+                onClick={handleNextPage} 
+                disabled={currentPage >= totalPages}
+                className="pagination-button"
               >
-                Next
+                Trang sau
               </button>
             </div>
           </div>
@@ -484,31 +514,7 @@ const AttendanceManager = () => {
 
         {activeTab === 1 && (
           <div className="attendance-manager-content">
-            <div className="attendance-manager-filters">
-              <div className="attendance-manager-search">
-                <SearchIcon className="attendance-manager-search-icon" />
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm theo tên, địa điểm hoặc nhân viên..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="attendance-manager-search-input"
-                />
-              </div>
-
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="attendance-manager-status-select"
-              >
-                <option value="all">Tất cả trạng thái</option>
-                <option value={4}>Hoàn thành</option>
-                <option value={3}>Đang thực hiện</option>
-                <option value={1}>Chờ xử lý</option>
-                <option value={2}>Từ chối</option>
-                <option value={5}>Thất bại</option>
-              </select>
-            </div>
+            
 
             <div className="attendance-manager-tasks-card">
               <div className="attendance-manager-tasks-header">
@@ -706,6 +712,7 @@ const AttendanceManager = () => {
                         value={selectedStaff}
                         onChange={(e) => setSelectedStaff(e.target.value)}
                         className="attendance-manager-staff-select"
+                        disabled={isLoading}
                       >
                         <option value="">Chọn nhân viên</option>
                         {selectedTask.staffs.map(staff => (
@@ -716,9 +723,10 @@ const AttendanceManager = () => {
                       </select>
                       <button
                         className="attendance-manager-dialog-button"
-                        onClick={() => handleReassignTask(selectedTask.taskId)}
+                        onClick={() => handleReassignNormalTask(selectedTask.detailId)}
+                        disabled={isLoading}
                       >
-                        Bàn giao
+                        {isLoading ? "Đang xử lý..." : "Bàn giao"}
                       </button>
                     </div>
                   )}
@@ -759,6 +767,7 @@ const AttendanceManager = () => {
                         value={selectedStaff}
                         onChange={(e) => setSelectedStaff(e.target.value)}
                         className="attendance-manager-staff-select"
+                        disabled={isLoading}
                       >
                         <option value="">Chọn nhân viên</option>
                         {selectedAssignTask.staffs.map(staff => (
@@ -769,9 +778,10 @@ const AttendanceManager = () => {
                       </select>
                       <button
                         className="attendance-manager-dialog-button"
-                        onClick={() => handleReassignTask(selectedAssignTask.assignmentTaskId, true)}
+                        onClick={() => handleReassignRecurringTask(selectedAssignTask.assignmentTaskId)}
+                        disabled={isLoading}
                       >
-                        Bàn giao
+                        {isLoading ? "Đang xử lý..." : "Bàn giao"}
                       </button>
                     </div>
                   )}
@@ -808,6 +818,7 @@ const AttendanceManager = () => {
                 value={selectedStaffForRequest}
                 onChange={(e) => setSelectedStaffForRequest(e.target.value)}
                 className="attendance-manager-staff-select"
+                disabled={isLoading}
               >
                 <option value="">Chọn nhân viên bàn giao</option>
                 {selectedRequestTask.staffs.map(staff => (
@@ -816,11 +827,15 @@ const AttendanceManager = () => {
                   </option>
                 ))}
               </select>
+              <button
+                className="attendance-manager-dialog-button"
+                onClick={() => handleReassignRequestTask(selectedRequestTask.requestTaskId)}
+                disabled={isLoading}
+              >
+                {isLoading ? "Đang xử lý..." : "Bàn giao"}
+              </button>
             </div>
             <div className="attendance-manager-dialog-actions">
-              <button className="attendance-manager-dialog-button" onClick={handleReassignRequestTask}>
-                Giao lại
-              </button>
               <button className="attendance-manager-dialog-button" onClick={() => setOpenReassignDialog(false)}>
                 Đóng
               </button>

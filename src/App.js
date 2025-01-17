@@ -52,6 +52,7 @@ import RecurringTasks from './pages/staff/RecurringTasks/RecurringTasks';
 import NotificationList from './pages/staff/NotificationList/NotificationList';
 import GraveReports from './pages/staff/GraveReport/GraveReport';
 import ReportDetail from './pages/staff/GraveReport/ReportDetail';
+import RequestTasks from './pages/staff/RequestTasks/RequestTasks';
 
 // Customer Components
 import HomePage from "./pages/customer/homePage/homePage";
@@ -174,6 +175,14 @@ function AppContent() {
           <Route path="/notifications-staff" element={<ProtectedRoute requiredRole={ROLES.STAFF}><NotificationList /></ProtectedRoute>} />
           <Route path="/grave-reports" element={<ProtectedRoute requiredRole={ROLES.STAFF}><GraveReports /></ProtectedRoute>} />
           <Route path="/report-detail/:reportId" element={<ProtectedRoute requiredRole={ROLES.STAFF}><ReportDetail /></ProtectedRoute>} />
+          <Route 
+            path="/request-tasks" 
+            element={
+              <ProtectedRoute requiredRole={ROLES.STAFF}>
+                <RequestTasks />
+              </ProtectedRoute>
+            } 
+          />
           
 
         </Routes>

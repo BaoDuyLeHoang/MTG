@@ -95,17 +95,26 @@
 }
 
 .settings-dropdown a {
-  display: block;
+  display: flex;
+  align-items: center;
   padding: 12px 16px;
+  color: #333;
   text-decoration: none;
-  color: rgb(66, 50, 50); /* Matching header color */
-  transition: all 0.3s ease;
-  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
 .settings-dropdown a:hover {
-  background-color: rgba(66, 50, 50, 0.1); /* Subtle hover effect */
-  padding-left: 20px; /* Slight indent on hover */
+  background-color: #f5f5f5;
+}
+
+.dropdown-icon {
+  margin-right: 10px;
+  width: 16px;
+  color: #666;
+}
+
+.settings-dropdown a:hover .dropdown-icon {
+  color: #1976d2;
 }
 
 /* Add a small arrow to the dropdown */

@@ -7,6 +7,7 @@ import { updateAccountStatus } from '../../../APIcontroller/API';
 import { fetchAreas } from '../../../services/area'; // Import fetchAreas from area.js
 import { createStaff } from '../../../services/staff';
 import { jwtDecode } from "jwt-decode";
+import AlertMessage from '../../../components/AlertMessage/AlertMessage';
 
 import { ToggleLeft, ToggleRight, FileText, UserPlus } from 'lucide-react';
 // src/pages/admin/accountManagement/mockData.js
@@ -31,6 +32,11 @@ const ManagerManagement = () => {
         roleId: 2
     });
     const [areas, setAreas] = useState([]);
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: 'success',
+        message: ''
+    });
 
     useEffect(() => {
         fetchManagerData();
@@ -69,20 +75,25 @@ const ManagerManagement = () => {
 
     const handleAction = async (banAccountId) => {
         try {
-            // Lấy accountId từ token hoặc context/redux store
             const token = localStorage.getItem('accessToken');
             const decodedToken = jwtDecode(token);
             const accountId = decodedToken.accountId;
 
-            // Gọi API với banAccountId (account bị chặn) và accountId (người thực hiện)
             await updateAccountStatus(banAccountId, accountId);
-            
-            // Sau khi update thành công, fetch lại data mới
             await fetchManagerData();
+            
+            setAlert({
+                open: true,
+                severity: 'success',
+                message: 'Cập nhật trạng thái tài khoản thành công!'
+            });
         } catch (error) {
             console.error('Error updating status:', error);
-            // Thêm thông báo lỗi cho người dùng
-            alert('Không thể cập nhật trạng thái tài khoản. Vui lòng thử lại!');
+            setAlert({
+                open: true,
+                severity: 'error',
+                message: 'Không thể cập nhật trạng thái tài khoản. Vui lòng thử lại!'
+            });
         }
     };
 
@@ -102,16 +113,35 @@ const ManagerManagement = () => {
                 dateOfBirth: '',
                 roleId: 2
             });
+            setAlert({
+                open: true,
+                severity: 'success',
+                message: 'Tạo quản lý mới thành công!'
+            });
         } catch (error) {
             console.error('Error creating manager:', error);
-            alert('Failed to create manager. Please check your input and try again.');
+            setAlert({
+                open: true,
+                severity: 'error',
+                message: 'Không thể tạo quản lý. Vui lòng kiểm tra lại thông tin!'
+            });
         }
+    };
+
+    const handleCloseAlert = () => {
+        setAlert({ ...alert, open: false });
     };
 
     return (
         <div className="manager-management-container">
             <Sidebar />
             <div className="manager-management-content">
+                <AlertMessage 
+                    open={alert.open}
+                    handleClose={handleCloseAlert}
+                    severity={alert.severity}
+                    message={alert.message}
+                />
                 <h1>Quản Lý Nhân Sự</h1>
                 <button className="create-manager-btn" onClick={() => setShowModal(true)}>
                     <UserPlus size={20} />

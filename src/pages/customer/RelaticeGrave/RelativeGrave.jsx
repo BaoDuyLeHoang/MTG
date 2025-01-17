@@ -98,22 +98,22 @@ const RelativeGrave = () => {
       <Header />
       <div className="page-title">
         <h1>Danh Sách Mộ Liệt Sĩ Của Bạn</h1>
-        <div className="guide-section">
-          <div className="guide-content">
-            <h3>Hướng dẫn sử dụng:</h3>
-            <ul>
-              <li>
-                <i className="fas fa-info-circle"></i>
-                <span>Xem Chi Tiết: Xem thông tin chi tiết về mộ liệt sĩ</span>
+        <div className="relative-guide-section">
+          <div className="relative-guide-content">
+            <h3 className="relative-guide-title">Hướng dẫn sử dụng:</h3>
+            <ul className="relative-guide-list">
+              <li className="relative-guide-item">
+                <i className="fas fa-info-circle relative-guide-icon"></i>
+                <span className="relative-guide-text">Xem Chi Tiết: Xem thông tin chi tiết về mộ liệt sĩ</span>
               </li>
-              <li>
-                <i className="fas fa-plus-circle"></i>
-                <span>Tạo Yêu Cầu Mới: Tạo các yêu cầu như xem báo cáo tình trạng mộ, đặt dịch vụ riêng, đăng ký thêm dịch vụ cho mộ thân nhân</span>
+              <li className="relative-guide-item">
+                <i className="fas fa-plus-circle relative-guide-icon"></i>
+                <span className="relative-guide-text">Tạo Yêu Cầu Mới: Tạo các yêu cầu như xem báo cáo tình trạng mộ, đặt dịch vụ riêng, đăng ký thêm dịch vụ cho mộ thân nhân</span>
               </li>
             </ul>
-            <p className="note">
-              <i className="fas fa-exclamation-circle"></i>
-              Lưu ý: Mỗi tài khoản chỉ được tạo tối đa 10 yêu cầu trong 1 tháng
+            <p className="relative-guide-note">
+              <i className="fas fa-exclamation-circle relative-guide-note-icon"></i>
+              <span className="relative-guide-note-text">Lưu ý: Mỗi tài khoản chỉ được tạo tối đa 10 yêu cầu trong 1 tháng</span>
             </p>
           </div>
         </div>

@@ -112,9 +112,15 @@ const CheckOut = () => {
     }
 
     const today = new Date();
-    const minDate = new Date(today.setDate(today.getDate() + 3));
+    today.setHours(0, 0, 0, 0);
+
+    const minDate = new Date(today);
+    minDate.setDate(today.getDate() + 3);
+
+    const selectedDate = new Date(date);
+    selectedDate.setHours(0, 0, 0, 0);
     
-    if (date < minDate) {
+    if (selectedDate < minDate) {
       setAlertMessage("Ngày hoàn thành dự kiến phải ít nhất sau 3 ngày kể từ bây giờ");
       setAlertOpen(true);
       return false;
@@ -144,11 +150,11 @@ const CheckOut = () => {
         return;
       }
 
-      const adjustedDate = new Date(completionDate);
-      adjustedDate.setHours(7, 0, 0, 0);
+      const localDate = new Date(completionDate);
+      localDate.setHours(7, 0, 0, 0);
 
       const orderData = {
-        expectedCompletionDate: adjustedDate.toISOString(),
+        expectedCompletionDate: localDate.toISOString(),
         note: customerNote || ""
       };
 
@@ -246,18 +252,11 @@ const CheckOut = () => {
                 <div className="product-item product-header">
                   <span className="product-name">Tên sản phẩm</span>
                   <span className="product-price">Đơn giá</span>
-                  <span className="product-action">Xóa</span>
                 </div>
                 {cartItems.map((item) => (
                   <div key={item.cartId} className="product-item">
                     <span className="product-name">{item.serviceView.serviceName}</span>
                     <span className="product-price">{item.serviceView.price.toLocaleString()}đ</span>
-                    <span className="product-action">
-                      <FaTrashAlt 
-                        onClick={() => handleRemoveItem(item.cartId)}
-                        style={{ cursor: 'pointer' }}
-                      />
-                    </span>
                   </div>
                 ))}
               </div>
@@ -305,7 +304,7 @@ const CheckOut = () => {
                     selected={completionDate}
                     onChange={(date) => setCompletionDate(date)}
                     dateFormat="dd/MM/yyyy"
-                    minDate={new Date()}
+                    minDate={new Date(new Date().setDate(new Date().getDate() + 3))}
                     placeholderText="Chọn ngày hoàn thành"
                     className="form-control"
                     required

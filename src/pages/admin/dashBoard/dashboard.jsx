@@ -57,7 +57,8 @@ const Dashboard = () => {
     totalAssignmentTask: 0,
     totalRequestTask: 0,
     monthSales: [],
-    topCustomer: []
+    topCustomer: [],
+    topSellingServices: []
   });
 
   // Cập nhật state cho biểu đồ tròn với nhãn mới
@@ -85,8 +86,9 @@ const Dashboard = () => {
     }]
   });
 
-  // Add new state for dropdown
+  // Tách riêng state cho từng phần
   const [isCustomerListOpen, setIsCustomerListOpen] = useState(false);
+  const [isServiceListOpen, setIsServiceListOpen] = useState(false);
 
   useEffect(() => {
     const loadAreas = async () => {
@@ -148,6 +150,14 @@ const Dashboard = () => {
 
   const handleAreaChange = (event) => {
     setSelectedArea(event.target.value);
+  };
+
+  const handleCustomerListClick = () => {
+    setIsCustomerListOpen(!isCustomerListOpen);
+  };
+
+  const handleServiceListClick = () => {
+    setIsServiceListOpen(!isServiceListOpen);
   };
 
   return (
@@ -250,37 +260,73 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="dashboard-top-customers">
-            <div className="top-customers-card">
-              <div 
-                className="top-customers-header"
-                onClick={() => setIsCustomerListOpen(!isCustomerListOpen)}
-              >
-                <h3>Khách hàng thân thiết</h3>
-                <FontAwesomeIcon 
-                  icon={isCustomerListOpen ? faTimes : faEye} 
-                  className={`dropdown-icon ${isCustomerListOpen ? 'open' : ''}`}
-                />
+          <div className="dashboard-top-sections">
+            <div className="top-customers-wrapper">
+              <div className="top-customers-card">
+                <div 
+                  className="top-customers-header"
+                  onClick={handleCustomerListClick}
+                >
+                  <h3>Khách hàng thân thiết</h3>
+                  <FontAwesomeIcon 
+                    icon={isCustomerListOpen ? faTimes : faEye} 
+                    className={`dropdown-icon ${isCustomerListOpen ? 'open' : ''}`}
+                  />
+                </div>
+                <div className={`top-customers-list ${isCustomerListOpen ? 'open' : ''}`}>
+                  {dashboardStats.topCustomer && dashboardStats.topCustomer.map((customer) => (
+                    <div key={customer.customerId} className="top-customer-item">
+                      <div className="top-customer-avatar">
+                        {customer.avatarPath ? (
+                          <img src={customer.avatarPath} alt={customer.fullName} />
+                        ) : (
+                          <div className="top-customer-placeholder">
+                            {customer.fullName.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="top-customer-info">
+                        <h4>{customer.fullName}</h4>
+                        <p className="top-customer-spending">Chi tiêu: {customer.customerSpending.toLocaleString('vi-VN')}đ</p>
+                        <p className="top-customer-phone">{customer.phoneNumber}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className={`top-customers-list ${isCustomerListOpen ? 'open' : ''}`}>
-                {dashboardStats.topCustomer && dashboardStats.topCustomer.map((customer) => (
-                  <div key={customer.accountId} className="top-customer-item">
-                    <div className="top-customer-avatar">
-                      {customer.avatarPath ? (
-                        <img src={customer.avatarPath} alt={customer.fullName} />
-                      ) : (
-                        <div className="top-customer-placeholder">
-                          {customer.fullName.charAt(0)}
-                        </div>
-                      )}
+            </div>
+
+            <div className="top-services-wrapper">
+              <div className="top-services-card">
+                <div 
+                  className="top-services-header"
+                  onClick={handleServiceListClick}
+                >
+                  <h3>Dịch vụ hay dùng</h3>
+                  <FontAwesomeIcon 
+                    icon={isServiceListOpen ? faTimes : faEye} 
+                    className={`dropdown-icon ${isServiceListOpen ? 'open' : ''}`}
+                  />
+                </div>
+                <div className={`top-services-list ${isServiceListOpen ? 'open' : ''}`}>
+                  {dashboardStats.topSellingServices && dashboardStats.topSellingServices.map((service) => (
+                    <div key={service.serviceId} className="top-service-item">
+                      <div className="top-service-image">
+                        {service.imagePath ? (
+                          <img src={service.imagePath} alt={service.serviceName} />
+                        ) : (
+                          <div className="top-service-placeholder">
+                            {service.serviceName.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="top-service-info">
+                        <h4>{service.serviceName}</h4>
+                        <p className="top-service-price">Giá: {service.price.toLocaleString('vi-VN')}đ</p>
+                      </div>
                     </div>
-                    <div className="top-customer-info">
-                      <h4>{customer.fullName}</h4>
-                      <p className="top-customer-spending">Chi tiêu: {customer.customerSpending.toLocaleString('vi-VN')}đ</p>
-                      <p className="top-customer-phone">{customer.phoneNumber}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>

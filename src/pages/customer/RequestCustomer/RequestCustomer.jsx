@@ -288,12 +288,14 @@ const RequestCustomer = () => {
               </select>
               {formData.serviceId && services.find(s => s.serviceId.toString() === formData.serviceId) && (
                 <div className="service-details">
-                  <img 
-                    src={services.find(s => s.serviceId.toString() === formData.serviceId).imagePath} 
-                    alt={services.find(s => s.serviceId.toString() === formData.serviceId).serviceName}
-                    className="service-image"
-                  />
-                  <p className="service-description">
+                  <div className="request-service-image-container">
+                    <img 
+                      src={services.find(s => s.serviceId.toString() === formData.serviceId).imagePath} 
+                      alt={services.find(s => s.serviceId.toString() === formData.serviceId).serviceName}
+                      className="request-service-image-display"
+                    />
+                  </div>
+                  <p className="request-service-description">
                     {services.find(s => s.serviceId.toString() === formData.serviceId).description}
                   </p>
                 </div>

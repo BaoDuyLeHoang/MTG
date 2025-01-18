@@ -184,20 +184,25 @@
   border: 1px solid #e2e8f0;
 }
 
-.service-image {
-  width: 100%;
-  max-width: 200px;
+.request-service-image-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.request-service-image-display {
+  max-width: 300px;
   height: auto;
   border-radius: 8px;
-  margin-bottom: 1rem;
-  margin-left: 36%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.service-description {
-  color: #4b5563;
-  font-size: 0.95rem;
-  line-height: 1.6;
+.request-service-description {
+  text-align: center;
+  margin-top: 1rem;
+  color: #666;
+  line-height: 1.5;
+  padding: 0 1rem;
 }
 
 /* Responsive Design */

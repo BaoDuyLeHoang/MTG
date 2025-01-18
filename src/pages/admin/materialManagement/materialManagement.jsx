@@ -216,8 +216,7 @@ const MaterialManagement = () => {
         </div>
 
         <div className="search-filter-container">
-          <div className="search-box">
-            <Search className="search-icon" size={20} />
+          <div className="search-box">          
             <input
               type="text"
               placeholder="Tìm kiếm theo tên hoặc mô tả..."

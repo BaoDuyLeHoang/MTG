@@ -318,73 +318,116 @@
   color: #1a73e8;
 }
 
-.guide-section {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 0 auto 5px;
-  max-width: 1200px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.relative-guide-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.guide-content {
-  color: #333;
+.relative-guide-content {
+  max-width: 800px;
 }
 
-.guide-content h3 {
-  color: #1a73e8;
-  margin-bottom: 15px;
-  font-size: 1.2rem;
-  font-weight: 500;
+.relative-guide-title {
+  color: #1e293b;
+  font-size: 18px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.guide-content ul {
+.relative-guide-title::before {
+  content: "📖";
+  font-size: 24px;
+}
+
+.relative-guide-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 15px 0;
-}
-
-.guide-content li {
+  margin: 0;
   display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  color: #555;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.guide-content li i {
-  color: #1a73e8;
-  margin-right: 10px;
-  font-size: 1.1rem;
-  width: 24px;
-}
-
-.guide-content .note {
-  background-color: #fff8e1;
+.relative-guide-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   padding: 12px 16px;
-  border-radius: 6px;
-  border-left: 4px solid #ffa000;
-  margin-top: 15px;
-  display: flex;
-  align-items: center;
-  color: #795548;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.guide-content .note i {
-  color: #ffa000;
-  margin-right: 10px;
-  font-size: 1.1rem;
+.relative-guide-item:hover {
+  background: #f1f5f9;
+  transform: translateX(5px);
+}
+
+.relative-guide-icon {
+  font-size: 20px;
+  color: #3b82f6;
+  width: 24px;
+  text-align: center;
+  margin-top: 3px;
+}
+
+.relative-guide-text {
+  color: #475569;
+  font-size: 15px;
+  text-align: left;
+  flex: 1;
+  line-height: 1.5;
+}
+
+.relative-guide-note {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: #fff7ed;
+  border-left: 4px solid #f97316;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.relative-guide-note-icon {
+  color: #f97316;
+  font-size: 18px;
+}
+
+.relative-guide-note-text {
+  color: #9a3412;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {
-  .guide-section {
-    margin: 0 16px 30px;
+  .relative-guide-section {
+    padding: 16px;
+    margin: 16px 0;
   }
-  
-  .guide-content h3 {
-    font-size: 1.1rem;
+
+  .relative-guide-title {
+    font-size: 16px;
   }
-  
-  .guide-content li {
-    font-size: 0.95rem;
+
+  .relative-guide-item {
+    padding: 10px 12px;
+  }
+
+  .relative-guide-text {
+    font-size: 14px;
+  }
+
+  .relative-guide-note {
+    padding: 10px 12px;
+  }
+
+  .relative-guide-note-text {
+    font-size: 13px;
   }
 }

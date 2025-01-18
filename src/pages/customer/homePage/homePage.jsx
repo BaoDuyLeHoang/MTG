@@ -24,7 +24,7 @@ const HomePage = () => {
     const initChatbot = async () => {
       const { default: QKAIChatbot } = await import("qkai-chatbot");
       QKAIChatbot.initialize({
-        token: "a3c51986-54e1-4459-9df3-69119e5a4718",
+        token: "a146a4f3-424f-4b0a-9e3c-980c7ca9b5eb",
         embedMode: true,
         targetElement: "#chatbot-ai",
       });

@@ -54,6 +54,7 @@ export const API_ENDPOINTS = {
   GET_ASSIGNMENT_FEEDBACK: "/AssignmentTaskFeedback/getFeedbackWithAssignmentTaskId",
   GET_FEEDBACK_BY_REQUEST: "/RequestFeedback/getFeedbackWithRequestId",
   GET_REQUEST_TASKS: "/RequestTask/requestTasks/account", // Add this new endpoint
+  UPDATE_SERVICE_SCHEDULE_STATUS: "/RecurringServiceSchedule/UpdateServiceSchedule",
 };
 
 export const getServices = async () => {
@@ -1784,5 +1785,33 @@ export const updateRequestTaskStatus = async (taskId, data) => {
       throw new Error(error.response.data.message || 'Có lỗi xảy ra khi cập nhật trạng thái');
     }
     throw new Error('Không thể kết nối đến server');
+  }
+};
+
+export const updateServiceScheduleStatus = async (serviceScheduleId, customerId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("Không tìm thấy token xác thực");
+    }
+
+    const response = await axios.put(
+      `${BASE_URL}${API_ENDPOINTS.UPDATE_SERVICE_SCHEDULE_STATUS}/${serviceScheduleId}`,
+      null,
+      {
+        params: { customerId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "Có lỗi xảy ra khi cập nhật trạng thái dịch vụ");
+    }
+    throw error;
   }
 };

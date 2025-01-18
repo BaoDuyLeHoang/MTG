@@ -57,7 +57,8 @@ const Dashboard = () => {
     totalAssignmentTask: 0,
     totalRequestTask: 0,
     monthSales: [],
-    topCustomer: []
+    topCustomer: [],
+    topSellingServices: []
   });
 
   // Cập nhật state cho biểu đồ tròn với nhãn mới
@@ -84,6 +85,10 @@ const Dashboard = () => {
       tension: 0.1,
     }]
   });
+
+  // Tách riêng state cho từng phần
+  const [isCustomerListOpen, setIsCustomerListOpen] = useState(false);
+  const [isServiceListOpen, setIsServiceListOpen] = useState(false);
 
   useEffect(() => {
     const loadAreas = async () => {
@@ -147,42 +152,20 @@ const Dashboard = () => {
     setSelectedArea(event.target.value);
   };
 
+  const handleCustomerListClick = () => {
+    setIsCustomerListOpen(!isCustomerListOpen);
+  };
+
+  const handleServiceListClick = () => {
+    setIsServiceListOpen(!isServiceListOpen);
+  };
+
   return (
     <div className="dashboard-container">
       <Sidebar />
       <div className="dashboard">
         <main className="main-content">
-          <div className="dashboard-filters">
-            <div className="filter-group">
-              <label>Năm:</label>
-              <select 
-                value={selectedYear}
-                onChange={handleYearChange}
-                className="filter-select"
-              >
-                {availableYears.map(year => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="filter-group">
-              <label>Khu vực:</label>
-              <select 
-                value={selectedArea}
-                onChange={handleAreaChange}
-                className="filter-select"
-              >
-                {areas.map(area => (
-                  <option key={area.areaId} value={area.areaId}>
-                    {area.areaName}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+         
 
           <div className="dashboard-widgets">
             
@@ -237,33 +220,113 @@ const Dashboard = () => {
                   <h3 className="widget-value">
                     {dashboardStats.totalRevenue.toLocaleString('vi-VN')}đ
                   </h3>
+                  <p className="widget-change">
+                    Tổng số doanh thu trong nghĩa trang                    
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="dashboard-lists">
-            <div className="list-card">
-              <h3>Khách hàng hàng đầu</h3>
-              <div className="customer-list">
-                {dashboardStats.topCustomer && dashboardStats.topCustomer.map((customer) => (
-                  <div key={customer.accountId} className="customer-item">
-                    <div className="customer-avatar">
-                      {customer.avatarPath ? (
-                        <img src={customer.avatarPath} alt={customer.fullName} />
-                      ) : (
-                        <div className="avatar-placeholder">
-                          {customer.fullName.charAt(0)}
-                        </div>
-                      )}
-                    </div>
-                    <div className="customer-info">
-                      <h4>{customer.fullName}</h4>
-                      <p>Chi tiêu: {customer.customerSpending.toLocaleString('vi-VN')}đ</p>
-                      <p>{customer.phoneNumber}</p>
-                    </div>
-                  </div>
+          <div className="dashboard-filter-container">
+            <div className="dashboard-filter-item">
+              <label className="dashboard-filter-label">Năm:</label>
+              <select 
+                value={selectedYear}
+                onChange={handleYearChange}
+                className="dashboard-filter-select"
+              >
+                {availableYears.map(year => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
+              </select>
+            </div>
+
+            <div className="dashboard-filter-item">
+              <label className="dashboard-filter-label">Khu vực:</label>
+              <select 
+                value={selectedArea}
+                onChange={handleAreaChange}
+                className="dashboard-filter-select"
+              >
+                {areas.map(area => (
+                  <option key={area.areaId} value={area.areaId}>
+                    {area.areaName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="dashboard-top-sections">
+            <div className="top-customers-wrapper">
+              <div className="top-customers-card">
+                <div 
+                  className="top-customers-header"
+                  onClick={handleCustomerListClick}
+                >
+                  <h3>Khách hàng thân thiết</h3>
+                  <FontAwesomeIcon 
+                    icon={isCustomerListOpen ? faTimes : faEye} 
+                    className={`dropdown-icon ${isCustomerListOpen ? 'open' : ''}`}
+                  />
+                </div>
+                <div className={`top-customers-list ${isCustomerListOpen ? 'open' : ''}`}>
+                  {dashboardStats.topCustomer && dashboardStats.topCustomer.map((customer) => (
+                    <div key={customer.customerId} className="top-customer-item">
+                      <div className="top-customer-avatar">
+                        {customer.avatarPath ? (
+                          <img src={customer.avatarPath} alt={customer.fullName} />
+                        ) : (
+                          <div className="top-customer-placeholder">
+                            {customer.fullName.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="top-customer-info">
+                        <h4>{customer.fullName}</h4>
+                        <p className="top-customer-spending">Chi tiêu: {customer.customerSpending.toLocaleString('vi-VN')}đ</p>
+                        <p className="top-customer-phone">{customer.phoneNumber}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="top-services-wrapper">
+              <div className="top-services-card">
+                <div 
+                  className="top-services-header"
+                  onClick={handleServiceListClick}
+                >
+                  <h3>Dịch vụ hay dùng</h3>
+                  <FontAwesomeIcon 
+                    icon={isServiceListOpen ? faTimes : faEye} 
+                    className={`dropdown-icon ${isServiceListOpen ? 'open' : ''}`}
+                  />
+                </div>
+                <div className={`top-services-list ${isServiceListOpen ? 'open' : ''}`}>
+                  {dashboardStats.topSellingServices && dashboardStats.topSellingServices.map((service) => (
+                    <div key={service.serviceId} className="top-service-item">
+                      <div className="top-service-image">
+                        {service.imagePath ? (
+                          <img src={service.imagePath} alt={service.serviceName} />
+                        ) : (
+                          <div className="top-service-placeholder">
+                            {service.serviceName.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="top-service-info">
+                        <h4>{service.serviceName}</h4>
+                        <p className="top-service-price">Giá: {service.price.toLocaleString('vi-VN')}đ</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

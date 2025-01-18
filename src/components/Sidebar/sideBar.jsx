@@ -99,7 +99,7 @@ const Sidebar = () => {
     {
       to: "/profileManager",
       icon: faUserTie,
-      text: "Hồ sơ nhân viên",
+      text: "Hồ sơ quản lý",
       roles: [2],
     },
     {

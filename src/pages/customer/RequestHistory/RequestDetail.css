@@ -939,4 +939,43 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+.rd-workplace-section {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.rd-workplace-image {
+  margin-top: 10px;
+  width: 300px;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rd-workplace-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.rd-workplace-image img:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rd-workplace-image {
+    width: 100%;
+    height: 200px;
+  }
 } 

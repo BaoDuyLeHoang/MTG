@@ -298,7 +298,7 @@ const RequestDetail = () => {
               <h3 className="rd-section-title">Chi Tiết Công Việc</h3>
               <div className="rd-task-section">
                 <div className="rd-task-info">
-                  {/* Thêm thông tin nhân viên */}
+                  {/* Thông tin nhân viên */}
                   {request.requestTask.staffName && (
                     <div className="rd-task-staff">
                       <div className="rd-task-staff-info">
@@ -313,6 +313,8 @@ const RequestDetail = () => {
                       )}
                     </div>
                   )}
+                  
+                  {/* Ghi chú */}
                   <div className="rd-task-note">
                     <span className="rd-task-label">Ghi chú của bạn:</span>
                     <div className="rd-task-description">
@@ -320,6 +322,25 @@ const RequestDetail = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Thêm phần hiển thị ảnh nơi làm việc */}
+                {request.requestTask.imageWorkSpace && (
+                  <div className="rd-workplace-section">
+                    <span className="rd-task-label">Nơi làm việc:</span>
+                    <div className="rd-workplace-image">
+                      <img 
+                        src={request.requestTask.imageWorkSpace} 
+                        alt="Workplace" 
+                        onClick={() => setSelectedImage({
+                          imageRequestTaskCustomer: request.requestTask.imageWorkSpace,
+                          createAt: request.requestTask.createAt
+                        })}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Phần hiển thị ảnh kết quả */}
                 {request.requestTask && request.requestTask.taskImages && (
                   <div className="rd-image-section">
                     <span className="rd-task-label">Hình ảnh đính kèm:</span>

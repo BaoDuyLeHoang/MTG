@@ -449,3 +449,33 @@
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
+
+.workplace-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.workplace-section h5 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.workplace-image-container {
+  width: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.workplace-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.workplace-image:hover {
+  transform: scale(1.05);
+}

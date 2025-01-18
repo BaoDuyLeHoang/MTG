@@ -198,6 +198,21 @@ const ServiceDetail = () => {
                     </span>
                   </div>
                 </div>
+
+                {serviceDetail.latestAssignment.imageWorkSpace && (
+                  <div className="workplace-section">
+                    <h5>Nơi làm việc</h5>
+                    <div className="workplace-image-container">
+                      <img 
+                        src={serviceDetail.latestAssignment.imageWorkSpace} 
+                        alt="Workplace" 
+                        className="workplace-image"
+                        onClick={() => setSelectedImage(serviceDetail.latestAssignment.imageWorkSpace)}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="images-section">
                   <h5>Hình ảnh kết quả</h5>
                   <div className="image-grid">

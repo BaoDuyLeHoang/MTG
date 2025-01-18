@@ -21,6 +21,7 @@ const OrderDetailCus = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('success');
   const [feedbacks, setFeedbacks] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -161,6 +162,21 @@ const OrderDetailCus = () => {
     });
   };
 
+  const ImageModal = ({ imageUrl, onClose }) => {
+    if (!imageUrl) return null;
+    
+    return (
+      <div 
+        className="image-modal-overlay"
+        onClick={onClose}
+      >
+        <div className="image-modal-content">
+          <img src={imageUrl} alt="Full size" />
+        </div>
+      </div>
+    );
+  };
+
   if (!orderData) return (
     <>
       <Header />
@@ -239,17 +255,46 @@ const OrderDetailCus = () => {
                 </div>
               </div>
               
-              <div className="odc-service-images">
-                {[detail.imagePath1, detail.imagePath2, detail.imagePath3]
-                  .filter(path => path) // Remove empty paths
-                  .map((imagePath, index) => (
-                    <img 
-                      key={index}
-                      src={imagePath}
-                      alt={`Task image ${index + 1}`}
-                      className="odc-service-image"
-                    />
-                ))}
+              <div className="odc-workplace-images">
+                <h4 className="workplace-title">Nơi làm việc:</h4>
+                <div className="workplace-image-grid">
+                  {[detail.imagePath1, detail.imagePath2, detail.imagePath3]
+                    .filter(path => path)
+                    .map((imagePath, index) => (
+                      <img 
+                        key={index}
+                        src={imagePath}
+                        alt={`Workplace image ${index + 1}`}
+                        className="odc-service-image"
+                        onClick={() => setSelectedImage(imagePath)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    ))
+                  }
+                </div>
+              </div>
+
+              <div className="odc-task-results">
+                <h4 className="results-title">Kết quả thực hiện:</h4>
+                {detail.taskImages && detail.taskImages.length > 0 ? (
+                  <div className="results-image-grid">
+                    {detail.taskImages.map((image, index) => (
+                      <div key={index} className="result-image-container">
+                        <img 
+                          src={image.imagePath}
+                          alt={`Result ${index + 1}`}
+                          className="result-image"
+                          onClick={() => setSelectedImage(image.imagePath)}
+                        />
+                        <div className="result-date">
+                          {formatDate(image.createdDate)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="no-results">Chưa có kết quả thực hiện</p>
+                )}
               </div>
 
               {orderData.status === 4 && (
@@ -331,6 +376,10 @@ const OrderDetailCus = () => {
         handleClose={handleAlertClose}
         severity={alertSeverity}
         message={alertMessage}
+      />
+      <ImageModal 
+        imageUrl={selectedImage} 
+        onClose={() => setSelectedImage(null)} 
       />
       <Footer />
     </div>

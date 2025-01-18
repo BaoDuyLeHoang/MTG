@@ -55,6 +55,7 @@ export const API_ENDPOINTS = {
   GET_FEEDBACK_BY_REQUEST: "/RequestFeedback/getFeedbackWithRequestId",
   GET_REQUEST_TASKS: "/RequestTask/requestTasks/account", // Add this new endpoint
   UPDATE_SERVICE_SCHEDULE_STATUS: "/RecurringServiceSchedule/UpdateServiceSchedule",
+  GET_STAFF_PERFORMANCE: "/Dashboard/performance",
 };
 
 export const getServices = async () => {
@@ -1812,6 +1813,36 @@ export const updateServiceScheduleStatus = async (serviceScheduleId, customerId)
     if (error.response) {
       throw new Error(error.response.data.message || "Có lỗi xảy ra khi cập nhật trạng thái dịch vụ");
     }
+    throw error;
+  }
+};
+
+export const getStaffPerformance = async (staffId, month, year) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    console.log(`Fetching performance data for staff ID: ${staffId}, Month: ${month}, Year: ${year}`);
+    
+    const response = await axios.get(
+      `${BASE_URL}${API_ENDPOINTS.GET_STAFF_PERFORMANCE}`,
+      {
+        params: {
+          staffId,
+          month,
+          year
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Performance API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching staff performance:",
+      error.response ? error.response.data : error.message
+    );
     throw error;
   }
 };

@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../../../components/Sidebar/sideBar';
 import { useAuth } from "../../../context/AuthContext";
 import './StaffManagement.css';
-import { getAllStaff, updateAccountStatus } from '../../../APIcontroller/API';
+import { getAllStaff, updateAccountStatus, getStaffPerformance } from '../../../APIcontroller/API';
 import { createStaff } from '../../../services/staff';
-import { ToggleLeft, ToggleRight, FileText, UserPlus } from 'lucide-react';
+import { ToggleLeft, ToggleRight, FileText, UserPlus, BarChart, Activity, X } from 'lucide-react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import LoadingForSideBar from '../../../components/LoadingForSideBar/LoadingForSideBar';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
+
+// Register ChartJS components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const StaffManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -33,6 +38,11 @@ const StaffManagement = () => {
     });
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedStaff, setSelectedStaff] = useState(null);
+    const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+    const [performanceData, setPerformanceData] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedStaffId, setSelectedStaffId] = useState(null);
 
     useEffect(() => {
         fetchStaffData();
@@ -117,6 +127,25 @@ const StaffManagement = () => {
             year: 'numeric'
         });
     };
+
+    const handleShowPerformance = async (staffId) => {
+        try {
+            setSelectedStaffId(staffId);
+            const response = await getStaffPerformance(staffId, selectedMonth, selectedYear);
+            setPerformanceData(response);
+            setShowPerformanceModal(true);
+        } catch (error) {
+            console.error('Error fetching performance data:', error);
+            alert('Không thể tải dữ liệu hiệu suất. Vui lòng thử lại sau.');
+        }
+    };
+
+    // Sửa lại useEffect để sử dụng selectedStaffId
+    useEffect(() => {
+        if (showPerformanceModal && selectedStaffId) {
+            handleShowPerformance(selectedStaffId);
+        }
+    }, [selectedMonth, selectedYear]); // Chỉ theo dõi thay đổi của tháng và năm
 
     if (loading) {
         return (
@@ -316,6 +345,13 @@ const StaffManagement = () => {
                                             >
                                                 Xem chi tiết
                                             </button>
+                                            <button
+                                                className="performance-btn"
+                                                onClick={() => handleShowPerformance(staff.accountId)}
+                                                title="Xem hiệu suất"
+                                            >
+                                                <Activity size={20} />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -347,6 +383,193 @@ const StaffManagement = () => {
                             </div>
                             <div className="modal-buttons">
                                 <button onClick={() => setShowDetailModal(false)}>Đóng</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {showPerformanceModal && performanceData && (
+                    <div className="staff-performance-modal-overlay">
+                        <div className="staff-performance-modal-content">
+                            <button 
+                                className="staff-performance-close-icon"
+                                onClick={() => {
+                                    setShowPerformanceModal(false);
+                                    setSelectedStaffId(null);
+                                }}
+                            >
+                                <X size={24} />
+                            </button>
+                            <h2 className="staff-performance-title">Hiệu Suất Làm Việc</h2>
+                            
+                            {/* Filters */}
+                            <div className="staff-performance-filters">
+                                <div className="staff-performance-filter-group">
+                                    <label>Tìm kiếm theo tháng:</label>
+                                    <select 
+                                        value={selectedMonth}
+                                        onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                                        className="staff-performance-select"
+                                    >
+                                        {Array.from({length: 12}, (_, i) => i + 1).map(month => (
+                                            <option key={month} value={month}>{month}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="staff-performance-filter-group">
+                                    <label>Tìm kiếm theo năm:</label>
+                                    <select
+                                        value={selectedYear}
+                                        onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                        className="staff-performance-select"
+                                    >
+                                        {Array.from({length: 5}, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
+                                            <option key={year} value={year}>{year}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            {/* Stats Cards */}
+                            <div className="staff-performance-stats">
+                                <div className="staff-performance-stat-card">
+                                    <h3>Tổng số công việc</h3>
+                                    <p>{performanceData.totalTask + performanceData.totalAssignmentTask + performanceData.totalRequestTask}</p>
+                                    <div className="staff-performance-stat-details">
+                                        <span>Công việc thường: {performanceData.totalTask}</span>
+                                        <span>Công việc định kỳ: {performanceData.totalAssignmentTask}</span>
+                                        <span>Công việc theo yêu cầu: {performanceData.totalRequestTask}</span>
+                                    </div>
+                                </div>
+                                <div className="staff-performance-stat-card">
+                                    <h3>Công việc hoàn thành</h3>
+                                    <p>{performanceData.totalFinishTask + performanceData.totalFinishAssignmentTask + performanceData.totalFinishRequestTask}</p>
+                                    <div className="staff-performance-stat-details">
+                                        <span>Công việc thường: {performanceData.totalFinishTask}</span>
+                                        <span>Công việc định kỳ: {performanceData.totalFinishAssignmentTask}</span>
+                                        <span>Công việc theo yêu cầu: {performanceData.totalFinishRequestTask}</span>
+                                    </div>
+                                </div>
+                                <div className="staff-performance-stat-card">
+                                    <h3>Công việc thất bại</h3>
+                                    <p>{performanceData.totalFailTask + performanceData.totalFailAssignmentTask + performanceData.totalFailRequestTask}</p>
+                                    <div className="staff-performance-stat-details">
+                                        <span>Công việc thường: {performanceData.totalFailTask}</span>
+                                        <span>Công việc định kỳ: {performanceData.totalFailAssignmentTask}</span>
+                                        <span>Công việc theo yêu cầu: {performanceData.totalFailRequestTask}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Additional Stats */}
+                            <div className="staff-performance-additional-stats">
+                                <div className="staff-performance-stat-card">
+                                    <h3>Đánh giá trung bình</h3>
+                                    <p>{performanceData.averageAllFeedbackRate}/5</p>
+                                </div>
+                                <div className="staff-performance-stat-card">
+                                    <h3>Tổng công việc nhân viên</h3>
+                                    <p>{performanceData.totalTask + performanceData.totalAssignmentTask + performanceData.totalRequestTask}</p>
+                        
+                                </div>
+                            </div>
+
+                            {/* Charts */}
+                            <div className="staff-performance-charts">
+                                <div className="staff-performance-chart-container">
+                                    <h3>Thống kê công việc theo loại</h3>
+                                    <Bar
+                                        data={{
+                                            labels: ['Công việc thường', 'Công việc định kỳ', 'Công việc theo yêu cầu'],
+                                            datasets: [
+                                                {
+                                                    label: 'Hoàn thành',
+                                                    data: [
+                                                        performanceData.totalFinishTask,
+                                                        performanceData.totalFinishAssignmentTask,
+                                                        performanceData.totalFinishRequestTask
+                                                    ],
+                                                    backgroundColor: '#4CAF50',
+                                                },
+                                                {
+                                                    label: 'Thất bại',
+                                                    data: [
+                                                        performanceData.totalFailTask,
+                                                        performanceData.totalFailAssignmentTask,
+                                                        performanceData.totalFailRequestTask
+                                                    ],
+                                                    backgroundColor: '#f44336',
+                                                }
+                                            ]
+                                        }}
+                                        options={{
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top',
+                                                },
+                                                title: {
+                                                    display: false
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="staff-performance-chart-container">
+                                    <h3>Tỷ lệ hoàn thành công việc</h3>
+                                    <Pie
+                                        data={{
+                                            labels: ['Hoàn thành', 'Thất bại'],
+                                            datasets: [{
+                                                data: [
+                                                    performanceData.totalFinishTask,
+                                                    performanceData.totalFailTask
+                                                ],
+                                                backgroundColor: [
+                                                    '#4CAF50',
+                                                    '#f44336'
+                                                ],
+                                                borderColor: [
+                                                    '#388E3C',
+                                                    '#D32F2F'
+                                                ],
+                                                borderWidth: 1,
+                                            }]
+                                        }}
+                                        options={{
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'bottom',
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Performance Summary */}
+                            <div className="staff-performance-summary">
+                                <div className="staff-performance-summary-item">
+                                    <h3>Hiệu suất công việc</h3>
+                                    <p>{performanceData.workPerformance}</p>
+                                </div>
+                                <div className="staff-performance-summary-item">
+                                    <h3>Đánh giá chất lượng</h3>
+                                    <p>{performanceData.workQuality}</p>
+                                </div>
+                            </div>
+
+                            <div className="staff-performance-modal-buttons">
+                                <button 
+                                    className="staff-performance-close-btn"
+                                    onClick={() => {
+                                        setShowPerformanceModal(false);
+                                        setSelectedStaffId(null);
+                                    }}
+                                >
+                                    Đóng
+                                </button>
                             </div>
                         </div>
                     </div>
